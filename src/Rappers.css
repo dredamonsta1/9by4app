@@ -1,0 +1,19 @@
+.Rapper {
+    margin: 10px;
+    padding: 1px;
+    border: 1px solid #bbb;
+    background-color: #eee;
+
+}
+
+
+.Rapper span {
+    font-size: 1em;
+    text-emphasis: e;
+    color: #333;
+
+}
+
+.Face {
+    /* z-index: 4; */
+}
