@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 // import Rapper from './components/Rappers';
 // import image from './image';
-import {Rappers} from './components/RapperList';
+// import style from './'
+import { Rappers } from '../components/RapperList';
 
 
 function App() {
@@ -10,7 +11,12 @@ function App() {
 
     <div className = "App" >
     <header className = "App-header" >
-    <h1 > Nine X Four </h1>
+    <h1>
+    <span>9</span>
+    <span>X</span>
+    <span>4</span>
+    
+    </h1>
 
     </header>
 
