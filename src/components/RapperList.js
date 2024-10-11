@@ -80,8 +80,8 @@ export const Rappers = props => {
                         key={artistName.id}
                         />
                     );
-                })};
-            </div> >
+                })}
+            </div> 
          </React.Fragment>      
     );
 };
