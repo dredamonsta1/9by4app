@@ -51,8 +51,10 @@ export const Rappers = props => {
             }
         ]);
 
-        function upClout(artist, topFifty) {
+        function upClout(artist, topFifty, clout) {
             console.log(artist);
+            console.log(topFifty);
+            console.log(artistNames.clout)
             setArtistNames(
                 artistNames.map(artistName => {
                     let clout = artistName.clout;
