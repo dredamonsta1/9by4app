@@ -25,7 +25,7 @@ backgroundColor: '#babde6'}}>
 Clout</button>
 
 
-        <button disabled={props.clout===0}onClick={() => props.downClout(props.artist, false )} style={{flex: 3,
+        <button disabled={ props.clout === 0 }onClick={() => props.downClout(props.artist, false )} style={{flex: 3,
         borderTopLeftRadius: 50,
       borderTopRightRadius: 50,
     borderBottomLeftRadius: 50,
