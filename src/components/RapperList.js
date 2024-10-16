@@ -54,7 +54,7 @@ const Rappers = props => {
         function upClout(artist, topFifty, clout, id) {
             console.log(artist);
             // console.log(topFifty);
-            console.log(clout)
+            console.log(artist.id)
             setArtistNames(
                 artistNames.map((artistName, id) => {
                     let clout = artistName.clout;
@@ -65,7 +65,7 @@ const Rappers = props => {
                             clout -= 1;
                         }
                     }
-                    return {name: artistName.name, clout: clout, key: id};
+                    return {name: artistName.name, clout: clout};
                 })
             );
         }
