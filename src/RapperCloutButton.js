@@ -6,7 +6,7 @@ import './Rappers.css';
 
 
 
-export const Rapper = (props) => {
+export const RapperCloutButton = (props) => {
     return (
       // Some other JSX
       <div className="fiveByFourList" style= {{display: "flex"}}>
@@ -43,4 +43,4 @@ Cap</button>
 
 
 
-  export default Rapper;
+  export default RapperCloutButton;

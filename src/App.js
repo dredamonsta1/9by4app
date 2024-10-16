@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 // import Rapper from './components/Rappers';
 // import image from './image';
-import {Rappers} from './components/RapperList';
+import Rappers from './components/RapperList';
 
 
 function App() {

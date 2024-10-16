@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Rapper} from '../Rappers';
+import {RapperCloutButton} from '../RapperCloutButton';
 
 
-export const Rappers = props => {
+const Rappers = props => {
         const [artistNames, setArtistNames] = useState([
             {
                 id: 1,
@@ -51,12 +51,12 @@ export const Rappers = props => {
             }
         ]);
 
-        function upClout(artist, topFifty, clout) {
+        function upClout(artist, topFifty, clout, id) {
             console.log(artist);
-            console.log(topFifty);
-            console.log(artistNames.clout)
+            // console.log(topFifty);
+            console.log(clout)
             setArtistNames(
-                artistNames.map(artistName => {
+                artistNames.map((artistName, id) => {
                     let clout = artistName.clout;
                     if (artistName.name === artist) {
                         if (topFifty) {
@@ -65,21 +65,21 @@ export const Rappers = props => {
                             clout -= 1;
                         }
                     }
-                    return {name: artistName.name, clout: clout};
+                    return {name: artistName.name, clout: clout, key: id};
                 })
             );
         }
         return ( 
             <React.Fragment>
-            <div style={{ display: "flex", flexDirection: "column" }} > 
-            {artistNames.map(artistName => {
+            <div style={{ display: "flex", flexDirection: "column", color: "green" }} > 
+            {artistNames.map((artistName, id) => {
                 return ( 
-                        <Rapper 
+                        <RapperCloutButton 
+                        key={id}
                         artist={artistName.name}
                         clout={artistName.clout}
                         upClout={upClout}
                         downClout={upClout}
-                        key={artistName.id}
                         />
                     );
                 })}
@@ -87,3 +87,5 @@ export const Rappers = props => {
          </React.Fragment>      
     );
 };
+
+export default Rappers;
