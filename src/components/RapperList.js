@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {RapperCloutButton} from '../RapperCloutButton';
 
 
@@ -53,22 +53,28 @@ const Rappers = props => {
 
         function upClout(artist, topFifty, clout, id) {
             console.log(artist);
+            // console.log(...artistNames)
             // console.log(topFifty);
-            console.log(artist.id)
+            console.log(this.clout)
+            // console.log(this.id)
             setArtistNames(
                 artistNames.map((artistName, id) => {
                     let clout = artistName.clout;
                     if (artistName.name === artist) {
-                        if (topFifty) {
-                            clout +=1;
+                        if ( topFifty ) {
+                            clout++;
                         } else if (clout > 0) {
-                            clout -= 1;
+                            clout --;
                         }
                     }
                     return {name: artistName.name, clout: clout};
                 })
             );
         }
+    
+    useEffect(() => {
+        
+    })
         return ( 
             <React.Fragment>
             <div style={{ display: "flex", flexDirection: "column", color: "green" }} > 
