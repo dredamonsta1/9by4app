@@ -3,6 +3,7 @@ import './App.css';
 // import Rapper from './components/Rappers';
 // import image from './image';
 import Rappers from './components/RapperList';
+import ClickableList from './components/RapperList';
 
 
 function App() {
@@ -15,7 +16,8 @@ function App() {
     </header>
 
     
-    <Rappers/>
+      <Rappers />
+      <ClickableList />
 
     </div>
   );
