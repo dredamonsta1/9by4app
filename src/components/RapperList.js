@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {RapperCloutButton} from '../RapperCloutButton';
 
 
@@ -107,20 +107,20 @@ import {RapperCloutButton} from '../RapperCloutButton';
 const ClickableList = props => {
   // Initialize the list with an array of objects containing strings and a count of 0
   const [items, setItems] = useState([
-    { id: "1", name: "Kendrick Lamar", genre: "Hip Hop", count: 0 },
-    { id: "2", name: "Jay-Z", genre: "Hip Hop", count: 0 },
-    { id: "3", name: "Drake", genre: "Hip Hop", count: 0 },
-    { id: "4", name: "J Cole", genre: "Hip Hop", count: 0 },
-    { id: "5", name: "Pusha T", genre: "Hip Hop", count: 0 },
-    { id: "6", name: "Young Thug", genre: "Hip Hop", count: 0 },
-    { id: "7", name: "ScHoolboyQ", genre: "Hip Hop", count: 0 },
-    { id: "8", name: "Kanye West", genre: "Hip Hop", count: 0 },
-    { id: "9", name: "Cardi B", genre: "Hip Hop", count: 0 }
+    { id: 1, name: "Kendrick Lamar", genre: "Hip Hop", count: 0 },
+    { id: 2, name: "Jay-Z", genre: "Hip Hop", count: 0 },
+    { id: 3, name: "Drake", genre: "Hip Hop", count: 0 },
+    { id: 4, name: "J Cole", genre: "Hip Hop", count: 0 },
+    { id: 5, name: "Pusha T", genre: "Hip Hop", count: 0 },
+    { id: 6, name: "Young Thug", genre: "Hip Hop", count: 0 },
+    { id: 7, name: "ScHoolboyQ", genre: "Hip Hop", count: 0 },
+    { id: 8, name: "Kanye West", genre: "Hip Hop", count: 0 },
+    { id: 9, name: "Cardi B", genre: "Hip Hop", count: 0 }
   ]);
 
   // Handle button click
-  console.log(items);
   const handleClick = (index) => {
+      console.log(index);
     // Create a new array with updated count for the clicked item
     const newItems = [...items];
       newItems[index].count += 1;
@@ -136,8 +136,8 @@ const ClickableList = props => {
     <div>
       <h2>Cvltvr</h2>
       <ul>
-        {items.map((item, index) => (
-          <li key={index} style={{ marginBottom: '10px' }}>
+        {items.map((item, index, id) => (
+          <li key={item.id} style={{ marginBottom: '10px' }}>
             <button onClick={() => handleClick(index)}>
               {item.name} - Clout: {item.count} {item.genre}
             </button>
