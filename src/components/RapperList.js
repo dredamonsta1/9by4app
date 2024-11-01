@@ -120,11 +120,11 @@ const ClickableList = props => {
 
   // Handle button click
   const handleClick = (index) => {
-      console.log(index);
-    // Create a new array with updated count for the clicked item
-    const newItems = [...items];
+      // Create a new array with updated count for the clicked item
+      const newItems = [...items];
       newItems[index].count += 1;
-
+      
+      console.log(items);
     // Sort items based on count in descending order
     newItems.sort((a, b) => b.count - a.count);
 

@@ -11,7 +11,7 @@ function App() {
 
     <div className = "App" >
     <header className = "App-header" >
-    <h1 > Nine X Four </h1>
+    <h1 > WOT </h1>
 
     </header>
 
