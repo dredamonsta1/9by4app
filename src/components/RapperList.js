@@ -107,15 +107,15 @@ import {RapperCloutButton} from '../RapperCloutButton';
 const ClickableList = props => {
   // Initialize the list with an array of objects containing strings and a count of 0
   const [items, setItems] = useState([
-    { id: 1, artistName: "Kendrick Lamar", aka: "KDot", genre: "Hip Hop", count: 0, state: "CA", region: "west", label: "TDE", album: "Mr. Moral & the Big Stepper", year: 2023, certifications:"platinum" },
-    { id: 2, artistName: "Jay-Z", genre: "Hip Hop", count: 0 },
-    { id: 3, artistName: "Drake", genre: "Hip Hop", count: 0 },
-    { id: 4, artistName: "J Cole", genre: "Hip Hop", count: 0 },
-    { id: 5, artistName: "Pusha T", genre: "Hip Hop", count: 0 },
-    { id: 6, artistName: "Young Thug", genre: "Hip Hop", count: 0 },
-    { id: 7, artistName: "ScHoolboyQ", genre: "Hip Hop", count: 0 },
-    { id: 8, artistName: "Kanye West", genre: "Hip Hop", count: 0 },
-    { id: 9, artistName: "Cardi B", genre: "Hip Hop", count: 0 }
+    { id: 1, artist_name: "Kendrick Lamar", aka: "KDot", genre: "Hip Hop", count: 0, state: "CA", region: "west", label: "TDE", album: "Mr. Moral & the Big Stepper", year: 2023, certifications:"platinum" },
+    { id: 2, artist_name: "Jay-Z", genre: "Hip Hop", count: 0 },
+    { id: 3, artist_name: "Drake", genre: "Hip Hop", count: 0 },
+    { id: 4, artist_name: "J Cole", genre: "Hip Hop", count: 0 },
+    { id: 5, artist_name: "Pusha T", genre: "Hip Hop", count: 0 },
+    { id: 6, artist_name: "Young Thug", genre: "Hip Hop", count: 0 },
+    { id: 7, artist_name: "ScHoolboyQ", genre: "Hip Hop", count: 0 },
+    { id: 8, artist_name: "Kanye West", genre: "Hip Hop", count: 0 },
+    { id: 9, artist_name: "Cardi B", genre: "Hip Hop", count: 0 }
   ]);
 
   // Handle button click

@@ -5,7 +5,7 @@ import './App.css';
 // import rappL
 import Rappers from './components/RapperList';
 import ClickableList from './components/RapperList';
-import mainList from './components/mainList';
+// import MainList from './components/MainList';
 
 
 function App() {
@@ -14,8 +14,8 @@ function App() {
         <>
     <div className = "App" >
     <header className = "App-header" >
-        <h1 > WOT </h1>
-        <mainList/>
+        <h1 > Pass Da Aux </h1>
+        {/* <MainList/> */}
         {/* {item.album} */}
 
     </header>
