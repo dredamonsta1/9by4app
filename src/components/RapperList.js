@@ -134,12 +134,12 @@ const ClickableList = props => {
 
   return (
     <div>
-      <h2>Cvltvr</h2>
+      <h2>Pass Da Aux</h2>
       <ul>
         {items.map((item, index, id) => (
           <li key={item.id} style={{ marginBottom: '10px' }}>
             <button onClick={() => handleClick(index)}>
-              {item.artistName} - Clout: {item.count} {item.genre} {item.album}
+              {item.artist_name} - Clout: {item.count} {item.genre} {item.album}
             </button>
           </li>
         ))}
