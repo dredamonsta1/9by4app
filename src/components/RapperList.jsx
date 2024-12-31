@@ -5,18 +5,18 @@ import axios from 'axios';
 
 
 const ClickableList = props => {
-  const [rapper, setRapper] = useState([]);
+  const [items, setItems] = useState([]);
   // Initialize the list with an array of objects containing strings and a count of 0
   useEffect(() => {
 
     axios.get('https://ninebyfourapi.herokuapp.com/api', {method: 'GET'})
     .then((res) => {
       console.log(res.data);
-      setRapper(res.data);
+      setItems(res.data);
       
     })
   }, [])
-  const [items, setItems] = useState([
+  const [R, setR] = useState([
     { id: 1, artist_name: "Kendrick Lamar", aka: "KDot", genre: "Hip Hop", count: 0, state: "CA", region: "west", label: "TDE", album: "Mr. Moral & the Big Stepper", year: 2023, certifications:"platinum" },
     { id: 2, artist_name: "Jay-Z", genre: "Hip Hop", count: 0 },
     { id: 3, artist_name: "Drake", genre: "Hip Hop", count: 0 },
