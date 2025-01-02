@@ -2,17 +2,29 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import {RapperCloutButton} from '../RapperCloutButton';
 
-
-
 const ClickableList = props => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   // Initialize the list with an array of objects containing strings and a count of 0
   useEffect(() => {
+    // async function fetchData() {
+    //   try {
+    //     const response = await axios.get('https://ninebyfourapi.herokuapp.com/api', {method: 'GET'});
+    //     setItems(response.data);
+    //     setLoading(false);
+    //     console.log(response.data);
+    //   } catch (error) {
+    //     setError(true);
+    //     setLoading(false);
+    //   }
+    // }
 
     axios.get('https://ninebyfourapi.herokuapp.com/api', {method: 'GET'})
     .then((res) => {
-      console.log(res.data);
       setItems(res.data);
+      console.log(res.data);
+      console.log(error);
       
     })
   }, [])
