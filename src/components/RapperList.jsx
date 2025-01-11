@@ -4,8 +4,8 @@ import axios from "axios";
 
 const ClickableList = (props) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(false);
   const [currentFetch, setCurrentFetch] = useState({
     artist_id: 0,
     name: "",
@@ -89,11 +89,11 @@ const ClickableList = (props) => {
     <div>
       <h2>Pass Da Aux</h2>
       <ul>
-        {Object.keys(items).map((item, index, artist_id) => (
-          <li key={artist_id} style={{ marginBottom: "10px" }}>
+        {Object.keys(currentFetch).map((newItems, index, artist_id) => (
+          <li key={currentFetch.artist_id} style={{ marginBottom: "10px" }}>
             <button onClick={() => handleClick(index)}>
-              {item.name} Clout: {item.count} {item.genre} {item.album}{" "}
-              {item.year}
+              {newItems.name} Clout: {newItems.count} {newItems.genre}{" "}
+              {newItems.album} {newItems.year}
             </button>
           </li>
         ))}
