@@ -2,8 +2,8 @@ import React from "react";
 import "./App.css";
 // import Rapper from './components/Rappers';
 // import image from './image';
-import RapperCloutButton from "./RapperCloutButton";
-import Rappers from "./components/RapperList";
+// import RapperCloutButton from "./RapperCloutButton";
+// import Rappers from "./components/RapperList";
 import ClickableList from "./components/RapperList";
 // import MainList from './components/MainList';
 
