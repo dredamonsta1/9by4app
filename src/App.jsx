@@ -17,7 +17,7 @@ function App() {
           {/* {item.album} */}
         </header>
 
-        <Rappers />
+        {/* <Rappers /> */}
         <ClickableList />
         {/* <RapperCloutButton /> */}
       </div>

@@ -3,57 +3,19 @@ import axios from "axios";
 // import {RapperCloutButton} from '../RapperCloutButton';
 
 const ClickableList = (props) => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]); // To store the fetched data
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(false);
-  const [currentFetch, setCurrentFetch] = useState({
-    artist_id: 0,
-    name: "",
-    genre: "",
-    count: 0,
-    state: "",
-    region: "",
-    label: "",
-    mixtape: "",
-    album: "",
-    year: 0,
-    certifications: "",
-  });
   // Initialize the list with an array of objects containing strings and a count of 0
   useEffect(() => {
     axios
       .get("https://ninebyfourapi.herokuapp.com/api", { method: "GET" })
       .then((res) => {
-        const {
-          artist_id,
-          name,
-          genre,
-          count,
-          state,
-          region,
-          label,
-          mixtape,
-          album,
-          year,
-          certifications,
-        } = res.data;
-        setCurrentFetch({
-          ...currentFetch,
-          ...{
-            artist_id,
-            name,
-            genre,
-            count,
-            state,
-            region,
-            label,
-            mixtape,
-            album,
-            year,
-            certifications,
-          },
-        });
-        // console.log(res.data);
+        const data = Array.isArray(res.data) ? res.data : [res.data];
+        setItems(data);
+        console.log(data);
+
+        console.log(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -73,28 +35,24 @@ const ClickableList = (props) => {
 
   // Handle button click
   const handleClick = (index) => {
-    // Create a new array with updated count for the clicked item
-    const newItems = [...currentFetch];
-    newItems[index].count += 1;
-
+    const newItems = [...items]; // Create a new array with updated count for the clicked item
+    newItems[index].count += 1; // Increment the count of the clicked item
     console.log(newItems);
-    // Sort items based on count in descending order
-    newItems.sort((a, b) => b.count - a.count);
-
-    // Update the state with the sorted list
-    setItems(newItems);
+    newItems.sort((a, b) => b.count - a.count); // Sort items based on count in descending order
+    setItems(newItems); // Update the state with the sorted list
   };
 
   return (
     <div>
       <h2>Pass Da Aux</h2>
       <ul>
-        {Object.keys(currentFetch).map((newItems, index, artist_id) => (
-          <li key={currentFetch.artist_id} style={{ marginBottom: "10px" }}>
+        {items.map((item, index) => (
+          <li key={item.artist_id} style={{ marginBottom: "10px" }}>
             <button onClick={() => handleClick(index)}>
-              {newItems.name} Clout: {newItems.count} {newItems.genre}{" "}
-              {newItems.album} {newItems.year}
+              Clout: {item.count}
             </button>
+            name: {item.name} state: {item.state} region: {item.region} label:{" "}
+            genre: {item.genre} album: {item.album} year: {item.year}
           </li>
         ))}
       </ul>
