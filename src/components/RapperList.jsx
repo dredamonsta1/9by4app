@@ -13,12 +13,22 @@ const ClickableList = (props) => {
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data : [res.data];
         setItems(data);
-        console.log(data);
+        // console.log(data);
+
+        console.log("User Agent:", navigator.userAgent);
+        console.log("Location:", window.location.href);
 
         console.log(res.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("Error fetching data:", error);
+        if (error.res) {
+          console.log("Error response:", error.res.data);
+        } else if (error.req) {
+          console.log("Request error:", error.req);
+        } else {
+          console.log("General error:", error.message);
+        }
       });
   }, []);
 
