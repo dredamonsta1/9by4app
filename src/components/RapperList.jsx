@@ -32,7 +32,7 @@ const ClickableList = (props) => {
       });
   }, []);
 
-  // Handle button click
+  // Handle button click component
   const handleClick = (index) => {
     const newItems = [...items]; // Create a new array with updated count for the clicked item
     newItems[index].count += 1; // Increment the count of the clicked item
