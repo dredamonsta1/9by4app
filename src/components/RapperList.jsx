@@ -56,11 +56,8 @@ const ClickableList = (props) => {
     //sort without mutating
     const sortedItems = [...newItems].sort((a, b) => b.count - a.count);
     setItems(sortedItems);
-    // newItems[index].count += 1; // Increment the count of the clicked item
-    // console.log(newItems);
+
     console.log(items);
-    // newItems.sort((a, b) => b.count - a.count); // Sort items based on count in descending order
-    // setItems(newItems); // Update the state with the sorted list
   };
 
   return (
