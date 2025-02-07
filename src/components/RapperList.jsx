@@ -8,17 +8,26 @@ const ClickableList = (props) => {
   // const [error, setError] = useState(false);
   // Initialize the list with an array of objects containing strings and a count of 0
   useEffect(() => {
-    axios
-      .get("https://ninebyfourapi.herokuapp.com/api", { method: "GET" })
-      .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [res.data];
-        setItems(data);
+    fetch("https://ninebyfourapi.herokuapp.com/api")
+      .then((res) => res.json())
+      .then((data) => {
+        const itemsWithCount = (Array.isArray(data) ? data : [data]).map(
+          (item) => ({ count: item.count || 0, ...item })
+        );
+        setItems(itemsWithCount);
+        console.log(data);
+
+        // axios
+        //   .get("https://ninebyfourapi.herokuapp.com/api", { method: "GET" })
+        //   .then((res) => {
+        //     const data = Array.isArray(res.data) ? res.data : [res.data];
+        //     setItems(data);
         // console.log(data);
 
-        console.log("User Agent:", navigator.userAgent);
-        console.log("Location:", window.location.href);
+        // console.log("User Agent:", navigator.userAgent);
+        // console.log("Location:", window.location.href);
 
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((error) => {
         console.log("Error fetching data:", error);
@@ -37,6 +46,7 @@ const ClickableList = (props) => {
     const newItems = [...items]; // Create a new array with updated count for the clicked item
     newItems[index].count += 1; // Increment the count of the clicked item
     console.log(newItems);
+    // console.log(items);
     newItems.sort((a, b) => b.count - a.count); // Sort items based on count in descending order
     setItems(newItems); // Update the state with the sorted list
   };
@@ -50,8 +60,8 @@ const ClickableList = (props) => {
             <button onClick={() => handleClick(index)}>
               Clout: {item.count}
             </button>
-            name: {item.name} state: {item.state} region: {item.region} label:{" "}
-            genre: {item.genre} album: {item.album} year: {item.year}
+            name: {item.name} genre: {item.genre} state: {item.state} region:{" "}
+            {item.region} label: album: {item.album} year: {item.year}
           </li>
         ))}
       </ul>
