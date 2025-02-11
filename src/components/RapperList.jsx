@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+// import axios from "axios";
 // import {RapperCloutButton} from '../RapperCloutButton';
 
 const ClickableList = (props) => {
@@ -17,7 +17,7 @@ const ClickableList = (props) => {
         );
         setItems(itemsWithCount);
         setLoading(false);
-        console.log(data);
+        console.log(data.rappers);
 
         // axios
         //   .get("https://ninebyfourapi.herokuapp.com/api", { method: "GET" })
@@ -65,7 +65,7 @@ const ClickableList = (props) => {
       <h2>Pass Da Aux</h2>
       <ul>
         {items.map((item, index) => (
-          <li key={item.artist_id} style={{ marginBottom: "10px" }}>
+          <li key={`$item.artist_id}`} style={{ marginBottom: "10px" }}>
             <button onClick={() => handleClick(index)}>
               Clout: {item.count}
             </button>
