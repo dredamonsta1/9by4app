@@ -67,7 +67,7 @@ const ClickableList = (props) => {
       <h2>Pass Da Aux</h2>
       <ul>
         {items.map((item, index) => (
-          <li key={`$item.artist_id}`} style={{ marginBottom: "10px" }}>
+          <li key={item.artist_id} style={{ marginBottom: "10px" }}>
             <button onClick={() => handleClick(index)}>
               Clout: {item.count}
             </button>
