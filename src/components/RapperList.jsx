@@ -14,9 +14,9 @@ const ClickableList = (props) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const itemsWithCount = (Array.isArray(data) ? data : [data]).map(
-          (item) => ({ count: item.count || 0, ...item })
-        );
+        const itemsWithCount = (
+          Array.isArray(data.rappers) ? data.rappers : [data]
+        ).map((item) => ({ count: item.count || 0, ...item }));
         setItems(itemsWithCount);
         setLoading(false);
         console.log(data.rappers);
