@@ -9,7 +9,9 @@ const ClickableList = (props) => {
   // Initialize the list with an array of objects containing strings and a count of 0
   useEffect(() => {
     setLoading(true);
-    fetch("https://ninebyfourapi.herokuapp.com/api")
+    fetch("https://ninebyfourapi.herokuapp.com/api", {
+      method: "GET",
+    })
       .then((res) => res.json())
       .then((data) => {
         const itemsWithCount = (Array.isArray(data) ? data : [data]).map(
