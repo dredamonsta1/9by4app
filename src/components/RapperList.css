@@ -24,17 +24,28 @@
 }
 
 .rapperList-item {
-    margin: 10px;
-    padding: 1px;
-    border: 1px solid #bbb;
-    background-color: #babde6;
+    list-style-type: none;
+        /* Removes bullets */
+        padding: 0;
+        /* Removes default padding */
+        margin: 0;
+        /* Removes default margin */
 }
 
 .rapperButton {
-    margin: 10px;
-    padding: 1px;
-    border-radius: 50px solid #bbb;
-    background-color: #998d76;
-    cursor: pointer;
+    background-color: #007bff;
+        /* Blue background */
+        color: white;
+        /* White text */
+        border: none;
+        padding: 12px 24px;
+        border-radius: 50px;
+        /* Fully rounded */
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+}
 
+.rapperButton:hover {
+    background-color: #0056b3;
 }
