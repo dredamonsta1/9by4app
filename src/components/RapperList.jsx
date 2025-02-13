@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./RapperList.css";
 // import axios from "axios";
 // import {RapperCloutButton} from '../RapperCloutButton';
 
@@ -9,13 +10,11 @@ const ClickableList = (props) => {
   // Initialize the list with an array of objects containing strings and a count of 0
   useEffect(() => {
     setLoading(true);
-    fetch("https://ninebyfourapi.herokuapp.com/api", {
-      method: "GET",
-    })
+    fetch("https://ninebyfourapi.herokuapp.com/api", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
         const itemsWithCount = (
-          Array.isArray(data.rappers) ? data.rappers : [data]
+          Array.isArray(data.rappers) ? data.rappers : [data.rappers]
         ).map((item) => ({ count: item.count || 0, ...item }));
         setItems(itemsWithCount);
         setLoading(false);
@@ -63,21 +62,25 @@ const ClickableList = (props) => {
   };
 
   return (
-    <div>
-      <h2>Pass Da Aux</h2>
-      <ul>
+    <div className="rapperList-outter-div">
+      <h2 className="header-size-two">Pass Da Aux</h2>
+      <ul className="rapperList">
         {items.map((item, index) => (
-          <li key={item.artist_id} style={{ marginBottom: "10px" }}>
-            <button onClick={() => handleClick(index)}>
+          <li
+            className="rapperList-item"
+            key={item.artist_id}
+            style={{ marginBottom: "10px" }}
+          >
+            <button className="rapperButton" onClick={() => handleClick(index)}>
               Clout: {item.count}
             </button>
-            name: {item.name || "N/A"}
-            genre: {item.genre || "N/A"}
-            state: {item.state || "N/A"}
-            region: {item.region || "N/A"}
-            label: {item.label || "N/A"}
-            album: {item.album || "N/A"}
-            year: {item.year || "N/A"}
+            name: {item.name || " N/A "}
+            genre: {item.genre || " N/A "}
+            state: {item.state || " N/A "}
+            region: {item.region || " N/A "}
+            label: {item.label || " N/A "}
+            album: {item.album || " N/A "}
+            year: {item.year || " N/A "}
           </li>
         ))}
       </ul>

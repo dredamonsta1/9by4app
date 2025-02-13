@@ -1,0 +1,40 @@
+.rapperList-outter-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.rapperList-inner-div {
+  margin: 10px;
+  padding: 1px;
+  border: 1px solid #bbb;
+  background-color: #eee;
+}
+
+.header-size-two {
+  font-size: 2em;
+}
+
+.rapperList{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.rapperList-item {
+    margin: 10px;
+    padding: 1px;
+    border: 1px solid #bbb;
+    background-color: #babde6;
+}
+
+.rapperButton {
+    margin: 10px;
+    padding: 1px;
+    border-radius: 50px solid #bbb;
+    background-color: #998d76;
+    cursor: pointer;
+
+}
