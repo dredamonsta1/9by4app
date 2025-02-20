@@ -3,6 +3,8 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
+  height: 300px;
+  width: 250px;
 }
 
 .rapperList-inner-div {
@@ -16,36 +18,38 @@
   font-size: 2em;
 }
 
-.rapperList{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
+.rapperList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .rapperList-item {
-    list-style-type: none;
-        /* Removes bullets */
-        padding: 0;
-        /* Removes default padding */
-        margin: 0;
-        /* Removes default margin */
+  display: flex;
+  list-style-type: none;
+  /* Removes bullets */
+  padding: 0;
+  /* Removes default padding */
+  margin: 0;
+  /* Removes default margin */
+  background-color: purple;
 }
 
 .rapperButton {
-    background-color: #007bff;
-        /* Blue background */
-        color: white;
-        /* White text */
-        border: none;
-        padding: 12px 24px;
-        border-radius: 50px;
-        /* Fully rounded */
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+  background-color: #007bff;
+  /* Blue background */
+  color: white;
+  /* White text */
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  /* Fully rounded */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .rapperButton:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }

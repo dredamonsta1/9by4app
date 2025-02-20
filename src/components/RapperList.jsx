@@ -74,13 +74,11 @@ const ClickableList = (props) => {
             <button className="rapperButton" onClick={() => handleClick(index)}>
               Clout: {item.count}
             </button>
-            name: {item.name || " N/A "}
-            genre: {item.genre || " N/A "}
-            state: {item.state || " N/A "}
-            region: {item.region || " N/A "}
-            label: {item.label || " N/A "}
-            album: {item.album || " N/A "}
-            year: {item.year || " N/A "}
+            name: {item.name || " N/A "},
+            {/* genre: {item.genre || " N/A "}, state: */}
+            {/* {item.state || "N/A "}, {item.state || " N/A "} */}
+            {/* region: {item.region || " N/A "}, label: {item.label || " N/A "}, */}
+            {/* album: {item.album || " N/A "}, year: {item.year || " N/A "} */}
           </li>
         ))}
       </ul>
