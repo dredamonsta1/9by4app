@@ -63,7 +63,7 @@ const ClickableList = (props) => {
 
   return (
     <div className="rapperList-outter-div">
-      <h2 className="header-size-two">Pass Da Aux</h2>
+      {/* <h2 className="header-size-two">Pass Da Aux</h2> */}
       <ul className="rapperList">
         {items.map((item, index) => (
           <li

@@ -12,10 +12,10 @@ import UserProfile from "./components/userProfile/UserProfile";
 function App() {
   return (
     <>
-      <UserProfile />
+      {/* <UserProfile /> */}
       <div className="App">
         <header className="App-header">
-          {/* <h1> Pass Da Aux </h1> */}
+          <h1> Pass Da Aux </h1>
           <MainList />
           <AuthForm />
         </header>

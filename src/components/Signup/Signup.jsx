@@ -37,7 +37,7 @@ function AuthForm() {
           {isSignUp ? "Sign Up" : "Login"}
         </h2>
         {message && <p className="text-center text-red-500">{message}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="onSubmit-form">
           <input
             type="text"
             name="username"

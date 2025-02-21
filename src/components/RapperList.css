@@ -33,7 +33,8 @@
   /* Removes default padding */
   margin: 0;
   /* Removes default margin */
-  background-color: purple;
+  /* background-color: purple; */
+  font-size: 10px;
 }
 
 .rapperButton {
@@ -42,10 +43,10 @@
   color: white;
   /* White text */
   border: none;
-  padding: 12px 24px;
-  border-radius: 50px;
+  padding: 8px 14px;
+  border-radius: 5px;
   /* Fully rounded */
-  font-size: 16px;
+  font-size: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
