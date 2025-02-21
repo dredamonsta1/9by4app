@@ -14,11 +14,12 @@
     align-items: center;
     justify-content: center;
 
-    width: 100%;
+    width: 80%;
+    height: 60%;
     max-width: 450px;
-    padding: 2rem;
+    /* padding: 2rem; */
     border-radius: 0.375rem;
-    background-color: #fff;
+    background-color: darkcyan;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -30,7 +31,7 @@
     border-radius: 0.375rem;
     outline: none;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    background-color: blanchedalmond;
+    /* background-color: blanchedalmond; */
 }
 
 .email-text-box {
