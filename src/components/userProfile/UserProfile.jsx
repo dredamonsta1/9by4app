@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+// import MainList from "../MainList/MainList";
+import RapperList from "../RapperList";
 
 const UserProfile = (props) => {
   const [user, setUser] = useState({});
@@ -51,6 +53,8 @@ const UserProfile = (props) => {
           <p>Role: {user.role || "N/A"}</p>
         </div>
       )}
+      {/* <MainList /> */}
+      <RapperList />
     </div>
   );
 };
