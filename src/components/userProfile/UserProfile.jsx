@@ -13,7 +13,7 @@ const UserProfile = (props) => {
     axios
       .get("https://ninebyfourapi.herokuapp.com/api/users", { method: "GET" })
       .then((res) => {
-        setUser(res.data);
+        setUser(res.data.users);
         setLoading(false);
         console.log("Users:", res.data.users);
       })
