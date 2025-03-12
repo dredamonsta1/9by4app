@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Signup.css";
 
-// import {UserProfilr} from '../UserProfile';
+// import { UserProfile } from "../UserProfile/UserProfile";
+
 function AuthForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -24,12 +26,13 @@ function AuthForm() {
         ? await axios.post(url, formData)
         : await axios.post(`${url}/login`, formData);
       setMessage(response.data.message || "Success");
-      console.log(response.data);
+      // console.log("this is the isSignUp", response.data);
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred");
     }
   };
-  console.log(handleSubmit);
+  console.log("formData:", formData);
+
   return (
     <div className="signup-container">
       <div className="inner-container">
