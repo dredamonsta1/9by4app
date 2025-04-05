@@ -8,7 +8,7 @@ import type { Database } from '../../types/supabase';
 import type UserProfile from '../components/userProfile/UserProfile';
 
 
-type Post = UserProfile['public']['Tables']['posts']['Row'] & {
+type Post = Database['public']['Tables']['posts']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row'];
   likes: Database['public']['Tables']['likes']['Row'][];
 };
@@ -71,7 +71,7 @@ export function Home() {
   const handleLike = async (postId: string) => {
     if (!user) return;
 
-    const isLiked = posts.find(p => p.id === postId)?.likes.some(l => l.user_id === user.id);
+    const isLiked = posts.find(p => p.id === postId)?.likes.some((l: Post['likes'][number]) => l.user_id === user.id);
 
     try {
       if (isLiked) {
@@ -128,7 +128,7 @@ export function Home() {
                 <button
                   onClick={() => handleLike(post.id)}
                   className={`flex items-center gap-1 text-sm ${
-                    post.likes.some(l => l.user_id === user?.id)
+                    post.likes.some((l: Post['likes'][number]) => l.user_id === user?.id)
                       ? 'text-red-500'
                       : 'text-gray-500 hover:text-red-500'
                   }`}
