@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/utils';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/utils';
-import { Heart } from 'lucide-react';
+import { Heart, Repeat2 } from 'lucide-react';
 import { useAuth } from '../components/AuthContext/AuthContext';
-import type { Database } from '../types/supabase';
+import type { Database } from '../../types/supabase';
 import type UserProfile from '../components/userProfile/UserProfile';
 
 
