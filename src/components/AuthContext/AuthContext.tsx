@@ -1,15 +1,14 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-// import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 // import type { User } from '@supabase/supabase-js';
-// import type { Database } from '../types/supabase';
+import type { Database } from '../../../types/supabase';
 
-// type Profile = Database['public']['Tables']['profiles']['Row'];
-// interface User {
-//   id: string;
-//   email: string;
-//   user_metadata: {
-//     full_name: string;
-//   };
+type Profile = Database['public']['Tables']['profiles']['Row'];
+interface User extends Omit<import('@supabase/supabase-js').User, 'user_metadata'> {
+  user_metadata: {
+    full_name: string;
+  };
+}
 
 interface AuthContextType {
   user: User | null;
@@ -32,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(true);
         
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      setUser(session?.user ? { ...session.user, user_metadata: { full_name: session.user.user_metadata?.full_name || '' } } : null);
       if (session?.user) {
         fetchProfile(session.user.id);
       } else {
@@ -41,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
+      setUser(session?.user ? { ...session.user, user_metadata: { full_name: session.user.user_metadata?.full_name || '' } } : null);
       if (session?.user) {
         await fetchProfile(session.user.id);
       } else {
@@ -108,7 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .eq('id', user.id);
 
     if (error) throw error;
-    setProfile(prev => prev ? { ...prev, ...updates } : null);
+    setProfile((prev: Profile | null) => prev ? { ...prev, ...updates } : null);
   };
 
   return (

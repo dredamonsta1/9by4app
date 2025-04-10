@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/utils';
 import { formatDate } from '../lib/utils';
 import { useAuth } from '../components/AuthContext/AuthContext';
-import type { Database } from '../types/supabase';
-import UserProfile from '../components/userProfile/UserProfile';
+import type { Database } from '../../types/supabase';
+// import UserProfile from '../components/userProfile/';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type Post = Database['public']['Tables']['posts']['Row'];

@@ -19,13 +19,12 @@
     "react-router-dom": "^7.3.0",
     "redux": "^5.0.1",
     "swr": "^2.3.0",
-    "tailwind-merge": "^3.0.2"
+    "tailwind-merge": "^3.0.2",
+    "date-fns": "^3.3.1"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "tsc && vite build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -43,10 +42,11 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^19.1.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^6.8.0",
     "prettier": "^3.4.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vite": "^6.2.5"
   },
   "proxy": "https://ninebyfourapi.herokuapp.com/api"
 }

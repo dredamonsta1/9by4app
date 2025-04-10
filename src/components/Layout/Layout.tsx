@@ -1,6 +1,6 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { Home, User, LogOut, PenSquare } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../components/AuthContext/AuthContext";
 import { CreatePost } from "../CreatePost/CreatePost";
 import { useState } from "react";
 
