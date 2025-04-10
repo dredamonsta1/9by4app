@@ -5,7 +5,7 @@ import { formatDate } from '../lib/utils';
 import { Heart, Repeat2 } from 'lucide-react';
 import { useAuth } from '../components/AuthContext/AuthContext';
 import type { Database } from '../../types/supabase';
-import type UserProfile from '../components/userProfile/UserProfile';
+// import type UserProfile from '../components/userProfile/UserProfile';
 
 
 type Post = Database['public']['Tables']['posts']['Row'] & {

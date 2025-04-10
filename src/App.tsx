@@ -97,6 +97,7 @@
 // export default App;
 
 import React, { useEffect, useState } from 'react';
+import { Session } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
 import { Auth } from './components/AuthContext/Auth';
 import { CreatePost } from './components/CreatePost/CreatePost';
@@ -104,7 +105,7 @@ import { Feed } from './components/Feed';
 import { LogOut, Twitter } from 'lucide-react';
 
 function App() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
