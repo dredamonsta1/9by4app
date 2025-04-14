@@ -64,9 +64,7 @@ export function Layout() {
         </div>
       </div>
 
-      {isCreatePostOpen && (
-        <CreatePost onClose={() => setIsCreatePostOpen(false)} />
-      )}
+      
     </div>
   );
 }
