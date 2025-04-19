@@ -7,15 +7,17 @@ import AuthForm from "./components/Signup/Signup";
 // import ClickableList from "./components/RapperList";
 import MainList from "./components/MainList/MainList";
 import UserProfile from "./components/userProfile/UserProfile";
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<MainList />} />
+
           {/* <Route path="/login" element={<Login />} /> */}
-          {/* <Route path="/signup" element={<Signup />} /> */}
+          <Route path="/signup" element={<AuthForm />} />
           {/* <Route path="/profile" element={<UserProfile />} /> */}
           {/* <Route path="/rappers" element={<Rappers />} /> */}
           {/* <Route path="/rappers/:id" element={<RapperDetails />} /> */}
@@ -25,18 +27,18 @@ function App() {
           {/* <Route path="/" element={<ClickableList />} /> */}
           {/* <Route path="/" element={<RapperCloutButton />} /> */}
           {/* <Route path="/" element={<RapperCloutButton />} /> */}
-          <UserProfile />
+          {/* <UserProfile />
           <div className="App">
             <header className="App-header">
               <h1> Pass Da Aux </h1>
               <MainList />
               <AuthForm />
-            </header>
+            </header> */}
 
-            {/* <Rappers /> */}
-            {/* <ClickableList /> */}
-            {/* <RapperCloutButton /> */}
-          </div>
+          {/* <Rappers /> */}
+          {/* <ClickableList /> */}
+          {/* <RapperCloutButton /> */}
+          {/* </div> */}
         </Routes>
       </BrowserRouter>
     </>
