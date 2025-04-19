@@ -18,7 +18,7 @@ function App() {
 
           {/* <Route path="/login" element={<Login />} /> */}
           <Route path="/signup" element={<AuthForm />} />
-          {/* <Route path="/profile" element={<UserProfile />} /> */}
+          <Route path="/profile" element={<UserProfile />} />
           {/* <Route path="/rappers" element={<Rappers />} /> */}
           {/* <Route path="/rappers/:id" element={<RapperDetails />} /> */}
           {/* <Route path="/" element={<MainList />} /> */}
