@@ -7,24 +7,37 @@ import AuthForm from "./components/Signup/Signup";
 // import ClickableList from "./components/RapperList";
 import MainList from "./components/MainList/MainList";
 import UserProfile from "./components/userProfile/UserProfile";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes } from "react-router-dom";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <UserProfile />
-        <div className="App">
-          <header className="App-header">
-            <h1> Pass Da Aux </h1>
-            <MainList />
-            <AuthForm />
-          </header>
+        <Routes>
+          {/* <Route path="/login" element={<Login />} /> */}
+          {/* <Route path="/signup" element={<Signup />} /> */}
+          {/* <Route path="/profile" element={<UserProfile />} /> */}
+          {/* <Route path="/rappers" element={<Rappers />} /> */}
+          {/* <Route path="/rappers/:id" element={<RapperDetails />} /> */}
+          {/* <Route path="/" element={<MainList />} /> */}
+          {/* <Route path="/" element={<MainList />} /> */}
+          {/* <Route path="/" element={<RapperList />} /> */}
+          {/* <Route path="/" element={<ClickableList />} /> */}
+          {/* <Route path="/" element={<RapperCloutButton />} /> */}
+          {/* <Route path="/" element={<RapperCloutButton />} /> */}
+          <UserProfile />
+          <div className="App">
+            <header className="App-header">
+              <h1> Pass Da Aux </h1>
+              <MainList />
+              <AuthForm />
+            </header>
 
-          {/* <Rappers /> */}
-          {/* <ClickableList /> */}
-          {/* <RapperCloutButton /> */}
-        </div>
+            {/* <Rappers /> */}
+            {/* <ClickableList /> */}
+            {/* <RapperCloutButton /> */}
+          </div>
+        </Routes>
       </BrowserRouter>
     </>
   );
