@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   user: null,
@@ -19,6 +19,13 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isLoggedIn = false;
+      console.log(user);
+      console.log(token);
+      console.log(isLoggedIn);
+      console.log("User logged out");
+      console.log("Token cleared");
+      console.log("isLoggedIn set to false");
+      console.log("User data cleared");
     },
   },
 });

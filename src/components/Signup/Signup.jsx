@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import authSlice from "../../store/slice";
 import "./Signup.css";
 
 // import { UserProfile } from "../UserProfile/UserProfile";
@@ -31,7 +33,7 @@ function AuthForm() {
       setMessage(error.response?.data?.message || "An error occurred");
     }
   };
-  console.log("formData:", formData);
+  // console.log("formData:", formData);
 
   return (
     <div className="signup-container">
