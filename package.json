@@ -45,5 +45,15 @@
     "prettier": "^3.4.2",
     "vite": "^6.2.6"
   },
-  "proxy": "https://ninebyfourapi.herokuapp.com/api"
+  "proxy": "https://ninebyfourapi.herokuapp.com/api",
+  "proxyTable": {
+    "/api": {
+      "target": "https://ninebyfourapi.herokuapp.com/api/users",
+      "changeOrigin": true,
+      "secure": false,
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+  }
 }

@@ -28,7 +28,7 @@ const UserProfile = (props) => {
         } else {
           console.log("General error:", error.message);
         }
-        // console.log("Name", user.username);
+        console.log("Name", user.username);
       });
   }, []);
 

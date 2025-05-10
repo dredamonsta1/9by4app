@@ -13,6 +13,7 @@ function AuthForm() {
     username: "",
     email: "",
     password: "",
+    role: "",
   });
   const [message, setMessage] = useState("");
 
@@ -24,16 +25,16 @@ function AuthForm() {
     e.preventDefault();
     try {
       const url = "https://ninebyfourapi.herokuapp.com/api/users";
-      const response = isSignUp
-        ? await axios.post(url, formData)
-        : await axios.post(`${url}/login`, formData);
+      const response = await axios.post(url, formData);
+
       setMessage(response.data.message || "Success");
-      // console.log("this is the isSignUp", response.data);
+      console.log("this is the isSignUp", response.data); // <--------not working
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred");
+      console.log("Error:", error);
     }
   };
-  // console.log("formData:", formData);
+  console.log("formData:", formData);
 
   return (
     <div className="signup-container">
