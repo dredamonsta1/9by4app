@@ -21,6 +21,32 @@ function AuthForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSignUp = async () => {
+    const url = "https://ninebyfourapi.herokuapp.com/api/users";
+    const payload = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+    };
+    const response = await axios.post(url, payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response;
+  };
+
+  const handleLogin = async () => {
+    const url = "https://ninebyfourapi.herokuapp.com/api/users/login";
+    const payload = {
+      username: formData.username,
+      password: formData.password,
+    };
+    const response = await axios.post(url, payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -72,6 +98,15 @@ function AuthForm() {
             onChange={handleChange}
             className="password-text-box"
             required
+          />
+          <input
+            type="text"
+            name="role"
+            placeholder="Role (e.g., user, admin)"
+            value={formData.role}
+            onChange={handleChange}
+            className="role-text-box"
+            // required
           />
           <button type="submit" className="submit-button">
             {isSignUp ? "Sign Up" : "Login"}

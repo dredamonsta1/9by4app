@@ -4,6 +4,7 @@ import "./App.css";
 // import image from './image';
 // import Rappers from "./components/RapperList";
 import AuthForm from "./components/Signup/Signup";
+import Login from "./pages/login/Login";
 // import ClickableList from "./components/RapperList";
 import MainList from "./components/MainList/MainList";
 import UserProfile from "./components/userProfile/UserProfile";
@@ -16,10 +17,10 @@ function App() {
         <Routes>
           <Route path="/" element={<MainList />} />
 
-          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<AuthForm />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/login" element={<AuthForm />} />
+          {/* <Route path="/login" element={<AuthForm />} /> */}
           {/* <Route path="/rappers" element={<Rappers />} /> */}
           {/* <Route path="/rappers/:id" element={<RapperDetails />} /> */}
           {/* <Route path="/" element={<MainList />} /> */}
