@@ -11,7 +11,9 @@ const UserProfile = (props) => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("https://ninebyfourapi.herokuapp.com/api/users", { method: "GET" })
+      .get("https://ninebyfourapi.herokuapp.com/api/users", {
+        method: "GET",
+      })
       .then((res) => {
         setUser(res.data.users);
         setLoading(false);
