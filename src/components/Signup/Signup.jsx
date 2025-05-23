@@ -324,7 +324,7 @@ function AuthForm() {
         dispatch(setCredentials({ user, token }));
 
         // 3. Redirect to a protected page (e.g., dashboard or home)
-        navigate("/profile"); // Or '/home'
+        navigate("/dashboard"); // Or '/home'
       } else if (isSignUp) {
         // After successful signup, maybe offer to log in or show success
         // Optionally, you can automatically log in after signup by calling handleLogin here
