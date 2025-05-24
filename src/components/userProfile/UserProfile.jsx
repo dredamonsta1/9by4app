@@ -11,6 +11,14 @@ const UserProfile = (props) => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      const token = localStorage.getItem("token");
+      console.log("UserProfile: Token from localStorage:", token);
+
+      if (!token) {
+        setError("You are not logged in. Please log in to view your profile.");
+        console.log("UserProfile: No token found in localStorage.");
+        return;
+      }
       try {
         const response = await axiosInstance.get("/users");
         setUser(response.data.users);
