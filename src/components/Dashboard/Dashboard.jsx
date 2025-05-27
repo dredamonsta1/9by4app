@@ -17,6 +17,7 @@ import React from "react";
 import ClickableList from "../RapperList"; // Import your RapperList component
 import UserProfile from "../userProfile/UserProfile";
 import { useNavigate } from "react-router-dom";
+import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ const Dashboard = () => {
     <div style={{ padding: "20px" }}>
       <h1>Dashboard</h1>
       <p>Welcome to your personalized dashboard!</p>
-
       <button
         onClick={() => navigate("/profile")}
         style={{
@@ -42,7 +42,6 @@ const Dashboard = () => {
       >
         View Profile
       </button>
-
       <button
         onClick={() => {
           localStorage.removeItem("token");
@@ -61,7 +60,8 @@ const Dashboard = () => {
       >
         Logout
       </button>
-
+      <h2 style={{ marginTop: "40px" }}>Add New Rapper</h2>
+      <CreateArtistForm /> {/* Add the new form here */}
       <h2 style={{ marginTop: "40px" }}>Manage Rappers</h2>
       {/* Render ClickableList:
           - showAdminActions={true} (display Delete/Edit buttons)
