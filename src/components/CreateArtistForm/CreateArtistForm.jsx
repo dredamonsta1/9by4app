@@ -47,8 +47,18 @@ const CreateArtistForm = () => {
       const artistData = {
         artist_name: artistName,
         genre: artistGenre,
+        count: 0,
+
         // ... other artist details
-        image_url: imageUrl, // Send the image URL to your backend to store in DB
+        image_url: imageUrl,
+        aka: "", // Default empty string for TEXT fields
+        state: "", // Default empty string for TEXT fields
+        region: "", // Default empty string for TEXT fields
+        label: "", // Default empty string for TEXT fields
+        mixtape: "", // Default empty string for TEXT fields
+        album: "", // Default empty string for TEXT fields
+        year: 0, // Default 0 for INTEGER fields
+        certifications: "",
       };
 
       // If you are uploading image and artist data in separate steps,
@@ -56,7 +66,7 @@ const CreateArtistForm = () => {
       // If you want to send all in one go (more complex with different content types),
       // you'd need to modify your /api post route to handle multipart/form-data directly.
       // For now, this two-step process is simpler to implement.
-      const createArtistResponse = await axiosInstance.post("/api", artistData);
+      const createArtistResponse = await axiosInstance.post("/", artistData);
       setMessage(
         createArtistResponse.data.message || "Artist created successfully!"
       );

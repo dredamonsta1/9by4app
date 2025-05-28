@@ -171,6 +171,20 @@ const ClickableList = ({ showAdminActions, showCloutButton }) => {
             key={item.artist_id}
             style={{ marginBottom: "10px" }}
           >
+            {/* Display the image if image_url exists */}
+            {item.image_url && (
+              <img
+                src={item.image_url} // Use the image_url from the backend
+                alt={item.name}
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  objectFit: "cover",
+                  marginRight: "10px",
+                  borderRadius: "5px",
+                }}
+              />
+            )}
             {/* CONDITIONAL RENDERING OF CLOUT BUTTON */}
             {showCloutButton ? (
               <button
