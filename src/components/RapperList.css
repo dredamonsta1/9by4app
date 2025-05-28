@@ -4,37 +4,53 @@
   justify-content: center;
   margin-top: 20px;
   height: 300px;
-  width: 250px;
+  width: 100%;
+  /* Full width */
 }
 
-.rapperList-inner-div {
+/* .rapperList-inner-div {
   margin: 10px;
   padding: 1px;
   border: 10px solid #bbb;
   background-color: yellowgreen;
-}
+} */
 
 .header-size-two {
   font-size: 2em;
+  background-color: blue;
 }
 
 .rapperList {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* Creates a responsive grid */
+  grid-gap: 10px;
+  /* Space between grid items */
+  padding: 10px;
+  /* Padding around the grid */
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  box-sizing: border-box;
+  /* Ensures padding and border are included in width/height */
+  border: 2px solid #ccc;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
+  background-color: yellowgreen;
 }
 
 .rapperList-item {
   display: flex;
   list-style-type: none;
   /* Removes bullets */
-  padding: 0;
+  padding: 20px;
   /* Removes default padding */
-  margin: 0;
+  margin: 20px;
   /* Removes default margin */
-  /* background-color: purple; */
-  font-size: 10px;
+  background-color: purple;
+  font-size: 15px;
 }
 
 .rapperButton {
