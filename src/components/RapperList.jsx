@@ -91,6 +91,7 @@ import React, { useState, useEffect } from "react";
 import "./RapperList.css";
 // import axios from "axios"; // Import axios for delete/edit actions
 import axiosInstance from "../utils/axiosInstance"; // For authenticated actions
+import ArtistCard from "./ArtistCard";
 
 // Add showCloutButton to the destructured props
 const ClickableList = ({ showAdminActions, showCloutButton }) => {
