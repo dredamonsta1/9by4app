@@ -1,19 +1,14 @@
+/* RapperList.css */
+
 .rapperList-outter-div {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
-  height: 300px;
+  /* height: 300px; /* Consider removing fixed height if content varies greatly */
+  height: 100%;
   width: 100%;
-  /* Full width */
 }
-
-/* .rapperList-inner-div {
-  margin: 10px;
-  padding: 1px;
-  border: 10px solid #bbb;
-  background-color: yellowgreen;
-} */
 
 .header-size-two {
   font-size: 2em;
@@ -22,51 +17,165 @@
 
 .rapperList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  /* Creates a responsive grid */
-  grid-gap: 10px;
-  /* Space between grid items */
-  padding: 10px;
-  /* Padding around the grid */
+  /* Adjust minmax to control card size and responsiveness */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* Increased min-width for better card display */
+  gap: 20px;
+  /* Use 'gap' for grid spacing */
+  padding: 20px;
+  /* More padding around the grid */
   width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
+  /* height: 100%; /* Consider if you need a fixed height for the list container */
   box-sizing: border-box;
-  /* Ensures padding and border are included in width/height */
   border: 2px solid #ccc;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
+  /* flex-wrap and justify-content are redundant with display: grid here */
+  /* margin-top: 20px; /* Already handled by wrapper */
   background-color: yellowgreen;
 }
 
 .rapperList-item {
-  display: flex;
   list-style-type: none;
-  /* Removes bullets */
-  padding: 20px;
-  /* Removes default padding */
-  margin: 20px;
-  /* Removes default margin */
   background-color: purple;
+  /* The background color for each card */
   font-size: 15px;
+  padding: 15px;
+  /* Adjust padding inside each card */
+  margin: 0;
+  /* Remove margin, 'gap' handles spacing now */
+  border-radius: 8px;
+  /* Slightly rounded corners for the cards */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Subtle shadow for depth */
+  display: flex;
+  /* Keep flexbox for internal layout */
+  flex-direction: column;
+  /* Stack name/genre, then image/clout */
+  align-items: flex-start;
+  /* Align content to the start (left) */
+  gap: 10px;
+  /* Space between flex items within the card */
+  color: white;
+  /* Make text white for better contrast on purple */
+}
+
+/* Styling for the image */
+.rapperList-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  /* Make it circular */
+  margin-right: 15px;
+  /* Space to the right of the image */
+  border: 2px solid #007bff;
+  /* Accent border */
+  flex-shrink: 0;
+}
+
+/* Container for artist text details */
+.rapperList-item-details {
+  flex-grow: 1;
+  /* Allows this div to take up available space */
+}
+
+/* Styling for the clout section, including the button or text */
+.rapperList-item-clout-section {
+  display: flex;
+  /* Use flexbox to align image and clout text side-by-side */
+  align-items: center;
+  /* Vertically align items in the center */
+  gap: 15px;
+  /* Space between the image and the text */
+  padding: 10px 0;
+  border-top: 1px dashed rgba(255, 255, 255, 0.3);
+  /* Lighter dashed border */
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  width: 100%;
+  /* Ensure it spans full width of its parent */
+  box-sizing: border-box;
+  /* Include padding in width */
 }
 
 .rapperButton {
   background-color: #007bff;
-  /* Blue background */
   color: white;
-  /* White text */
   border: none;
   padding: 8px 14px;
   border-radius: 5px;
-  /* Fully rounded */
   font-size: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-weight: bold;
+  /* Make the button text bold */
 }
 
 .rapperButton:hover {
   background-color: #0056b3;
+}
+
+/* Admin Action Buttons */
+.rapperList-admin-actions {
+  display: flex;
+  /* Arrange buttons side-by-side */
+  gap: 5px;
+  /* Space between buttons */
+  margin-top: 10px;
+  /* Space above buttons */
+  width: 100%;
+  /* Ensure buttons span full width if needed */
+  justify-content: flex-end;
+  /* Align buttons to the right */
+}
+
+.rapperList-admin-actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: white;
+}
+
+.rapperList-admin-actions button:first-child {
+  /* Delete button */
+  background-color: #dc3545;
+  /* Red */
+}
+
+.rapperList-admin-actions button:first-child:hover {
+  background-color: #c82333;
+}
+
+.rapperList-admin-actions button:last-child {
+  /* Edit button */
+  background-color: #ffc107;
+  /* Orange */
+  color: #333;
+  /* Darker text for contrast on orange */
+}
+
+.rapperList-admin-actions button:last-child:hover {
+  background-color: #e0a800;
+}
+
+/* General text styling within list item */
+.rapperList-item h3 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.rapperList-item p {
+  margin: 0;
+  font-size: 0.95em;
+}
+
+.clout-data-display {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #007bff;
+  /* Blue for 'Clout:' */
+}
+
+.clout-data-display span {
+  color: white;
+  /* White for the count number */
 }
