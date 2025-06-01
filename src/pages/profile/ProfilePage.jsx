@@ -27,6 +27,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchArtists } from "../../redux/actions/artistActions"; // To ensure data is fetched if not already
 import ClickableList from "../../components/RapperList"; // Re-use ClickableList for display
+import UserProfile from "../../components/userProfile/UserProfile";
 
 const ProfilePage = () => {
   const { artists, loading, error } = useSelector((state) => state.artists);
@@ -51,6 +52,8 @@ const ProfilePage = () => {
         showAdminActions={false}
         showCloutButton={false}
       />
+      <UserProfile />{" "}
+      {/* Include UserProfile component to display user details */}
     </div>
   );
 };

@@ -1,0 +1,15 @@
+dashboard-div {
+  display: flex;
+  flex-direction: column;
+  /* Stack items vertically */
+  width: 100%;
+  /* Full width of the parent */
+  height: calc(100vh - 60px);
+  /* Full height minus header */
+  overflow-y: auto;
+  /* Allow vertical scrolling */
+  padding: 20px;
+  /* Padding around the content */
+  box-sizing: border-box;
+  /* Include padding in width/height calculations */
+}

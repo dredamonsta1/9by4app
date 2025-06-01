@@ -13,10 +13,10 @@ const ProtectedRoute = () => {
 export default ProtectedRoute;
 
 // In your App.js or router setup:
-// <Routes>
-//   <Route path="/login" element={<AuthForm />} />
-//   <Route element={<ProtectedRoute />}>
-//     <Route path="/dashboard" element={<Dashboard />} />
-//     {/* Other protected routes */}
-//   </Route>
-// </Routes>
+<Routes>
+  <Route path="/login" element={<AuthForm />} />
+  <Route element={<ProtectedRoute />}>
+    <Route path="/dashboard" element={<Dashboard />} />
+    {/* Other protected routes */}
+  </Route>
+</Routes>;

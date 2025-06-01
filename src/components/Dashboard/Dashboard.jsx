@@ -1,18 +1,3 @@
-// import UserProfile from "../userProfile/UserProfile";
-// import MainList from "../MainList/MainList";
-// const Dashboard = () => {
-//   return (
-//     <div>
-//       <h2>Welcome to your Dashboard!</h2>
-//       <p>This is a protected area.</p>
-//       {/* You can render other protected components here */}
-//       {/* <MainList /> Example: MainList could be protected */}
-//       <UserProfile /> {/* Example: UserProfile could be protected */}
-//     </div>
-//   );
-// };
-// export default Dashboard;
-
 import React from "react";
 import ClickableList from "../RapperList"; // Import your RapperList component
 import UserProfile from "../userProfile/UserProfile";
@@ -23,10 +8,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="dashboard-div" style={{ padding: "20px" }}>
       <h1>Dashboard</h1>
       <p>Welcome to your personalized dashboard!</p>
       <button
+        className="profile-button"
         onClick={() => navigate("/profile")}
         style={{
           marginTop: "10px",
@@ -43,6 +29,7 @@ const Dashboard = () => {
         View Profile
       </button>
       <button
+        className="logout-button"
         onClick={() => {
           localStorage.removeItem("token");
           navigate("/login");
