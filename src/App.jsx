@@ -97,12 +97,7 @@ function App() {
           {/* <h2 style={{ textAlign: "center", color: "#555" }}>
             Artist List (Dashboard)
           </h2> */}{" "}
-          <Route
-            path="/"
-            element={
-              <ClickableList showAdminActions={true} showCloutButton={true} />
-            }
-          />
+          <Route path="/" element={<HomePage />} />
           {/* Dashboard View */}
           {/* Create Artist Form */}
           <Route path="/create-artist" element={<CreateArtistForm />} />

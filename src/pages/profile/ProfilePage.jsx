@@ -47,12 +47,8 @@ const ProfilePage = () => {
   return (
     <div>
       {/* Profile list probably doesn't need admin actions or clout buttons */}
-      <ClickableList
-        items={artists} // Pass artists from Redux
-        showAdminActions={false}
-        showCloutButton={false}
-      />
-      <UserProfile />{" "}
+      <UserProfile />
+      <ClickableList showAdminActions={true} showCloutButton={true} />
       {/* Include UserProfile component to display user details */}
     </div>
   );
