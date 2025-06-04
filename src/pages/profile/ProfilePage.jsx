@@ -1,29 +1,5 @@
-// import React from "react";
-
-// function Register() {
-//   return (
-//     <div className="register">
-//       <h1>Register</h1>
-//       <form>
-//         <label>
-//           Username:
-//           <input type="text" name="username" />
-//         </label>
-//         <br />
-//         <label>
-//           Password:
-//           <input type="password" name="password" />
-//         </label>
-//         <br />
-//         <button type="submit">Register</button>
-//       </form>
-//     </div>
-//   );
-// }
-// export default Register;
-
-// src/pages/ProfilePage.jsx
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchArtists } from "../../redux/actions/artistActions"; // To ensure data is fetched if not already
 import ClickableList from "../../components/RapperList"; // Re-use ClickableList for display
@@ -47,8 +23,10 @@ const ProfilePage = () => {
   return (
     <div>
       {/* Profile list probably doesn't need admin actions or clout buttons */}
+      <h2>Your Profile</h2>
+      {/* Display user profile information */}
       <UserProfile />
-      <ClickableList showAdminActions={true} showCloutButton={true} />
+      {/* <ClickableList showAdminActions={true} showCloutButton={true} /> */}
       {/* Include UserProfile component to display user details */}
     </div>
   );

@@ -77,7 +77,8 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<AuthForm />} />{" "}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<AuthForm />} />
           {/* Wrap your entire application with Provider */}
           {/* <div
             className="App"
@@ -97,7 +98,6 @@ function App() {
           {/* <h2 style={{ textAlign: "center", color: "#555" }}>
             Artist List (Dashboard)
           </h2> */}{" "}
-          <Route path="/" element={<HomePage />} />
           {/* Dashboard View */}
           {/* Create Artist Form */}
           <Route path="/create-artist" element={<CreateArtistForm />} />
@@ -112,13 +112,6 @@ function App() {
           {/* --- */}
           {/* Placeholder for other views */}
           {/* These components will automatically get updated artist data from Redux */}
-          {/*
-        <hr style={{ margin: '40px 0' }}/>
-        <h2 style={{ textAlign: 'center', color: '#555' }}>Home Page List</h2>
-        
-        <hr style={{ margin: '40px 0' }}/>
-        <h2 style={{ textAlign: 'center', color: '#555' }}>Profile Page List</h2>
-        */}
           {/* <HomePage />
           <ProfilePage /> */}
           {/* </div> */}
