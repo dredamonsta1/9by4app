@@ -102,7 +102,7 @@ function App() {
           {/* Create Artist Form */}
           <Route path="/create-artist" element={<CreateArtistForm />} />
           {/* Home Page List */}
-          <Route path="/home" element={<HomePage />} />
+          {/* <Route path="/home" element={<HomePage />} /> */}
           {/* Profile Page List */}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
