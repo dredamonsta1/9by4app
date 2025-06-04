@@ -30,12 +30,12 @@
   border: 2px solid #ccc;
   /* flex-wrap and justify-content are redundant with display: grid here */
   /* margin-top: 20px; /* Already handled by wrapper */
-  background-color: yellowgreen;
+  /* background-color: yellowgreen; */
 }
 
 .rapperList-item {
   list-style-type: none;
-  background-color: purple;
+  /* background-color: purple; */
   /* The background color for each card */
   font-size: 15px;
   padding: 15px;
