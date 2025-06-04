@@ -5,7 +5,6 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
-  /* height: 300px; /* Consider removing fixed height if content varies greatly */
   height: 100%;
   width: 100%;
 }
@@ -17,83 +16,94 @@
 
 .rapperList {
   display: grid;
-  /* Adjust minmax to control card size and responsiveness */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  /* Increased min-width for better card display */
   gap: 20px;
-  /* Use 'gap' for grid spacing */
   padding: 20px;
-  /* More padding around the grid */
   width: 100%;
-  /* height: 100%; /* Consider if you need a fixed height for the list container */
   box-sizing: border-box;
   border: 2px solid #ccc;
-  /* flex-wrap and justify-content are redundant with display: grid here */
-  /* margin-top: 20px; /* Already handled by wrapper */
   /* background-color: yellowgreen; */
 }
 
 .rapperList-item {
   list-style-type: none;
   /* background-color: purple; */
-  /* The background color for each card */
+  /* This will be behind the image now */
   font-size: 15px;
-  padding: 15px;
-  /* Adjust padding inside each card */
+  padding: 0;
+  /* Remove padding as image will cover it */
   margin: 0;
-  /* Remove margin, 'gap' handles spacing now */
   border-radius: 8px;
-  /* Slightly rounded corners for the cards */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Subtle shadow for depth */
   display: flex;
-  /* Keep flexbox for internal layout */
   flex-direction: column;
-  /* Stack name/genre, then image/clout */
-  align-items: flex-start;
-  /* Align content to the start (left) */
-  gap: 10px;
-  /* Space between flex items within the card */
+  /* Keep flexbox for internal content layering */
+  justify-content: space-between;
+  /* Distribute space for content sections */
+  position: relative;
+  /* Crucial for absolute positioning of the image */
+  overflow: hidden;
+  /* Ensures image corners are rounded with parent */
+  min-height: 300px;
+  /* Give the card a minimum height for the image */
   color: white;
-  /* Make text white for better contrast on purple */
 }
 
-/* Styling for the image */
+/* Styling for the image to take up the entire item */
 .rapperList-item-image {
-  width: 80px;
-  height: 80px;
+  position: absolute;
+  /* Take image out of flow */
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Make it fill the parent */
+  height: 100%;
+  /* Make it fill the parent */
   object-fit: cover;
-  border-radius: 50%;
-  /* Make it circular */
-  margin-right: 15px;
-  /* Space to the right of the image */
-  border: 2px solid #007bff;
-  /* Accent border */
-  flex-shrink: 0;
+  /* Cover the entire area */
+  /* Remove border-radius, margin-right, border as parent handles shaping */
+  z-index: 1;
+  /* Place image behind content */
 }
+
+/* --- Content Overlay for Readability --- */
+/* We need to ensure the text content is above the image and readable. */
+/* Add this class to a wrapper around your text content (details, clout, actions) */
+.rapperList-content-overlay {
+  position: relative;
+  /* Bring content above the image */
+  z-index: 2;
+  /* Ensure it's above the image */
+  padding: 15px;
+  /* Re-add padding here for content */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  /* Take full height to manage internal layout */
+  /* Optional: Add a subtle gradient or transparent background for readability */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
 
 /* Container for artist text details */
 .rapperList-item-details {
   flex-grow: 1;
   /* Allows this div to take up available space */
+  /* Ensure text is readable over the image */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Styling for the clout section, including the button or text */
 .rapperList-item-clout-section {
   display: flex;
-  /* Use flexbox to align image and clout text side-by-side */
   align-items: center;
-  /* Vertically align items in the center */
   gap: 15px;
-  /* Space between the image and the text */
   padding: 10px 0;
   border-top: 1px dashed rgba(255, 255, 255, 0.3);
-  /* Lighter dashed border */
   border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
   width: 100%;
-  /* Ensure it spans full width of its parent */
   box-sizing: border-box;
-  /* Include padding in width */
 }
 
 .rapperButton {
@@ -106,7 +116,6 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: bold;
-  /* Make the button text bold */
 }
 
 .rapperButton:hover {
@@ -116,15 +125,10 @@
 /* Admin Action Buttons */
 .rapperList-admin-actions {
   display: flex;
-  /* Arrange buttons side-by-side */
   gap: 5px;
-  /* Space between buttons */
   margin-top: 10px;
-  /* Space above buttons */
   width: 100%;
-  /* Ensure buttons span full width if needed */
   justify-content: flex-end;
-  /* Align buttons to the right */
 }
 
 .rapperList-admin-actions button {
@@ -136,9 +140,7 @@
 }
 
 .rapperList-admin-actions button:first-child {
-  /* Delete button */
   background-color: #dc3545;
-  /* Red */
 }
 
 .rapperList-admin-actions button:first-child:hover {
@@ -146,11 +148,8 @@
 }
 
 .rapperList-admin-actions button:last-child {
-  /* Edit button */
   background-color: #ffc107;
-  /* Orange */
   color: #333;
-  /* Darker text for contrast on orange */
 }
 
 .rapperList-admin-actions button:last-child:hover {
@@ -161,21 +160,23 @@
 .rapperList-item h3 {
   margin: 0;
   font-size: 1.5em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  /* For readability */
 }
 
 .rapperList-item p {
   margin: 0;
   font-size: 0.95em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  /* For readability */
 }
 
 .clout-data-display {
   font-size: 1.1em;
   font-weight: bold;
   color: #007bff;
-  /* Blue for 'Clout:' */
 }
 
 .clout-data-display span {
   color: white;
-  /* White for the count number */
 }

@@ -1,36 +1,29 @@
-import React, { useEffect } from "react"; // Removed useState for items, loading, error
-import { useSelector, useDispatch } from "react-redux"; // Import Redux hooks
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "./RapperList.css";
 import axiosInstance from "../utils/axiosInstance";
-import { fetchArtists, incrementClout } from "../redux/actions/artistActions"; // Import your Redux actions
+import { fetchArtists, incrementClout } from "../redux/actions/artistActions";
 
 const ClickableList = ({ showAdminActions, showCloutButton }) => {
-  // Use useSelector to get state from the Redux store
   const { artists, loading, error } = useSelector((state) => state.artists);
-  const dispatch = useDispatch(); // Get the dispatch function
+  const dispatch = useDispatch();
 
-  const API_BASE_URL = "https://ninebyfourapi.herokuapp.com"; // Your API Base URL
+  const API_BASE_URL = "https://ninebyfourapi.herokuapp.com";
 
-  // Fetch data when the component mounts or when dependencies change
   useEffect(() => {
-    // Only fetch if data hasn't been loaded or is in an error state
-    // You might want a more sophisticated loading/error state management for re-fetches
     if (!loading && !artists.length && !error) {
-      // Simple check to avoid re-fetching on every re-render
       dispatch(fetchArtists());
     }
-  }, [dispatch, loading, artists.length, error]); // Include all dependencies
+  }, [dispatch, loading, artists.length, error]);
 
   if (loading) return <p>Loading artists...</p>;
   if (error)
     return <p style={{ color: "red" }}>Error fetching data: {error}</p>;
 
-  // Handle Clout button click - now dispatches Redux action
   const handleCloutClick = (artistId) => {
     dispatch(incrementClout(artistId));
   };
 
-  // Handle Delete Action
   const handleDelete = async (artistId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this artist?"
@@ -38,9 +31,12 @@ const ClickableList = ({ showAdminActions, showCloutButton }) => {
     if (!confirmDelete) return;
 
     try {
-      const response = await axiosInstance.delete(`/api?artist_id=${artistId}`);
+      // Corrected endpoint for DELETE, assuming it needs '/api/rappers' as a base
+      // and then the artist_id as a parameter or segment.
+      // If your DELETE endpoint is truly '/api?artist_id=...', keep that.
+      // But based on the PUT request, it's more likely /api/rappers/:id
+      const response = await axiosInstance.delete(`/rappers/${artistId}`); // Adjusted DELETE endpoint
       alert(response.data.message);
-      // After successful delete, re-fetch artists to update the list in Redux
       dispatch(fetchArtists());
     } catch (err) {
       console.error(
@@ -51,7 +47,6 @@ const ClickableList = ({ showAdminActions, showCloutButton }) => {
     }
   };
 
-  // Handle Edit Action (placeholder)
   const handleEdit = (artistId) => {
     alert(`Editing artist with ID: ${artistId}`);
   };
@@ -59,48 +54,53 @@ const ClickableList = ({ showAdminActions, showCloutButton }) => {
   return (
     <div className="rapperList-outter-div">
       <ul className="rapperList">
-        {/* Render artists from the Redux store. They are already sorted by the reducer. */}
         {artists.map((item) => (
           <li className="rapperList-item" key={item.artist_id}>
-            {/* Artist Name and Genre */}
-            <div className="rapperList-item-details">
-              <h3>{item.name || "N/A"}</h3>
-              <p>Genre: {item.genre || "N/A"}</p>
-            </div>
-
-            {/* Section for Image and Clout Item */}
-            <div className="rapperList-item-clout-section">
-              {item.image_url && (
-                <img
-                  src={`${API_BASE_URL}${item.image_url}`} // Construct full URL
-                  alt={item.name || "Artist"}
-                  className="rapperList-item-image" // Apply image styling
-                />
-              )}
-
-              {showCloutButton ? (
-                <button
-                  className="rapperButton"
-                  onClick={() => handleCloutClick(item.artist_id)} // Pass artist_id
-                >
-                  Clout: {item.count}
-                </button>
-              ) : (
-                <p className="clout-data-display">
-                  Clout: <span>{item.count}</span>
-                </p>
-              )}
-            </div>
-
-            {/* Admin Action Buttons */}
-            {showAdminActions && (
-              <div className="rapperList-admin-actions">
-                <button onClick={() => handleDelete(item.artist_id)}>
-                  Delete
-                </button>
-                <button onClick={() => handleEdit(item.artist_id)}>Edit</button>
-              </div>
+            {/* Image must be a direct child and will be absolutely positioned */}
+            {item.image_url && (
+              <img
+                src={`${API_BASE_URL}${item.image_url}`}
+                alt={item.name || "Artist"}
+                className="rapperList-item-image" // This class has absolute positioning
+              />
             )}
+
+            {/* All content overlaid on the image goes inside this new wrapper */}
+            <div className="rapperList-content-overlay">
+              {/* Artist Name and Genre */}
+              <div className="rapperList-item-details">
+                <h3>{item.name || "N/A"}</h3>
+                <p>Genre: {item.genre || "N/A"}</p>
+              </div>
+
+              {/* Section for Clout Item (image removed from here) */}
+              <div className="rapperList-item-clout-section">
+                {showCloutButton ? (
+                  <button
+                    className="rapperButton"
+                    onClick={() => handleCloutClick(item.artist_id)}
+                  >
+                    Clout: {item.count}
+                  </button>
+                ) : (
+                  <p className="clout-data-display">
+                    Clout: <span>{item.count}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Admin Action Buttons */}
+              {showAdminActions && (
+                <div className="rapperList-admin-actions">
+                  <button onClick={() => handleDelete(item.artist_id)}>
+                    Delete
+                  </button>
+                  <button onClick={() => handleEdit(item.artist_id)}>
+                    Edit
+                  </button>
+                </div>
+              )}
+            </div>
           </li>
         ))}
       </ul>
