@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchArtists } from "../redux/actions/artistActions"; // To ensure data is fetched if not already
 import ClickableList from "../components/RapperList"; // Re-use ClickableList for display
+import Feeds from "../components/Feeds/Feeds";
 
 const HomePage = () => {
   const { artists, loading, error } = useSelector((state) => state.artists);
@@ -53,6 +54,9 @@ const HomePage = () => {
         showAdminActions={false}
         showCloutButton={false}
       />
+      <h3>Feeds</h3>
+      {/* Include Feeds component to display feeds */}
+      <Feeds />
     </div>
   );
 };
