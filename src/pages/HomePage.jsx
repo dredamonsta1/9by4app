@@ -1,5 +1,6 @@
 // src/pages/HomePage.jsx
 import React, { useEffect } from "react";
+import "./HomePage.css"; // Import your CSS file for styling
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchArtists } from "../redux/actions/artistActions"; // To ensure data is fetched if not already
@@ -24,11 +25,12 @@ const HomePage = () => {
     return <p style={{ color: "red" }}>Error loading artists: {error}</p>;
 
   return (
-    <div>
-      <h2>Home Page</h2>
+    <div className="home-page-container">
+      <h2 className="home-page-header">Home Page</h2>
       <button
+        className="login-button"
         onClick={() => navigate("/login")}
-        style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
+        // style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
       >
         Go to Login
       </button>

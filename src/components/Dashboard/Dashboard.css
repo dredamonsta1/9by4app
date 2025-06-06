@@ -1,23 +1,16 @@
 .dashboard-div {
-  display: flex;
-  flex-direction: column;
-  /* Stack items vertically */
-  justify-content: center;
-  width: 100%;
-  /* Full width of the parent */
-  height: calc(100vh - 60px);
-  /* Full height minus header */
-  overflow-y: auto;
-  /* Allow vertical scrolling */
-  padding: 20px;
-  /* Padding around the content */
-  box-sizing: border-box;
-  /* Include padding in width/height calculations */
-  background-color: blueviolet;
+    /* Main container for the dashboard */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f9fa; /* Light background for contrast */
+    min-height: 100vh; /* Full height to cover the viewport */
+
 }
 
-.profile-button {
-    
+.profile-button{
     margin-top: 10px;
     padding: 10px 20px;
     background-color: #6c757d;
@@ -27,7 +20,23 @@
     cursor: pointer;
     font-size: 16px;
     margin-right: 15px;
-    width: 150px;
-    /* Fixed width for consistency */
-    transition: background-color 0.3s ease;
+}
+.profile-button:hover {
+    background-color: #5a6268;
+    /* Darker shade on hover */
+}
+
+.logout-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.logout-button:hover {
+    background-color: #c82333;
+    /* Darker shade on hover */
 }

@@ -21,16 +21,6 @@ const Dashboard = () => {
           localStorage.removeItem("token");
           navigate("/login");
         }}
-        style={{
-          marginTop: "10px",
-          padding: "10px 20px",
-          backgroundColor: "#dc3545",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontSize: "16px",
-        }}
       >
         Logout
       </button>
