@@ -1,4 +1,5 @@
 import React from "react";
+import "./Dashboard.css"; // Import your CSS file for styling
 import ClickableList from "../RapperList"; // Import your RapperList component
 import UserProfile from "../userProfile/UserProfile";
 import { useNavigate } from "react-router-dom";
@@ -8,24 +9,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="dashboard-div" style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
+    <div className="dashboard-div">
+      <h1>Dashboard </h1>
       <p>Welcome to your personalized dashboard!</p>
-      <button
-        className="profile-button"
-        onClick={() => navigate("/profile")}
-        style={{
-          marginTop: "10px",
-          padding: "10px 20px",
-          backgroundColor: "#6c757d",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontSize: "16px",
-          marginRight: "15px",
-        }}
-      >
+      <button className="profile-button" onClick={() => navigate("/profile")}>
         View Profile
       </button>
       <button

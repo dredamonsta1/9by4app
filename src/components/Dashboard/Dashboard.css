@@ -1,7 +1,8 @@
-dashboard-div {
+.dashboard-div {
   display: flex;
   flex-direction: column;
   /* Stack items vertically */
+  justify-content: center;
   width: 100%;
   /* Full width of the parent */
   height: calc(100vh - 60px);
@@ -12,4 +13,21 @@ dashboard-div {
   /* Padding around the content */
   box-sizing: border-box;
   /* Include padding in width/height calculations */
+  background-color: blueviolet;
+}
+
+.profile-button {
+    
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 15px;
+    width: 150px;
+    /* Fixed width for consistency */
+    transition: background-color 0.3s ease;
 }

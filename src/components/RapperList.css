@@ -16,82 +16,100 @@
 
 .rapperList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 2fr));
   gap: 20px;
   padding: 20px;
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid #ccc;
-  /* background-color: yellowgreen; */
+  /* You can add a subtle border here if desired, like: border: 1px solid rgba(0,0,0,0.1); */
 }
 
 .rapperList-item {
   list-style-type: none;
-  /* background-color: purple; */
-  /* This will be behind the image now */
-  font-size: 15px;
   padding: 0;
-  /* Remove padding as image will cover it */
   margin: 0;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  /* Keep flexbox for internal content layering */
-  justify-content: space-between;
-  /* Distribute space for content sections */
+  /* Rounded corners for the entire card */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  /* Slightly more prominent shadow for depth */
   position: relative;
-  /* Crucial for absolute positioning of the image */
+  /* Essential for absolute positioning of image and overlay */
   overflow: hidden;
-  /* Ensures image corners are rounded with parent */
-  min-height: 300px;
-  /* Give the card a minimum height for the image */
-  color: white;
+  /* Ensures image and overlay corners are rounded with the card */
+  min-height: 100px;
+  /* Sets a minimum height for the card to ensure images fill space */
+  /* min-width: 10px; */
+  cursor: pointer;
+  /* Indicates the item is interactive */
+  transition: transform 0.3s ease-in-out;
+  /* Smooth lift effect on hover */
+}
+
+.rapperList-item:hover {
+  transform: translateY(-5px);
+  /* Lifts the card slightly on hover */
 }
 
 /* Styling for the image to take up the entire item */
 .rapperList-item-image {
   position: absolute;
-  /* Take image out of flow */
   top: 0;
   left: 0;
   width: 100%;
-  /* Make it fill the parent */
   height: 100%;
-  /* Make it fill the parent */
   object-fit: cover;
-  /* Cover the entire area */
-  /* Remove border-radius, margin-right, border as parent handles shaping */
+  /* Ensures the image covers the area without distortion */
   z-index: 1;
-  /* Place image behind content */
+  /* Places the image behind the content overlay initially */
+  transition: transform 0.3s ease-in-out;
+  /* Smooth zoom effect on the image itself */
+}
+
+.rapperList-item:hover .rapperList-item-image {
+  transform: scale(1.05);
+  /* Slightly zooms the image when the card is hovered */
 }
 
 /* --- Content Overlay for Readability --- */
-/* We need to ensure the text content is above the image and readable. */
-/* Add this class to a wrapper around your text content (details, clout, actions) */
 .rapperList-content-overlay {
-  position: relative;
-  /* Bring content above the image */
+  position: absolute;
+  /* Positions the overlay directly over the image */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 2;
-  /* Ensure it's above the image */
-  padding: 15px;
-  /* Re-add padding here for content */
+  /* Ensures the overlay is above the image */
+  padding: 20px;
+  /* Generous padding around the content */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  /* Take full height to manage internal layout */
-  /* Optional: Add a subtle gradient or transparent background for readability */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+  justify-content: flex-end;
+  /* Aligns content to the bottom of the card */
+  color: white;
+  /* Sets text color to white for readability on a dark background */
+  opacity: 0;
+  /* Initially hides the overlay */
+  transition: opacity 0.3s ease-in-out;
+  /* Smooth transition for revealing the overlay */
+  /* Creates a gradient from transparent to dark, covering the bottom portion for text */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+  /* Allows clicks to pass through when the overlay is hidden */
 }
 
+.rapperList-item:hover .rapperList-content-overlay {
+  opacity: 1;
+  /* Reveals the overlay on hover */
+  pointer-events: auto;
+  /* Allows interaction with elements inside the overlay when visible */
+}
 
 /* Container for artist text details */
 .rapperList-item-details {
   flex-grow: 1;
-  /* Allows this div to take up available space */
-  /* Ensure text is readable over the image */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  /* Allows this div to take up available space, pushing clout and admin actions downwards */
+  /* text-shadow is removed here as the dark gradient background should provide enough contrast */
 }
 
 /* Styling for the clout section, including the button or text */
@@ -100,83 +118,113 @@
   align-items: center;
   gap: 15px;
   padding: 10px 0;
+  /* Vertical padding */
   border-top: 1px dashed rgba(255, 255, 255, 0.3);
+  /* Subtle dashed border */
   border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  /* Subtle dashed border */
   width: 100%;
   box-sizing: border-box;
+  margin-top: 10px;
+  /* Space from the details section above */
 }
 
 .rapperButton {
-  background-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.7);
+  /* Semi-transparent blue background */
   color: white;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* Subtle white border */
   padding: 8px 14px;
   border-radius: 5px;
   font-size: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
   font-weight: bold;
 }
 
 .rapperButton:hover {
-  background-color: #0056b3;
+  background-color: rgba(0, 123, 255, 0.9);
+  /* More opaque blue on hover */
+  border-color: white;
+  /* Solid white border on hover */
 }
 
 /* Admin Action Buttons */
 .rapperList-admin-actions {
   display: flex;
-  gap: 5px;
-  margin-top: 10px;
+  gap: 10px;
+  /* Increased gap between buttons */
+  margin-top: 15px;
+  /* Space above the buttons */
   width: 100%;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  /* Aligns buttons to the left, similar to the reference site */
 }
 
 .rapperList-admin-actions button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 3px;
+  padding: 8px 15px;
+  /* More padding for a larger touch target */
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* Subtle white border */
+  border-radius: 5px;
   cursor: pointer;
   color: white;
+  background-color: transparent;
+  /* Transparent background */
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .rapperList-admin-actions button:first-child {
-  background-color: #dc3545;
+  /* Delete button - maintains consistent styling */
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .rapperList-admin-actions button:first-child:hover {
-  background-color: #c82333;
+  background-color: rgba(220, 53, 69, 0.7);
+  /* Semi-transparent red on hover */
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 .rapperList-admin-actions button:last-child {
-  background-color: #ffc107;
-  color: #333;
+  /* Edit button - maintains consistent styling */
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .rapperList-admin-actions button:last-child:hover {
-  background-color: #e0a800;
+  background-color: rgba(255, 193, 7, 0.7);
+  /* Semi-transparent orange on hover */
+  border-color: rgba(255, 255, 255, 0.8);
+  color: white;
+  /* Ensures text remains white on hover for contrast */
 }
 
 /* General text styling within list item */
 .rapperList-item h3 {
   margin: 0;
-  font-size: 1.5em;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-  /* For readability */
+  font-size: 1.8em;
+  /* Slightly larger and more prominent heading */
+  font-weight: 700;
+  /* Bolder text for emphasis */
 }
 
 .rapperList-item p {
   margin: 0;
-  font-size: 0.95em;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-  /* For readability */
+  font-size: 1em;
+  /* Slightly larger paragraph text */
 }
 
 .clout-data-display {
-  font-size: 1.1em;
+  font-size: 1.2em;
+  /* Larger clout text */
   font-weight: bold;
   color: #007bff;
+  /* Blue color for 'Clout:' text */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  /* Keeps text shadow for readability over image */
 }
 
 .clout-data-display span {
   color: white;
+  /* White color for the clout count number */
 }
