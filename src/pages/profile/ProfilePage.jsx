@@ -104,31 +104,130 @@
 
 // ************************New Code****************************
 
+// import React, { useState, useEffect } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import {
+//   fetchArtists,
+//   incrementClout,
+// } from "../../redux/actions/artistActions";
+// import ClickableList from "../../components/RapperList";
+// import UserProfile from "../../components/userProfile/UserProfile";
+
+// const ProfilePage = () => {
+//   const dispatch = useDispatch();
+//   const { artists, loading, error } = useSelector((state) => state.artists);
+
+//   // --- NEW: State for the search functionality ---
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//   useEffect(() => {
+//     dispatch(fetchArtists());
+//   }, [dispatch]);
+
+//   // The reducer already sorts artists by count, so we just slice the top 10.
+//   const topTenArtists = artists.slice(0, 10);
+
+//   // --- NEW: Filter artists based on the search term ---
+//   // It will only show results if the user has typed at least 2 characters.
+//   const searchResults =
+//     searchTerm.length > 1
+//       ? artists.filter((artist) =>
+//           artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+//         )
+//       : [];
+
+//   // --- NEW: Handler for the "Add" button ---
+//   const handleAddArtist = (artistId) => {
+//     // Dispatch the existing incrementClout action to add 1 to the count.
+//     dispatch(incrementClout(artistId));
+//     // Clear the search bar after adding an artist.
+//     setSearchTerm("");
+//   };
+
+//   if (error)
+//     return <p style={{ color: "red" }}>Error loading artists: {error}</p>;
+
+//   return (
+//     <div>
+//       <h2>Your Profile</h2>
+//       <UserProfile />
+//       <hr style={{ margin: "40px 0" }} />
+
+//       {/* --- NEW: Search Bar Section --- */}
+//       <h2>Add Artists to Your List</h2>
+//       <input
+//         type="text"
+//         placeholder="Search for an artist..."
+//         value={searchTerm}
+//         onChange={(e) => setSearchTerm(e.target.value)}
+//         style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+//       />
+//       {/* Display search results */}
+//       {searchResults.length > 0 && (
+//         <ul style={{ listStyle: "none", padding: 0 }}>
+//           {searchResults.map((artist) => (
+//             <li
+//               key={artist.artist_id}
+//               style={{
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//                 alignItems: "center",
+//                 padding: "8px",
+//                 borderBottom: "1px solid #eee",
+//               }}
+//             >
+//               <span>{artist.name}</span>
+//               <button onClick={() => handleAddArtist(artist.artist_id)}>
+//                 Add
+//               </button>
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//       {/* --- End of Search Bar Section --- */}
+
+//       <hr style={{ margin: "40px 0" }} />
+
+//       <h2>Your Top 10 Artists</h2>
+//       {/* Show loading text only for the top 10 list */}
+//       {loading && <p>Loading your top artists...</p>}
+//       {!loading && (
+//         <ClickableList
+//           artists={topTenArtists}
+//           showAdminActions={false}
+//           showCloutButton={true} // Enable voting on the top 10 list
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ProfilePage;
+
+// *************************New Code****************************
+
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchArtists,
   incrementClout,
 } from "../../redux/actions/artistActions";
-import ClickableList from "../../components/RapperList";
 import UserProfile from "../../components/userProfile/UserProfile";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
   const { artists, loading, error } = useSelector((state) => state.artists);
 
-  // --- NEW: State for the search functionality ---
+  // State for the search term
   const [searchTerm, setSearchTerm] = useState("");
+  // --- NEW: State to hold the user's custom list of artists ---
+  const [profileList, setProfileList] = useState([]);
 
   useEffect(() => {
     dispatch(fetchArtists());
   }, [dispatch]);
 
-  // The reducer already sorts artists by count, so we just slice the top 10.
-  const topTenArtists = artists.slice(0, 10);
-
-  // --- NEW: Filter artists based on the search term ---
-  // It will only show results if the user has typed at least 2 characters.
+  // Filter all artists based on the search term
   const searchResults =
     searchTerm.length > 1
       ? artists.filter((artist) =>
@@ -136,11 +235,17 @@ const ProfilePage = () => {
         )
       : [];
 
-  // --- NEW: Handler for the "Add" button ---
-  const handleAddArtist = (artistId) => {
-    // Dispatch the existing incrementClout action to add 1 to the count.
-    dispatch(incrementClout(artistId));
-    // Clear the search bar after adding an artist.
+  // --- UPDATED: Handler for the "Add" button ---
+  const handleAddArtist = (artistToAdd) => {
+    // Dispatch the action to increment the main clout score
+    dispatch(incrementClout(artistToAdd.artist_id));
+
+    // Add the artist to the local profile list, preventing duplicates
+    if (!profileList.find((a) => a.artist_id === artistToAdd.artist_id)) {
+      setProfileList([...profileList, artistToAdd]);
+    }
+
+    // Clear the search bar
     setSearchTerm("");
   };
 
@@ -153,8 +258,8 @@ const ProfilePage = () => {
       <UserProfile />
       <hr style={{ margin: "40px 0" }} />
 
-      {/* --- NEW: Search Bar Section --- */}
-      <h2>Add Artists to Your List</h2>
+      {/* Search Bar Section */}
+      <h2>Add Artists to Your Profile</h2>
       <input
         type="text"
         placeholder="Search for an artist..."
@@ -162,7 +267,7 @@ const ProfilePage = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       />
-      {/* Display search results */}
+      {loading && searchTerm.length > 1 && <p>Searching...</p>}
       {searchResults.length > 0 && (
         <ul style={{ listStyle: "none", padding: 0 }}>
           {searchResults.map((artist) => (
@@ -177,26 +282,33 @@ const ProfilePage = () => {
               }}
             >
               <span>{artist.name}</span>
-              <button onClick={() => handleAddArtist(artist.artist_id)}>
-                Add
-              </button>
+              <button onClick={() => handleAddArtist(artist)}>Add</button>
             </li>
           ))}
         </ul>
       )}
-      {/* --- End of Search Bar Section --- */}
+      {/* End of Search Bar Section */}
 
       <hr style={{ margin: "40px 0" }} />
 
-      <h2>Your Top 10 Artists</h2>
-      {/* Show loading text only for the top 10 list */}
-      {loading && <p>Loading your top artists...</p>}
-      {!loading && (
-        <ClickableList
-          artists={topTenArtists}
-          showAdminActions={false}
-          showCloutButton={true} // Enable voting on the top 10 list
-        />
+      {/* --- NEW: Display the custom user-curated list --- */}
+      <h2>Your Curated Artist List</h2>
+      {profileList.length > 0 ? (
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {profileList.map((artist) => (
+            <li
+              key={artist.artist_id}
+              style={{
+                padding: "8px",
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              {artist.name} - (Clout: {artist.count})
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Your list is empty. Search for artists to add them.</p>
       )}
     </div>
   );
