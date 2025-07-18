@@ -157,91 +157,179 @@
 
 // export default UserProfile;
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import axiosInstance from "../../utils/axiosInstance";
-import RapperList from "../RapperList"; // Uncomment if you use it
+// import React, { useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom"; // Import useNavigate
+// import axiosInstance from "../../utils/axiosInstance";
+// import RapperList from "../RapperList"; // Uncomment if you use it
+
+// const UserProfile = () => {
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+
+//   const navigate = useNavigate(); // Initialize useNavigate hook
+
+//   useEffect(() => {
+//     const fetchUserProfile = async () => {
+//       const token = localStorage.getItem("token");
+//       console.log("UserProfile: Token from localStorage:", token);
+
+//       if (!token) {
+//         setError("You are not logged in. Please log in to view your profile.");
+//         console.log("UserProfile: No token found in localStorage.");
+//         setLoading(false);
+//         return;
+//       }
+//       try {
+//         const response = await axiosInstance.get("/users/profile");
+
+//         setUser(response.data.user);
+//         setLoading(false);
+//       } catch (err) {
+//         console.error(
+//           "Error fetching user profile:",
+//           err.response?.data || err.message
+//         );
+//         if (
+//           err.response &&
+//           (err.response.status === 401 || err.response.status === 403)
+//         ) {
+//           setError(
+//             "Your session has expired or is invalid. Please log in again."
+//           );
+//           localStorage.removeItem("token");
+//           // Optionally redirect to login page here if you want an immediate redirect:
+//           // navigate('/login');
+//         } else {
+//           setError(err.response?.data?.message || "Failed to fetch user data.");
+//         }
+//         setLoading(false);
+//       }
+//     };
+//     fetchUserProfile();
+//   }, []);
+
+//   if (loading) {
+//     return <p>Loading user profile...</p>;
+//   }
+
+//   if (error) {
+//     return (
+//       <div style={{ color: "red" }}>
+//         <p>Error: {error}</p>
+//         <button
+//           onClick={() => navigate("/")}
+//           style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
+//         >
+//           Go to Home
+//         </button>
+//       </div>
+//     );
+//   }
+
+//   if (!user) {
+//     return (
+//       <div>
+//         <p>No user data found. Please ensure you are logged in.</p>
+//         <button
+//           onClick={() => navigate("/")}
+//           style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
+//         >
+//           Go to Home
+//         </button>
+//       </div>
+//     );
+//   }
+
+//   // Rendering for a SINGLE user object
+//   return (
+//     <div>
+//       <h3>Your Profile</h3>
+//       <div>
+//         <p>
+//           <strong>Username:</strong> {user.username}
+//         </p>
+//         <p>
+//           <strong>Email:</strong> {user.email}
+//         </p>
+//         <p>
+//           <strong>Role:</strong> {user.role}
+//         </p>
+//       </div>
+
+//       {/* The new button */}
+//       <button
+//         onClick={() => navigate("/")} // Use navigate('/') to go to the home route
+//         style={{
+//           marginTop: "20px", // Add some space above the button
+//           padding: "10px 20px",
+//           backgroundColor: "#007bff", // Example styling
+//           color: "white",
+//           border: "none",
+//           borderRadius: "5px",
+//           cursor: "pointer",
+//           fontSize: "16px",
+//         }}
+//       >
+//         Go to Home
+//       </button>
+
+//       <RapperList />
+//     </div>
+//   );
+// };
+
+// export default UserProfile;
+
+// ***********************New Code****************************
+
+import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import RapperList from "../RapperList";
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Get the authentication state directly from the Redux store.
+  // This is now the single source of truth for user data.
+  const { user, loading, error } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // Initialize useNavigate hook
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const token = localStorage.getItem("token");
-      console.log("UserProfile: Token from localStorage:", token);
-
-      if (!token) {
-        setError("You are not logged in. Please log in to view your profile.");
-        console.log("UserProfile: No token found in localStorage.");
-        setLoading(false);
-        return;
-      }
-      try {
-        const response = await axiosInstance.get("/users/profile");
-
-        setUser(response.data.user);
-        setLoading(false);
-      } catch (err) {
-        console.error(
-          "Error fetching user profile:",
-          err.response?.data || err.message
-        );
-        if (
-          err.response &&
-          (err.response.status === 401 || err.response.status === 403)
-        ) {
-          setError(
-            "Your session has expired or is invalid. Please log in again."
-          );
-          localStorage.removeItem("token");
-          // Optionally redirect to login page here if you want an immediate redirect:
-          // navigate('/login');
-        } else {
-          setError(err.response?.data?.message || "Failed to fetch user data.");
-        }
-        setLoading(false);
-      }
-    };
-    fetchUserProfile();
-  }, []);
-
+  // Display a loading message while the app is checking the token on initial load.
   if (loading) {
     return <p>Loading user profile...</p>;
   }
 
+  // Display an error message if the token was invalid or fetching failed.
   if (error) {
     return (
       <div style={{ color: "red" }}>
         <p>Error: {error}</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
           style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
         >
-          Go to Home
+          Go to Login
         </button>
       </div>
     );
   }
 
+  // If there's no user and no error, it means the user is not logged in.
   if (!user) {
     return (
       <div>
-        <p>No user data found. Please ensure you are logged in.</p>
+        <p>You are not logged in. Please log in to view your profile.</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
           style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
         >
-          Go to Home
+          Go to Login
         </button>
       </div>
     );
   }
 
-  // Rendering for a SINGLE user object
+  // If a user object exists in the Redux state, display the profile.
   return (
     <div>
       <h3>Your Profile</h3>
@@ -257,13 +345,12 @@ const UserProfile = () => {
         </p>
       </div>
 
-      {/* The new button */}
       <button
-        onClick={() => navigate("/")} // Use navigate('/') to go to the home route
+        onClick={() => navigate("/")}
         style={{
-          marginTop: "20px", // Add some space above the button
+          marginTop: "20px",
           padding: "10px 20px",
-          backgroundColor: "#007bff", // Example styling
+          backgroundColor: "#007bff",
           color: "white",
           border: "none",
           borderRadius: "5px",
@@ -274,6 +361,7 @@ const UserProfile = () => {
         Go to Home
       </button>
 
+      {/* This component will fetch its own data as before */}
       <RapperList />
     </div>
   );

@@ -44,16 +44,5 @@
     "eslint": "^6.8.0",
     "prettier": "^3.4.2",
     "vite": "^6.2.7"
-  },
-  "proxy": "https://ninebyfourapi.herokuapp.com/api",
-  "proxyTable": {
-    "/api": {
-      "target": "https://ninebyfourapi.herokuapp.com/api/users",
-      "changeOrigin": true,
-      "secure": false,
-      "pathRewrite": {
-        "^/api": ""
-      }
-    }
   }
 }

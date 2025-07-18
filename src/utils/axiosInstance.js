@@ -1,44 +1,34 @@
-// src/utils/axiosInstance.js
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://ninebyfourapi.herokuapp.com/api", // Your backend base URL
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // Use a relative URL for the API base.
+  // This will be prefixed to all requests and allows the Vite proxy
+  // to intercept them during development.
+  baseURL: "/api",
 });
 
-// Add a request interceptor
+// --- FIX STARTS HERE ---
+// Add a request interceptor to include the token in all requests.
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    // Get the authentication token from localStorage.
+    // Make sure the key 'authToken' matches what you use when saving the token on login.
+    const token = localStorage.getItem("authToken");
+
+    // If a token exists, add it to the Authorization header.
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => {
+    // Do something with request error
     return Promise.reject(error);
   }
 );
+// --- FIX ENDS HERE ---
 
-// Optional: Add a response interceptor to handle 401/403 errors globally
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (
-      error.response &&
-      (error.response.status === 401 || error.response.status === 403)
-    ) {
-      // Token expired or invalid. Perform logout actions.
-      localStorage.removeItem("token");
-      // Dispatch Redux logout action if you have one
-      // store.dispatch(logout()); // You'd need to import your store here
-      // Redirect to login page
-      // window.location.href = '/login'; // Or use react-router-dom's navigate
-    }
-    return Promise.reject(error);
-  }
-);
+// export default axiosInstance;
 
 export default axiosInstance;
