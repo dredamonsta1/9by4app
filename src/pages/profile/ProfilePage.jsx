@@ -6,6 +6,7 @@ import {
   addArtistToProfileList,
 } from "../../redux/actions/profileListActions";
 import UserProfile from "../../components/userProfile/UserProfile";
+import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -58,6 +59,9 @@ const ProfilePage = () => {
       <h2>Your Profile</h2>
       <UserProfile />
       <hr style={{ margin: "40px 0" }} />
+
+      <h2>artist creation</h2>
+      <CreateArtistForm />
 
       {/* Search Bar Section */}
       <h2>Add Artists to Your Profile</h2>

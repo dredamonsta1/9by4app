@@ -25,8 +25,8 @@ const Dashboard = () => {
       >
         Logout
       </button>
-      <h2 style={{ marginTop: "40px" }}>Add New Rapper</h2>
-      <CreateArtistForm /> {/* Add the new form here */}
+      {/* <h2 style={{ marginTop: "40px" }}>Add New Rapper</h2>
+      <CreateArtistForm /> */}
       <h1>Feeds</h1>
       <Feeds />
     </div>
