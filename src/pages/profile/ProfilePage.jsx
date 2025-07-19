@@ -206,28 +206,270 @@
 
 // *************************New Code****************************
 
+// import React, { useState, useEffect } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import {
+//   fetchArtists,
+//   incrementClout,
+// } from "../../redux/actions/artistActions";
+// import UserProfile from "../../components/userProfile/UserProfile";
+
+// const ProfilePage = () => {
+//   const dispatch = useDispatch();
+//   const { artists, loading, error } = useSelector((state) => state.artists);
+
+//   // State for the search term
+//   const [searchTerm, setSearchTerm] = useState("");
+//   // --- NEW: State to hold the user's custom list of artists ---
+//   const [profileList, setProfileList] = useState([]);
+
+//   useEffect(() => {
+//     dispatch(fetchArtists());
+//   }, [dispatch]);
+
+//   // Filter all artists based on the search term
+//   const searchResults =
+//     searchTerm.length > 1
+//       ? artists.filter((artist) =>
+//           artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+//         )
+//       : [];
+
+//   // --- UPDATED: Handler for the "Add" button ---
+//   const handleAddArtist = (artistToAdd) => {
+//     // Dispatch the action to increment the main clout score
+//     dispatch(incrementClout(artistToAdd.artist_id));
+
+//     // Add the artist to the local profile list, preventing duplicates
+//     if (!profileList.find((a) => a.artist_id === artistToAdd.artist_id)) {
+//       setProfileList([...profileList, artistToAdd]);
+//     }
+
+//     // Clear the search bar
+//     setSearchTerm("");
+//   };
+
+//   if (error)
+//     return <p style={{ color: "red" }}>Error loading artists: {error}</p>;
+
+//   return (
+//     <div>
+//       <h2>Your Profile</h2>
+//       <UserProfile />
+//       <hr style={{ margin: "40px 0" }} />
+
+//       {/* Search Bar Section */}
+//       <h2>Add Artists to Your Profile</h2>
+//       <input
+//         type="text"
+//         placeholder="Search for an artist..."
+//         value={searchTerm}
+//         onChange={(e) => setSearchTerm(e.target.value)}
+//         style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+//       />
+//       {loading && searchTerm.length > 1 && <p>Searching...</p>}
+//       {searchResults.length > 0 && (
+//         <ul style={{ listStyle: "none", padding: 0 }}>
+//           {searchResults.map((artist) => (
+//             <li
+//               key={artist.artist_id}
+//               style={{
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//                 alignItems: "center",
+//                 padding: "8px",
+//                 borderBottom: "1px solid #eee",
+//               }}
+//             >
+//               <span>{artist.name}</span>
+//               <button onClick={() => handleAddArtist(artist)}>Add</button>
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//       {/* End of Search Bar Section */}
+
+//       <hr style={{ margin: "40px 0" }} />
+
+//       {/* --- NEW: Display the custom user-curated list --- */}
+//       <h2>Your Curated Artist List</h2>
+//       {profileList.length > 0 ? (
+//         <ul style={{ listStyle: "none", padding: 0 }}>
+//           {profileList.map((artist) => (
+//             <li
+//               key={artist.artist_id}
+//               style={{
+//                 padding: "8px",
+//                 borderBottom: "1px solid #eee",
+//               }}
+//             >
+//               {artist.name} - (Clout: {artist.count})
+//             </li>
+//           ))}
+//         </ul>
+//       ) : (
+//         <p>Your list is empty. Search for artists to add them.</p>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ProfilePage;
+
+// *************************New Code****************************
+
+// import React, { useState, useEffect } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { fetchArtists } from "../../redux/actions/artistActions";
+// // --- FIX: Import the new actions for the curated list ---
+// import {
+//   fetchProfileList,
+//   addArtistToProfileList,
+// } from "../../redux/actions/profileListActions";
+// import UserProfile from "../../components/userProfile/UserProfile";
+
+// const ProfilePage = () => {
+//   const dispatch = useDispatch();
+
+//   // Get the global artists list from Redux
+//   const {
+//     artists,
+//     loading: artistsLoading,
+//     error: artistsError,
+//   } = useSelector((state) => state.artists);
+
+//   // --- FIX: Get the curated profile list from the new Redux slice ---
+//   const {
+//     list: profileList,
+//     loading: profileListLoading,
+//     error: profileListError,
+//   } = useSelector((state) => state.profileList);
+
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//   useEffect(() => {
+//     // Fetch both the main artist list and the user's curated list on load
+//     dispatch(fetchArtists());
+//     dispatch(fetchProfileList());
+//   }, [dispatch]);
+
+//   const searchResults =
+//     searchTerm.length > 1
+//       ? artists.filter((artist) =>
+//           artist.name.toLowerCase().includes(searchTerm.toLowerCase())
+//         )
+//       : [];
+
+//   // --- FIX: The handler now dispatches the correct persistent action ---
+//   const handleAddArtist = (artistToAdd) => {
+//     dispatch(addArtistToProfileList(artistToAdd));
+//     setSearchTerm("");
+//   };
+
+//   if (artistsError || profileListError)
+//     return (
+//       <p style={{ color: "red" }}>Error: {artistsError || profileListError}</p>
+//     );
+
+//   return (
+//     <div>
+//       <h2>Your Profile</h2>
+//       <UserProfile />
+//       <hr style={{ margin: "40px 0" }} />
+
+//       {/* Search Bar Section */}
+//       <h2>Add Artists to Your Profile</h2>
+//       <input
+//         type="text"
+//         placeholder="Search for an artist..."
+//         value={searchTerm}
+//         onChange={(e) => setSearchTerm(e.target.value)}
+//         style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+//       />
+//       {artistsLoading && searchTerm.length > 1 && <p>Searching...</p>}
+//       {searchResults.length > 0 && (
+//         <ul style={{ listStyle: "none", padding: 0 }}>
+//           {searchResults.map((artist) => (
+//             <li
+//               key={artist.artist_id}
+//               style={{
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//                 alignItems: "center",
+//                 padding: "8px",
+//                 borderBottom: "1px solid #eee",
+//               }}
+//             >
+//               <span>{artist.name}</span>
+//               <button onClick={() => handleAddArtist(artist)}>Add</button>
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//       {/* End of Search Bar Section */}
+
+//       <hr style={{ margin: "40px 0" }} />
+
+//       {/* --- FIX: Display the custom list from the Redux state --- */}
+//       <h2>Your Curated Artist List</h2>
+//       {profileListLoading && <p>Loading your list...</p>}
+//       {!profileListLoading && profileList.length > 0 ? (
+//         <ul style={{ listStyle: "none", padding: 0 }}>
+//           {profileList.map((artist) => (
+//             <li
+//               key={artist.artist_id}
+//               style={{
+//                 padding: "8px",
+//                 borderBottom: "1px solid #eee",
+//               }}
+//             >
+//               {artist.name} - (Clout: {artist.count})
+//             </li>
+//           ))}
+//         </ul>
+//       ) : (
+//         !profileListLoading && (
+//           <p>Your list is empty. Search for artists to add them.</p>
+//         )
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ProfilePage;
+
+// **************************New Code****************************
+
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchArtists } from "../../redux/actions/artistActions";
 import {
-  fetchArtists,
-  incrementClout,
-} from "../../redux/actions/artistActions";
+  fetchProfileList,
+  addArtistToProfileList,
+} from "../../redux/actions/profileListActions";
 import UserProfile from "../../components/userProfile/UserProfile";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
-  const { artists, loading, error } = useSelector((state) => state.artists);
 
-  // State for the search term
+  const {
+    artists,
+    loading: artistsLoading,
+    error: artistsError,
+  } = useSelector((state) => state.artists);
+  const {
+    list: profileList,
+    loading: profileListLoading,
+    error: profileListError,
+  } = useSelector((state) => state.profileList);
+
   const [searchTerm, setSearchTerm] = useState("");
-  // --- NEW: State to hold the user's custom list of artists ---
-  const [profileList, setProfileList] = useState([]);
 
   useEffect(() => {
     dispatch(fetchArtists());
+    dispatch(fetchProfileList());
   }, [dispatch]);
 
-  // Filter all artists based on the search term
   const searchResults =
     searchTerm.length > 1
       ? artists.filter((artist) =>
@@ -235,22 +477,23 @@ const ProfilePage = () => {
         )
       : [];
 
-  // --- UPDATED: Handler for the "Add" button ---
   const handleAddArtist = (artistToAdd) => {
-    // Dispatch the action to increment the main clout score
-    dispatch(incrementClout(artistToAdd.artist_id));
-
-    // Add the artist to the local profile list, preventing duplicates
-    if (!profileList.find((a) => a.artist_id === artistToAdd.artist_id)) {
-      setProfileList([...profileList, artistToAdd]);
-    }
-
-    // Clear the search bar
+    dispatch(addArtistToProfileList(artistToAdd));
     setSearchTerm("");
   };
 
-  if (error)
-    return <p style={{ color: "red" }}>Error loading artists: {error}</p>;
+  const artistsMap = new Map(
+    artists.map((artist) => [artist.artist_id, artist])
+  );
+
+  const hydratedProfileList = profileList
+    .map((profileArtist) => artistsMap.get(profileArtist.artist_id))
+    .filter(Boolean); // Use .filter(Boolean) to remove any undefined entries
+
+  if (artistsError || profileListError)
+    return (
+      <p style={{ color: "red" }}>Error: {artistsError || profileListError}</p>
+    );
 
   return (
     <div>
@@ -267,7 +510,7 @@ const ProfilePage = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       />
-      {loading && searchTerm.length > 1 && <p>Searching...</p>}
+      {artistsLoading && searchTerm.length > 1 && <p>Searching...</p>}
       {searchResults.length > 0 && (
         <ul style={{ listStyle: "none", padding: 0 }}>
           {searchResults.map((artist) => (
@@ -291,11 +534,16 @@ const ProfilePage = () => {
 
       <hr style={{ margin: "40px 0" }} />
 
-      {/* --- NEW: Display the custom user-curated list --- */}
+      {/* --- FIX: Display the hydrated list --- */}
       <h2>Your Curated Artist List</h2>
-      {profileList.length > 0 ? (
+      {/* Wait for BOTH lists to finish loading */}
+      {(profileListLoading || artistsLoading) && <p>Loading your list...</p>}
+
+      {/* Only render the list when loading is complete */}
+      {!(profileListLoading || artistsLoading) &&
+      hydratedProfileList.length > 0 ? (
         <ul style={{ listStyle: "none", padding: 0 }}>
-          {profileList.map((artist) => (
+          {hydratedProfileList.map((artist) => (
             <li
               key={artist.artist_id}
               style={{
@@ -308,7 +556,9 @@ const ProfilePage = () => {
           ))}
         </ul>
       ) : (
-        <p>Your list is empty. Search for artists to add them.</p>
+        !(profileListLoading || artistsLoading) && (
+          <p>Your list is empty. Search for artists to add them.</p>
+        )
       )}
     </div>
   );

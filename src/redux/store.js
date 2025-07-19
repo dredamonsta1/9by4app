@@ -14,16 +14,34 @@
 // **************************New Code****************************
 
 // src/redux/store.js
+// import { configureStore } from "@reduxjs/toolkit";
+// import artistsReducer from "./reducers/artistsReducer";
+// import authReducer from "../store/authSlice"; // 1. Import your auth slice/reducer
+
+// const store = configureStore({
+//   reducer: {
+//     artists: artistsReducer,
+//     auth: authReducer, // 2. Add the auth reducer to the store
+//   },
+//   // configureStore automatically sets up Redux Thunk, which we need for async actions.
+// });
+
+// export default store;
+
+// ******************New Code*****************
+
+// src/redux/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import artistsReducer from "./reducers/artistsReducer";
-import authReducer from "../store/authSlice"; // 1. Import your auth slice/reducer
+import authReducer from "../store/authSlice"; // Import the auth slice/reducer
+import profileListReducer from "./profileListSlice"; // 1. Import the new reducer
 
 const store = configureStore({
   reducer: {
     artists: artistsReducer,
-    auth: authReducer, // 2. Add the auth reducer to the store
+    auth: authReducer,
+    profileList: profileListReducer, // 2. Add the new reducer to the store
   },
-  // configureStore automatically sets up Redux Thunk, which we need for async actions.
 });
 
 export default store;
