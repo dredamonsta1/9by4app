@@ -48,8 +48,8 @@ const HomePage = () => {
         />
       )}
 
-      <h3>Feeds</h3>
-      <Feeds />
+      {/* <h3>Feeds</h3>
+      <Feeds /> */}
     </div>
   );
 };
