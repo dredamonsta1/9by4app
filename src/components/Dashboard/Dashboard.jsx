@@ -16,6 +16,9 @@ const Dashboard = () => {
       <button className="profile-button" onClick={() => navigate("/profile")}>
         View Profile
       </button>
+      <button className="home-button" onClick={() => navigate("/")}>
+        Go to Home
+      </button>
       <button
         className="logout-button"
         onClick={() => {

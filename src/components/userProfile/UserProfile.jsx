@@ -76,6 +76,8 @@ const UserProfile = () => {
         Go to Home
       </button>
 
+      <button onClick={() => navigate("/dashboard")}>Go to Dashboard</button>
+
       {/* This component will fetch its own data as before */}
       <RapperList />
     </div>
