@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 import ClickableList from "../components/RapperList";
-import Feeds from "../components/Feeds/Feeds";
 import { fetchArtists } from "../redux/actions/artistActions"; // Import the fetch action
 
 const HomePage = () => {
@@ -47,9 +46,6 @@ const HomePage = () => {
           showCloutButton={false}
         />
       )}
-
-      {/* <h3>Feeds</h3>
-      <Feeds /> */}
     </div>
   );
 };
