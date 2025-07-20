@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import RapperList from "../RapperList";
+import "./UserProfile.css"; // Import your CSS file for styling
 
 const UserProfile = () => {
   // Get the authentication state directly from the Redux store.
@@ -20,6 +21,7 @@ const UserProfile = () => {
       <div style={{ color: "red" }}>
         <p>Error: {error}</p>
         <button
+          className="login-button"
           onClick={() => navigate("/login")}
           style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
         >
