@@ -5,6 +5,7 @@ import UserProfile from "../userProfile/UserProfile";
 import { useNavigate } from "react-router-dom";
 import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
 import Feeds from "../Feeds/Feeds"; // Import your Feeds component
+import ImageFeed from "../ImageFeed/ImageFeed";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -28,6 +29,10 @@ const Dashboard = () => {
       >
         Logout
       </button>
+      <button className="image-feed-button" onClick={() => navigate("/images")}>
+        View Image Feed
+      </button>
+      {/* <ImageFeed /> */}
       {/* <h2 style={{ marginTop: "40px" }}>Add New Rapper</h2>
       <CreateArtistForm /> */}
       <h1>Feeds</h1>

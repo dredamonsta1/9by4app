@@ -32,6 +32,12 @@ const HomePage = () => {
         <button className="nav-button" onClick={() => navigate("/dashboard")}>
           Go to Dashboard
         </button>
+        <button
+          className="image-feed-button"
+          onClick={() => navigate("/images")}
+        >
+          View Image Feed
+        </button>
       </div>
 
       <h3>Artists List</h3>

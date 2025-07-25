@@ -11,6 +11,7 @@ import Dashboard from "./components/DashBoard/Dashboard";
 
 // Import the new action for re-hydrating auth state
 import { loadUserFromToken } from "./redux/actions/authActions";
+import ImageFeed from "./components/ImageFeed/ImageFeed";
 
 /**
  * This new component wraps the Routes and contains the logic
@@ -33,6 +34,7 @@ const AppContent = () => {
       <Route path="/create-artist" element={<CreateArtistForm />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/images" element={<ImageFeed />} />
     </Routes>
   );
 };
