@@ -1,0 +1,59 @@
+.lodingText {
+  font-size: 18px;
+  color: #555;
+  text-align: center;
+}
+
+.errorContainer {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid red;
+  background-color: #f8d7da;
+  border-radius: 5px;
+}
+
+.errorText {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
+
+.loginButton {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.notLoggedInContainer {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+/* .notLoggedInText {
+  text-align: center;
+} */
+
+.loginButton:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light background for contrast */
+  min-height: 100vh; /* Full height to cover the viewport */
+}
+.profileTitle {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}

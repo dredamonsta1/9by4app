@@ -2,7 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import RapperList from "../RapperList";
-import "./UserProfile.css"; // Import your CSS file for styling
+// import "./UserProfile.css";
+import styles from "./UserProfile.module.css";
 
 const UserProfile = () => {
   // Get the authentication state directly from the Redux store.
@@ -12,18 +13,18 @@ const UserProfile = () => {
 
   // Display a loading message while the app is checking the token on initial load.
   if (loading) {
-    return <p>Loading user profile...</p>;
+    return <p className={styles.loadingText}>Loading user profile...</p>;
   }
 
   // Display an error message if the token was invalid or fetching failed.
   if (error) {
     return (
-      <div style={{ color: "red" }}>
-        <p>Error: {error}</p>
+      <div className={styles.errorContainer}>
+        <p className={styles.errorText}>Error: {error}</p>
         <button
-          className="login-button"
+          className={styles.loginButton}
           onClick={() => navigate("/login")}
-          style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
+          // style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
         >
           Go to Login
         </button>
@@ -34,11 +35,14 @@ const UserProfile = () => {
   // If there's no user and no error, it means the user is not logged in.
   if (!user) {
     return (
-      <div>
-        <p>You are not logged in. Please log in to view your profile.</p>
+      <div className={styles.notLoggedInContainer}>
+        <p className={styles.errorText}>
+          You are not logged in. Please log in to view your profile.
+        </p>
         <button
+          className={styles.loginButton}
           onClick={() => navigate("/login")}
-          style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
+          // style={{ marginTop: "10px", padding: "8px 15px", cursor: "pointer" }}
         >
           Go to Login
         </button>
@@ -48,8 +52,8 @@ const UserProfile = () => {
 
   // If a user object exists in the Redux state, display the profile.
   return (
-    <div>
-      <h3>Your Profile</h3>
+    <div className={styles.profileContainer}>
+      <h3 className={styles.profileTitle}>Your Profile</h3>
       <div>
         <p>
           <strong>Username:</strong> {user.username}
