@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import styles from "./ImageFeed.module.css";
 
 // Main Component for Image Feed
 function ImageFeed() {
@@ -43,28 +44,24 @@ function ImageFeed() {
   }, [fetchImagePosts]);
 
   // Function to add a new image post
-  const addImagePost = useCallback(
-    async (formData) => {
-      try {
-        // NOTE: This assumes you have a POST /api/image-posts endpoint
-        // that accepts multipart/form-data with 'image' and 'caption' fields.
-        await axiosInstance.post("/image-posts", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.log("Image post added successfully!");
-        fetchImagePosts(); // Re-fetch all posts to show the new one
-      } catch (e) {
-        console.error(
-          "Error adding image post: ",
-          e.response?.data || e.message
-        );
-        alert("Failed to add image post. Please try again.");
-      }
-    },
-    [fetchImagePosts]
-  );
+  const addImagePost = useCallback(async (formData) => {
+    try {
+      const response = await axiosInstance.post("/image-posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Get the new post object directly from the API response
+      const newPost = response.data;
+
+      // Add this new post to the top of your component's state
+      setImagePosts((currentPosts) => [newPost, ...currentPosts]);
+    } catch (e) {
+      console.error("Error adding image post: ", e.response?.data || e.message);
+      alert("Failed to add image post. Please try again.");
+    }
+  }, []); // The dependency array is now empty
 
   // Function to add a new comment (reused from Feeds.jsx)
   const addComment = useCallback(
@@ -270,7 +267,7 @@ function ImagePostItem({ post, currentUserId, onAddComment }) {
   }, [fetchComments]);
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 mb-6 border border-gray-200">
+    <div className={styles.imageFeedItemContainer}>
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm font-semibold text-gray-700">
           Posted by:{" "}
@@ -285,21 +282,23 @@ function ImagePostItem({ post, currentUserId, onAddComment }) {
           {formatTimestamp(post.timestamp)}
         </p>
       </div>
-
       {post.image_url && (
         <div className="mb-4 bg-gray-200 rounded-lg">
           <img
-            src={post.image_url}
+            src={`${import.meta.env.VITE_API_BASE_URL}${post.image_url}`}
             alt={post.caption || "Image post"}
             className="max-h-96 w-auto rounded-lg mx-auto"
           />
+          {/* <img
+            src={post.image_url}
+            alt={post.caption || "Image post"}
+            className="max-h-96 w-auto rounded-lg mx-auto"
+          /> */}
         </div>
       )}
-
       {post.caption && (
         <p className="text-gray-800 text-lg mb-4">{post.caption}</p>
       )}
-
       <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
         <button
           onClick={() => setShowComments(!showComments)}
@@ -310,7 +309,6 @@ function ImagePostItem({ post, currentUserId, onAddComment }) {
             : `View Comments (${comments.length})`}
         </button>
       </div>
-
       {showComments && (
         <div className="mt-4 border-t border-gray-200 pt-4">
           <h4 className="text-md font-semibold text-gray-700 mb-3">Comments</h4>

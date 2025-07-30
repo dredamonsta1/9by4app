@@ -2,6 +2,7 @@
 // This component displays an individual artist's details including the image.
 
 import React from "react";
+import styles from "./ArtistCard.module.css";
 
 const ArtistCard = ({ artist }) => {
   // Construct the full image URL.

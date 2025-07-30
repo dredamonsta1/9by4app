@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axiosInstance from "../../utils/axiosInstance"; // Corrected path to axiosInstance
+import styles from "./Feeds.module.css";
 
 // Feeds Component
 function Feeds() {

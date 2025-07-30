@@ -1,6 +1,7 @@
 // src/components/CreateRapperForm/CreateRapperForm.jsx (New file, or integrate into Dashboard if you have a form there)
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance"; // Use axiosInstance for authenticated calls
+import styles from "./CreateArtistForm.module.css";
 
 const CreateArtistForm = () => {
   const [artistName, setArtistName] = useState("");
@@ -89,15 +90,16 @@ const CreateArtistForm = () => {
 
   return (
     <form
+      className={styles.createArtistForm}
       onSubmit={handleSubmit}
-      style={{
-        margin: "20px",
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-      }}
+      // style={{
+      //   margin: "20px",
+      //   padding: "20px",
+      //   border: "1px solid #ccc",
+      //   borderRadius: "8px",
+      // }}
     >
-      <h2>Create New Artist</h2>
+      <h2 className={styles.title}>Create New Artist</h2>
       {message && (
         <p
           style={{ color: message.includes("successfully") ? "green" : "red" }}

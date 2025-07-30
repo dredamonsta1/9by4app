@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ClickableList from "../RapperList"; // Import your RapperList component
+import styles from "./MainList.module.css";
 
 const MainList = () => {
   const navigate = useNavigate();

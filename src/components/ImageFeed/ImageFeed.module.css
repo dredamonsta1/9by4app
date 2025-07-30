@@ -1,0 +1,9 @@
+.imageFeedItemContainer{
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light background for better contrast */
+}
+
+/* className="bg-white shadow-md rounded-lg p-6 mb-6 borderborder-gray-200 */

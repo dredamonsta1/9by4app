@@ -7,6 +7,7 @@ import {
 } from "../../redux/actions/profileListActions";
 import UserProfile from "../../components/userProfile/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
+import styles from "./ProfilePage.module.css";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
