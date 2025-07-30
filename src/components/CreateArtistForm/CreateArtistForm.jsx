@@ -89,45 +89,41 @@ const CreateArtistForm = () => {
   };
 
   return (
-    <form
-      className={styles.createArtistForm}
-      onSubmit={handleSubmit}
-      // style={{
-      //   margin: "20px",
-      //   padding: "20px",
-      //   border: "1px solid #ccc",
-      //   borderRadius: "8px",
-      // }}
-    >
+    <form className={styles.createArtistForm} onSubmit={handleSubmit}>
       <h2 className={styles.title}>Create New Artist</h2>
       {message && (
         <p
-          style={{ color: message.includes("successfully") ? "green" : "red" }}
+          className={
+            message.includes("successfully") ? styles.success : styles.error
+          }
         >
           {message}
         </p>
       )}
       <div>
-        <label>Artist Name:</label>
+        <label className={styles.artistNameLabel}>Artist Name:</label>
         <input
+          className={styles.artistNameInput}
           type="text"
           value={artistName}
           onChange={(e) => setArtistName(e.target.value)}
           required
         />
       </div>
-      <div style={{ marginTop: "10px" }}>
-        <label>Genre:</label>
+      <div className={styles.genreInputContainer}>
+        <label className={styles.genreLabel}>Genre:</label>
         <input
+          className={styles.genreInput}
           type="text"
           value={artistGenre}
           onChange={(e) => setArtistGenre(e.target.value)}
           required
         />
       </div>
-      <div style={{ marginTop: "10px" }}>
-        <label>artist Image:</label>
+      <div className={styles.imageInputContainer}>
+        <label className={styles.artistImageLabel}>artist Image:</label>
         <input
+          className={styles.artistImageInput}
           type="file"
           id="artistImageInput"
           onChange={(e) => setArtistImage(e.target.files[0])} // Store the selected file object
@@ -135,17 +131,9 @@ const CreateArtistForm = () => {
         />
       </div>
       <button
+        className={styles.createArtistSubmitButton}
         type="submit"
         disabled={loading}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
       >
         {loading ? "Submitting..." : "Create Artist"}
       </button>
