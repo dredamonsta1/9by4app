@@ -65,7 +65,7 @@ const ProfilePage = () => {
       <CreateArtistForm />
 
       {/* Search Bar Section */}
-      <h2>Add Artists to Your Profile</h2>
+      <h2 className={styles.artistSearchBar}>Add Artists to Your Profile</h2>
       <input
         type="text"
         placeholder="Search for an artist..."

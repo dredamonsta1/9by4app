@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import RapperList from "../RapperList";
+// import RapperList from "../RapperList";
 // import "./UserProfile.css";
 import styles from "./UserProfile.module.css";
 
@@ -54,7 +54,7 @@ const UserProfile = () => {
   return (
     <div className={styles.profileContainer}>
       <h3 className={styles.profileTitle}>Your Profile</h3>
-      <div>
+      <div className={styles.profileDetails}>
         <p>
           <strong>Username:</strong> {user.username}
         </p>
@@ -66,26 +66,19 @@ const UserProfile = () => {
         </p>
       </div>
 
-      <button
-        onClick={() => navigate("/")}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontSize: "16px",
-        }}
-      >
+      <button className={styles.homeButton} onClick={() => navigate("/")}>
         Go to Home
       </button>
 
-      <button onClick={() => navigate("/dashboard")}>Go to Dashboard</button>
+      <button
+        className={styles.dashboardButton}
+        onClick={() => navigate("/dashboard")}
+      >
+        Go to Dashboard
+      </button>
 
       {/* This component will fetch its own data as before */}
-      <RapperList />
+      {/* <RapperList /> */}
     </div>
   );
 };
