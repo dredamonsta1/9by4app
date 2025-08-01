@@ -99,40 +99,40 @@ function ImageFeed() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-inter">
-      <NavBar />
       {/* <div className="navbar">
         <button className="home-button" onClick={() => navigate("/")}>
-          Go to Home
+        Go to Home
         </button>
         <button
-          className="dashboard-button"
-          onClick={() => navigate("/dashboard")}
+        className="dashboard-button"
+        onClick={() => navigate("/dashboard")}
         >
-          Go to Dashboard
+        Go to Dashboard
         </button>
         <button className="profile-button" onClick={() => navigate("/profile")}>
-          View Profile
+        View Profile
         </button>
         <button
-          className="logout-button"
-          onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/login");
+        className="logout-button"
+        onClick={() => {
+          localStorage.removeItem("token");
+          navigate("/login");
           }}
-        >
+          >
           Logout
-        </button>
-        <button
+          </button>
+          <button
           className="image-feed-button"
           onClick={() => navigate("/images")}
-        >
+          >
           View Image Feed
-        </button>
-      </div> */}
+          </button>
+          </div> */}
       <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
           Image Feed
         </h1>
+        <NavBar />
         <ImagePostCreator onAddImagePost={addImagePost} />
       </div>
 
