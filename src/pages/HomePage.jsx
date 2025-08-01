@@ -24,7 +24,7 @@ const HomePage = () => {
     <div className="home-page-container">
       <h2 className="home-page-header">Home Page</h2>
       <NavBar />
-      <div className="navigation-buttons">
+      {/* <div className="navigation-buttons">
         <button className="login-button" onClick={() => navigate("/login")}>
           Go to Login
         </button>
@@ -40,7 +40,7 @@ const HomePage = () => {
         >
           View Image Feed
         </button>
-      </div>
+      </div> */}
 
       <h3>Artists List</h3>
       {/* 3. Handle loading and error states before rendering the list */}
