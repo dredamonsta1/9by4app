@@ -73,7 +73,7 @@ const ProfilePage = () => {
 
       {/* Search Bar Section */}
       <h2 className={styles.artistSearchBarTitle}>
-        Add Artists to Your Profile
+        Add your all time Fav Artists
       </h2>
       <input
         className={styles.artistSearchBar}
@@ -98,7 +98,12 @@ const ProfilePage = () => {
               }}
             >
               <span>{artist.name}</span>
-              <button onClick={() => handleAddArtist(artist)}>Add</button>
+              <button
+                className={styles.addArtistButton}
+                onClick={() => handleAddArtist(artist)}
+              >
+                Add
+              </button>
             </li>
           ))}
         </ul>
@@ -108,7 +113,7 @@ const ProfilePage = () => {
       <hr style={{ margin: "40px 0" }} />
 
       {/* --- FIX: Display the hydrated list --- */}
-      <h2>Your Curated Artist List</h2>
+      <h2>Your Fav Artist List</h2>
       {/* Wait for BOTH lists to finish loading */}
       {(profileListLoading || artistsLoading) && <p>Loading your list...</p>}
 

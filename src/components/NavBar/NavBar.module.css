@@ -64,7 +64,9 @@
     /* Off-white, typical of the style */
     font-family: 'Montserrat', sans-serif;
     border-bottom: 4px solid #1a1a1a;
+    border-radius: 5px;
     height: 80px;
+    /* list-style: none; */
 }
 
 /* Logo styling */
@@ -72,6 +74,7 @@
     font-size: 2rem;
     font-weight: 900;
     color: #fff;
+    border-radius: 5px;
     background-color: #e60023;
     /* Bauhaus Red */
     padding: 0.5rem 1.25rem;
@@ -124,6 +127,7 @@
     /* Bauhaus Blue */
     color: #fff;
     border: none;
+    border-radius: 5px;
     padding: 0.75rem 1.5rem;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
