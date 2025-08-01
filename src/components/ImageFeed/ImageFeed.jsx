@@ -100,7 +100,7 @@ function ImageFeed() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-inter">
       <NavBar />
-      <div className="navbar">
+      {/* <div className="navbar">
         <button className="home-button" onClick={() => navigate("/")}>
           Go to Home
         </button>
@@ -128,7 +128,7 @@ function ImageFeed() {
         >
           View Image Feed
         </button>
-      </div>
+      </div> */}
       <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
           Image Feed

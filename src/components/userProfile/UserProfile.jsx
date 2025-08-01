@@ -53,7 +53,7 @@ const UserProfile = () => {
   // If a user object exists in the Redux state, display the profile.
   return (
     <div className={styles.profileContainer}>
-      <h3 className={styles.profileTitle}>Your Profile</h3>
+      <h3 className={styles.profileTitle}>{user.username} Profile</h3>
 
       <div className={styles.profileDetails}>
         <p>
@@ -67,7 +67,7 @@ const UserProfile = () => {
         </p>
       </div>
 
-      <button className={styles.homeButton} onClick={() => navigate("/")}>
+      {/* <button className={styles.homeButton} onClick={() => navigate("/")}>
         Go to Home
       </button>
 
@@ -82,7 +82,7 @@ const UserProfile = () => {
         onClick={() => navigate("/image-feed")}
       >
         View Image Feed
-      </button>
+      </button> */}
 
       {/* This component will fetch its own data as before */}
       {/* <RapperList /> */}
