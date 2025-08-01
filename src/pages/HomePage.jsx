@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
+import NavBar from "../components/NavBar/NavBar";
 import ClickableList from "../components/RapperList";
 import { fetchArtists } from "../redux/actions/artistActions"; // Import the fetch action
 
@@ -22,6 +23,7 @@ const HomePage = () => {
   return (
     <div className="home-page-container">
       <h2 className="home-page-header">Home Page</h2>
+      <NavBar />
       <div className="navigation-buttons">
         <button className="login-button" onClick={() => navigate("/login")}>
           Go to Login

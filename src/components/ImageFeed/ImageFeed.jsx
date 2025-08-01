@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import NavBar from "../NavBar/NavBar";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -98,6 +99,7 @@ function ImageFeed() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-inter">
+      <NavBar />
       <div className="navbar">
         <button className="home-button" onClick={() => navigate("/")}>
           Go to Home

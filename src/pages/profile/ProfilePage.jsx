@@ -7,6 +7,7 @@ import {
 } from "../../redux/actions/profileListActions";
 import UserProfile from "../../components/userProfile/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
+import NavBar from "../../components/NavBar/NavBar";
 import styles from "./ProfilePage.module.css";
 
 const ProfilePage = () => {
@@ -50,14 +51,20 @@ const ProfilePage = () => {
     .map((profileArtist) => artistsMap.get(profileArtist.artist_id))
     .filter(Boolean); // Use .filter(Boolean) to remove any undefined entries
 
-  if (artistsError || profileListError)
-    return (
-      <p style={{ color: "red" }}>Error: {artistsError || profileListError}</p>
-    );
+  // if (artistsError || profileListError)
+  //   return (
+  //     <p style={{ color: "red" }}>Error: {artistsError || profileListError}</p>
+  //   );
 
   return (
-    <div>
+    <div className={styles.profilePage}>
       <h2>Your Profile</h2>
+
+      <button className={styles.loginButton} onClick={() => navigate("/login")}>
+        Go to Login
+      </button>
+      <NavBar />
+
       <UserProfile />
       <hr style={{ margin: "40px 0" }} />
 
@@ -65,13 +72,16 @@ const ProfilePage = () => {
       <CreateArtistForm />
 
       {/* Search Bar Section */}
-      <h2 className={styles.artistSearchBar}>Add Artists to Your Profile</h2>
+      <h2 className={styles.artistSearchBarTitle}>
+        Add Artists to Your Profile
+      </h2>
       <input
+        className={styles.artistSearchBar}
         type="text"
         placeholder="Search for an artist..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        // style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       />
       {artistsLoading && searchTerm.length > 1 && <p>Searching...</p>}
       {searchResults.length > 0 && (

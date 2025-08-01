@@ -54,13 +54,14 @@ const UserProfile = () => {
   return (
     <div className={styles.profileContainer}>
       <h3 className={styles.profileTitle}>Your Profile</h3>
+
       <div className={styles.profileDetails}>
         <p>
           <strong>Username:</strong> {user.username}
         </p>
-        <p>
+        {/* <p>
           <strong>Email:</strong> {user.email}
-        </p>
+        </p> */}
         <p>
           <strong>Role:</strong> {user.role}
         </p>
@@ -75,6 +76,12 @@ const UserProfile = () => {
         onClick={() => navigate("/dashboard")}
       >
         Go to Dashboard
+      </button>
+      <button
+        className={styles.viewImageFeedButton}
+        onClick={() => navigate("/image-feed")}
+      >
+        View Image Feed
       </button>
 
       {/* This component will fetch its own data as before */}

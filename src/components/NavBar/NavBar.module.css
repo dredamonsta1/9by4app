@@ -1,0 +1,49 @@
+.navBar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    /* background-color: #333; */
+    color: white;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+.navLinks {
+    display: flex;
+    gap: 15px;
+}
+.navLink {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+.navLink:hover {
+    text-decoration: underline;
+}
+.navLink.active {
+    font-weight: bold;
+}
+.userProfileLink {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+.userProfileLink:hover {
+    text-decoration: underline;
+}
+.userProfileLink.active {
+    font-weight: bold;
+}
+.userProfileLink {
+    display: flex;
+    align-items: center;
+}
+.userProfileLink img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}                   
