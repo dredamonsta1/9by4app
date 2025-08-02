@@ -1,7 +1,7 @@
 // src/pages/HomePage.jsx
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import "./HomePage.css";
+import styles from "./HomePage.module.css";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar/NavBar";
 import ClickableList from "../components/RapperList";
@@ -21,7 +21,7 @@ const HomePage = () => {
   }, [dispatch]); // This dependency array ensures it only runs once.
 
   return (
-    <div className="home-page-container">
+    <div className={styles.homePageContainer}>
       <h2 className="home-page-header">Home Page</h2>
       <NavBar />
       {/* <div className="navigation-buttons">

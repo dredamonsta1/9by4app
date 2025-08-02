@@ -49,7 +49,8 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: #f8f9fa; /* Light background for contrast */
+  /* background-color: #f8f9fa;  */
+  background-color: chartreuse;
   min-height: 100vh; /* Full height to cover the viewport */
 }
 .profileTitle {

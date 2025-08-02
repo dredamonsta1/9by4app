@@ -58,6 +58,7 @@
 .navBar {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     align-items: center;
     padding: 1rem 2.5rem;
     background-color: #f0f2f5;
@@ -84,6 +85,7 @@
 /* Container for navigation links */
 .navLinks {
     display: flex;
+    flex-direction: column;
     list-style: none;
     margin: 0;
     padding: 0;

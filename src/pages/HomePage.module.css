@@ -1,4 +1,4 @@
-.home-page-container {
+.homePageContainer {
     /* Main container for the home page */
     display: flex;
     flex-direction: column;
