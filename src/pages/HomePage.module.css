@@ -1,15 +1,39 @@
-.homePageContainer {
-    /* Main container for the home page */
+/* .homePageContainer {
+   
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background-color: #f8f9fa; /* Light background for contrast */
-    min-height: 100vh; /* Full height to cover the viewport */
+    background-color: #f8f9fa; 
+    min-height: 100vh; 
 }
 .login-button {
     margin-top: 10px;
     padding: 8px 15px;
     cursor: pointer;
+} */
+
+/* ****************************New Code******************* */
+
+
+/*
+  1. Set up the main container as a grid.
+  2. Define two columns: The first is 280px wide (for the navbar),
+     and the second (1fr) takes up the remaining available space.
+*/
+.homePageContainer {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+    /* Make the layout at least the full height of the screen */
+    background-color: #f4f7f6;
+}
+
+/*
+  This new class will wrap your main content on the right side.
+  Adding padding gives it some nice spacing.
+*/
+.mainContent {
+    padding: 2rem;
 }
