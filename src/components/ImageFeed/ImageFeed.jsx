@@ -97,9 +97,10 @@ function ImageFeed() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-inter">
-      {/* <div className="navbar">
+  // return (
+  // <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 font-inter">
+  {
+    /* <div className="navbar">
         <button className="home-button" onClick={() => navigate("/")}>
         Go to Home
         </button>
@@ -127,34 +128,76 @@ function ImageFeed() {
           >
           View Image Feed
           </button>
-          </div> */}
-      <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
-          Image Feed
-        </h1>
-        <NavBar />
-        <ImagePostCreator onAddImagePost={addImagePost} />
-      </div>
+          </div> */
+  }
+  //     <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 mb-8">
+  //       <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
+  //         Image Feed
+  //       </h1>
+  //       <NavBar />
+  //       <ImagePostCreator onAddImagePost={addImagePost} />
+  //     </div>
 
-      <div className="w-full max-w-2xl">
-        {loading ? (
-          <p className="text-center text-gray-600">Loading images...</p>
-        ) : imagePosts.length === 0 ? (
-          <p className="text-center text-gray-600">
-            No images yet. Be the first to post!
-          </p>
-        ) : (
-          <div className="space-y-6">
-            {imagePosts.map((post) => (
-              <ImagePostItem
-                key={post.id || post._id}
-                post={post}
-                currentUserId={currentUserId}
-                onAddComment={addComment}
-              />
-            ))}
-          </div>
-        )}
+  //     <div className="w-full max-w-2xl">
+  //       {loading ? (
+  //         <p className="text-center text-gray-600">Loading images...</p>
+  //       ) : imagePosts.length === 0 ? (
+  //         <p className="text-center text-gray-600">
+  //           No images yet. Be the first to post!
+  //         </p>
+  //       ) : (
+  //         <div className="space-y-6">
+  //           {imagePosts.map((post) => (
+  //             <ImagePostItem
+  //               key={post.id || post._id}
+  //               post={post}
+  //               currentUserId={currentUserId}
+  //               onAddComment={addComment}
+  //             />
+  //           ))}
+  //         </div>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
+
+  // **********************New Code**********************
+
+  return (
+    // Use the CSS module class for the grid container
+    <div className={styles.imageFeedContainer}>
+      {/* This is the first item in the grid (left column) */}
+      <NavBar />
+
+      {/* This new div wraps all other content, becoming the second item (right column) */}
+      <div className={styles.mainContent}>
+        <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">
+            Image Feed
+          </h1>
+          <ImagePostCreator onAddImagePost={addImagePost} />
+        </div>
+
+        <div className="w-full max-w-2xl">
+          {loading ? (
+            <p className="text-center text-gray-600">Loading images...</p>
+          ) : imagePosts.length === 0 ? (
+            <p className="text-center text-gray-600">
+              No images yet. Be the first to post!
+            </p>
+          ) : (
+            <div className="space-y-6">
+              {imagePosts.map((post) => (
+                <ImagePostItem
+                  key={post.id || post._id}
+                  post={post}
+                  currentUserId={currentUserId}
+                  onAddComment={addComment}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

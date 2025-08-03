@@ -1,9 +1,35 @@
-.imageFeedItemContainer{
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9; /* Light background for better contrast */
+.imageFeedContainer {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+    /* Make the layout at least the full height of the screen */
+    background-color: #f4f7f6;
 }
 
-/* className="bg-white shadow-md rounded-lg p-6 mb-6 borderborder-gray-200 */
+/*
+  This new class will wrap your main content on the right side.
+  The padding gives it some nice spacing, and overflow handles scrolling.
+*/
+.mainContent {
+    padding: 2rem;
+    overflow-y: auto;
+    /* Adds a scrollbar if the content is too long */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centers the feed content horizontally */
+}
+
+/*
+  This class is for the individual post items. We can reuse the
+  styling you had before, but it's good practice to have it
+  in the CSS module.
+*/
+.imageFeedItemContainer {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+}
