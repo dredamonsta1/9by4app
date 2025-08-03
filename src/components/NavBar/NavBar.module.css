@@ -1,57 +1,3 @@
-/* .navBar{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-.navLinks {
-    display: flex;
-    gap: 15px;
-    background-color: yellow;
-}
-.navLink {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
-.navLink:hover {
-    text-decoration: underline;
-}
-.navLink.active {
-    font-weight: bold;
-}
-.userProfileLink {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
-.userProfileLink:hover {
-    text-decoration: underline;
-}
-.userProfileLink.active {
-    font-weight: bold;
-}
-.userProfileLink {
-    display: flex;
-    align-items: center;
-}
-.userProfileLink img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
-}                    */
-
-
-/* ****************New Code********************* */
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap');
 
 /* Main navbar container */
@@ -64,7 +10,7 @@
     background-color: #f0f2f5;
     /* Off-white, typical of the style */
     font-family: 'Montserrat', sans-serif;
-    border-bottom: 4px solid #1a1a1a;
+    /* border-bottom: 4px solid #1a1a1a; */
     border-radius: 5px;
     height: 80px;
     /* list-style: none; */
