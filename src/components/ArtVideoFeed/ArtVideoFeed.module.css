@@ -1,0 +1,124 @@
+/*
+  1. Set up the main container as a grid.
+  2. Define two columns: The first is 280px wide (for the navbar),
+     and the second (1fr) takes up the remaining available space.
+*/
+/* .imageFeedContainer {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+    Make the layout at least the full height of the screen
+    background-color: #f4f7f6;
+} */
+
+/*
+  This new class will wrap your main content on the right side.
+  The padding gives it some nice spacing, and overflow handles scrolling.
+*/
+/* .mainContent {
+    padding: 2rem;
+    overflow-y: auto;
+    Adds a scrollbar if the content is too long
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    Centers the feed content horizontally
+} */
+
+/*
+  This class is for the individual post items. We can reuse the
+  styling you had before, but it's good practice to have it
+  in the CSS module.
+*/
+/* .imageFeedItemContainer {
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+} */
+
+
+
+/* ArtVideoFeed.module.css */
+
+.container {
+    display: flex;
+    /* This ensures that the NavBar and mainContent are in a row */
+}
+
+.mainContent {
+    /* This makes the main content take up all the remaining horizontal space */
+    flex-grow: 1;
+    /* Add some padding to separate it from the NavBar */
+    padding: 2rem;
+}
+
+
+/* ************New Code********* */
+
+
+/* ArtVideoFeed.module.css */
+
+.container {
+    display: flex;
+}
+
+.mainContent {
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+.videoPlayer {
+    margin-bottom: 2rem;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.navigation button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.navigation button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.videoList {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+.videoThumbnail {
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 240px;
+    /* Set a fixed width for the thumbnail container */
+}
+
+.videoThumbnail img {
+    width: 100%;
+    border: 3px solid transparent;
+}
+
+.videoThumbnail .selectedThumbnail {
+    border-color: #007bff;
+}
+
+.videoThumbnail p {
+    width: 100%;
+    font-size: 0.9rem;
+}

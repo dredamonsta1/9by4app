@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import CreateArtistForm from "./components/CreateArtistForm/CreateArtistForm";
 import Dashboard from "./components/DashBoard/Dashboard";
+import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed";
 
 // Import the new action for re-hydrating auth state
 import { loadUserFromToken } from "./redux/actions/authActions";
@@ -35,6 +36,7 @@ const AppContent = () => {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/images" element={<ImageFeed />} />
+      <Route path="/art-video" element={<ArtVideoFeed />} />
     </Routes>
   );
 };

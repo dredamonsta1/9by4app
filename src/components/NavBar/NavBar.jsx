@@ -23,6 +23,9 @@ const NavBar = () => {
           <a href="/images">Image Feed</a>
         </li>
         <li>
+          <a href="/art-video">Video</a>
+        </li>
+        <li>
           <a href="/login">Login</a>
         </li>
       </ul>
