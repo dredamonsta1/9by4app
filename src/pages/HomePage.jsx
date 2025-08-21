@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar/NavBar";
 import ClickableList from "../components/RapperList";
 import { fetchArtists } from "../redux/actions/artistActions"; // Import the fetch action
+import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -95,7 +96,10 @@ const HomePage = () => {
             showCloutButton={false}
           />
         )}
+
+        {/* This button navigates to the login page */}
       </div>
+      <UpcomingMusic />
     </div>
   );
 };

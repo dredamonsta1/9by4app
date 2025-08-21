@@ -1,0 +1,68 @@
+/* UpcomingMusic.module.css */
+
+/* Grid container for the release cards */
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Styling for each individual release card */
+.releaseCard {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.releaseCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Title of the release */
+.releaseTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Artist's name */
+.artistName {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+/* Release date */
+.releaseDate {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Country of release */
+.country {
+    font-size: 0.9rem;
+    color: #777;
+    font-style: italic;
+}
+
+/* Loading and error message styles */
+.loading,
+.error {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.error {
+    color: #d9534f;
+    /* A reddish color for errors */
+}
