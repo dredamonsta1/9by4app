@@ -28,6 +28,7 @@
     min-height: 100vh;
     /* Make the layout at least the full height of the screen */
     background-color: #f4f7f6;
+    border: solid 5px black;
 }
 
 /*
@@ -36,4 +37,5 @@
 */
 .mainContent {
     padding: 2rem;
+    background-color: blueviolet;
 }

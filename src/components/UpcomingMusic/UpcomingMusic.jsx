@@ -465,6 +465,7 @@ function UpcomingMusic() {
 
   return (
     <div className={styles.gridContainer}>
+      <h1>Upcoming Music</h1>
       {releases.length > 0 ? (
         releases.map((release) => (
           <div key={release.id} className={styles.releaseCard}>
