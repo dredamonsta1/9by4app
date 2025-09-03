@@ -2,17 +2,24 @@
 
 /* Grid container for the release cards */
 .gridContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    background-color: blueviolet;
+    /* display: grid; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); */
     gap: 20px;
     padding: 20px;
-    max-width: 1200px;
+    height: 390px;
+    max-width: 100%;
     margin: 0 auto;
 }
 
 /* Styling for each individual release card */
 .releaseCard {
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+
+    background-color: green;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 20px;

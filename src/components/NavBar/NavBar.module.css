@@ -7,12 +7,13 @@
     flex-direction: column;
     align-items: center;
     padding: 1rem 2.5rem;
-    background-color: #f0f2f5;
+    /* background-color: #f0f2f5; */
+    background-color: #E07A5F;
     /* Off-white, typical of the style */
     font-family: 'Montserrat', sans-serif;
     /* border-bottom: 4px solid #1a1a1a; */
     border-radius: 5px;
-    height: 80px;
+    height: 100%;
     /* list-style: none; */
 }
 
@@ -22,7 +23,9 @@
     font-weight: 900;
     color: #fff;
     border-radius: 5px;
-    background-color: #e60023;
+    /* background-color: #e60023; */
+
+    background-color: #3D7A80;
     /* Bauhaus Red */
     padding: 0.5rem 1.25rem;
     text-decoration: none;
@@ -72,6 +75,7 @@
 /* Logout button styling */
 .logoutButton {
     background-color: #005f9e;
+    background-color: #F2C14E;
     /* Bauhaus Blue */
     color: #fff;
     border: none;

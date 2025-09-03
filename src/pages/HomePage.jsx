@@ -12,70 +12,12 @@ const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // --- FIX: Re-introducing data fetching logic ---
-  // 1. Get the artists, loading, and error states from the Redux store.
   const { artists, loading, error } = useSelector((state) => state.artists);
 
   // 2. Use useEffect to fetch the artists once when the component mounts.
   useEffect(() => {
     dispatch(fetchArtists());
   }, [dispatch]); // This dependency array ensures it only runs once.
-
-  // return (
-  //   <div className={styles.homePageContainer}>
-  //     <h2 className="home-page-header">Home Page</h2>
-  //     <NavBar />
-  {
-    /* <div className="navigation-buttons">
-        <button className="login-button" onClick={() => navigate("/login")}>
-          Go to Login
-        </button>
-        <button className="nav-button" onClick={() => navigate("/profile")}>
-          Go to Profile
-        </button>
-        <button className="nav-button" onClick={() => navigate("/dashboard")}>
-          Go to Dashboard
-        </button>
-        <button
-          className="image-feed-button"
-          onClick={() => navigate("/images")}
-        >
-          View Image Feed
-        </button>
-      </div> */
-  }
-
-  {
-    /* <h3>Artists List</h3> */
-  }
-  {
-    /* 3. Handle loading and error states before rendering the list */
-  }
-  {
-    /* {loading && <p>Loading artists...</p>} */
-  }
-  {
-    /* {error && <p style={{ color: "red" }}>Error: {error}</p>} */
-  }
-  {
-    /* {!loading && !error && ( */
-  }
-  {
-    /* // 4. Pass the `artists` array as a prop to ClickableList */
-  }
-  {
-    /* <ClickableList
-          artists={artists}
-          showAdminActions={false}
-          showCloutButton={false}
-        />
-      )}
-    </div>
-  );
-}; */
-  }
-
-  // *********************************New Code*********************************
 
   return (
     <div className={styles.homePageContainer}>
@@ -98,8 +40,10 @@ const HomePage = () => {
         )}
 
         {/* This button navigates to the login page */}
+        <div className={styles.upcomingMusicSection}>
+          <UpcomingMusic />
+        </div>
       </div>
-      <UpcomingMusic />
     </div>
   );
 };

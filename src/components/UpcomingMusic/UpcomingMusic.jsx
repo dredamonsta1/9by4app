@@ -465,7 +465,7 @@ function UpcomingMusic() {
 
   return (
     <div className={styles.gridContainer}>
-      <h1>Upcoming Music</h1>
+      <h1 className={styles.upcomingTitle}>Upcoming Music</h1>
       {releases.length > 0 ? (
         releases.map((release) => (
           <div key={release.id} className={styles.releaseCard}>
@@ -486,7 +486,7 @@ function UpcomingMusic() {
                 ...getSourceStyle(release.source),
               }}
             >
-              {release.source}
+              {/* {release.source} */}
             </span>
             <h2 className={styles.releaseTitle}>{release.title}</h2>
             <p className={styles.artistName}>by {release.artist}</p>
