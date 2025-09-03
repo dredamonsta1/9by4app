@@ -26,7 +26,7 @@ const HomePage = () => {
 
       {/* This new div wraps all other content, becoming the second item (right column) */}
       <div className={styles.mainContent}>
-        <h2 className="home-page-header">Home Page</h2>
+        <h2 className={styles.homePageHeader}>Home Page</h2>
 
         <h3>Artists List</h3>
         {loading && <p>Loading artists...</p>}

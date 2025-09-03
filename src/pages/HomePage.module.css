@@ -15,13 +15,20 @@
 .mainContent {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     padding: 2rem;
-    background-color: #F8F8F8;
+    /* background-color: #F8F8F8; */
+    background-color: mediumorchid;
 }
 
 .upcomingMusicSection {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
     margin-top: 2rem;
     height: 100%;
+    width: 100%;
     background-color: darkolivegreen;
+    order: 5;
 }
