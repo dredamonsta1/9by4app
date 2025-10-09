@@ -9,10 +9,14 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import CreateArtistForm from "./components/CreateArtistForm/CreateArtistForm";
 import Dashboard from "./components/DashBoard/Dashboard";
 import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed";
+import ImageFeed from "./components/ImageFeed/ImageFeed";
 
+import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute";
 // Import the new action for re-hydrating auth state
 import { loadUserFromToken } from "./redux/actions/authActions";
-import ImageFeed from "./components/ImageFeed/ImageFeed";
+
+// import { Link } from "react-router-dom";
 
 /**
  * This new component wraps the Routes and contains the logic
@@ -37,6 +41,16 @@ const AppContent = () => {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/images" element={<ImageFeed />} />
       <Route path="/art-video" element={<ArtVideoFeed />} />
+      {/* <Route path="/admin/waitlist" element={<WaitlistAdmin />} /> */}
+      {/* Admin-only route for waitlist management */}
+      <Route
+        path="/admin/waitlist"
+        element={
+          <ProtectedAdminRoute>
+            <WaitlistAdmin />
+          </ProtectedAdminRoute>
+        }
+      />
     </Routes>
   );
 };

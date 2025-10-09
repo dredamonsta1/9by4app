@@ -1,23 +1,23 @@
-import React from "react";
-import styles from "./Dashboard.module.css"; // Import your CSS module
-import ClickableList from "../RapperList"; // Import your RapperList component
-import UserProfile from "../userProfile/UserProfile";
-import { useNavigate } from "react-router-dom";
-import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
-import NavBar from "../NavBar/NavBar";
-import Feeds from "../Feeds/Feeds"; // Import your Feeds component
-import ImageFeed from "../ImageFeed/ImageFeed";
+// import React from "react";
+// import styles from "./Dashboard.module.css"; // Import your CSS module
+// import ClickableList from "../RapperList"; // Import your RapperList component
+// import UserProfile from "../userProfile/UserProfile";
+// import { useNavigate } from "react-router-dom";
+// import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
+// import NavBar from "../NavBar/NavBar";
+// import Feeds from "../Feeds/Feeds"; // Import your Feeds component
+// import ImageFeed from "../ImageFeed/ImageFeed";
 
-const Dashboard = () => {
-  const navigate = useNavigate();
+// const Dashboard = () => {
+//   const navigate = useNavigate();
 
-  // return (
-  //   <div className="dashboard-div">
-  //     <h1>Feeds DashBoard</h1>
-  //     <NavBar />
-  //     <p>Welcome to your personalized dashboard!</p>
-  {
-    /* <button className="profile-button" onClick={() => navigate("/profile")}>
+// return (
+//   <div className="dashboard-div">
+//     <h1>Feeds DashBoard</h1>
+//     <NavBar />
+//     <p>Welcome to your personalized dashboard!</p>
+// {
+/* <button className="profile-button" onClick={() => navigate("/profile")}>
         View Profile
       </button>
       <button className="home-button" onClick={() => navigate("/")}>
@@ -35,33 +35,90 @@ const Dashboard = () => {
       <button className="image-feed-button" onClick={() => navigate("/images")}>
         View Image Feed
       </button> */
-  }
-  {
-    /* <ImageFeed /> */
-  }
-  {
-    /* <h2 style={{ marginTop: "40px" }}>Add New Rapper</h2>
+// }
+// {
+/* <ImageFeed /> */
+// }
+// {
+/* <h2 style={{ marginTop: "40px" }}>Add New Rapper</h2>
       <CreateArtistForm /> */
-  }
-  {
-    /* <h1>Feeds</h1>
+// }
+// {
+/* <h1>Feeds</h1>
       <Feeds />
     </div>
   ); */
-  }
+// }
 
-  // **************************New Code**************************
+// **************************New Code**************************
+
+//   return (
+//     // Use the CSS module class for the grid container
+//     <div className={styles.dashboardContainer}>
+//       {/* This is the first item in the grid (left column) */}
+//       <NavBar />
+
+//       {/* This new div wraps all other content, becoming the second item (right column) */}
+//       <div className={styles.mainContent}>
+//         <h1>Feeds DashBoard</h1>
+//         <p>Welcome to your personalized dashboard!</p>
+
+//         <h1>Feeds</h1>
+//         <Feeds />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Dashboard;
+
+// **************************New Code**************************
+
+import React from "react";
+import styles from "./Dashboard.module.css";
+import ClickableList from "../RapperList";
+import UserProfile from "../userProfile/UserProfile";
+import { useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
+import NavBar from "../NavBar/NavBar";
+import Feeds from "../Feeds/Feeds";
+import ImageFeed from "../ImageFeed/ImageFeed";
+
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
   return (
-    // Use the CSS module class for the grid container
     <div className={styles.dashboardContainer}>
-      {/* This is the first item in the grid (left column) */}
       <NavBar />
 
-      {/* This new div wraps all other content, becoming the second item (right column) */}
       <div className={styles.mainContent}>
         <h1>Feeds DashBoard</h1>
         <p>Welcome to your personalized dashboard!</p>
+
+        {/* Admin-only link to waitlist management */}
+        {user?.role === "admin" && (
+          <div
+            style={{
+              margin: "20px 0",
+              padding: "10px",
+              backgroundColor: "#f0f0f0",
+              borderRadius: "5px",
+            }}
+          >
+            <Link
+              to="/admin/waitlist"
+              style={{
+                color: "#2563eb",
+                fontWeight: "bold",
+                textDecoration: "none",
+              }}
+            >
+              🔐 Manage Waitlist (Admin)
+            </Link>
+          </div>
+        )}
 
         <h1>Feeds</h1>
         <Feeds />

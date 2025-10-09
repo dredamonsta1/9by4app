@@ -1,0 +1,424 @@
+/* src/components/WaitlistAdmin/WaitlistAdmin.css */
+
+.waitlist-admin-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 2rem;
+}
+
+.waitlist-admin-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+.admin-header {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.title-icon {
+    width: 2rem;
+    height: 2rem;
+    color: #2563eb;
+}
+
+.header-title h1 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #111827;
+    margin: 0;
+}
+
+.toggle-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-button.enabled {
+    background-color: #16a34a;
+    color: white;
+}
+
+.toggle-button.enabled:hover {
+    background-color: #15803d;
+}
+
+.toggle-button.disabled {
+    background-color: #9ca3af;
+    color: white;
+}
+
+.toggle-button.disabled:hover {
+    background-color: #6b7280;
+}
+
+.button-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.stat-card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.stat-card.total {
+    background-color: #f9fafb;
+}
+
+.stat-card.pending {
+    background-color: #fef3c7;
+}
+
+.stat-card.approved {
+    background-color: #dcfce7;
+}
+
+.stat-card.rejected {
+    background-color: #fee2e2;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card.total .stat-number {
+    color: #111827;
+}
+
+.stat-card.pending .stat-number {
+    color: #b45309;
+}
+
+.stat-card.approved .stat-number {
+    color: #15803d;
+}
+
+.stat-card.rejected .stat-number {
+    color: #b91c1c;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.stat-card.pending .stat-label {
+    color: #b45309;
+}
+
+.stat-card.approved .stat-label {
+    color: #15803d;
+}
+
+.stat-card.rejected .stat-label {
+    color: #b91c1c;
+}
+
+/* Filters Section */
+.filters-section {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #9ca3af;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-buttons button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: #f3f4f6;
+    color: #374151;
+    transition: all 0.2s;
+}
+
+.filter-buttons button:hover {
+    background-color: #e5e7eb;
+}
+
+.filter-buttons button.active {
+    background-color: #2563eb;
+    color: white;
+}
+
+/* Table */
+.table-container {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+.waitlist-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.waitlist-table thead {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.waitlist-table th {
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.waitlist-table th:last-child {
+    text-align: right;
+}
+
+.waitlist-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.15s;
+}
+
+.waitlist-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.waitlist-table td {
+    padding: 1rem 1.5rem;
+}
+
+/* User Cell */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #9ca3af;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #111827;
+}
+
+.user-email {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+}
+
+.status-badge.approved {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.pending {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+/* Date Cell */
+.date-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.date-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Invite Code Button */
+.invite-code-button {
+    font-family: monospace;
+    font-size: 0.875rem;
+    background-color: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.invite-code-button:hover {
+    background-color: #e5e7eb;
+}
+
+.no-code {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.action-btn.approve {
+    color: #16a34a;
+    background-color: transparent;
+}
+
+.action-btn.approve:hover {
+    background-color: #dcfce7;
+}
+
+.action-btn.reject {
+    color: #dc2626;
+    background-color: transparent;
+}
+
+.action-btn.reject:hover {
+    background-color: #fee2e2;
+}
+
+.action-btn.delete {
+    color: #6b7280;
+    background-color: transparent;
+}
+
+.action-btn.delete:hover {
+    background-color: #f3f4f6;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-section {
+        flex-direction: column;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .waitlist-table {
+        font-size: 0.875rem;
+    }
+}
