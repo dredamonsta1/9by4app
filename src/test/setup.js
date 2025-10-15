@@ -1,4 +1,4 @@
-import { expect, afterEach, vi } from "vitest";
+import { expect, afterEach, vi, beforeAll } from "vitest";
 import { cleanup } from "@testing-library/react";
 import * as matchers from "@testing-library/jest-dom/matchers";
 
@@ -8,6 +8,33 @@ expect.extend(matchers);
 // Cleanup after each test
 afterEach(() => {
   cleanup();
+});
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn((key) => localStorageMock.store[key] || null),
+  setItem: vi.fn((key, value) => {
+    localStorageMock.store[key] = value.toString();
+  }),
+  removeItem: vi.fn((key) => {
+    delete localStorageMock.store[key];
+  }),
+  clear: vi.fn(() => {
+    localStorageMock.store = {};
+  }),
+  store: {},
+};
+
+global.localStorage = localStorageMock;
+
+// Reset localStorage before each test
+beforeAll(() => {
+  global.localStorage = localStorageMock;
+});
+
+afterEach(() => {
+  localStorageMock.clear();
+  vi.clearAllMocks();
 });
 
 // Mock window.matchMedia
