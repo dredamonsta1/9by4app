@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import RapperList from "../RapperList";
 // import "./UserProfile.css";
+import FollowButton from "../FollowButton";
+import { jwtDecode } from "jwt-decode";
 import styles from "./UserProfile.module.css";
 
 const UserProfile = () => {
@@ -53,6 +55,7 @@ const UserProfile = () => {
   // If a user object exists in the Redux state, display the profile.
   return (
     <div className={styles.profileContainer}>
+      <FollowButton targetUserId={user.id} initialIsFollowing={false} />
       <h3 className={styles.profileTitle}>{user.username} Profile</h3>
 
       <div className={styles.profileDetails}>
