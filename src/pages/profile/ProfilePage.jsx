@@ -54,110 +54,6 @@ const ProfilePage = () => {
     .map((profileArtist) => artistsMap.get(profileArtist.artist_id))
     .filter(Boolean); // Use .filter(Boolean) to remove any undefined entries
 
-  // if (artistsError || profileListError)
-  //   return (
-  //     <p style={{ color: "red" }}>Error: {artistsError || profileListError}</p>
-  //   );
-
-  //   return (
-  //     <div className={styles.profilePage}>
-  //       <h2>Your Profile</h2>
-
-  //       <button className={styles.loginButton} onClick={() => navigate("/login")}>
-  //         Go to Login
-  //       </button>
-  //       <NavBar />
-
-  //       <UserProfile />
-  //       <hr style={{ margin: "40px 0" }} />
-
-  //       <h2>artist creation</h2>
-  //       <CreateArtistForm />
-
-  //       {/* Search Bar Section */}
-  //       <h2 className={styles.artistSearchBarTitle}>
-  //         Add your all time Fav Artists
-  //       </h2>
-  //       <input
-  //         className={styles.artistSearchBar}
-  //         type="text"
-  //         placeholder="Search for an artist..."
-  //         value={searchTerm}
-  //         onChange={(e) => setSearchTerm(e.target.value)}
-  //         // style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-  //       />
-  //       {artistsLoading && searchTerm.length > 1 && <p>Searching...</p>}
-  //       {searchResults.length > 0 && (
-  //         <ul
-  //           className={styles.searchResultsList}
-  //           // style={{
-  //           //   listStyle: "none",
-  //           //   padding: 0,
-  //           //   backgroundColor: "blueviolet",
-  //           // }}
-  //         >
-  //           {searchResults.map((artist) => (
-  //             <li
-  //               className={styles.searchResultItem}
-  //               key={artist.artist_id}
-  //               // style={{
-  //               //   display: "flex",
-  //               //   justifyContent: "space-between",
-  //               //   alignItems: "center",
-  //               //   padding: "8px",
-  //               //   borderBottom: "1px solid #eee",
-  //               //   backgroundColor: "red",
-  //               // }}
-  //             >
-  //               <span className={styles.searchResultItemSpan}>{artist.name}</span>
-  //               <button
-  //                 className={styles.addArtistButton}
-  //                 onClick={() => handleAddArtist(artist)}
-  //               >
-  //                 Add
-  //               </button>
-  //             </li>
-  //           ))}
-  //         </ul>
-  //       )}
-  //       {/* End of Search Bar Section */}
-
-  //       <hr style={{ margin: "40px 0", backgroundColor: "red" }} />
-
-  //       {/* --- FIX: Display the hydrated list --- */}
-  //       <h2 className={styles.favArtistListHeader}>Your Fav Artist List</h2>
-  //       {/* Wait for BOTH lists to finish loading */}
-  //       {(profileListLoading || artistsLoading) && <p>Loading your list...</p>}
-
-  //       {/* Only render the list when loading is complete */}
-  //       {!(profileListLoading || artistsLoading) &&
-  //       hydratedProfileList.length > 0 ? (
-  //         <ul
-  //           className={styles.favArtistList}
-  //           style={{ listStyle: "none", padding: 0 }}
-  //         >
-  //           {hydratedProfileList.map((artist) => (
-  //             <li
-  //               className={styles.favArtistItem}
-  //               key={artist.artist_id}
-  //               // style={{
-  //               //   padding: "8px",
-  //               //   borderBottom: "1px solid #eee",
-  //               //   backgroundColor: "red",
-  //               // }}
-  //             >
-  //               {artist.name} - (Clout: {artist.count})
-  //             </li>
-  //           ))}
-  //         </ul>
-  //       ) : (
-  //         !(profileListLoading || artistsLoading) && (
-  //           <p>Your list is empty. Search for artists to add them.</p>
-  //         )
-  //       )}
-  //     </div>
-  //   );
-  // };
   // --- NEW LOGIC FOR FOLLOWING ---
   const [followingList, setFollowingList] = useState([]);
   const [manualId, setManualId] = useState("");
@@ -189,6 +85,9 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profilePage}>
+      <div className={styles.navContainer}>
+        <NavBar />
+      </div>
       {/* --- Left Side Column --- */}
       {/* --- NEW SECTION: COMMUNITY --- */}
       <hr style={{ margin: "40px 0" }} />
@@ -250,9 +149,6 @@ const ProfilePage = () => {
         )}
       </div>
       {/* *************************** */}
-      <div className={styles.navContainer}>
-        <NavBar />
-      </div>
       {/* --- Top Right Area --- */}
       <div className={styles.favoritesContainer}>
         <h2 className={styles.favArtistListHeader}>Your Fav Artist List</h2>
