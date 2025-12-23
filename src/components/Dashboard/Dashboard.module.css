@@ -1,26 +1,33 @@
 
 .dashboardContainer {
     display: flex;
+    justify-content: center;
     flex-direction: column;
     background-color: olive;
 }
-/* .dashboardContainer {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    min-height: 100vh; */
-    /* Make the layout at least the full height of the screen */
-    /* background-color: #f4f7f6;
-} */
 
-/*
-  This new class will wrap your main content on the right side.
-  The padding gives it some nice spacing, and overflow handles scrolling.
-*/
 .mainContent {
     display: flex;
     justify-content: center;
     flex-direction: column;
+    align-items: center;
     padding: 2rem;
     overflow-y: auto;
     /* Adds a scrollbar if the content is too long */
+}
+
+.adminLink {
+    font-weight: 600;
+    text-decoration: none;
+    color: #1a73e8;
+    margin-top: 1rem;
+    background-color: blueviolet;
+}
+
+.adminLinkContainer {
+    border: 2px solid #1a73e8;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: red;
+    width: fit-content;
 }

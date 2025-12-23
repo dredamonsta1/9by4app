@@ -19,26 +19,12 @@ const Dashboard = () => {
 
       <div className={styles.mainContent}>
         <h1>Feeds DashBoard</h1>
-        <p>Welcome to your personalized dashboard!</p>
+        <p>Welcome to your personalized dashboard! {user?.name}</p>
 
         {/* Admin-only link to waitlist management */}
         {user?.role === "admin" && (
-          <div
-            style={{
-              margin: "20px 0",
-              padding: "10px",
-              backgroundColor: "#f0f0f0",
-              borderRadius: "5px",
-            }}
-          >
-            <Link
-              to="/admin/waitlist"
-              style={{
-                color: "#2563eb",
-                fontWeight: "bold",
-                textDecoration: "none",
-              }}
-            >
+          <div className={styles.adminLinkContainer}>
+            <Link className={styles.adminLink} to="/admin/waitlist">
               🔐 Manage Waitlist (Admin)
             </Link>
           </div>
