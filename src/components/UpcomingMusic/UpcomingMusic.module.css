@@ -3,16 +3,10 @@
 /* Grid container for the release cards */
 .gridContainer {
     background-color: blueviolet;
-    /* display: grid; */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    /* grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
     padding: 20px;
-    height: 390px;
     max-width: 100%;
     margin: 0 auto;
 }
