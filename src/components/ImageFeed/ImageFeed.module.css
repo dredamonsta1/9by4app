@@ -1,6 +1,8 @@
 .imageFeedContainer {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+  display: flex;
+  flex-direction: column;
+    /* display: grid;
+    grid-template-columns: 280px 1fr; */
     min-height: 100vh;
     /* Make the layout at least the full height of the screen */
     background-color: #f4f7f6;
