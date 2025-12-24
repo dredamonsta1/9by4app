@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import RapperList from "../RapperList";
-// import "./UserProfile.css";
+
 import FollowButton from "../FollowButton";
 import { jwtDecode } from "jwt-decode";
 import styles from "./UserProfile.module.css";
