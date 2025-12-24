@@ -5,7 +5,7 @@ import {
   fetchProfileList,
   addArtistToProfileList,
 } from "../../redux/actions/profileListActions";
-import UserProfile from "../../components/UserProfile/UserProfile";
+import UserProfile from "../../components/UserProfilee/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
 import NavBar from "../../components/NavBar/NavBar";
 import styles from "./ProfilePage.module.css";
