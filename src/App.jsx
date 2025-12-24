@@ -7,7 +7,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import CreateArtistForm from "./components/CreateArtistForm/CreateArtistForm";
-import Dashboard from "./components/DashBoard/Dashboard.jsx";
+import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed";
 import ImageFeed from "./components/ImageFeed/ImageFeed";
 
