@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Dashboard.module.css";
 import ClickableList from "../RapperList";
-import UserProfile from "../userProfile/UserProfile";
+import UserProfile from "../UserProfile/UserProfile";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
