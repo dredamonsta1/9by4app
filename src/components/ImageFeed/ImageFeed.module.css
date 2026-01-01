@@ -35,3 +35,72 @@
     margin-bottom: 1.5rem;
     border: 1px solid #e2e8f0;
 }
+
+.skeletonWrapper {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.skeletonHeader, .skeletonImage, .skeletonText {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeletonHeader { height: 20px; width: 40%; margin-bottom: 10px; }
+.skeletonImage { height: 300px; width: 100%; margin-bottom: 10px; }
+.skeletonText { height: 15px; width: 80%; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* **************New code below */
+
+
+.skeletonWrapper {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.skeletonHeader,
+.skeletonImage,
+.skeletonText {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeletonHeader {
+  height: 20px;
+  width: 40%;
+  margin-bottom: 10px;
+}
+
+.skeletonImage {
+  height: 300px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.skeletonText {
+  height: 15px;
+  width: 80%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}

@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./HomePage.module.css";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar/NavBar";
 import ClickableList from "../components/RapperList";
 import { fetchArtists } from "../redux/actions/artistActions"; // Import the fetch action
 import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
@@ -22,7 +21,6 @@ const HomePage = () => {
   return (
     <div className={styles.homePageContainer}>
       {/* This is the first item in the grid (left column) */}
-      <NavBar />
 
       {/* This new div wraps all other content, becoming the second item (right column) */}
       <div className={styles.mainContent}>

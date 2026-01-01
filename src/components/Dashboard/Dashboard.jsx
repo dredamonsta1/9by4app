@@ -5,7 +5,6 @@ import UserProfile from "../UserProfilee/UserProfile";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CreateArtistForm from "../CreateArtistForm/CreateArtistForm";
-import NavBar from "../NavBar/NavBar";
 import Feeds from "../Feeds/Feeds";
 import ImageFeed from "../ImageFeed/ImageFeed";
 
@@ -15,8 +14,6 @@ const Dashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      <NavBar />
-
       <div className={styles.mainContent}>
         <h1>Feeds DashBoard</h1>
         <p>Welcome to your personalized dashboard! {user?.name}</p>

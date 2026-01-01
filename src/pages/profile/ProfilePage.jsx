@@ -7,7 +7,6 @@ import {
 } from "../../redux/actions/profileListActions";
 import UserProfile from "../../components/UserProfilee/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
-import NavBar from "../../components/NavBar/NavBar";
 import styles from "./ProfilePage.module.css";
 
 import FollowButton from "../../components/FollowButton";
@@ -85,9 +84,7 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profilePage}>
-      <div className={styles.navContainer}>
-        <NavBar />
-      </div>
+      <div className={styles.navContainer}></div>
       {/* --- Left Side Column --- */}
       {/* --- NEW SECTION: COMMUNITY --- */}
       <hr style={{ margin: "40px 0" }} />

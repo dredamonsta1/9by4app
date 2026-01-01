@@ -1,6 +1,6 @@
+// src/components/ArtVideoFeed/ArtVideoFeed.jsx
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import NavBar from "../NavBar/NavBar";
 import styles from "./ArtVideoFeed.module.css";
 
 const ArtVideoFeed = () => {
@@ -29,8 +29,6 @@ const ArtVideoFeed = () => {
 
   return (
     <div className={styles.container}>
-      <NavBar />
-
       {/* This is the main scroll container */}
       <div className={styles.videoFeedContainer}>
         {videos.map((video) => (
