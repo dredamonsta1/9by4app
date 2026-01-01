@@ -77,23 +77,42 @@ function ImageFeed() {
 }
 
 // 2. Minimalist Post Item to prevent crashes
+// This goes inside the ImagePostItem sub-component
 function ImagePostItem({ post, currentUserId }) {
-  if (!post) return null; // Defensive check
+  if (!post) return null;
+
+  // 1. Define the base URL (matches your Axios config)
+  const API_URL =
+    import.meta.env.VITE_API_URL || "https://ninebyfourapi.herokuapp.com/api";
+
+  // 2. Resolve the image URL safely
+  // We check if the image_url exists first to prevent crashes
+  const fullImageUrl = post.image_url
+    ? post.image_url.startsWith("http")
+      ? post.image_url
+      : `${API_URL}${post.image_url}`
+    : "https://via.placeholder.com/300?text=No+Image";
 
   return (
     <div className={styles.imageFeedItemContainer}>
       <p className="text-sm font-bold">Post by: {post.user_id || "Unknown"}</p>
-      {post.image_url && (
+
+      {/* 3. The Defensive Image Tag */}
+      <div className={styles.imageWrapper}>
         <img
-          src={post.image_url}
-          alt="post"
-          className="w-full h-auto rounded"
+          src={fullImageUrl}
+          alt={post.caption || "Creator Post"}
+          className="w-full h-auto rounded shadow-sm"
+          // Fallback if the resolved URL returns a 404
           onError={(e) => {
-            e.target.src = "https://via.placeholder.com/300?text=Image+Error";
+            e.target.onerror = null; // Prevent infinite loops
+            e.target.src =
+              "https://via.placeholder.com/300?text=Image+Not+Found";
           }}
         />
-      )}
-      <p>{post.caption}</p>
+      </div>
+
+      <p className="mt-2 text-gray-700">{post.caption}</p>
     </div>
   );
 }
