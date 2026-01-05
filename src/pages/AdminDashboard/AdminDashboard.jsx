@@ -125,6 +125,8 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./AdminDashboard.module.css";
+// import WaitlistManager from "../Admin/WaitlistManager.jsx";
+import WaitlistManager from "../../components/Admin/WaitlistManager.jsx";
 
 const AdminDashboard = () => {
   const [apiStatus, setApiStatus] = useState({ music: "checking..." });
@@ -156,6 +158,7 @@ const AdminDashboard = () => {
       <section className={styles.waitlistSection}>
         <h2>Recent Waitlist Signups</h2>
         {/* Map your waitlist data here with an 'Approve' button */}
+        <WaitlistManager />
       </section>
     </div>
   );
