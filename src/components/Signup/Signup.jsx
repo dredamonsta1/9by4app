@@ -1,20 +1,188 @@
-// src/components/Signup/Signup.jsx
+// // src/components/Signup/Signup.jsx
+// import React, { useState, useEffect } from "react";
+// import axiosInstance from "../../utils/axiosInstance";
+// import { useDispatch, useSelector } from "react-redux";
+// import { setCredentials } from "../../store/authSlice";
+// import { useNavigate } from "react-router-dom";
+// import "./Signup.css";
+
+// function AuthForm() {
+//   // Use Redux status to handle loading globally
+//   const { status, isLoggedIn } = useSelector((state) => state.auth);
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+
+//   const [isSignUp, setIsSignUp] = useState(false);
+//   const [isWaitlist, setIsWaitlist] = useState(false);
+//   const [localLoading, setLocalLoading] = useState(false); // Only for waitlist
+//   const [formData, setFormData] = useState({
+//     username: "",
+//     email: "",
+//     password: "",
+//     inviteCode: "",
+//     fullName: "",
+//   });
+//   const [message, setMessage] = useState({ text: "", type: "" });
+
+//   // Redirect if already logged in - don't let them see the login page
+//   useEffect(() => {
+//     if (isLoggedIn) navigate("/dashboard");
+//   }, [isLoggedIn, navigate]);
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLocalLoading(true);
+//     setMessage({ text: "", type: "" });
+
+//     try {
+//       let response;
+//       if (isWaitlist) {
+//         response = await axiosInstance.post("/waitlist/join", {
+//           email: formData.email,
+//           full_name: formData.fullName,
+//         });
+//         setMessage({ text: "Added to waitlist!", type: "success" });
+//       } else {
+//         const url = isSignUp ? "/users/register" : "/users/login";
+//         const payload = isSignUp
+//           ? { ...formData, invite_code: formData.inviteCode }
+//           : { username: formData.username, password: formData.password };
+
+//         response = await axiosInstance.post(url, payload);
+
+//         if (!isSignUp && response.data.token) {
+//           const { token, user } = response.data;
+//           // FIX: SYNCED KEY NAME
+//           localStorage.setItem("token", token);
+//           dispatch(setCredentials({ user, token }));
+//         } else if (isSignUp) {
+//           setMessage({
+//             text: "Account created! Please log in.",
+//             type: "success",
+//           });
+//           setIsSignUp(false);
+//         }
+//       }
+//     } catch (error) {
+//       const errorMsg = error.response?.data?.message || "An error occurred.";
+//       setMessage({ text: errorMsg, type: "error" });
+
+//       if (error.response?.data?.waitlist_enabled) {
+//         setIsWaitlist(true);
+//       }
+//     } finally {
+//       setLocalLoading(false);
+//     }
+//   };
+
+//   // Switch modes cleanly
+//   const switchMode = (mode) => {
+//     setIsSignUp(mode === "signup");
+//     setIsWaitlist(mode === "waitlist");
+//     setMessage({ text: "", type: "" });
+//   };
+
+//   const isLoading = localLoading || status === "loading";
+
+//   return (
+//     <div className="signup-container">
+//       <div className="inner-container">
+//         <h2>{isWaitlist ? "Join Waitlist" : isSignUp ? "Sign Up" : "Login"}</h2>
+
+//         {message.text && (
+//           <p
+//             className={
+//               message.type === "success" ? "text-green-500" : "text-red-500"
+//             }
+//           >
+//             {message.text}
+//           </p>
+//         )}
+
+//         <form onSubmit={handleSubmit}>
+//           {isWaitlist ? (
+//             <input
+//               type="text"
+//               name="fullName"
+//               placeholder="Full Name"
+//               onChange={handleChange}
+//               required
+//             />
+//           ) : (
+//             <input
+//               type="text"
+//               name="username"
+//               placeholder="Username"
+//               onChange={handleChange}
+//               required
+//             />
+//           )}
+
+//           <input
+//             type="email"
+//             name="email"
+//             placeholder="Email"
+//             onChange={handleChange}
+//             required
+//           />
+
+//           {!isWaitlist && (
+//             <input
+//               type="password"
+//               name="password"
+//               placeholder="Password"
+//               onChange={handleChange}
+//               required
+//             />
+//           )}
+
+//           {isSignUp && (
+//             <input
+//               type="text"
+//               name="inviteCode"
+//               placeholder="Invite Code"
+//               onChange={handleChange}
+//               required
+//             />
+//           )}
+
+//           <button type="submit" disabled={isLoading}>
+//             {isLoading ? "Processing..." : "Submit"}
+//           </button>
+//         </form>
+//         {/* Switcher buttons logic here */}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default AuthForm;
+
+// ***************************************************************
+// OLD CODE FOR REFERENCE ONLY - DO NOT DELETE
+// ***************************************************************
+
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 import { setCredentials } from "../../store/authSlice";
-import { useNavigate } from "react-router-dom";
 import "./Signup.css";
 
 function AuthForm() {
-  // Use Redux status to handle loading globally
-  const { status, isLoggedIn } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { status } = useSelector((state) => state.auth);
 
-  const [isSignUp, setIsSignUp] = useState(false);
+  // Switch mode based on the URL path
+  const isSignUp = location.pathname === "/signup";
   const [isWaitlist, setIsWaitlist] = useState(false);
-  const [localLoading, setLocalLoading] = useState(false); // Only for waitlist
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -24,74 +192,59 @@ function AuthForm() {
   });
   const [message, setMessage] = useState({ text: "", type: "" });
 
-  // Redirect if already logged in - don't let them see the login page
-  useEffect(() => {
-    if (isLoggedIn) navigate("/dashboard");
-  }, [isLoggedIn, navigate]);
-
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLocalLoading(true);
     setMessage({ text: "", type: "" });
 
     try {
-      let response;
       if (isWaitlist) {
-        response = await axiosInstance.post("/waitlist/join", {
+        await axiosInstance.post("/waitlist/join", {
           email: formData.email,
           full_name: formData.fullName,
         });
-        setMessage({ text: "Added to waitlist!", type: "success" });
+        setMessage({
+          text: "Added to waitlist! Check your email soon.",
+          type: "success",
+        });
+      } else if (isSignUp) {
+        await axiosInstance.post("/users/register", {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          invite_code: formData.inviteCode,
+        });
+        setMessage({ text: "Success! Please log in.", type: "success" });
+        navigate("/login");
       } else {
-        const url = isSignUp ? "/users/register" : "/users/login";
-        const payload = isSignUp
-          ? { ...formData, invite_code: formData.inviteCode }
-          : { username: formData.username, password: formData.password };
-
-        response = await axiosInstance.post(url, payload);
-
-        if (!isSignUp && response.data.token) {
-          const { token, user } = response.data;
-          // FIX: SYNCED KEY NAME
-          localStorage.setItem("token", token);
-          dispatch(setCredentials({ user, token }));
-        } else if (isSignUp) {
-          setMessage({
-            text: "Account created! Please log in.",
-            type: "success",
-          });
-          setIsSignUp(false);
-        }
+        // LOGIN logic - only username and password
+        const response = await axiosInstance.post("/users/login", {
+          username: formData.username,
+          password: formData.password,
+        });
+        const { token, user } = response.data;
+        localStorage.setItem("token", token);
+        dispatch(setCredentials({ user, token }));
+        navigate("/dashboard");
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "An error occurred.";
-      setMessage({ text: errorMsg, type: "error" });
-
-      if (error.response?.data?.waitlist_enabled) {
-        setIsWaitlist(true);
-      }
-    } finally {
-      setLocalLoading(false);
+      const resp = error.response?.data;
+      setMessage({
+        text: resp?.message || "An error occurred.",
+        type: "error",
+      });
+      if (resp?.waitlist_enabled) setIsWaitlist(true);
     }
   };
-
-  // Switch modes cleanly
-  const switchMode = (mode) => {
-    setIsSignUp(mode === "signup");
-    setIsWaitlist(mode === "waitlist");
-    setMessage({ text: "", type: "" });
-  };
-
-  const isLoading = localLoading || status === "loading";
 
   return (
     <div className="signup-container">
       <div className="inner-container">
-        <h2>{isWaitlist ? "Join Waitlist" : isSignUp ? "Sign Up" : "Login"}</h2>
+        <h2>
+          {isWaitlist ? "Waitlist" : isSignUp ? "Create Account" : "Sign In"}
+        </h2>
 
         {message.text && (
           <p
@@ -105,56 +258,83 @@ function AuthForm() {
 
         <form onSubmit={handleSubmit}>
           {isWaitlist ? (
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              onChange={handleChange}
-              required
-            />
+            <>
+              <input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                onChange={handleChange}
+                required
+              />
+            </>
           ) : (
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              onChange={handleChange}
-              required
-            />
+            <>
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                onChange={handleChange}
+                required
+              />
+              {isSignUp && (
+                <>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    onChange={handleChange}
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="inviteCode"
+                    placeholder="Invite Code"
+                    onChange={handleChange}
+                    required
+                  />
+                </>
+              )}
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={handleChange}
+                required
+              />
+            </>
           )}
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            required
-          />
-
-          {!isWaitlist && (
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              onChange={handleChange}
-              required
-            />
-          )}
-
-          {isSignUp && (
-            <input
-              type="text"
-              name="inviteCode"
-              placeholder="Invite Code"
-              onChange={handleChange}
-              required
-            />
-          )}
-
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? "Processing..." : "Submit"}
+          <button type="submit" disabled={status === "loading"}>
+            {status === "loading"
+              ? "Processing..."
+              : isWaitlist
+                ? "Join Waitlist"
+                : isSignUp
+                  ? "Sign Up"
+                  : "Login"}
           </button>
         </form>
-        {/* Switcher buttons logic here */}
+
+        <div className="mt-4 text-center">
+          {isSignUp ? (
+            <p>
+              Already have a code?{" "}
+              <button onClick={() => navigate("/login")}>Login</button>
+            </p>
+          ) : (
+            <p>
+              New creator?{" "}
+              <button onClick={() => navigate("/signup")}>Sign Up</button>
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

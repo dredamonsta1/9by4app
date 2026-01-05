@@ -33,6 +33,7 @@ const App = () => {
           <Route path="/dashBoard" element={<DashBoard />} />
           <Route path="/art-video" element={<ArtVideoFeed />} />
           <Route path="/login" element={<AuthForm />} />
+          <Route path="/signup" element={<AuthForm />} />
           <Route path="/images" element={<ImageFeed />} />
           {/* Add others only after verifying these work */}
           {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
