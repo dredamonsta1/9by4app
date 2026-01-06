@@ -341,3 +341,53 @@ function AuthForm() {
 }
 
 export default AuthForm;
+
+// src/components/Signup/Signup.jsx (Refactored logic)
+
+// function AuthForm() {
+//   const location = useLocation();
+//   const isLoginPage = location.pathname === "/login";
+
+//   // High-level UX: Default signup path to Waitlist, NOT the registration form
+//   const [mode, setMode] = useState(isLoginPage ? "login" : "waitlist");
+
+//   // ... (handleChange and handleSubmit remain similar)
+
+//   return (
+//     <div className="auth-container">
+//       <h2>
+//         {mode === "waitlist" ? "Join the Inner Circle" :
+//          mode === "signup" ? "Create Creator Account" : "Welcome Back"}
+//       </h2>
+
+//       <form onSubmit={handleSubmit}>
+//         {mode === "waitlist" && (
+//           <>
+//             <input type="text" name="fullName" placeholder="Full Name" required />
+//             <input type="email" name="email" placeholder="Email" required />
+//             <button type="submit">Get My Invite Code</button>
+//             <p onClick={() => setMode("signup")}>Already have a code?</p>
+//           </>
+//         )}
+
+//         {mode === "signup" && (
+//           <>
+//             <input type="text" name="inviteCode" placeholder="Enter Invite Code" required />
+//             <input type="email" name="email" placeholder="Email Address" required />
+//             <input type="text" name="username" placeholder="Pick a Username" required />
+//             <input type="password" name="password" placeholder="Password" required />
+//             <button type="submit">Register as Creator</button>
+//           </>
+//         )}
+
+//         {mode === "login" && (
+//            <>
+//             <input type="text" name="username" placeholder="Username" required />
+//             <input type="password" name="password" placeholder="Password" required />
+//             <button type="submit">Login</button>
+//            </>
+//         )}
+//       </form>
+//     </div>
+//   );
+// }

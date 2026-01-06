@@ -9,6 +9,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import DashBoard from "./components/Dashboard/Dashboard.jsx";
 import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed.jsx";
 import AuthForm from "./components/Signup/Signup";
+import LoginForm from "./components/login/Login.jsx";
 import ImageFeed from "./components/ImageFeed/ImageFeed"; // Let's audit this next
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
@@ -32,7 +33,7 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/dashBoard" element={<DashBoard />} />
           <Route path="/art-video" element={<ArtVideoFeed />} />
-          <Route path="/login" element={<AuthForm />} />
+          <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<AuthForm />} />
           <Route path="/images" element={<ImageFeed />} />
           {/* Add others only after verifying these work */}
