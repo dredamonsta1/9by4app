@@ -55,7 +55,6 @@ const NavBar = () => {
               Video
             </Link>
           </li>
-
           {user && user.role == "admin" && (
             <li>
               <Link to="/admin" onClick={closeMenu}>
@@ -65,11 +64,16 @@ const NavBar = () => {
           )}
 
           {!user && (
-            <li>
-              <Link to="/login" onClick={closeMenu}>
-                Login
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/signup" className={styles.cta}>
+                  Join Waitlist
+                </Link>
+              </li>
+            </>
           )}
         </ul>
 
