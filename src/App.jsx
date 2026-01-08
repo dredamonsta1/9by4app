@@ -10,6 +10,7 @@ import DashBoard from "./components/Dashboard/Dashboard.jsx";
 import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed.jsx";
 import Signup from "./components/Signup/Signup.jsx";
 import Login from "./components/login/Login.jsx";
+import Waitlist from "./components/Waitlist/Waitlist.jsx";
 import ImageFeed from "./components/ImageFeed/ImageFeed"; // Let's audit this next
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
@@ -33,8 +34,9 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/dashBoard" element={<DashBoard />} />
           <Route path="/art-video" element={<ArtVideoFeed />} />
+          <Route path="/signup" element={<Waitlist />} />
+          <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
           <Route path="/images" element={<ImageFeed />} />
           {/* Add others only after verifying these work */}
 
