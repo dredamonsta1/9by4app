@@ -75,6 +75,11 @@ const NavBar = () => {
               </li>
             </>
           )}
+          <li>
+            <Link to="/register" onClick={closeMenu}>
+              Register
+            </Link>
+          </li>
         </ul>
 
         <div className={styles.userInfo}>
