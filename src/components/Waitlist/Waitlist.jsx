@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-// import styles from "./Waitlist.module.css";
 import styles from "../Waitlist/Waitlist.module.css";
 
 const Waitlist = () => {

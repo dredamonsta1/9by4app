@@ -30,62 +30,64 @@ const NavBar = () => {
       {/* Collapsible Content */}
       <div className={`${styles.navContent} ${isOpen ? styles.show : ""}`}>
         <ul className={styles.navLinks}>
-          <li>
-            <Link to="/" onClick={closeMenu}>
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/profile" onClick={closeMenu}>
-              Profile
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashBoard" onClick={closeMenu}>
-              DashBoard
-            </Link>
-          </li>
-          <li>
-            <Link to="/images" onClick={closeMenu}>
-              Image Feed
-            </Link>
-          </li>
-          <li>
-            <Link to="/art-video" onClick={closeMenu}>
-              Video
-            </Link>
-          </li>
-          {user && user.role == "admin" && (
+          <ul className={styles.navLinks}>
             <li>
-              <Link to="/admin" onClick={closeMenu}>
-                Admin
-              </Link>
+              <Link to="/">Home</Link>
             </li>
-          )}
 
-          <li>
-            <Link to="/register" onClick={closeMenu}>
-              Register
-            </Link>
-          </li>
+            {/* GUEST ONLY: Join Waitlist */}
+            {!user && (
+              <>
+                <li>
+                  <Link to="/signup" className={styles.highlight}>
+                    Join Waitlist
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" onClick={closeMenu}>
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
 
-          {!user && (
-            <>
+            {/* LOGGED IN ONLY: Standard links */}
+            {user && (
+              <>
+                <li>
+                  <Link to="/dashboard">Dashboard</Link>
+                </li>
+                <li>
+                  <Link to="/images">Image Feed</Link>
+                </li>
+                {/* <li>
+                  <Link to="/profile">Profile</Link>
+                </li> */}
+              </>
+            )}
+
+            {/* ADMIN ONLY: Control Room */}
+            {user?.role === "admin" && (
+              <li>
+                <Link to="/admin" className={styles.adminLink}>
+                  Admin Panel
+                </Link>
+              </li>
+            )}
+
+            {!user && (
               <li>
                 <Link to="/login">Login</Link>
               </li>
-              <li>
-                <Link to="/signup" className={styles.cta}>
-                  Join Waitlist
-                </Link>
-              </li>
-            </>
-          )}
+            )}
+          </ul>
         </ul>
 
         <div className={styles.userInfo}>
           <span className={styles.username}>
-            {user ? user.username : "Guest"}
+            <li>
+              <Link to="/profile">{user ? user.username : "Guest"}</Link>
+            </li>
           </span>
           {user && (
             <button
