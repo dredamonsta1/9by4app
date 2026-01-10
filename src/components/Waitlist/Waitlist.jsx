@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import styles from "../Waitlist/Waitlist.module.css";
+// import styles from "../Waitlist/Waitlist.module.css";
+import styles from "../../AuthLayout.module.css";
 
 const Waitlist = () => {
   const [email, setEmail] = useState("");

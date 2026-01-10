@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
-// import "./Signup.css";
-import styles from "./Signup.module.css";
+// import styles from "./Signup.module.css";
+import styles from "../../AuthLayout.module.css";
 
 function Signup() {
   const [searchParams] = useSearchParams();
