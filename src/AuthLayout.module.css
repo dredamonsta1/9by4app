@@ -106,3 +106,22 @@
 .authFooter p {
   margin: 8px 0;
 }
+
+.successBox {
+  background: rgba(0, 230, 118, 0.1);
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Add a styling hint for Read-Only inputs to make them look "locked" */
+.input[readonly] {
+  background: #1a1a1a;
+  color: var(--text-dim);
+  cursor: not-allowed;
+  border-color: transparent;
+}
