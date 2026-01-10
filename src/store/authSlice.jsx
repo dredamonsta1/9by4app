@@ -69,14 +69,11 @@ const authSlice = createSlice({
 
   reducers: {
     setCredentials: (state, action) => {
-      const { user, token } = action.payload;
-      state.user = user;
-      state.token = token;
-      state.isLoggedIn = true;
-      state.status = "succeeded"; // Mark as succeeded if manually logging in
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      state.user = action.payload.user;
+      state.token = action.payload.token || state.token; // Keep existing token if not provided
+      if (action.payload.token) {
+        localStorage.setItem("token", action.payload.token);
+      }
     },
     logout: (state) => {
       state.user = null;
