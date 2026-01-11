@@ -1,30 +1,26 @@
 // src/store/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-// Import your async thunk (Assuming it's defined in an actions file)
 import { loadUserFromToken } from "../redux/actions/authActions";
 
 const persistedToken = localStorage.getItem("token");
-const persistedUser = localStorage.getItem("user")
-  ? JSON.parse(localStorage.getItem("user"))
-  : null;
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: persistedUser,
+    user: null, // Don't persist the user object, only the token
     token: persistedToken,
     isLoggedIn: !!persistedToken,
-    // status helps the UI know if we are currently validating the token with the server
-    status: persistedToken ? "loading" : "idle",
+    status: "idle", // Start at idle. Let the useEffect/Thunk set it to loading.
     error: null,
   },
 
   reducers: {
     setCredentials: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token || state.token; // Keep existing token if not provided
-      state.status = "succeeded";
-      state.isLoggedIn = true;
+      // High-level tip: Use optional chaining and fallback to ensure user exists
+      state.user = action.payload.user || null;
+      state.token = action.payload.token || state.token;
+      state.status = "succeeded"; // This kills the "Verifying..." screen
+      state.isLoggedIn = !!state.user;
 
       if (action.payload.token) {
         localStorage.setItem("token", action.payload.token);
@@ -36,11 +32,11 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.status = "idle";
       localStorage.removeItem("token");
+      // Clean up the "user" corpse from storage if it still exists
       localStorage.removeItem("user");
     },
   },
 
-  // This is where you handle the "Background Check" of the token
   extraReducers: (builder) => {
     builder
       .addCase(loadUserFromToken.pending, (state) => {
@@ -48,8 +44,10 @@ const authSlice = createSlice({
       })
       .addCase(loadUserFromToken.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.user; // Update user from server data
+        state.user = action.payload;
+        // Ensure action.payload matches your backend response
         state.isLoggedIn = true;
+        state.error = null;
       })
       .addCase(loadUserFromToken.rejected, (state, action) => {
         state.status = "failed";
@@ -57,17 +55,10 @@ const authSlice = createSlice({
         state.token = null;
         state.isLoggedIn = false;
         state.error = action.error.message;
-
-        // If the token is invalid, clean up
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
       });
   },
 });
 
 export const { setCredentials, logout } = authSlice.actions;
 export default authSlice.reducer;
-
-// Selectors
-export const selectAuthStatus = (state) => state.auth.status;
-export const selectCurrentUser = (state) => state.auth.user;

@@ -25,11 +25,30 @@ const ProtectedAdminRoute = ({ children }) => {
   }
 
   // 3. Fallback: If not loading and not authorized, redirect.
-  if (!token || !user || user.role?.toLowerCase() !== "admin") {
-    return <Navigate to="/dashboard" replace />;
+  if (!token || !user || user?.role?.toLowerCase() !== "admin") {
+    return <Navigate to="/login" replace />;
   }
 
   return children;
 };
+
+// src/components/ProtectedAdminRoute/ProtectedAdminRoute.jsx
+// const ProtectedAdminRoute = ({ children }) => {
+//   const { user, token, status } = useSelector((state) => state.auth);
+
+//   // If we are still loading, show a focused message instead of crashing
+//   if (status === "loading") {
+//     return (
+//       <div style={{ color: "white", textAlign: "center" }}>Verifying...</div>
+//     );
+//   }
+
+//   // USE OPTIONAL CHAINING: user?.role
+//   if (!token || !user || user?.role?.toLowerCase() !== "admin") {
+//     return <Navigate to="/login" replace />;
+//   }
+
+//   return children;
+// };
 
 export default ProtectedAdminRoute;

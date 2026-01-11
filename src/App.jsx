@@ -1,10 +1,10 @@
 // src/App.jsx
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setCredentials, logout } from "./store/authSlice.jsx";
-import axiosInstance from "./utils/axiosInstance.js";
-import { Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { loadUserFromToken } from "./redux/actions/authActions";
+import { setCredentials, logout } from "./store/authSlice.jsx";
+// import axiosInstance from "./utils/axiosInstance.js";
+import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
@@ -22,35 +22,13 @@ import "./App.css";
 
 const App = () => {
   const dispatch = useDispatch();
+  const { token, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) return; // No token, stay as Guest
-
-      try {
-        // High-level move: Set the default header for all subsequent requests
-        axiosInstance.defaults.headers.common["Authorization"] =
-          `Bearer ${token}`;
-
-        const response = await axiosInstance.get("/users/me");
-
-        // Success! Re-populate the Redux state
-        dispatch(
-          setCredentials({
-            user: response.data,
-            token: token,
-          })
-        );
-      } catch (err) {
-        console.error("Session expired or invalid token.");
-        dispatch(logout()); // Token was bad, clear everything
-      }
-    };
-
-    initializeAuth();
-  }, [dispatch]);
+    if (token && !user) {
+      dispatch(loadUserFromToken());
+    }
+  }, [dispatch, token, user]);
 
   return (
     <div className="app-container">
