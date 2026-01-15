@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadUserFromToken } from "./redux/actions/authActions";
+import { ToastContainer } from "react-toastify";
 import { setCredentials, logout } from "./store/authSlice.jsx";
 // import axiosInstance from "./utils/axiosInstance.js";
 import { Routes, Route } from "react-router-dom";
@@ -17,6 +18,7 @@ import ImageFeed from "./components/ImageFeed/ImageFeed"; // Let's audit this ne
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
 
@@ -32,6 +34,7 @@ const App = () => {
 
   return (
     <div className="app-container">
+      <ToastContainer theme="dark" position="bottom-right" />
       <NavBar />
       <main className="content">
         <Routes>

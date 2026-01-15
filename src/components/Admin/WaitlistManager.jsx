@@ -23,16 +23,32 @@ const WaitlistManager = () => {
     fetchEntries();
   }, []);
 
+  // const handleApprove = async (email) => {
+  //   try {
+  //     const res = await axiosInstance.patch("/admin/approve-creator", {
+  //       email,
+  //     });
+  //     // Notify the admin and refresh the list
+  //     alert(`Approved! Code for ${email}: ${res.data.inviteCode}`);
+  //     fetchEntries();
+  //   } catch (err) {
+  //     alert("Approval failed. Check server logs.");
+  //   }
+  // };
+
   const handleApprove = async (email) => {
     try {
-      const res = await axiosInstance.patch("/admin/approve-creator", {
+      const response = await axiosInstance.patch("/admin/approve-creator", {
         email,
       });
-      // Notify the admin and refresh the list
-      alert(`Approved! Code for ${email}: ${res.data.inviteCode}`);
-      fetchEntries();
+
+      // Instead of an alert with the code, show a success toast
+      toast.success(response.data.message); // If you have a toast library
+
+      // Refresh the list to show the user is now 'approved'
+      fetchWaitlist();
     } catch (err) {
-      alert("Approval failed. Check server logs.");
+      console.error("Approval failed");
     }
   };
 

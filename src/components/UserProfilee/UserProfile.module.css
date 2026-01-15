@@ -19,7 +19,7 @@
 }
 
 .loginButton {
-  background-color: #4CAF50; /* Green */
+  background-color: #4caf50; /* Green */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -50,7 +50,7 @@
   justify-content: center;
   padding: 20px;
   /* background-color: #f8f9fa;  */
-  background-color: chartreuse;
+  /* background-color: chartreuse; */
   min-height: 100vh; /* Full height to cover the viewport */
 }
 .profileTitle {
@@ -72,10 +72,6 @@
   font-size: 18px;
   color: #555;
 }
-
-
-
-
 
 .homeButton {
   margin-top: 20px;

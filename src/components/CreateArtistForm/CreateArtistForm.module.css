@@ -1,83 +1,83 @@
 .createArtistForm {
-    margin : 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: greenyellow; 
-    width: 50%;
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  /* background-color: greenyellow;  */
+  width: 50%;
 }
 
-.title{
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .success {
-    color: green;
+  color: green;
 }
 
 .error {
-    color: red;
+  color: red;
 }
 
 .artistNameLabel {
-    font-weight: bold;
-    margin-right: 10px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .artistNameInput {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    box-sizing: border-box; /* Ensures padding is included in width */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding is included in width */
 }
 
 .genreInputContainer {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .genreLabel {
-    font-weight: bold;
-    margin-right: 10px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .genreInput {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    box-sizing: border-box; /* Ensures padding is included in width */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding is included in width */
 }
 
 .genreInputContainer {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .artistImageLabel {
-    font-weight: bold;
-    margin-right: 10px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .artistImageInput {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    box-sizing: border-box; /* Ensures padding is included in width */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding is included in width */
 }
 
 .createArtistSubmitButton {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff; /* Bootstrap primary color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff; /* Bootstrap primary color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
 }
 .createArtistSubmitButton:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+  background-color: #0056b3; /* Darker shade on hover */
 }
