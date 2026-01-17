@@ -62,7 +62,7 @@ describe("NavBar Component", () => {
 
     it("renders the logo", () => {
       renderWithProviders(<NavBar />);
-      expect(screen.getByText("9by4")).toBeInTheDocument();
+      expect(screen.getByText("Vedioz")).toBeInTheDocument();
     });
 
     it("renders all navigation links", () => {
@@ -268,7 +268,7 @@ describe("NavBar Component", () => {
       const { container } = renderWithProviders(<NavBar />);
       const logo = container.querySelector(".logo");
       expect(logo).toBeInTheDocument();
-      expect(logo).toHaveTextContent("9by4");
+      expect(logo).toHaveTextContent("Vedioz");
     });
 
     it("renders navigation links list", () => {

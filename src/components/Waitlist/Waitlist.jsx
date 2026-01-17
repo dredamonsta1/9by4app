@@ -51,7 +51,8 @@ const Waitlist = () => {
         ) : (
           <>
             <p className={styles.subtitle}>
-              9by4 is currently invite-only to ensure a high-quality community.
+              Vedioz is currently invite-only to ensure a high-quality
+              community.
             </p>
 
             {status === "error" && (

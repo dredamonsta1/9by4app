@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
       <div className={styles.adminContainer}>
         <header className={styles.header}>
-          <h1>9by4 Control Room</h1>
+          <h1>Vedioz Control Room</h1>
           <p>Platform health and user management.</p>
         </header>
 
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
       {/* New Code */}
       <div className={styles.adminContainer}>
         <header className={styles.header}>
-          <h1>9by4 Control Room</h1>
+          <h1>Vedioz Control Room</h1>
           <p>Platform health and user management.</p>
         </header>
 
