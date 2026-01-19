@@ -69,26 +69,6 @@ const UserProfile = () => {
           <strong>Role:</strong> {user.role}
         </p>
       </div>
-
-      {/* <button className={styles.homeButton} onClick={() => navigate("/")}>
-        Go to Home
-      </button>
-
-      <button
-        className={styles.dashboardButton}
-        onClick={() => navigate("/dashboard")}
-      >
-        Go to Dashboard
-      </button>
-      <button
-        className={styles.viewImageFeedButton}
-        onClick={() => navigate("/image-feed")}
-      >
-        View Image Feed
-      </button> */}
-
-      {/* This component will fetch its own data as before */}
-      {/* <RapperList /> */}
     </div>
   );
 };
