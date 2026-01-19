@@ -1,74 +1,65 @@
+/* ProfilePage.module.css */
 
-/* Create a grid layout that fills the entire viewport height */
-/* .profilePage {
-  display: grid;
-  height: 100vh; */
-  /* Define the grid structure: 2 columns and 2 rows */
-  /* grid-template-columns: 280px 1fr; */
-  /* Left column is 280px, right takes the rest */
-  /* grid-template-rows: auto 1fr; */
-  /* Top row fits content, bottom row takes the rest */
-  /* grid-template-areas:
-    "navbar favorites"
-    "navbar main";
-  gap: 2rem; */
-  /* Spacing between grid areas */
-  /* background-color: #f4f7f6;
-} */
-
-/* --- Grid Area Containers --- */
-
-.navContainer {
-  grid-area: navbar;
-  /* The navbar itself will handle its own styling */
+.profilePage {
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-/* Assigns the top-right container to the 'favorites' grid area */
-.favoritesContainer {
-  grid-area: favorites;
-  background-color: #ffffff;
+/* Section Container */
+.section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 1.5rem 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
 }
 
-/* Assigns the main content area (below favorites) to the 'main' grid area */
-.mainContent {
-  grid-area: main;
-  background-color: #ffffff;
-  padding: 1.5rem 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  overflow-y: auto;
-  width: 70%;
-  /* Add a scrollbar if content overflows */
+.sectionHeader {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
 }
 
-/* --- General Styling for Content --- */
-
-.favArtistListHeader,
-.artistSearchBarTitle {
-  font-family: sans-serif;
-  color: #333;
-  margin-top: 0;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 0.5rem;
-}
-
-.artistSearchBar {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.sectionSubtext {
+  font-size: 0.875rem;
+  color: var(--text-dim);
   margin-bottom: 1rem;
 }
 
+/* Artist Search */
+.artistSearchBar {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-main);
+  transition: var(--transition);
+}
+
+.artistSearchBar:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.artistSearchBar::placeholder {
+  color: var(--text-dim);
+}
+
+/* Search Results Dropdown */
 .searchResultsList {
   list-style: none;
   padding: 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin: 0.5rem 0 0 0;
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   max-height: 200px;
   overflow-y: auto;
 }
@@ -77,39 +68,151 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.searchResultItem:last-child {
+  border-bottom: none;
+}
+
+.searchResultItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.searchResultItemSpan {
+  color: var(--text-main);
 }
 
 .addArtistButton {
-  padding: 5px 15px;
-  background-color: #007bff;
-  color: white;
+  padding: 6px 16px;
+  background: var(--accent);
+  color: var(--bg-color);
   border: none;
   border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: var(--transition);
 }
 
 .addArtistButton:hover {
-  background-color: #0056b3;
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
+/* Favorite Artists List */
 .favArtistList {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .favArtistItem {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  font-family: sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
 }
 
-.profileSectionHeader {
-  font-size: 1.5rem;
-  /* color: #333; */
-  color: lightsalmon;
-  margin-bottom: 1rem;
-  font-weight: bold;
+.favArtistItem:last-child {
+  border-bottom: none;
+}
+
+.cloutBadge {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: var(--text-dim);
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-dim);
+}
+
+/* Community Section */
+.communitySection {
+  margin-top: 0.5rem;
+}
+
+.quickFollowBox {
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.quickFollowBox h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--text-main);
+}
+
+.quickFollowBox p {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin: 0 0 1rem 0;
+}
+
+.quickFollowInput {
+  padding: 10px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-main);
+  margin-right: 10px;
+  width: 120px;
+}
+
+.quickFollowInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Following List */
+.followingList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.followingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.followingItem:last-child {
+  border-bottom: none;
+}
+
+.followingUsername {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* Profile & Create Artist Sections */
+.profileSection {
+  margin-top: 0;
+}
+
+/* Loading State */
+.loadingText {
+  color: var(--text-dim);
+  font-size: 0.875rem;
+}
+
+/* Divider - hide the ugly hr */
+.divider {
+  display: none;
 }
