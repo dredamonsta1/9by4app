@@ -85,6 +85,50 @@ const ProfilePage = () => {
   return (
     <div className={styles.profilePage}>
       <div className={styles.navContainer}></div>
+      <h2 className={styles.artistSearchBarTitle}>
+        Add your all time Fav Artists
+      </h2>
+      <input
+        className={styles.artistSearchBar}
+        type="text"
+        placeholder="Search for an artist..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {artistsLoading && searchTerm.length > 1 && <p>Searching...</p>}
+      {searchResults.length > 0 && (
+        <ul className={styles.searchResultsList}>
+          {searchResults.map((artist) => (
+            <li className={styles.searchResultItem} key={artist.artist_id}>
+              <span className={styles.searchResultItemSpan}>{artist.name}</span>
+              <button
+                className={styles.addArtistButton}
+                onClick={() => handleAddArtist(artist)}
+              >
+                Add
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className={styles.favoritesContainer}>
+        <h2 className={styles.favArtistListHeader}>Your Fav Artist List</h2>
+        {(profileListLoading || artistsLoading) && <p>Loading your list...</p>}
+        {!(profileListLoading || artistsLoading) &&
+        hydratedProfileList.length > 0 ? (
+          <ul className={styles.favArtistList}>
+            {hydratedProfileList.map((artist) => (
+              <li className={styles.favArtistItem} key={artist.artist_id}>
+                {artist.name} - (Clout: {artist.count})
+              </li>
+            ))}
+          </ul>
+        ) : (
+          !(profileListLoading || artistsLoading) && (
+            <p>Your list is empty. Search for artists to add them.</p>
+          )
+        )}
+      </div>
       {/* --- Left Side Column --- */}
       {/* --- NEW SECTION: COMMUNITY --- */}
       <hr style={{ margin: "40px 0" }} />
@@ -147,24 +191,6 @@ const ProfilePage = () => {
       </div>
       {/* *************************** */}
       {/* --- Top Right Area --- */}
-      <div className={styles.favoritesContainer}>
-        <h2 className={styles.favArtistListHeader}>Your Fav Artist List</h2>
-        {(profileListLoading || artistsLoading) && <p>Loading your list...</p>}
-        {!(profileListLoading || artistsLoading) &&
-        hydratedProfileList.length > 0 ? (
-          <ul className={styles.favArtistList}>
-            {hydratedProfileList.map((artist) => (
-              <li className={styles.favArtistItem} key={artist.artist_id}>
-                {artist.name} - (Clout: {artist.count})
-              </li>
-            ))}
-          </ul>
-        ) : (
-          !(profileListLoading || artistsLoading) && (
-            <p>Your list is empty. Search for artists to add them.</p>
-          )
-        )}
-      </div>
       {/* --- Main Content Area (Below Favorites) --- */}
       <div className={styles.mainContent}>
         <h2 className={styles.profileSectionHeader}>Your Profile</h2>
@@ -174,35 +200,6 @@ const ProfilePage = () => {
         <h2>Artist Creation</h2>
         <CreateArtistForm />
         <hr style={{ margin: "40px 0" }} />
-
-        <h2 className={styles.artistSearchBarTitle}>
-          Add your all time Fav Artists
-        </h2>
-        <input
-          className={styles.artistSearchBar}
-          type="text"
-          placeholder="Search for an artist..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        {artistsLoading && searchTerm.length > 1 && <p>Searching...</p>}
-        {searchResults.length > 0 && (
-          <ul className={styles.searchResultsList}>
-            {searchResults.map((artist) => (
-              <li className={styles.searchResultItem} key={artist.artist_id}>
-                <span className={styles.searchResultItemSpan}>
-                  {artist.name}
-                </span>
-                <button
-                  className={styles.addArtistButton}
-                  onClick={() => handleAddArtist(artist)}
-                >
-                  Add
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   );
