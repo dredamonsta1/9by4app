@@ -4,7 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import styles from "./ImageFeed.module.css";
 
-// 1. Skeleton Component (Defensive UI)
+// Skeleton Component for loading state
 const ImageSkeleton = () => (
   <div className={styles.skeletonWrapper}>
     <div className={styles.skeletonHeader}></div>
@@ -13,8 +13,113 @@ const ImageSkeleton = () => (
   </div>
 );
 
+// Image Post Creator Component
+function ImagePostCreator({ onPostCreated }) {
+  const [file, setFile] = useState(null);
+  const [caption, setCaption] = useState("");
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+      setError(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setError("Please select an image to upload.");
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("caption", caption);
+
+    try {
+      await axiosInstance.post("/image-posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      // Reset form
+      setFile(null);
+      setCaption("");
+      setPreview(null);
+      // Refresh the feed
+      if (onPostCreated) onPostCreated();
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError(err.response?.data?.message || "Failed to upload image.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const clearPreview = () => {
+    setFile(null);
+    setPreview(null);
+  };
+
+  return (
+    <div className={styles.imagePostCreator}>
+      <h3 className={styles.creatorTitle}>Share an Image</h3>
+      <form onSubmit={handleSubmit}>
+        {error && <div className={styles.errorMessage}>{error}</div>}
+
+        {preview ? (
+          <div className={styles.previewContainer}>
+            <img src={preview} alt="Preview" className={styles.previewImage} />
+            <button
+              type="button"
+              onClick={clearPreview}
+              className={styles.clearButton}
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <label className={styles.fileInputLabel}>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/gif"
+              onChange={handleFileChange}
+              className={styles.fileInput}
+            />
+            <span className={styles.fileInputText}>Click to select image</span>
+          </label>
+        )}
+
+        <textarea
+          className={styles.captionInput}
+          placeholder="Add a caption..."
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          rows="2"
+        />
+
+        <button
+          type="submit"
+          className={styles.uploadButton}
+          disabled={!file || uploading}
+        >
+          {uploading ? "Uploading..." : "Post Image"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
 function ImageFeed() {
-  const currentUserId = useSelector((state) => state.auth.user?.user_id);
+  const currentUserId = useSelector((state) => state.auth.user?.id);
   const [imagePosts, setImagePosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +129,6 @@ function ImageFeed() {
     setError(null);
     try {
       const response = await axiosInstance.get("/image-posts");
-      // DEFENSIVE: Fallback to empty array if data is missing
       const fetchedPosts = Array.isArray(response.data)
         ? response.data
         : response.data?.data || [];
@@ -41,32 +145,31 @@ function ImageFeed() {
     fetchImagePosts();
   }, [fetchImagePosts]);
 
-  // Handle errors gracefully instead of crashing
   if (error) return <div className={styles.errorContainer}>{error}</div>;
 
   return (
     <div className={styles.imageFeedContainer}>
-      {/* NOTE: NavBar is removed from here because we put it in App.jsx.
-         If you see TWO navbars, delete the one in App.jsx.
-      */}
       <div className={styles.mainContent}>
         <div className={styles.headerSection}>
           <h1>Image Feed</h1>
-          {/* We'll re-integrate ImagePostCreator once the screen is blue/white again */}
         </div>
+
+        <ImagePostCreator onPostCreated={fetchImagePosts} />
 
         <div className={styles.feedList}>
           {loading ? (
-            // Show 3 skeletons while loading
             [1, 2, 3].map((n) => <ImageSkeleton key={n} />)
           ) : imagePosts.length === 0 ? (
-            <p className="text-center">No images yet. Be the first to post!</p>
+            <p className={styles.emptyState}>
+              No images yet. Be the first to post!
+            </p>
           ) : (
             imagePosts.map((post) => (
               <ImagePostItem
-                key={post.id || post._id || Math.random()}
+                key={post.post_id || post.id || Math.random()}
                 post={post}
                 currentUserId={currentUserId}
+                onDelete={fetchImagePosts}
               />
             ))
           )}
@@ -76,43 +179,69 @@ function ImageFeed() {
   );
 }
 
-// 2. Minimalist Post Item to prevent crashes
-// This goes inside the ImagePostItem sub-component
-function ImagePostItem({ post, currentUserId }) {
+// Image Post Item Component
+function ImagePostItem({ post, currentUserId, onDelete }) {
+  const [deleting, setDeleting] = useState(false);
+
   if (!post) return null;
 
-  // 1. Define the base URL (matches your Axios config)
-  const API_URL =
-    import.meta.env.VITE_API_URL || "https://ninebyfourapi.herokuapp.com/api";
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://ninebyfourapi.herokuapp.com";
 
-  // 2. Resolve the image URL safely
-  // We check if the image_url exists first to prevent crashes
+  // Resolve full image URL
   const fullImageUrl = post.image_url
     ? post.image_url.startsWith("http")
       ? post.image_url
-      : `${API_URL}${post.image_url}`
+      : `${API_BASE}${post.image_url}`
     : "https://via.placeholder.com/300?text=No+Image";
 
-  return (
-    <div className={styles.imageFeedItemContainer}>
-      <p className="text-sm font-bold">Post by: {post.user_id || "Unknown"}</p>
+  const isOwner = currentUserId === post.user_id;
 
-      {/* 3. The Defensive Image Tag */}
+  const handleDelete = async () => {
+    if (!window.confirm("Delete this image post?")) return;
+    setDeleting(true);
+    try {
+      await axiosInstance.delete(`/image-posts/${post.post_id}`);
+      if (onDelete) onDelete();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete post.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className={styles.imagePostItem}>
+      <div className={styles.postHeader}>
+        <span className={styles.username}>
+          {post.username || `User ${post.user_id}`}
+        </span>
+        {isOwner && (
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className={styles.deleteButton}
+          >
+            {deleting ? "..." : "Delete"}
+          </button>
+        )}
+      </div>
+
       <div className={styles.imageWrapper}>
         <img
           src={fullImageUrl}
-          alt={post.caption || "Creator Post"}
-          className="w-full h-auto rounded shadow-sm"
-          // Fallback if the resolved URL returns a 404
+          alt={post.caption || "Image post"}
+          className={styles.postImage}
           onError={(e) => {
-            e.target.onerror = null; // Prevent infinite loops
+            e.target.onerror = null;
             e.target.src =
               "https://via.placeholder.com/300?text=Image+Not+Found";
           }}
         />
       </div>
 
-      <p className="mt-2 text-gray-700">{post.caption}</p>
+      {post.caption && <p className={styles.caption}>{post.caption}</p>}
     </div>
   );
 }

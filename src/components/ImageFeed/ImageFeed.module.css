@@ -1,78 +1,247 @@
+/* ImageFeed.module.css */
+
 .imageFeedContainer {
-  display: flex;
-  flex-direction: column;
-    /* display: grid;
-    grid-template-columns: 280px 1fr; */
-    min-height: 100vh;
-    /* Make the layout at least the full height of the screen */
-    background-color: #f4f7f6;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
-/*
-  This new class will wrap your main content on the right side.
-  The padding gives it some nice spacing, and overflow handles scrolling.
-*/
 .mainContent {
-    padding: 2rem;
-    overflow-y: auto;
-    /* Adds a scrollbar if the content is too long */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Centers the feed content horizontally */
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-/*
-  This class is for the individual post items. We can reuse the
-  styling you had before, but it's good practice to have it
-  in the CSS module.
-*/
-.imageFeedItemContainer {
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid #e2e8f0;
-}
-
-.skeletonWrapper {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
+.headerSection {
   margin-bottom: 1.5rem;
 }
 
-.skeletonHeader, .skeletonImage, .skeletonText {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+.headerSection h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0;
+}
+
+/* Image Post Creator */
+.imagePostCreator {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.creatorTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 1rem 0;
+}
+
+.errorMessage {
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.fileInputLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  border: 2px dashed var(--border);
+  border-radius: 6px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 1rem;
+}
+
+.fileInputLabel:hover {
+  border-color: var(--accent);
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInputText {
+  color: var(--text-dim);
+  font-size: 0.875rem;
+}
+
+.previewContainer {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.previewImage {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.clearButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 6px 12px;
   border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
 }
 
-.skeletonHeader { height: 20px; width: 40%; margin-bottom: 10px; }
-.skeletonImage { height: 300px; width: 100%; margin-bottom: 10px; }
-.skeletonText { height: 15px; width: 80%; }
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+.clearButton:hover {
+  background: rgba(0, 0, 0, 0.9);
 }
 
-/* **************New code below */
+.captionInput {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
 
+.captionInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
 
-.skeletonWrapper {
-  background: #fff;
+.captionInput::placeholder {
+  color: var(--text-dim);
+}
+
+.uploadButton {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.uploadButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Feed List */
+.feedList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 3rem;
+}
+
+/* Image Post Item */
+.imagePostItem {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
-  border-radius: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.username {
+  font-weight: 500;
+  color: var(--text-main);
+  font-size: 0.875rem;
+}
+
+.deleteButton {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: var(--error);
+  color: white;
+}
+
+.deleteButton:disabled {
+  opacity: 0.5;
+}
+
+.imageWrapper {
+  width: 100%;
+}
+
+.postImage {
+  width: 100%;
+  display: block;
+}
+
+.caption {
+  padding: 1rem;
+  margin: 0;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Error Container */
+.errorContainer {
+  text-align: center;
+  color: var(--error);
+  padding: 3rem;
+}
+
+/* Skeleton Loading */
+.skeletonWrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
   margin-bottom: 1.5rem;
 }
 
 .skeletonHeader,
 .skeletonImage,
 .skeletonText {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(
+    90deg,
+    var(--border) 25%,
+    var(--card-bg) 50%,
+    var(--border) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 4px;
@@ -99,7 +268,6 @@
   0% {
     background-position: -200% 0;
   }
-
   100% {
     background-position: 200% 0;
   }
