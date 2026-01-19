@@ -231,7 +231,8 @@ function PostItem({ post, currentUserId, onDelete }) {
               className={styles.postImage}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "https://via.placeholder.com/400?text=Image+Not+Found";
+                // Use inline SVG data URI as fallback (no external requests)
+                e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='16' text-anchor='middle' x='200' y='150'%3EImage not found%3C/text%3E%3C/svg%3E";
               }}
             />
           </div>
