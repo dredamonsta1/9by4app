@@ -69,12 +69,7 @@ const NavBar = () => {
             <>
               <li>
                 <Link to="/dashboard" onClick={closeMenu}>
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/images" onClick={closeMenu}>
-                  Image Feed
+                  Feed
                 </Link>
               </li>
               {user.role === "admin" && (

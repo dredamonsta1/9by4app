@@ -14,7 +14,8 @@ import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed.jsx";
 import Signup from "./components/Signup/Signup.jsx";
 import Login from "./components/login/Login.jsx";
 import Waitlist from "./components/Waitlist/Waitlist.jsx";
-import ImageFeed from "./components/ImageFeed/ImageFeed"; // Let's audit this next
+import ImageFeed from "./components/ImageFeed/ImageFeed";
+import Feed from "./components/Feed/Feed";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
@@ -46,7 +47,7 @@ const App = () => {
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/images" element={<ImageFeed />} />
-          {/* Add others only after verifying these work */}
+          <Route path="/feed" element={<Feed />} />
 
           <Route
             path="/admin"
