@@ -9,15 +9,6 @@ const Dashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* Admin-only link to waitlist management */}
-      {user?.role === "admin" && (
-        <div className={styles.adminLinkContainer}>
-          <Link className={styles.adminLink} to="/admin/waitlist">
-            Manage Waitlist (Admin)
-          </Link>
-        </div>
-      )}
-
       <Feed />
     </div>
   );
