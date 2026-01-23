@@ -16,7 +16,7 @@ const ArtistCard = ({ artist }) => {
       {/* Top section for Artist Name and Genre */}
       <div className={styles.artistHeader}>
         <h3 className={styles.artistHeaderH3}>{artist.name}</h3>
-        <p className={style.artistHeaderP}>Genre: {artist.genre}</p>
+        <p className={styles.artistHeaderP}>Genre: {artist.genre}</p>
       </div>
 
       {/* Section for Image and Clout Item */}
