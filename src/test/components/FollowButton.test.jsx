@@ -3,21 +3,14 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import FollowButton from "../../components/FollowButton";
 
-// Mock localStorage
-const mockLocalStorage = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-};
-Object.defineProperty(window, "localStorage", { value: mockLocalStorage });
-
 // Mock fetch
 global.fetch = vi.fn();
 
 describe("FollowButton Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockLocalStorage.getItem.mockReturnValue("mock-token");
+    // Use the localStorage mock from setup.js
+    localStorage.setItem("token", "mock-token");
   });
 
   describe("Rendering", () => {
@@ -52,7 +45,7 @@ describe("FollowButton Component", () => {
 
   describe("Authentication Check", () => {
     it("shows alert when not logged in", async () => {
-      mockLocalStorage.getItem.mockReturnValue(null);
+      localStorage.removeItem("token");
       const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
       const user = userEvent.setup();
 
@@ -64,7 +57,7 @@ describe("FollowButton Component", () => {
     });
 
     it("does not make API call when not logged in", async () => {
-      mockLocalStorage.getItem.mockReturnValue(null);
+      localStorage.removeItem("token");
       vi.spyOn(window, "alert").mockImplementation(() => {});
       const user = userEvent.setup();
 
