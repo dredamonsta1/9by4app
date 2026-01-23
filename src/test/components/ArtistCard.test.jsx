@@ -17,7 +17,7 @@ vi.mock("../../components/ArtistCard.module.css", () => ({
 // Note: The component has a bug - it uses `style.artistHeaderP` instead of `styles.artistHeaderP`
 // Skipping tests until the component is fixed
 
-describe.skip("ArtistCard Component", () => {
+describe("ArtistCard Component", () => {
   const mockArtist = {
     name: "Test Artist",
     genre: "Hip Hop",
