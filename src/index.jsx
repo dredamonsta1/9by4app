@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import store from "./redux/store";
 import { injectStore } from "./utils/axiosInstance";
 import App from "./App";
-import styles from "./index.module.css";
+import "./index.css";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
