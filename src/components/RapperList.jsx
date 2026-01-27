@@ -30,15 +30,17 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton }) => {
   const handleDelete = async (artistId) => {
     // This logic remains, but ideally would be moved to the parent component as well.
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this artist?"
+      "Are you sure you want to delete this artist?",
     );
     if (!confirmDelete) return;
     // Note: The delete/edit logic might be better handled in the parent page
     // to keep this component purely for display.
+    console.log("Deleting artist with ID:", artistId);
     alert("Delete functionality would be handled here.");
   };
 
   const handleEdit = (artistId) => {
+    console.log("Editing artist with ID:", artistId);
     alert(`Editing artist with ID: ${artistId}`);
   };
 

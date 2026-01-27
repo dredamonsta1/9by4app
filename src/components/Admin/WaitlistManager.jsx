@@ -23,19 +23,6 @@ const WaitlistManager = () => {
     fetchEntries();
   }, []);
 
-  // const handleApprove = async (email) => {
-  //   try {
-  //     const res = await axiosInstance.patch("/admin/approve-creator", {
-  //       email,
-  //     });
-  //     // Notify the admin and refresh the list
-  //     alert(`Approved! Code for ${email}: ${res.data.inviteCode}`);
-  //     fetchEntries();
-  //   } catch (err) {
-  //     alert("Approval failed. Check server logs.");
-  //   }
-  // };
-
   const handleApprove = async (email) => {
     try {
       const response = await axiosInstance.patch("/admin/approve-creator", {

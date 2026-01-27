@@ -10,8 +10,8 @@ const FollowButton = ({ targetUserId, initialIsFollowing = false }) => {
   const handleToggleFollow = async () => {
     const token = getToken();
     if (!token) {
-      alert("You must be logged in to follow users.");
-      console.log("Follow error: No auth token found.");
+      // alert("You must be logged in to follow users.");
+      console.error("Follow error: No auth token found.");
       return;
     }
 
@@ -38,13 +38,12 @@ const FollowButton = ({ targetUserId, initialIsFollowing = false }) => {
         setIsFollowing(!isFollowing);
       } else {
         const errorData = await response.json();
-        console.log("Follow error response:", errorData);
-        alert(`Error: ${errorData.message}`);
+        console.error("Follow error:", errorData.message);
+        // alert(`Error: ${errorData.message}`);
       }
     } catch (error) {
       console.error("Follow error:", error);
-      console.log("Follow error details:", error);
-      alert("Something went wrong.");
+      // alert("Something went wrong.");
     } finally {
       setLoading(false);
     }

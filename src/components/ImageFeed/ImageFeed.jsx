@@ -204,8 +204,8 @@ function ImagePostItem({ post, currentUserId, onDelete }) {
       await axiosInstance.delete(`/image-posts/${post.post_id}`);
       if (onDelete) onDelete();
     } catch (err) {
-      console.error("Delete error:", err);
-      alert("Failed to delete post.");
+      console.error("Failed to delete post:", err);
+      // alert("Failed to delete post.");
     } finally {
       setDeleting(false);
     }
