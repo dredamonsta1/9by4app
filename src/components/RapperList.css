@@ -9,14 +9,14 @@
   width: 100%;
 }
 
-.header-size-two {
+/* .header-size-two {
   font-size: 2em;
   background-color: blue;
-}
+} */
 
 .rapperList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 2fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 20px;
   padding: 20px;
   width: 100%;
@@ -43,11 +43,13 @@
   /* Indicates the item is interactive */
   transition: transform 0.3s ease-in-out;
   /* Smooth lift effect on hover */
+  /* background-color: blueviolet; */
 }
 
 .rapperList-item:hover {
   transform: translateY(-5px);
   /* Lifts the card slightly on hover */
+  background-color: aquamarine;
 }
 
 /* Styling for the image to take up the entire item */
@@ -93,7 +95,12 @@
   transition: opacity 0.3s ease-in-out;
   /* Smooth transition for revealing the overlay */
   /* Creates a gradient from transparent to dark, covering the bottom portion for text */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
   pointer-events: none;
   /* Allows clicks to pass through when the overlay is hidden */
 }
@@ -139,7 +146,9 @@
   border-radius: 5px;
   font-size: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
   font-weight: bold;
 }
 
@@ -172,7 +181,10 @@
   color: white;
   background-color: transparent;
   /* Transparent background */
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .rapperList-admin-actions button:first-child {
@@ -209,7 +221,7 @@
 }
 
 .rapperList-item p {
-  margin: 0;
+  margin: 0px 0 0 0;
   font-size: 1em;
   /* Slightly larger paragraph text */
 }

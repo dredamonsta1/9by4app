@@ -51,7 +51,10 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton }) => {
           <li className="rapperList-item" key={item.artist_id}>
             {item.image_url && (
               <img
-                src={`${API_BASE_URL}${item.image_url}`}
+                src={
+                  `${API_BASE_URL}${item.image_url}` ||
+                  "https://via.placeholder.com/60?text=No+Image"
+                }
                 alt={item.name || "Artist"}
                 className="rapperList-item-image"
               />
