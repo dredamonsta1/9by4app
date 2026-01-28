@@ -36,7 +36,8 @@
   /* Essential for absolute positioning of image and overlay */
   overflow: hidden;
   /* Ensures image and overlay corners are rounded with the card */
-  min-height: 100px;
+  /* min-height: 100px; */
+  aspect-ratio: 3/4;
   /* Sets a minimum height for the card to ensure images fill space */
   /* min-width: 10px; */
   cursor: pointer;
@@ -82,8 +83,8 @@
   height: 100%;
   z-index: 2;
   /* Ensures the overlay is above the image */
-  padding: 20px;
-  /* Generous padding around the content */
+  padding: 12px;
+  /* Padding around the content */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -214,7 +215,7 @@
 /* General text styling within list item */
 .rapperList-item h3 {
   margin: 0;
-  font-size: 1.8em;
+  font-size: 1.2em;
   /* Slightly larger and more prominent heading */
   font-weight: 700;
   /* Bolder text for emphasis */
