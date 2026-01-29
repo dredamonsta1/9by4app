@@ -7,7 +7,7 @@ import ClickableList from "../components/RapperList";
 import { fetchArtists } from "../redux/actions/artistActions"; // Import the fetch action
 import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 7;
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -28,15 +28,15 @@ const HomePage = () => {
   const totalPages = Math.ceil(artists.length / PAGE_SIZE);
   const paginatedArtists = artists.slice(
     (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    currentPage * PAGE_SIZE,
   );
 
   return (
     <div className={styles.homePageContainer}>
       <div className={styles.mainContent}>
-        <h2 className={styles.homePageHeader}>Home Page</h2>
+        {/* <h2 className={styles.homePageHeader}>Home Page</h2> */}
 
-        <h3>Artists List</h3>
+        {/* <h3>Artists List</h3> */}
         {loading && <p>Loading artists...</p>}
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
         {!loading && !error && (
