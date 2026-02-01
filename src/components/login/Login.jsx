@@ -83,7 +83,7 @@ function Login() {
 
       localStorage.setItem("token", token);
       dispatch(setCredentials({ user, token }));
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Invalid username or password");
     } finally {
