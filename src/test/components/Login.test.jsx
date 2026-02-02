@@ -161,7 +161,7 @@ describe("Login Component", () => {
       expect(screen.getByLabelText("Password")).toBeDisabled();
     });
 
-    it("navigates to dashboard on successful login", async () => {
+    it("navigates to homepage on successful login", async () => {
       const user = userEvent.setup();
       axiosInstance.post.mockResolvedValue({
         data: {
@@ -177,7 +177,7 @@ describe("Login Component", () => {
       await user.click(screen.getByRole("button", { name: /sign in/i }));
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+        expect(mockNavigate).toHaveBeenCalledWith("/");
       });
     });
   });
