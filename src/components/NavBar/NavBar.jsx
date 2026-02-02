@@ -72,6 +72,11 @@ const NavBar = () => {
                   Feed
                 </Link>
               </li>
+              <li>
+                <Link to="/art-video" onClick={closeMenu}>
+                  Videos
+                </Link>
+              </li>
               {user.role === "admin" && (
                 <li>
                   <Link
