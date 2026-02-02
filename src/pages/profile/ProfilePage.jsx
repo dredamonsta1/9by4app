@@ -129,118 +129,123 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profilePage}>
-      {/* Section: Favorite Artists */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionHeader}>Favorite Artists</h2>
-        <p className={styles.sectionSubtext}>
-          Search and add your all-time favorite artists
-        </p>
+      {/* Left Column */}
+      <div className={styles.leftColumn}>
+        {/* Section: Favorite Artists */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionHeader}>Favorite Artists</h2>
+          <p className={styles.sectionSubtext}>
+            Search and add your all-time favorite artists
+          </p>
 
-        <input
-          className={styles.artistSearchBar}
-          type="text"
-          placeholder="Search for an artist..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        {artistsLoading && searchTerm.length > 1 && (
-          <p className={styles.loadingText}>Searching...</p>
-        )}
-
-        {searchResults.length > 0 && (
-          <ul className={styles.searchResultsList}>
-            {searchResults.map((artist) => (
-              <li className={styles.searchResultItem} key={artist.artist_id}>
-                <span className={styles.searchResultItemSpan}>
-                  {artist.name}
-                </span>
-                <button
-                  className={styles.addArtistButton}
-                  onClick={() => handleAddArtist(artist)}
-                >
-                  Add
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {(profileListLoading || artistsLoading) && (
-          <p className={styles.loadingText}>Loading your list...</p>
-        )}
-
-        {!(profileListLoading || artistsLoading) &&
-        hydratedProfileList.length > 0 ? (
-          <ul className={styles.favArtistList}>
-            {hydratedProfileList.map((artist) => (
-              <li className={styles.favArtistItem} key={artist.artist_id}>
-                <span>{artist.name}</span>
-                <span className={styles.cloutBadge}>
-                  Clout: {artist.count}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          !(profileListLoading || artistsLoading) && (
-            <p className={styles.emptyState}>
-              Your list is empty. Search for artists to add them.
-            </p>
-          )
-        )}
-      </section>
-
-      {/* Section: Community */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionHeader}>My Community</h2>
-
-        <div className={styles.quickFollowBox}>
-          <h4>Quick Follow (Test Mode)</h4>
-          <p>Enter a User ID to follow them.</p>
           <input
-            type="number"
-            placeholder="User ID"
-            value={manualId}
-            onChange={(e) => setManualId(e.target.value)}
-            className={styles.quickFollowInput}
+            className={styles.artistSearchBar}
+            type="text"
+            placeholder="Search for an artist..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          {manualId && (
-            <FollowButton targetUserId={manualId} initialIsFollowing={false} />
+
+          {artistsLoading && searchTerm.length > 1 && (
+            <p className={styles.loadingText}>Searching...</p>
           )}
-        </div>
 
-        <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
-          People I Follow
-        </h3>
-        {followingList.length === 0 ? (
-          <p className={styles.emptyState}>You aren't following anyone yet.</p>
-        ) : (
-          <ul className={styles.followingList}>
-            {followingList.map((user) => (
-              <li key={user.user_id} className={styles.followingItem}>
-                <span className={styles.followingUsername}>{user.username}</span>
-                <FollowButton
-                  targetUserId={user.user_id}
-                  initialIsFollowing={true}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {searchResults.length > 0 && (
+            <ul className={styles.searchResultsList}>
+              {searchResults.map((artist) => (
+                <li className={styles.searchResultItem} key={artist.artist_id}>
+                  <span className={styles.searchResultItemSpan}>
+                    {artist.name}
+                  </span>
+                  <button
+                    className={styles.addArtistButton}
+                    onClick={() => handleAddArtist(artist)}
+                  >
+                    Add
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
 
-      {/* Section: Profile */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionHeader}>Your Profile</h2>
-        <UserProfile />
-      </section>
+          {(profileListLoading || artistsLoading) && (
+            <p className={styles.loadingText}>Loading your list...</p>
+          )}
 
-      {/* Section: Artist Creation */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionHeader}>Create Artist</h2>
-        <CreateArtistForm />
-      </section>
+          {!(profileListLoading || artistsLoading) &&
+          hydratedProfileList.length > 0 ? (
+            <ul className={styles.favArtistList}>
+              {hydratedProfileList.map((artist) => (
+                <li className={styles.favArtistItem} key={artist.artist_id}>
+                  <span>{artist.name}</span>
+                  <span className={styles.cloutBadge}>
+                    Clout: {artist.count}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            !(profileListLoading || artistsLoading) && (
+              <p className={styles.emptyState}>
+                Your list is empty. Search for artists to add them.
+              </p>
+            )
+          )}
+        </section>
+
+        {/* Section: Profile */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionHeader}>Your Profile</h2>
+          <UserProfile />
+        </section>
+
+        {/* Section: Artist Creation */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionHeader}>Create Artist</h2>
+          <CreateArtistForm />
+        </section>
+      </div>
+
+      {/* Right Column: Community */}
+      <div className={styles.rightColumn}>
+        <section className={`${styles.section} ${styles.communitySection}`}>
+          <h2 className={styles.sectionHeader}>My Community</h2>
+
+          <div className={styles.quickFollowBox}>
+            <h4>Quick Follow (Test Mode)</h4>
+            <p>Enter a User ID to follow them.</p>
+            <input
+              type="number"
+              placeholder="User ID"
+              value={manualId}
+              onChange={(e) => setManualId(e.target.value)}
+              className={styles.quickFollowInput}
+            />
+            {manualId && (
+              <FollowButton targetUserId={manualId} initialIsFollowing={false} />
+            )}
+          </div>
+
+          <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
+            People I Follow
+          </h3>
+          {followingList.length === 0 ? (
+            <p className={styles.emptyState}>You aren't following anyone yet.</p>
+          ) : (
+            <ul className={styles.followingList}>
+              {followingList.map((user) => (
+                <li key={user.user_id} className={styles.followingItem}>
+                  <span className={styles.followingUsername}>{user.username}</span>
+                  <FollowButton
+                    targetUserId={user.user_id}
+                    initialIsFollowing={true}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     </div>
   );
 };
