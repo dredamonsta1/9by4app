@@ -1,5 +1,6 @@
 // src/components/Feed/Feed.jsx
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import styles from "./Feed.module.css";
@@ -203,7 +204,7 @@ function PostItem({ post, currentUserId, onDelete }) {
     <div className={styles.postItem}>
       <div className={styles.postHeader}>
         <div className={styles.userInfo}>
-          <span className={styles.username}>{post.username || `User ${post.user_id}`}</span>
+          <Link to={`/profile/${post.user_id}`} className={styles.username}>{post.username || `User ${post.user_id}`}</Link>
           <span className={styles.timestamp}>{formatTime(post.created_at)}</span>
         </div>
         <div className={styles.postActions}>

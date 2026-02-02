@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { fetchArtists } from "../../redux/actions/artistActions";
 import {
   fetchProfileList,
@@ -12,6 +13,7 @@ import FollowButton from "../../components/FollowButton";
 import { jwtDecode } from "jwt-decode";
 
 const ProfilePage = () => {
+  const { userId } = useParams();
   const dispatch = useDispatch();
 
   const {
@@ -25,15 +27,35 @@ const ProfilePage = () => {
     error: profileListError,
   } = useSelector((state) => state.profileList);
 
+  const currentUser = useSelector((state) => state.auth.user);
+  const [viewedUser, setViewedUser] = useState(null);
+  const [viewedUserLoading, setViewedUserLoading] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [followingList, setFollowingList] = useState([]);
   const [manualId, setManualId] = useState("");
   const [myId, setMyId] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchArtists());
-    dispatch(fetchProfileList());
-  }, [dispatch]);
+    if (!userId) {
+      dispatch(fetchArtists());
+      dispatch(fetchProfileList());
+    }
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (userId) {
+      setViewedUserLoading(true);
+      const token = localStorage.getItem("token");
+      fetch(`http://localhost:3010/api/users/${userId}/profile`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+        .then((res) => res.json())
+        .then((data) => setViewedUser(data))
+        .catch((err) => console.error("Failed to fetch user profile", err))
+        .finally(() => setViewedUserLoading(false));
+    }
+  }, [userId]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -76,6 +98,41 @@ const ProfilePage = () => {
   const hydratedProfileList = profileList
     .map((profileArtist) => artistsMap.get(profileArtist.artist_id))
     .filter(Boolean);
+
+  // Viewing another user's profile
+  if (userId) {
+    const isOwnProfile = currentUser && String(currentUser.id) === String(userId);
+
+    if (isOwnProfile) {
+      // If viewing own profile via /profile/:userId, fall through to normal view
+    } else {
+      return (
+        <div className={styles.profilePage}>
+          <section className={styles.section}>
+            {viewedUserLoading ? (
+              <p className={styles.loadingText}>Loading profile...</p>
+            ) : viewedUser ? (
+              <>
+                <h2 className={styles.sectionHeader}>
+                  {viewedUser.username}'s Profile
+                </h2>
+                <div className={styles.profilePage}>
+                  <p><strong>Username:</strong> {viewedUser.username}</p>
+                  <p><strong>Role:</strong> {viewedUser.role}</p>
+                </div>
+                <FollowButton
+                  targetUserId={Number(userId)}
+                  initialIsFollowing={false}
+                />
+              </>
+            ) : (
+              <p className={styles.emptyState}>User not found.</p>
+            )}
+          </section>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className={styles.profilePage}>

@@ -1,5 +1,6 @@
 // src/components/ImageFeed/ImageFeed.jsx
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import styles from "./ImageFeed.module.css";
@@ -214,9 +215,9 @@ function ImagePostItem({ post, currentUserId, onDelete }) {
   return (
     <div className={styles.imagePostItem}>
       <div className={styles.postHeader}>
-        <span className={styles.username}>
+        <Link to={`/profile/${post.user_id}`} className={styles.username}>
           {post.username || `User ${post.user_id}`}
-        </span>
+        </Link>
         {isOwner && (
           <button
             onClick={handleDelete}

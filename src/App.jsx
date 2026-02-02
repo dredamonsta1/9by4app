@@ -41,6 +41,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/dashBoard" element={<DashBoard />} />
           <Route path="/art-video" element={<ArtVideoFeed />} />
           <Route path="/signup" element={<Waitlist />} />

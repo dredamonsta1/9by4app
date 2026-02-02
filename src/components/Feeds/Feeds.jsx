@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance"; // Corrected path to axiosInstance
 import styles from "./Feeds.module.css";
 
@@ -254,9 +255,9 @@ function PostItem({ post, currentUserId, onAddComment }) {
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm font-semibold text-gray-700">
           Posted by:{" "}
-          <span className="font-mono bg-gray-100 p-1 rounded text-xs">
-            {post.user_id}
-          </span>
+          <Link to={`/profile/${post.user_id}`} className="font-mono bg-gray-100 p-1 rounded text-xs" style={{ color: "#007bff", textDecoration: "none" }}>
+            {post.username || post.user_id}
+          </Link>
           {post.user_id === currentUserId && (
             <span className="ml-2 text-blue-500">(You)</span>
           )}
