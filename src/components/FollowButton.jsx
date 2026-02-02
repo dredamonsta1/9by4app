@@ -1,49 +1,28 @@
 import React, { useState } from "react";
-
-// ADJUST THIS to match where you store your token
-const getToken = () => localStorage.getItem("token");
+import axiosInstance from "../utils/axiosInstance";
 
 const FollowButton = ({ targetUserId, initialIsFollowing = false }) => {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [loading, setLoading] = useState(false);
 
   const handleToggleFollow = async () => {
-    const token = getToken();
+    const token = localStorage.getItem("token");
     if (!token) {
-      // alert("You must be logged in to follow users.");
       console.error("Follow error: No auth token found.");
       return;
     }
 
     setLoading(true);
 
-    // Determine Action: If following -> Delete. If not -> Post.
-    const method = isFollowing ? "DELETE" : "POST";
     const endpoint = isFollowing ? "unfollow" : "follow";
+    const method = isFollowing ? "delete" : "post";
 
     try {
-      const response = await fetch(
-        `http://localhost:3010/api/users/${targetUserId}/${endpoint}`,
-        {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.ok) {
-        // Toggle state only if API succeeds
-        setIsFollowing(!isFollowing);
-      } else {
-        const errorData = await response.json();
-        console.error("Follow error:", errorData.message);
-        // alert(`Error: ${errorData.message}`);
-      }
+      await axiosInstance[method](`/users/${targetUserId}/${endpoint}`);
+      setIsFollowing(!isFollowing);
     } catch (error) {
-      console.error("Follow error:", error);
-      // alert("Something went wrong.");
+      const message = error.response?.data?.message || error.message;
+      console.error("Follow error:", message);
     } finally {
       setLoading(false);
     }

@@ -10,6 +10,7 @@ import UserProfile from "../../components/UserProfilee/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
 import styles from "./ProfilePage.module.css";
 import FollowButton from "../../components/FollowButton";
+import axiosInstance from "../../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 
 const ProfilePage = () => {
@@ -46,12 +47,9 @@ const ProfilePage = () => {
   useEffect(() => {
     if (userId) {
       setViewedUserLoading(true);
-      const token = localStorage.getItem("token");
-      fetch(`http://localhost:3010/api/users/${userId}/profile`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      })
-        .then((res) => res.json())
-        .then((data) => setViewedUser(data))
+      axiosInstance
+        .get(`/users/${userId}/profile`)
+        .then((res) => setViewedUser(res.data))
         .catch((err) => console.error("Failed to fetch user profile", err))
         .finally(() => setViewedUserLoading(false));
     }
@@ -64,14 +62,9 @@ const ProfilePage = () => {
         const decoded = jwtDecode(token);
         setMyId(decoded.id || decoded.user_id);
 
-        fetch(
-          `http://localhost:3010/api/users/${decoded.id || decoded.user_id}/following`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-          .then((res) => res.json())
-          .then((data) => setFollowingList(data))
+        axiosInstance
+          .get(`/users/${decoded.id || decoded.user_id}/following`)
+          .then((res) => setFollowingList(res.data))
           .catch((err) => console.error("Network fetch error", err));
       } catch (e) {
         console.error("Token decode failed", e);
