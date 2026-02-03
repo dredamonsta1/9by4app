@@ -13,15 +13,27 @@ const PostSkeleton = () => (
   </div>
 );
 
-// Post Creator Component with toggle for text/image
+// Helper: extract YouTube video ID from URL
+function extractYouTubeId(url) {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  );
+  return match ? match[1] : null;
+}
+
+// Post Creator Component with toggle for text/image/video
 function PostCreator({ onPostCreated }) {
-  const [postType, setPostType] = useState("text"); // 'text' or 'image'
+  const [postType, setPostType] = useState("text"); // 'text', 'image', or 'video'
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Video-specific state
+  const [videoInputMode, setVideoInputMode] = useState("file"); // 'file' or 'url'
+  const [videoUrl, setVideoUrl] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -32,7 +44,7 @@ function PostCreator({ onPostCreated }) {
     }
   };
 
-  const clearImage = () => {
+  const clearFile = () => {
     setFile(null);
     setPreview(null);
   };
@@ -51,7 +63,7 @@ function PostCreator({ onPostCreated }) {
         }
         await axiosInstance.post("/feed/text", { content: content.trim() });
         setContent("");
-      } else {
+      } else if (postType === "image") {
         if (!file) {
           setError("Please select an image.");
           setLoading(false);
@@ -66,6 +78,34 @@ function PostCreator({ onPostCreated }) {
         setFile(null);
         setPreview(null);
         setCaption("");
+      } else if (postType === "video") {
+        if (videoInputMode === "file") {
+          if (!file) {
+            setError("Please select a video file.");
+            setLoading(false);
+            return;
+          }
+          const formData = new FormData();
+          formData.append("video", file);
+          formData.append("caption", caption);
+          await axiosInstance.post("/feed/video", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          setFile(null);
+          setPreview(null);
+        } else {
+          if (!videoUrl.trim()) {
+            setError("Please enter a video URL.");
+            setLoading(false);
+            return;
+          }
+          await axiosInstance.post("/feed/video-url", {
+            videoUrl: videoUrl.trim(),
+            caption,
+          });
+          setVideoUrl("");
+        }
+        setCaption("");
       }
       if (onPostCreated) onPostCreated();
     } catch (err) {
@@ -76,29 +116,48 @@ function PostCreator({ onPostCreated }) {
     }
   };
 
+  const youtubePreviewId = videoUrl ? extractYouTubeId(videoUrl) : null;
+
+  const isSubmitDisabled = () => {
+    if (loading) return true;
+    if (postType === "text") return !content.trim();
+    if (postType === "image") return !file;
+    if (postType === "video") {
+      return videoInputMode === "file" ? !file : !videoUrl.trim();
+    }
+    return true;
+  };
+
   return (
     <div className={styles.postCreator}>
       <div className={styles.typeToggle}>
         <button
           type="button"
           className={`${styles.toggleBtn} ${postType === "text" ? styles.active : ""}`}
-          onClick={() => setPostType("text")}
+          onClick={() => { setPostType("text"); clearFile(); setVideoUrl(""); }}
         >
           Text
         </button>
         <button
           type="button"
           className={`${styles.toggleBtn} ${postType === "image" ? styles.active : ""}`}
-          onClick={() => setPostType("image")}
+          onClick={() => { setPostType("image"); clearFile(); setVideoUrl(""); }}
         >
           Image
+        </button>
+        <button
+          type="button"
+          className={`${styles.toggleBtn} ${postType === "video" ? styles.active : ""}`}
+          onClick={() => { setPostType("video"); clearFile(); setVideoUrl(""); }}
+        >
+          Video
         </button>
       </div>
 
       {error && <div className={styles.errorMessage}>{error}</div>}
 
       <form onSubmit={handleSubmit}>
-        {postType === "text" ? (
+        {postType === "text" && (
           <textarea
             className={styles.textInput}
             placeholder="What's on your mind?"
@@ -106,14 +165,16 @@ function PostCreator({ onPostCreated }) {
             onChange={(e) => setContent(e.target.value)}
             rows="3"
           />
-        ) : (
+        )}
+
+        {postType === "image" && (
           <>
             {preview ? (
               <div className={styles.previewContainer}>
                 <img src={preview} alt="Preview" className={styles.previewImage} />
                 <button
                   type="button"
-                  onClick={clearImage}
+                  onClick={clearFile}
                   className={styles.clearButton}
                 >
                   Remove
@@ -140,10 +201,86 @@ function PostCreator({ onPostCreated }) {
           </>
         )}
 
+        {postType === "video" && (
+          <>
+            <div className={styles.videoInputToggle}>
+              <button
+                type="button"
+                className={`${styles.subToggleBtn} ${videoInputMode === "file" ? styles.active : ""}`}
+                onClick={() => { setVideoInputMode("file"); setVideoUrl(""); }}
+              >
+                Upload File
+              </button>
+              <button
+                type="button"
+                className={`${styles.subToggleBtn} ${videoInputMode === "url" ? styles.active : ""}`}
+                onClick={() => { setVideoInputMode("url"); clearFile(); }}
+              >
+                Paste URL
+              </button>
+            </div>
+
+            {videoInputMode === "file" ? (
+              <>
+                {preview ? (
+                  <div className={styles.previewContainer}>
+                    <video src={preview} className={styles.previewVideo} controls />
+                    <button
+                      type="button"
+                      onClick={clearFile}
+                      className={styles.clearButton}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <label className={styles.fileInputLabel}>
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm,video/quicktime,video/x-msvideo"
+                      onChange={handleFileChange}
+                      className={styles.fileInput}
+                    />
+                    <span className={styles.fileInputText}>Click to select video</span>
+                  </label>
+                )}
+              </>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  className={styles.urlInput}
+                  placeholder="Paste YouTube or video URL..."
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                />
+                {youtubePreviewId && (
+                  <div className={styles.youtubePreview}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${youtubePreviewId}`}
+                      title="YouTube preview"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            <textarea
+              className={styles.textInput}
+              placeholder="Add a caption..."
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              rows="2"
+            />
+          </>
+        )}
+
         <button
           type="submit"
           className={styles.submitBtn}
-          disabled={loading || (postType === "text" ? !content.trim() : !file)}
+          disabled={isSubmitDisabled()}
         >
           {loading ? "Posting..." : "Post"}
         </button>
@@ -163,12 +300,20 @@ function PostItem({ post, currentUserId, onDelete }) {
 
   const isOwner = currentUserId === post.user_id;
   const isImage = post.post_type === "image";
+  const isVideo = post.post_type === "video";
 
   const fullImageUrl = post.image_url
     ? post.image_url.startsWith("http")
       ? post.image_url
       : `${API_BASE}${post.image_url}`
     : null;
+
+  const fullVideoUrl =
+    post.video_url && post.video_type === "upload"
+      ? post.video_url.startsWith("http")
+        ? post.video_url
+        : `${API_BASE}${post.video_url}`
+      : post.video_url;
 
   const handleDelete = async () => {
     if (!window.confirm("Delete this post?")) return;
@@ -209,7 +354,7 @@ function PostItem({ post, currentUserId, onDelete }) {
         </div>
         <div className={styles.postActions}>
           <span className={styles.postTypeBadge}>
-            {isImage ? "Image" : "Text"}
+            {isVideo ? "Video" : isImage ? "Image" : "Text"}
           </span>
           {isOwner && (
             <button
@@ -223,7 +368,28 @@ function PostItem({ post, currentUserId, onDelete }) {
         </div>
       </div>
 
-      {isImage ? (
+      {isVideo ? (
+        <>
+          <div className={styles.videoWrapper}>
+            <div className={styles.postVideo}>
+              {post.video_type === "youtube" ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${fullVideoUrl}`}
+                  title={post.caption || "Video"}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <video controls>
+                  <source src={fullVideoUrl} />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+            </div>
+          </div>
+          {post.caption && <p className={styles.caption}>{post.caption}</p>}
+        </>
+      ) : isImage ? (
         <>
           <div className={styles.imageWrapper}>
             <img
@@ -232,7 +398,6 @@ function PostItem({ post, currentUserId, onDelete }) {
               className={styles.postImage}
               onError={(e) => {
                 e.target.onerror = null;
-                // Use inline SVG data URI as fallback (no external requests)
                 e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%23333' width='400' height='300'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='16' text-anchor='middle' x='200' y='150'%3EImage not found%3C/text%3E%3C/svg%3E";
               }}
             />

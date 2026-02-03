@@ -272,6 +272,104 @@
   border-top: 1px solid var(--border);
 }
 
+/* Video Post */
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.postVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.postVideo iframe,
+.postVideo video {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Video Input Toggle (sub-toggle for file vs url) */
+.videoInputToggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.subToggleBtn {
+  flex: 1;
+  padding: 8px;
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.subToggleBtn:hover {
+  border-color: var(--text-dim);
+}
+
+.subToggleBtn.active {
+  background: var(--accent);
+  color: var(--bg-color);
+  border-color: var(--accent);
+}
+
+.previewVideo {
+  width: 100%;
+  max-height: 300px;
+  border-radius: 6px;
+  background: #000;
+  margin-bottom: 1rem;
+}
+
+.urlInput {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.urlInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.urlInput::placeholder {
+  color: var(--text-dim);
+}
+
+.youtubePreview {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.youtubePreview iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 /* Error Container */
 .errorContainer {
   text-align: center;
