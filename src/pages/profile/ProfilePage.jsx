@@ -115,7 +115,7 @@ const ProfilePage = () => {
                 <h2 className={styles.sectionHeader}>
                   {viewedUser.username}'s Profile
                 </h2>
-                <div className={styles.profilePage}>
+                <div>
                   <p><strong>Username:</strong> {viewedUser.username}</p>
                   <p><strong>Role:</strong> {viewedUser.role}</p>
                 </div>
