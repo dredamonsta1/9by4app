@@ -31,6 +31,7 @@ const ProfilePage = () => {
   const currentUser = useSelector((state) => state.auth.user);
   const [viewedUser, setViewedUser] = useState(null);
   const [viewedUserLoading, setViewedUserLoading] = useState(false);
+  const [viewedUserArtists, setViewedUserArtists] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [followingList, setFollowingList] = useState([]);
@@ -52,6 +53,11 @@ const ProfilePage = () => {
         .then((res) => setViewedUser(res.data))
         .catch((err) => console.error("Failed to fetch user profile", err))
         .finally(() => setViewedUserLoading(false));
+
+      axiosInstance
+        .get(`/profile/user/${userId}`)
+        .then((res) => setViewedUserArtists(res.data.list || []))
+        .catch((err) => console.error("Failed to fetch user artists", err));
     }
   }, [userId]);
 
@@ -117,6 +123,24 @@ const ProfilePage = () => {
                   targetUserId={Number(userId)}
                   initialIsFollowing={false}
                 />
+
+                <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>
+                  Favorite Artists
+                </h3>
+                {viewedUserArtists.length > 0 ? (
+                  <ul className={styles.favArtistList}>
+                    {viewedUserArtists.map((artist) => (
+                      <li className={styles.favArtistItem} key={artist.artist_id}>
+                        <span>{artist.artist_name}</span>
+                        <span className={styles.cloutBadge}>
+                          Clout: {artist.count}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className={styles.emptyState}>No favorite artists yet.</p>
+                )}
               </>
             ) : (
               <p className={styles.emptyState}>User not found.</p>
