@@ -131,9 +131,14 @@ const ProfilePage = () => {
     <div className={styles.profilePage}>
       {/* Left Column */}
       <div className={styles.leftColumn}>
-        {/* Section: Favorite Artists */}
+        {/* Section: Profile + Favorite Artists */}
         <section className={styles.section}>
-          <h2 className={styles.sectionHeader}>Favorite Artists</h2>
+          <h2 className={styles.sectionHeader}>Your Profile</h2>
+          <UserProfile />
+
+          <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>
+            Favorite Artists
+          </h3>
           <p className={styles.sectionSubtext}>
             Search and add your all-time favorite artists
           </p>
@@ -191,12 +196,6 @@ const ProfilePage = () => {
               </p>
             )
           )}
-        </section>
-
-        {/* Section: Profile */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionHeader}>Your Profile</h2>
-          <UserProfile />
         </section>
 
         {/* Section: Artist Creation */}
