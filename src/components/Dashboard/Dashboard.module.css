@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  /* background-color: olive; */
 }
 
 .mainContent {
@@ -12,21 +11,30 @@
   align-items: center;
   padding: 2rem;
   overflow-y: auto;
-  /* Adds a scrollbar if the content is too long */
 }
 
 .adminLink {
   font-weight: 600;
   text-decoration: none;
-  color: #1a73e8;
+  color: var(--accent-light);
   margin-top: 1rem;
-  /* background-color: blueviolet; */
+  transition: var(--transition);
+}
+
+.adminLink:hover {
+  color: var(--text-bright);
 }
 
 .adminLinkContainer {
-  border: 2px solid #1a73e8;
-  border-radius: 5px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
   padding: 10px;
-  background-color: red;
+  background-color: var(--card-bg);
   width: fit-content;
+  transition: var(--transition);
+}
+
+.adminLinkContainer:hover {
+  background-color: var(--card-bg-hover);
+  box-shadow: var(--shadow-sm);
 }

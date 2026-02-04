@@ -1,62 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap');
 
-/* Main navbar container */
+/* Mobile-First Logic */
 .navBar {
     display: flex;
     justify-content: space-between;
-    flex-direction: row;
     align-items: center;
-    padding: 1rem 2.5rem;
-    /* background-color: #f0f2f5; */
-    background-color: #E07A5F;
-    /* Off-white, typical of the style */
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
     font-family: 'Montserrat', sans-serif;
-    /* border-bottom: 4px solid #1a1a1a; */
-    border-radius: 5px;
-    /* height: 100%; */
-    /* list-style: none; */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(12px);
 }
 
 /* Logo styling */
 .logo {
     font-size: 2rem;
     font-weight: 900;
-    color: #fff;
-    border-radius: 5px;
-    /* background-color: #e60023; */
-
-    background-color: #3D7A80;
-    /* Bauhaus Red */
+    color: var(--text-bright);
+    border-radius: var(--radius);
+    background: var(--accent-gradient);
     padding: 0.5rem 1.25rem;
     text-decoration: none;
+    transition: var(--transition);
+}
+
+.logo:hover {
+    box-shadow: var(--shadow-glow);
 }
 
 /* Container for navigation links */
 .navLinks {
-    display: flex;
-    flex-direction: row;
     list-style: none;
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
     padding: 0;
-    gap: 2.5rem;
-    /* Spacing between links */
 }
 
 /* Individual navigation links */
 .navLinks a {
     text-decoration: none;
-    color: #1a1a1a;
+    color: var(--text-dim);
     font-weight: 700;
     font-size: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 4px solid transparent;
-    transition: border-bottom-color 0.3s ease;
+    border-bottom: 3px solid transparent;
+    transition: color 0.3s ease, border-bottom-color 0.3s ease;
 }
 
 /* Hover effect for links */
 .navLinks a:hover {
-    border-bottom-color: #ffd600;
-    /* Bauhaus Yellow */
+    color: var(--text-bright);
+    border-bottom-color: var(--accent-light);
 }
 
 /* Container for user info and logout button */
@@ -69,42 +68,26 @@
 /* Username text */
 .username {
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--text-main);
 }
 
 /* Logout button styling */
 .logoutButton {
-    background-color: #005f9e;
-    background-color: #F2C14E;
-    /* Bauhaus Blue */
-    color: #fff;
+    background: var(--accent-gradient);
+    color: var(--text-bright);
     border: none;
-    border-radius: 5px;
+    border-radius: var(--radius-pill);
     padding: 0.75rem 1.5rem;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .logoutButton:hover {
-    background-color: #004c7d;
-    /* Darker blue on hover */
-}
-
-/* **************************New Code*********** */
-
-
-/* Mobile-First Logic */
-.navBar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background-color: #E07A5F;
-    position: relative;
-    z-index: 1000;
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
 }
 
 .hamburger {
@@ -120,7 +103,7 @@
 .bar {
     width: 30px;
     height: 3px;
-    background-color: #fff;
+    background-color: var(--text-main);
     transition: all 0.3s ease;
 }
 
@@ -143,27 +126,17 @@
     top: 100%;
     left: 0;
     width: 100%;
-    background-color: #E07A5F;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
     flex-direction: column;
     align-items: center;
     padding: 2rem 0;
     gap: 2rem;
     display: none;
-    /* Hidden by default */
 }
 
 .navContent.show {
     display: flex;
-    /* Show when state is open */
-}
-
-.navLinks {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 0;
 }
 
 /* Desktop Switch */
@@ -181,6 +154,7 @@
         flex-grow: 1;
         padding: 0;
         margin-left: 2rem;
+        border-bottom: none;
     }
 
     .navLinks {

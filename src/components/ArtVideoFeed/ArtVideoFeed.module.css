@@ -2,17 +2,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* height: 100vh; */
     overflow: hidden;
     position: relative;
-    
 }
-
-/* 
-.mainContent {
-    flex-grow: 1;
-    padding: 2rem;
-} */
 
 .videoPlayer {
     margin-bottom: 2rem;
@@ -28,14 +20,21 @@
     padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
-    background-color: #007bff;
-    color: white;
+    background: var(--accent-gradient);
+    color: var(--text-bright);
     border: none;
-    border-radius: 5px;
+    border-radius: var(--radius-pill);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.navigation button:hover:not(:disabled) {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
 }
 
 .navigation button:disabled {
-    background-color: #ccc;
+    background: var(--border);
+    color: var(--text-dim);
     cursor: not-allowed;
 }
 
@@ -50,33 +49,31 @@
     cursor: pointer;
     flex-shrink: 0;
     width: 240px;
-    /* Set a fixed width for the thumbnail container */
 }
 
 .videoThumbnail img {
     width: 100%;
     border: 3px solid transparent;
+    border-radius: var(--radius);
 }
 
 .videoThumbnail .selectedThumbnail {
-    border-color: #007bff;
+    border-color: var(--accent);
 }
 
 .videoThumbnail p {
     width: 100%;
     font-size: 0.9rem;
+    color: var(--text-main);
 }
 
 /* **************NewCode************** */
-
 
 /* This is the main container for the scrollable feed */
 .videoFeedContainer {
     width: 100%;
     height: 100vh;
     overflow-y: scroll;
-    /* Enable vertical scrolling */
-    /* This is the key property for scroll snapping */
     scroll-snap-type: y mandatory;
 }
 
@@ -84,7 +81,6 @@
 .videoSlide {
     width: 100%;
     height: 100vh;
-    /* This tells the slide where to snap */
     scroll-snap-align: start;
     position: relative;
     display: flex;
@@ -96,11 +92,9 @@
 .videoPlayer {
     width: 100%;
     max-width: 56.25vh;
-    /* 9:16 aspect ratio (height-based) */
     height: 100vh;
     max-height: 100vw;
-    /* 16:9 aspect ratio (width-based) */
-    background-color: #111;
+    background-color: var(--bg-surface);
 }
 
 /* Make the iframe fill its container */

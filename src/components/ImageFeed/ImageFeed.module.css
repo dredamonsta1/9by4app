@@ -17,7 +17,7 @@
 .headerSection h1 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--text-bright);
   margin: 0;
 }
 
@@ -38,7 +38,7 @@
 }
 
 .errorMessage {
-  background: rgba(255, 77, 77, 0.1);
+  background: rgba(255, 107, 107, 0.1);
   border: 1px solid var(--error);
   color: var(--error);
   padding: 10px;
@@ -118,6 +118,7 @@
 .captionInput:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .captionInput::placeholder {
@@ -127,17 +128,18 @@
 .uploadButton {
   width: 100%;
   padding: 12px;
-  background: var(--accent);
-  color: var(--bg-color);
+  background: var(--accent-gradient);
+  color: var(--text-bright);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .uploadButton:hover:not(:disabled) {
-  opacity: 0.9;
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 .uploadButton:disabled {
@@ -164,6 +166,12 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.imagePostItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .postHeader {

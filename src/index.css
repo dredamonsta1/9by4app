@@ -1,14 +1,45 @@
 :root {
-  --bg-color: #0a0a0a;
-  --card-bg: #141414;
-  --text-main: #858181; /*<--- neet to change later */
-  --text-dim: #a0a0a0;
-  --accent: #ffffff; /* Minimalist White-on-Black */
-  --error: #ff4d4d;
-  --success: #00e676;
-  --border: #2a2a2a;
-  --radius: 8px;
+  --bg-color: #0B1622;
+  --bg-surface: #111D2E;
+  --card-bg: #162333;
+  --card-bg-hover: #1B2E44;
+  --card-bg-elevated: #1E3450;
+  --text-main: #E0E6ED;
+  --text-dim: #8899AA;
+  --text-bright: #FFFFFF;
+  --accent: #0077B6;
+  --accent-hover: #005F92;
+  --accent-light: #00B4D8;
+  --accent-glow: rgba(0,119,182,0.3);
+  --accent-gradient: linear-gradient(135deg, #0077B6, #00B4D8);
+  --error: #FF6B6B;
+  --success: #00E676;
+  --warning: #FFB347;
+  --border: #1E3450;
+  --border-light: #2A4060;
+  --radius: 12px;
+  --radius-pill: 500px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 20px rgba(0,119,182,0.3);
   --transition: all 0.2s ease-in-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--text-bright);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 2px;
 }
 
 body {
@@ -25,4 +56,29 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) var(--bg-color);
 }

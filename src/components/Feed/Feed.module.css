@@ -13,7 +13,7 @@
 .feedTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--text-bright);
   margin: 0 0 1.5rem 0;
 }
 
@@ -50,12 +50,12 @@
 
 .toggleBtn.active {
   background: var(--accent);
-  color: var(--bg-color);
+  color: var(--text-bright);
   border-color: var(--accent);
 }
 
 .errorMessage {
-  background: rgba(255, 77, 77, 0.1);
+  background: rgba(255, 107, 107, 0.1);
   border: 1px solid var(--error);
   color: var(--error);
   padding: 10px;
@@ -80,6 +80,7 @@
 .textInput:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .textInput::placeholder {
@@ -144,17 +145,18 @@
 .submitBtn {
   width: 100%;
   padding: 12px;
-  background: var(--accent);
-  color: var(--bg-color);
+  background: var(--accent-gradient);
+  color: var(--text-bright);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .submitBtn:hover:not(:disabled) {
-  opacity: 0.9;
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 .submitBtn:disabled {
@@ -181,6 +183,12 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.postItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .postHeader {
@@ -219,9 +227,9 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 119, 182, 0.15);
   border-radius: 4px;
-  color: var(--text-dim);
+  color: var(--accent-light);
 }
 
 .deleteBtn {
@@ -320,7 +328,7 @@
 
 .subToggleBtn.active {
   background: var(--accent);
-  color: var(--bg-color);
+  color: var(--text-bright);
   border-color: var(--accent);
 }
 
@@ -346,6 +354,7 @@
 .urlInput:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .urlInput::placeholder {

@@ -34,12 +34,17 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.5rem 2rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.section:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .sectionHeader {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--text-bright);
   margin: 0 0 1rem 0;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
@@ -66,6 +71,7 @@
 .artistSearchBar:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .artistSearchBar::placeholder {
@@ -77,7 +83,7 @@
   list-style: none;
   padding: 0;
   margin: 0.5rem 0 0 0;
-  background: var(--bg-color);
+  background: var(--card-bg-elevated);
   border: 1px solid var(--border);
   border-radius: 6px;
   max-height: 200px;
@@ -98,7 +104,7 @@
 }
 
 .searchResultItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 119, 182, 0.1);
 }
 
 .searchResultItemSpan {
@@ -107,18 +113,18 @@
 
 .addArtistButton {
   padding: 6px 16px;
-  background: var(--accent);
-  color: var(--bg-color);
+  background: var(--accent-gradient);
+  color: var(--text-bright);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-pill);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .addArtistButton:hover {
-  opacity: 0.9;
+  box-shadow: var(--shadow-glow);
   transform: translateY(-1px);
 }
 
@@ -144,10 +150,10 @@
 
 .cloutBadge {
   font-size: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 119, 182, 0.15);
   padding: 4px 10px;
   border-radius: 12px;
-  color: var(--text-dim);
+  color: var(--accent-light);
 }
 
 /* Empty State */

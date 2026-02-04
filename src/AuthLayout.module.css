@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: linear-gradient(135deg, #d7d2d2 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #0B1622 0%, #111D2E 50%, #0077B6 100%);
 }
 
 .authCard {
@@ -14,7 +14,7 @@
   width: 100%;
   max-width: 400px;
   border-radius: var(--radius);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .title {
@@ -22,6 +22,7 @@
   font-weight: 700;
   margin-bottom: 8px;
   text-align: center;
+  color: var(--text-bright);
 }
 
 .subtitle {
@@ -47,10 +48,10 @@
 .input {
   width: 100%;
   padding: 12px;
-  background: #000;
+  background: var(--bg-color);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  color: white;
+  border-radius: 6px;
+  color: var(--text-main);
   font-size: 16px;
   transition: var(--transition);
 }
@@ -58,29 +59,29 @@
 .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .submitBtn {
   width: 100%;
   padding: 14px;
-  background: var(--accent);
-  color: black;
+  background: var(--accent-gradient);
+  color: var(--text-bright);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-pill);
   font-weight: 700;
   cursor: pointer;
   margin-top: 10px;
-  transition: var(--transition);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .submitBtn:hover {
+  box-shadow: var(--shadow-glow);
   transform: translateY(-2px);
-  filter: brightness(0.9);
 }
 
 .errorBox {
-  background: rgba(255, 77, 77, 0.1);
+  background: rgba(255, 107, 107, 0.1);
   border: 1px solid var(--error);
   color: var(--error);
   padding: 12px;
@@ -98,7 +99,7 @@
 }
 
 .authFooter a {
-  color: var(--accent);
+  color: var(--accent-light);
   text-decoration: none;
   font-weight: 600;
 }
@@ -120,7 +121,7 @@
 
 /* Add a styling hint for Read-Only inputs to make them look "locked" */
 .input[readonly] {
-  background: #1a1a1a;
+  background: var(--bg-surface);
   color: var(--text-dim);
   cursor: not-allowed;
   border-color: transparent;

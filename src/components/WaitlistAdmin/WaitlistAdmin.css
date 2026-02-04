@@ -2,7 +2,7 @@
 
 .waitlist-admin-container {
     min-height: 100vh;
-    background-color: #f9fafb;
+    background-color: var(--bg-color);
     padding: 2rem;
 }
 
@@ -13,11 +13,12 @@
 
 /* Header */
 .admin-header {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
 }
 
 .header-top {
@@ -36,13 +37,13 @@
 .title-icon {
     width: 2rem;
     height: 2rem;
-    color: #2563eb;
+    color: var(--accent);
 }
 
 .header-title h1 {
     font-size: 1.875rem;
     font-weight: bold;
-    color: #111827;
+    color: var(--text-bright);
     margin: 0;
 }
 
@@ -51,7 +52,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-pill);
     border: none;
     font-weight: 500;
     cursor: pointer;
@@ -59,21 +60,21 @@
 }
 
 .toggle-button.enabled {
-    background-color: #16a34a;
-    color: white;
+    background-color: var(--success);
+    color: var(--bg-color);
 }
 
 .toggle-button.enabled:hover {
-    background-color: #15803d;
+    background-color: #00c966;
 }
 
 .toggle-button.disabled {
-    background-color: #9ca3af;
-    color: white;
+    background-color: var(--border-light);
+    color: var(--text-dim);
 }
 
 .toggle-button.disabled:hover {
-    background-color: #6b7280;
+    background-color: var(--card-bg-elevated);
 }
 
 .button-icon {
@@ -90,23 +91,27 @@
 
 .stat-card {
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
 }
 
 .stat-card.total {
-    background-color: #f9fafb;
+    background-color: var(--card-bg-hover);
 }
 
 .stat-card.pending {
-    background-color: #fef3c7;
+    background-color: rgba(255, 179, 71, 0.1);
+    border-color: rgba(255, 179, 71, 0.3);
 }
 
 .stat-card.approved {
-    background-color: #dcfce7;
+    background-color: rgba(0, 230, 118, 0.1);
+    border-color: rgba(0, 230, 118, 0.3);
 }
 
 .stat-card.rejected {
-    background-color: #fee2e2;
+    background-color: rgba(255, 107, 107, 0.1);
+    border-color: rgba(255, 107, 107, 0.3);
 }
 
 .stat-number {
@@ -116,48 +121,49 @@
 }
 
 .stat-card.total .stat-number {
-    color: #111827;
+    color: var(--text-bright);
 }
 
 .stat-card.pending .stat-number {
-    color: #b45309;
+    color: var(--warning);
 }
 
 .stat-card.approved .stat-number {
-    color: #15803d;
+    color: var(--success);
 }
 
 .stat-card.rejected .stat-number {
-    color: #b91c1c;
+    color: var(--error);
 }
 
 .stat-label {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--text-dim);
 }
 
 .stat-card.pending .stat-label {
-    color: #b45309;
+    color: var(--warning);
 }
 
 .stat-card.approved .stat-label {
-    color: #15803d;
+    color: var(--success);
 }
 
 .stat-card.rejected .stat-label {
-    color: #b91c1c;
+    color: var(--error);
 }
 
 /* Filters Section */
 .filters-section {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     padding: 1rem;
     margin-bottom: 1.5rem;
     display: flex;
     gap: 1rem;
     align-items: center;
+    border: 1px solid var(--border);
 }
 
 .search-box {
@@ -172,21 +178,23 @@
     transform: translateY(-50%);
     width: 1.25rem;
     height: 1.25rem;
-    color: #9ca3af;
+    color: var(--text-dim);
 }
 
 .search-box input {
     width: 100%;
     padding: 0.5rem 1rem 0.5rem 2.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--text-main);
 }
 
 .search-box input:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .filter-buttons {
@@ -196,36 +204,39 @@
 
 .filter-buttons button {
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    border: none;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
     font-weight: 500;
     cursor: pointer;
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: var(--bg-color);
+    color: var(--text-dim);
     transition: all 0.2s;
 }
 
 .filter-buttons button:hover {
-    background-color: #e5e7eb;
+    background-color: var(--card-bg-hover);
+    border-color: var(--border-light);
 }
 
 .filter-buttons button.active {
-    background-color: #2563eb;
-    color: white;
+    background: var(--accent);
+    color: var(--text-bright);
+    border-color: var(--accent);
 }
 
 /* Table */
 .table-container {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
+    border: 1px solid var(--border);
 }
 
 .empty-state {
     padding: 3rem;
     text-align: center;
-    color: #6b7280;
+    color: var(--text-dim);
 }
 
 .waitlist-table {
@@ -234,8 +245,8 @@
 }
 
 .waitlist-table thead {
-    background-color: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
 }
 
 .waitlist-table th {
@@ -243,7 +254,7 @@
     text-align: left;
     font-size: 0.75rem;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -253,12 +264,12 @@
 }
 
 .waitlist-table tbody tr {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border);
     transition: background-color 0.15s;
 }
 
 .waitlist-table tbody tr:hover {
-    background-color: #f9fafb;
+    background-color: var(--card-bg-hover);
 }
 
 .waitlist-table td {
@@ -275,17 +286,17 @@
 .user-icon {
     width: 1.25rem;
     height: 1.25rem;
-    color: #9ca3af;
+    color: var(--text-dim);
 }
 
 .user-name {
     font-weight: 500;
-    color: #111827;
+    color: var(--text-bright);
 }
 
 .user-email {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--text-dim);
 }
 
 /* Status Badge */
@@ -294,22 +305,22 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
 }
 
 .status-badge.approved {
-    background-color: #dcfce7;
-    color: #166534;
+    background-color: rgba(0, 230, 118, 0.15);
+    color: var(--success);
 }
 
 .status-badge.rejected {
-    background-color: #fee2e2;
-    color: #991b1b;
+    background-color: rgba(255, 107, 107, 0.15);
+    color: var(--error);
 }
 
 .status-badge.pending {
-    background-color: #fef3c7;
-    color: #b45309;
+    background-color: rgba(255, 179, 71, 0.15);
+    color: var(--warning);
 }
 
 /* Date Cell */
@@ -318,7 +329,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--text-dim);
 }
 
 .date-icon {
@@ -330,21 +341,22 @@
 .invite-code-button {
     font-family: monospace;
     font-size: 0.875rem;
-    background-color: #f3f4f6;
+    background-color: var(--bg-color);
     padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    border: none;
+    border-radius: 4px;
+    border: 1px solid var(--border);
     cursor: pointer;
+    color: var(--accent-light);
     transition: background-color 0.15s;
 }
 
 .invite-code-button:hover {
-    background-color: #e5e7eb;
+    background-color: var(--card-bg-hover);
 }
 
 .no-code {
     font-size: 0.875rem;
-    color: #9ca3af;
+    color: var(--text-dim);
 }
 
 /* Action Buttons */
@@ -356,7 +368,7 @@
 
 .action-btn {
     padding: 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius);
     border: none;
     cursor: pointer;
     transition: all 0.15s;
@@ -371,30 +383,30 @@
 }
 
 .action-btn.approve {
-    color: #16a34a;
+    color: var(--success);
     background-color: transparent;
 }
 
 .action-btn.approve:hover {
-    background-color: #dcfce7;
+    background-color: rgba(0, 230, 118, 0.15);
 }
 
 .action-btn.reject {
-    color: #dc2626;
+    color: var(--error);
     background-color: transparent;
 }
 
 .action-btn.reject:hover {
-    background-color: #fee2e2;
+    background-color: rgba(255, 107, 107, 0.15);
 }
 
 .action-btn.delete {
-    color: #6b7280;
+    color: var(--text-dim);
     background-color: transparent;
 }
 
 .action-btn.delete:hover {
-    background-color: #f3f4f6;
+    background-color: var(--card-bg-hover);
 }
 
 /* Responsive */

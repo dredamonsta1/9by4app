@@ -1,8 +1,9 @@
 .managerContainer {
-  background: white;
+  background: var(--card-bg);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
 }
 
 .table {
@@ -14,45 +15,54 @@
 .table th {
   text-align: left;
   padding: 12px;
-  border-bottom: 2px solid #eee;
-  color: #666;
+  border-bottom: 2px solid var(--border);
+  color: var(--text-dim);
   font-size: 0.85rem;
   text-transform: uppercase;
 }
 
 .table td {
   padding: 12px;
-  border-bottom: 1px solid #f9f9f9;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
 }
 
 .statusBadge {
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-pill);
   font-size: 0.75rem;
   font-weight: bold;
 }
 
 .statusBadge.pending {
-  background: #fff7ed;
-  color: #9a3412;
+  background: rgba(255, 179, 71, 0.15);
+  color: var(--warning);
 }
+
 .statusBadge.approved {
-  background: #f0fdf4;
-  color: #166534;
+  background: rgba(0, 230, 118, 0.15);
+  color: var(--success);
 }
+
 .statusBadge.registered {
-  background: #eff6ff;
-  color: #1e40af;
+  background: rgba(0, 119, 182, 0.15);
+  color: var(--accent-light);
 }
 
 .approveBtn {
-  background: #2563eb;
-  color: white;
+  background: var(--accent-gradient);
+  color: var(--text-bright);
   border: none;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-weight: 500;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.approveBtn:hover {
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 .codeWrapper {

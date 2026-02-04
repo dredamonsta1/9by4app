@@ -1,16 +1,13 @@
 .Rapper {
     margin: 10px;
     padding: 1px;
-    border: 1px solid #bbb;
-    background-color: #eee;
-
+    border: 1px solid var(--border);
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
 }
-
 
 .Rapper span {
     font-size: 1em;
     text-emphasis: e;
-    color: #333;
-
+    color: var(--text-main);
 }
-

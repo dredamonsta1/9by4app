@@ -9,11 +9,6 @@
   width: 100%;
 }
 
-/* .header-size-two {
-  font-size: 2em;
-  background-color: blue;
-} */
-
 .rapperList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -21,36 +16,24 @@
   padding: 20px;
   width: 100%;
   box-sizing: border-box;
-  /* You can add a subtle border here if desired, like: border: 1px solid rgba(0,0,0,0.1); */
 }
 
 .rapperList-item {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  border-radius: 8px;
-  /* Rounded corners for the entire card */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  /* Slightly more prominent shadow for depth */
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
   position: relative;
-  /* Essential for absolute positioning of image and overlay */
   overflow: hidden;
-  /* Ensures image and overlay corners are rounded with the card */
-  /* min-height: 100px; */
   aspect-ratio: 3/4;
-  /* Sets a minimum height for the card to ensure images fill space */
-  /* min-width: 10px; */
   cursor: pointer;
-  /* Indicates the item is interactive */
-  transition: transform 0.3s ease-in-out;
-  /* Smooth lift effect on hover */
-  /* background-color: blueviolet; */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .rapperList-item:hover {
-  transform: translateY(-5px);
-  /* Lifts the card slightly on hover */
-  background-color: aquamarine;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Styling for the image to take up the entire item */
@@ -61,63 +44,46 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Ensures the image covers the area without distortion */
   z-index: 1;
-  /* Places the image behind the content overlay initially */
   transition: transform 0.3s ease-in-out;
-  /* Smooth zoom effect on the image itself */
 }
 
 .rapperList-item:hover .rapperList-item-image {
   transform: scale(1.05);
-  /* Slightly zooms the image when the card is hovered */
 }
 
 /* --- Content Overlay for Readability --- */
 .rapperList-content-overlay {
   position: absolute;
-  /* Positions the overlay directly over the image */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 2;
-  /* Ensures the overlay is above the image */
   padding: 12px;
-  /* Padding around the content */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  /* Aligns content to the bottom of the card */
   color: white;
-  /* Sets text color to white for readability on a dark background */
   opacity: 0;
-  /* Initially hides the overlay */
   transition: opacity 0.3s ease-in-out;
-  /* Smooth transition for revealing the overlay */
-  /* Creates a gradient from transparent to dark, covering the bottom portion for text */
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.8) 0%,
-    rgba(0, 0, 0, 0.3) 50%,
+    rgba(11, 22, 34, 0.9) 0%,
+    rgba(0, 119, 182, 0.2) 50%,
     rgba(0, 0, 0, 0) 100%
   );
   pointer-events: none;
-  /* Allows clicks to pass through when the overlay is hidden */
 }
 
 .rapperList-item:hover .rapperList-content-overlay {
   opacity: 1;
-  /* Reveals the overlay on hover */
   pointer-events: auto;
-  /* Allows interaction with elements inside the overlay when visible */
 }
 
 /* Container for artist text details */
 .rapperList-item-details {
   flex-grow: 1;
-  /* Allows this div to take up available space, pushing clout and admin actions downwards */
-  /* text-shadow is removed here as the dark gradient background should provide enough contrast */
 }
 
 /* Styling for the clout section, including the button or text */
@@ -126,62 +92,46 @@
   align-items: center;
   gap: 15px;
   padding: 10px 0;
-  /* Vertical padding */
-  border-top: 1px dashed rgba(255, 255, 255, 0.3);
-  /* Subtle dashed border */
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
-  /* Subtle dashed border */
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
   width: 100%;
   box-sizing: border-box;
   margin-top: 10px;
-  /* Space from the details section above */
 }
 
 .rapperButton {
-  background-color: rgba(0, 123, 255, 0.7);
-  /* Semi-transparent blue background */
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  /* Subtle white border */
+  background: var(--accent-gradient);
+  color: var(--text-bright);
+  border: none;
   padding: 8px 14px;
-  border-radius: 5px;
+  border-radius: var(--radius-pill);
   font-size: 10px;
   cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
   font-weight: bold;
 }
 
 .rapperButton:hover {
-  background-color: rgba(0, 123, 255, 0.9);
-  /* More opaque blue on hover */
-  border-color: white;
-  /* Solid white border on hover */
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 /* Admin Action Buttons */
 .rapperList-admin-actions {
   display: flex;
   gap: 10px;
-  /* Increased gap between buttons */
   margin-top: 15px;
-  /* Space above the buttons */
   width: 100%;
   justify-content: flex-start;
-  /* Aligns buttons to the left, similar to the reference site */
 }
 
 .rapperList-admin-actions button {
   padding: 8px 15px;
-  /* More padding for a larger touch target */
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  /* Subtle white border */
-  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   color: white;
   background-color: transparent;
-  /* Transparent background */
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease,
@@ -189,57 +139,45 @@
 }
 
 .rapperList-admin-actions button:first-child {
-  /* Delete button - maintains consistent styling */
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .rapperList-admin-actions button:first-child:hover {
-  background-color: rgba(220, 53, 69, 0.7);
-  /* Semi-transparent red on hover */
-  border-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 107, 107, 0.5);
+  border-color: var(--error);
 }
 
 .rapperList-admin-actions button:last-child {
-  /* Edit button - maintains consistent styling */
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .rapperList-admin-actions button:last-child:hover {
-  background-color: rgba(255, 193, 7, 0.7);
-  /* Semi-transparent orange on hover */
-  border-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 179, 71, 0.5);
+  border-color: var(--warning);
   color: white;
-  /* Ensures text remains white on hover for contrast */
 }
 
 /* General text styling within list item */
 .rapperList-item h3 {
   margin: 0;
   font-size: 1.2em;
-  /* Slightly larger and more prominent heading */
   font-weight: 700;
-  /* Bolder text for emphasis */
 }
 
 .rapperList-item p {
   margin: 0px 0 0 0;
   font-size: 1em;
-  /* Slightly larger paragraph text */
 }
 
 .clout-data-display {
   font-size: 1.2em;
-  /* Larger clout text */
   font-weight: bold;
-  color: #007bff;
-  /* Blue color for 'Clout:' text */
+  color: var(--accent-light);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-  /* Keeps text shadow for readability over image */
 }
 
 .clout-data-display span {
   color: white;
-  /* White color for the clout count number */
 }
 
 /* Pagination Controls */
@@ -252,22 +190,20 @@
 }
 
 .pagination-btn {
-  background-color: rgba(0, 123, 255, 0.7);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: var(--accent-gradient);
+  color: var(--text-bright);
+  border: none;
   padding: 8px 18px;
-  border-radius: 5px;
+  border-radius: var(--radius-pill);
   font-size: 14px;
   cursor: pointer;
   font-weight: bold;
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background-color: rgba(0, 123, 255, 0.9);
-  border-color: white;
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 .pagination-btn:disabled {
@@ -276,6 +212,6 @@
 }
 
 .pagination-info {
-  color: var(--text-main, #858181);
+  color: var(--text-dim);
   font-size: 14px;
 }

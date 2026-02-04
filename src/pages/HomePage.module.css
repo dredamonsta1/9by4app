@@ -1,25 +1,16 @@
 .homePageContainer {
-  /* display: grid; */
   display: flex;
   flex-direction: column;
   grid-template-columns: 280px 2fr;
   min-height: 100vh;
-  /* Make the layout at least the full height of the screen */
-  background-color: #f4f7f6;
-  border: solid 5px black;
+  background-color: var(--bg-color);
 }
 
-/*
-  This new class will wrap your main content on the right side.
-  Adding padding gives it some nice spacing.
-*/
 .mainContent {
   display: flex;
   justify-content: center;
   flex-direction: column;
   padding: 2rem;
-  /* background-color: #F8F8F8; */
-  /* background-color: mediumorchid; */
 }
 
 .upcomingMusicSection {
@@ -31,6 +22,5 @@
   margin-top: 2rem;
   height: 100%;
   width: 100%;
-  /* background-color: darkolivegreen; */
   order: 5;
 }
