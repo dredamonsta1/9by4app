@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // src/components/Admin/WaitlistManager.jsx
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
