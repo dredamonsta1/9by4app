@@ -78,6 +78,10 @@ const ProfilePage = () => {
     }
   }, []);
 
+  const favoritedArtistIds = new Set(
+    profileList.map((a) => a.artist_id)
+  );
+
   const searchResults =
     searchTerm.length > 1
       ? artists.filter((artist) =>
@@ -181,19 +185,23 @@ const ProfilePage = () => {
 
           {searchResults.length > 0 && (
             <ul className={styles.searchResultsList}>
-              {searchResults.map((artist) => (
-                <li className={styles.searchResultItem} key={artist.artist_id}>
-                  <span className={styles.searchResultItemSpan}>
-                    {artist.name}
-                  </span>
-                  <button
-                    className={styles.addArtistButton}
-                    onClick={() => handleAddArtist(artist)}
-                  >
-                    Add
-                  </button>
-                </li>
-              ))}
+              {searchResults.map((artist) => {
+                const alreadyAdded = favoritedArtistIds.has(artist.artist_id);
+                return (
+                  <li className={styles.searchResultItem} key={artist.artist_id}>
+                    <span className={styles.searchResultItemSpan}>
+                      {artist.name}
+                    </span>
+                    <button
+                      className={styles.addArtistButton}
+                      onClick={() => handleAddArtist(artist)}
+                      disabled={alreadyAdded}
+                    >
+                      {alreadyAdded ? "Added" : "Add"}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
 

@@ -21,33 +21,17 @@ export const fetchProfileList = () => async (dispatch) => {
 };
 
 // Action to add an artist to the user's curated list
-export const addArtistToProfileList = (artist) => async (dispatch) => {
-  // --- DEBUGGING LOGS START HERE ---
-  console.log("1. Starting 'addArtistToProfileList' for artist:", artist);
-  try {
-    const url = `/profile/list/${artist.artist_id}`;
-    console.log("2. Attempting to POST to URL:", url);
-
-    // This is the call that is likely failing.
-    await axiosInstance.post(url);
-
-    console.log("3. POST request successful!");
-
-    // Dispatch the success action to add the artist to the Redux state
-    dispatch(addArtistToListSuccess(artist));
-    console.log("4. Dispatched addArtistToListSuccess.");
-
-    // Also dispatch the original incrementClout action
-    dispatch(incrementClout(artist.artist_id));
-    console.log("5. Dispatched incrementClout.");
-  } catch (error) {
-    // If there is any error with the POST request, it should be caught here.
-    console.error("DEBUG: Error caught in 'addArtistToProfileList':", error);
-    // You can inspect the full error object for more details
-    if (error.response) {
-      console.error("DEBUG: Error response data:", error.response.data);
-      console.error("DEBUG: Error response status:", error.response.status);
-    }
+export const addArtistToProfileList = (artist) => async (dispatch, getState) => {
+  const { list } = getState().profileList;
+  if (list.some((a) => a.artist_id === artist.artist_id)) {
+    return;
   }
-  // --- DEBUGGING LOGS END HERE ---
+
+  try {
+    await axiosInstance.post(`/profile/list/${artist.artist_id}`);
+    dispatch(addArtistToListSuccess(artist));
+    dispatch(incrementClout(artist.artist_id));
+  } catch (error) {
+    console.error("Error adding artist to profile list:", error);
+  }
 };
