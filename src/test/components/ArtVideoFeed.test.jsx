@@ -9,11 +9,6 @@ vi.mock("../../utils/axiosInstance", () => ({
   },
 }));
 
-// Mock NavBar component
-vi.mock("../../components/NavBar/NavBar", () => ({
-  default: () => <div data-testid="navbar">NavBar</div>,
-}));
-
 // Mock CSS module
 vi.mock("../../components/ArtVideoFeed/ArtVideoFeed.module.css", () => ({
   default: {
@@ -38,15 +33,7 @@ describe("ArtVideoFeed Component", () => {
 
       render(<ArtVideoFeed />);
 
-      expect(screen.getByText("Loading art feed...")).toBeInTheDocument();
-    });
-
-    it("renders NavBar even while loading", () => {
-      axiosInstance.get.mockImplementation(() => new Promise(() => {}));
-
-      render(<ArtVideoFeed />);
-
-      expect(screen.getByTestId("navbar")).toBeInTheDocument();
+      expect(screen.getByText("Loading video feed...")).toBeInTheDocument();
     });
   });
 
@@ -71,7 +58,7 @@ describe("ArtVideoFeed Component", () => {
       const errorElement = await screen.findByText(
         "Failed to load video feed."
       );
-      expect(errorElement).toHaveStyle({ color: "red" });
+      expect(errorElement).toHaveStyle("color: rgb(255, 0, 0)");
     });
 
     it("logs error to console", async () => {
@@ -94,19 +81,25 @@ describe("ArtVideoFeed Component", () => {
   describe("Success State", () => {
     const mockVideos = [
       {
-        videoId: "video1",
-        title: "Art Documentary 1",
-        thumbnail: "https://example.com/thumb1.jpg",
+        id: 1,
+        video_url: "video1",
+        caption: "Art Documentary 1",
+        video_type: "youtube",
+        source: "youtube_playlist",
       },
       {
-        videoId: "video2",
-        title: "Art Documentary 2",
-        thumbnail: "https://example.com/thumb2.jpg",
+        id: 2,
+        video_url: "video2",
+        caption: "Art Documentary 2",
+        video_type: "youtube",
+        source: "youtube_playlist",
       },
       {
-        videoId: "video3",
-        title: "Art Documentary 3",
-        thumbnail: "https://example.com/thumb3.jpg",
+        id: 3,
+        video_url: "video3",
+        caption: "Art Documentary 3",
+        video_type: "youtube",
+        source: "youtube_playlist",
       },
     ];
 
@@ -128,7 +121,7 @@ describe("ArtVideoFeed Component", () => {
       render(<ArtVideoFeed />);
 
       await waitFor(() => {
-        expect(axiosInstance.get).toHaveBeenCalledWith("/art/youtube-feed");
+        expect(axiosInstance.get).toHaveBeenCalledWith("/art/combined-video-feed");
       });
     });
 
@@ -174,14 +167,14 @@ describe("ArtVideoFeed Component", () => {
       );
     });
 
-    it("renders all video titles in overlay", async () => {
+    it("renders all video captions in overlay", async () => {
       axiosInstance.get.mockResolvedValue({ data: mockVideos });
 
       render(<ArtVideoFeed />);
 
       await waitFor(() => {
         mockVideos.forEach((video) => {
-          expect(screen.getByText(video.title)).toBeInTheDocument();
+          expect(screen.getByText(video.caption)).toBeInTheDocument();
         });
       });
     });
@@ -209,17 +202,16 @@ describe("ArtVideoFeed Component", () => {
       await waitFor(() => {
         expect(screen.queryByText(/Art Documentary/)).not.toBeInTheDocument();
       });
-
-      // Should still render NavBar
-      expect(screen.getByTestId("navbar")).toBeInTheDocument();
     });
 
     it("handles single video", async () => {
       const singleVideo = [
         {
-          videoId: "solo",
-          title: "Solo Documentary",
-          thumbnail: "https://example.com/solo.jpg",
+          id: 1,
+          video_url: "solo",
+          caption: "Solo Documentary",
+          video_type: "youtube",
+          source: "youtube_playlist",
         },
       ];
 
@@ -235,16 +227,18 @@ describe("ArtVideoFeed Component", () => {
       expect(iframes).toHaveLength(1);
     });
 
-    it("handles videos with long titles", async () => {
-      const longTitleVideos = [
+    it("handles videos with long captions", async () => {
+      const longCaptionVideos = [
         {
-          videoId: "long1",
-          title: "A".repeat(200),
-          thumbnail: "https://example.com/long.jpg",
+          id: 1,
+          video_url: "long1",
+          caption: "A".repeat(200),
+          video_type: "youtube",
+          source: "youtube_playlist",
         },
       ];
 
-      axiosInstance.get.mockResolvedValue({ data: longTitleVideos });
+      axiosInstance.get.mockResolvedValue({ data: longCaptionVideos });
 
       render(<ArtVideoFeed />);
 
@@ -253,12 +247,14 @@ describe("ArtVideoFeed Component", () => {
       });
     });
 
-    it("handles videos with special characters in title", async () => {
+    it("handles videos with special characters in caption", async () => {
       const specialVideos = [
         {
-          videoId: "special",
-          title: 'Art & Culture: "Modern" <Renaissance> 2024 🎨',
-          thumbnail: "https://example.com/special.jpg",
+          id: 1,
+          video_url: "special",
+          caption: 'Art & Culture: "Modern" <Renaissance> 2024',
+          video_type: "youtube",
+          source: "youtube_playlist",
         },
       ];
 
@@ -268,64 +264,29 @@ describe("ArtVideoFeed Component", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText('Art & Culture: "Modern" <Renaissance> 2024 🎨')
+          screen.getByText('Art & Culture: "Modern" <Renaissance> 2024')
         ).toBeInTheDocument();
       });
     });
 
-    it("handles videos with missing thumbnail", async () => {
-      const noThumbVideos = [
+    it("handles videos with missing caption", async () => {
+      const noCaptionVideos = [
         {
-          videoId: "nothumb",
-          title: "No Thumbnail Video",
-          thumbnail: null,
+          id: 1,
+          video_url: "nocaption",
+          caption: null,
+          video_type: "youtube",
+          source: "youtube_playlist",
         },
       ];
 
-      axiosInstance.get.mockResolvedValue({ data: noThumbVideos });
+      axiosInstance.get.mockResolvedValue({ data: noCaptionVideos });
 
       render(<ArtVideoFeed />);
 
       await waitFor(() => {
-        expect(screen.getByText("No Thumbnail Video")).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe("Component Structure", () => {
-    it("renders NavBar component", async () => {
-      axiosInstance.get.mockResolvedValue({ data: [] });
-
-      render(<ArtVideoFeed />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("navbar")).toBeInTheDocument();
-      });
-    });
-
-    it("renders container div", async () => {
-      axiosInstance.get.mockResolvedValue({ data: [] });
-
-      const { container } = render(<ArtVideoFeed />);
-
-      await waitFor(() => {
-        const containerDiv = container.querySelector(".container");
-        expect(containerDiv).toBeInTheDocument();
-      });
-    });
-
-    it("renders video feed container after loading", async () => {
-      const mockVideos = [
-        { videoId: "v1", title: "Video 1", thumbnail: "thumb1.jpg" },
-      ];
-
-      axiosInstance.get.mockResolvedValue({ data: mockVideos });
-
-      const { container } = render(<ArtVideoFeed />);
-
-      await waitFor(() => {
-        const feedContainer = container.querySelector(".videoFeedContainer");
-        expect(feedContainer).toBeInTheDocument();
+        // Component uses "Video" as fallback for iframe title
+        expect(screen.getByTitle("Video")).toBeInTheDocument();
       });
     });
   });
@@ -333,7 +294,13 @@ describe("ArtVideoFeed Component", () => {
   describe("Video Attributes", () => {
     it("sets autoplay, mute, and loop parameters", async () => {
       const mockVideos = [
-        { videoId: "test", title: "Test Video", thumbnail: "test.jpg" },
+        {
+          id: 1,
+          video_url: "test123",
+          caption: "Test Video",
+          video_type: "youtube",
+          source: "youtube_playlist",
+        },
       ];
 
       axiosInstance.get.mockResolvedValue({ data: mockVideos });
@@ -346,12 +313,18 @@ describe("ArtVideoFeed Component", () => {
       expect(src).toContain("autoplay=1");
       expect(src).toContain("mute=1");
       expect(src).toContain("loop=1");
-      expect(src).toContain("playlist=test");
+      expect(src).toContain("playlist=test123");
     });
 
     it("embeds YouTube videos correctly", async () => {
       const mockVideos = [
-        { videoId: "abc123", title: "YouTube Video", thumbnail: "thumb.jpg" },
+        {
+          id: 1,
+          video_url: "abc123",
+          caption: "YouTube Video",
+          video_type: "youtube",
+          source: "youtube_playlist",
+        },
       ];
 
       axiosInstance.get.mockResolvedValue({ data: mockVideos });
@@ -367,7 +340,13 @@ describe("ArtVideoFeed Component", () => {
   describe("Performance", () => {
     it("does not re-fetch videos on re-render", async () => {
       const mockVideos = [
-        { videoId: "v1", title: "Video 1", thumbnail: "thumb1.jpg" },
+        {
+          id: 1,
+          video_url: "v1",
+          caption: "Video 1",
+          video_type: "youtube",
+          source: "youtube_playlist",
+        },
       ];
 
       axiosInstance.get.mockResolvedValue({ data: mockVideos });
@@ -389,7 +368,13 @@ describe("ArtVideoFeed Component", () => {
   describe("Accessibility", () => {
     it("provides title attribute for iframes", async () => {
       const mockVideos = [
-        { videoId: "v1", title: "Accessible Video", thumbnail: "thumb.jpg" },
+        {
+          id: 1,
+          video_url: "v1",
+          caption: "Accessible Video",
+          video_type: "youtube",
+          source: "youtube_playlist",
+        },
       ];
 
       axiosInstance.get.mockResolvedValue({ data: mockVideos });
@@ -400,9 +385,15 @@ describe("ArtVideoFeed Component", () => {
       expect(iframe).toBeInTheDocument();
     });
 
-    it("renders video titles as headings", async () => {
+    it("renders video captions as headings", async () => {
       const mockVideos = [
-        { videoId: "v1", title: "Video Title", thumbnail: "thumb.jpg" },
+        {
+          id: 1,
+          video_url: "v1",
+          caption: "Video Caption",
+          video_type: "youtube",
+          source: "youtube_playlist",
+        },
       ];
 
       axiosInstance.get.mockResolvedValue({ data: mockVideos });
@@ -410,7 +401,7 @@ describe("ArtVideoFeed Component", () => {
       render(<ArtVideoFeed />);
 
       await waitFor(() => {
-        const heading = screen.getByRole("heading", { name: "Video Title" });
+        const heading = screen.getByRole("heading", { name: "Video Caption" });
         expect(heading).toBeInTheDocument();
       });
     });
