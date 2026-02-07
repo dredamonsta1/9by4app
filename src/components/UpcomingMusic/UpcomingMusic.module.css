@@ -4,14 +4,14 @@
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  gap: 28px;
+  padding: 28px;
   max-width: 100%;
   margin: 0 auto;
 }
 
 /* Styling for each individual release card */
-.releaseCard {
+.card {
   background-color: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -23,10 +23,20 @@
     background-color 0.2s ease-in-out;
 }
 
-.releaseCard:hover {
+.card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
   background-color: var(--card-bg-hover);
+}
+
+/* Responsive card image */
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  object-fit: cover;
 }
 
 /* Title of the release */

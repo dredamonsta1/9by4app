@@ -1,21 +1,37 @@
 /* RapperList.css */
 
 .rapperList-outter-div {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
-  height: 100%;
   width: 100%;
+  margin-top: 20px;
+  overflow: hidden;
 }
 
 .rapperList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  display: flex;
   gap: 20px;
   padding: 20px;
   width: 100%;
   box-sizing: border-box;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg-surface);
+  list-style: none;
+}
+
+.rapperList::-webkit-scrollbar {
+  height: 6px;
+}
+
+.rapperList::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+  border-radius: 3px;
+}
+
+.rapperList::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
 }
 
 .rapperList-item {
@@ -29,6 +45,9 @@
   aspect-ratio: 3/4;
   cursor: pointer;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  min-width: 220px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
 }
 
 .rapperList-item:hover {
