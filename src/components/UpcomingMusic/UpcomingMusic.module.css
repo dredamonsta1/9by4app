@@ -3,7 +3,7 @@
 /* Grid container for the release cards */
 .gridContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 28px;
   padding: 28px;
   max-width: 100%;
@@ -15,7 +15,7 @@
   background-color: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 10px;
   box-shadow: var(--shadow-sm);
   transition:
     transform 0.2s ease-in-out,
@@ -34,35 +34,35 @@
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  border-radius: 6px;
+  margin-bottom: 6px;
   object-fit: cover;
 }
 
 /* Title of the release */
 .releaseTitle {
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-bright);
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 /* Artist's name */
 .artistName {
-  font-size: 1rem;
+  font-size: 0.65rem;
   color: var(--text-dim);
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 /* Release date */
 .releaseDate {
-  font-size: 0.9rem;
+  font-size: 0.6rem;
   color: var(--text-dim);
 }
 
 /* Country of release */
 .country {
-  font-size: 0.9rem;
+  font-size: 0.6rem;
   color: var(--text-dim);
   font-style: italic;
 }
