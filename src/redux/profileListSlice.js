@@ -1,5 +1,6 @@
 // src/redux/profileListSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { INCREMENT_CLOUT_SUCCESS } from "./actions/artistActions";
 
 const initialState = {
   list: [],
@@ -33,6 +34,15 @@ const profileListSlice = createSlice({
         state.list.push(action.payload);
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(INCREMENT_CLOUT_SUCCESS, (state, action) => {
+      const { artistId } = action.payload;
+      const artist = state.list.find((a) => a.artist_id === artistId);
+      if (artist) {
+        artist.count = (artist.count || 0) + 1;
+      }
+    });
   },
 });
 

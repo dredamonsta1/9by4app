@@ -111,15 +111,14 @@ const artistsReducer = (state = initialState, action) => {
       return { ...state };
     case INCREMENT_CLOUT_SUCCESS: {
       const { artistId } = action.payload;
+      const incrementCount = (artist) =>
+        artist.artist_id === artistId
+          ? { ...artist, count: artist.count + 1 }
+          : artist;
       return {
         ...state,
-        artists: state.artists
-          .map((artist) =>
-            artist.artist_id === artistId
-              ? { ...artist, count: artist.count + 1 }
-              : artist
-          )
-          .sort((a, b) => b.count - a.count),
+        artists: state.artists.map(incrementCount).sort((a, b) => b.count - a.count),
+        searchResults: state.searchResults.map(incrementCount),
       };
     }
     case INCREMENT_CLOUT_FAILURE:
