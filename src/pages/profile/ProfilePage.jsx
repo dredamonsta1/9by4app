@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchArtists } from "../../redux/actions/artistActions";
+import {
+  searchArtists,
+  clearSearchResults,
+} from "../../redux/actions/artistActions";
 import {
   fetchProfileList,
   addArtistToProfileList,
@@ -18,9 +21,8 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
 
   const {
-    artists,
-    loading: artistsLoading,
-    error: artistsError,
+    searchResults,
+    searchLoading,
   } = useSelector((state) => state.artists);
   const {
     list: profileList,
@@ -40,7 +42,6 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!userId) {
-      dispatch(fetchArtists());
       dispatch(fetchProfileList());
     }
   }, [dispatch, userId]);
@@ -78,37 +79,39 @@ const ProfilePage = () => {
     }
   }, []);
 
+  // Debounced search - calls backend API
+  useEffect(() => {
+    if (searchTerm.length < 2) {
+      dispatch(clearSearchResults());
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      dispatch(searchArtists({ search: searchTerm }));
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, dispatch]);
+
   const favoritedArtistIds = new Set(
     profileList.map((a) => a.artist_id)
   );
 
-  const searchResults =
-    searchTerm.length > 1
-      ? artists.filter((artist) =>
-          artist.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      : [];
-
   const handleAddArtist = (artistToAdd) => {
     dispatch(addArtistToProfileList(artistToAdd));
     setSearchTerm("");
+    dispatch(clearSearchResults());
   };
 
-  const artistsMap = new Map(
-    artists.map((artist) => [artist.artist_id, artist])
-  );
-
-  const hydratedProfileList = profileList
-    .map((profileArtist) => artistsMap.get(profileArtist.artist_id))
-    .filter(Boolean);
+  // Build hydrated profile list from the profile list data directly
+  // (no longer depends on having all artists loaded in Redux)
+  const hydratedProfileList = profileList.filter(Boolean);
 
   // Viewing another user's profile
   if (userId) {
     const isOwnProfile = currentUser && String(currentUser.id) === String(userId);
 
-    if (isOwnProfile) {
-      // If viewing own profile via /profile/:userId, fall through to normal view
-    } else {
+    if (!isOwnProfile) {
       return (
         <div className={styles.profilePage}>
           <section className={styles.section}>
@@ -179,11 +182,11 @@ const ProfilePage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          {artistsLoading && searchTerm.length > 1 && (
+          {searchLoading && searchTerm.length > 1 && (
             <p className={styles.loadingText}>Searching...</p>
           )}
 
-          {searchResults.length > 0 && (
+          {searchResults.length > 0 && searchTerm.length > 1 && (
             <ul className={styles.searchResultsList}>
               {searchResults.map((artist) => {
                 const alreadyAdded = favoritedArtistIds.has(artist.artist_id);
@@ -205,24 +208,24 @@ const ProfilePage = () => {
             </ul>
           )}
 
-          {(profileListLoading || artistsLoading) && (
+          {profileListLoading && (
             <p className={styles.loadingText}>Loading your list...</p>
           )}
 
-          {!(profileListLoading || artistsLoading) &&
+          {!profileListLoading &&
           hydratedProfileList.length > 0 ? (
             <ul className={styles.favArtistList}>
               {hydratedProfileList.map((artist) => (
                 <li className={styles.favArtistItem} key={artist.artist_id}>
-                  <span>{artist.name}</span>
+                  <span>{artist.artist_name || artist.name}</span>
                   <span className={styles.cloutBadge}>
-                    Clout: {artist.count}
+                    Clout: {artist.count || 0}
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            !(profileListLoading || artistsLoading) && (
+            !profileListLoading && (
               <p className={styles.emptyState}>
                 Your list is empty. Search for artists to add them.
               </p>

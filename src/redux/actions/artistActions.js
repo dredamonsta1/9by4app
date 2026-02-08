@@ -6,38 +6,94 @@ export const FETCH_ARTISTS_REQUEST = "FETCH_ARTISTS_REQUEST";
 export const FETCH_ARTISTS_SUCCESS = "FETCH_ARTISTS_SUCCESS";
 export const FETCH_ARTISTS_FAILURE = "FETCH_ARTISTS_FAILURE";
 
+export const FETCH_MORE_ARTISTS_REQUEST = "FETCH_MORE_ARTISTS_REQUEST";
+export const FETCH_MORE_ARTISTS_SUCCESS = "FETCH_MORE_ARTISTS_SUCCESS";
+export const FETCH_MORE_ARTISTS_FAILURE = "FETCH_MORE_ARTISTS_FAILURE";
+
+export const SEARCH_ARTISTS_REQUEST = "SEARCH_ARTISTS_REQUEST";
+export const SEARCH_ARTISTS_SUCCESS = "SEARCH_ARTISTS_SUCCESS";
+export const SEARCH_ARTISTS_FAILURE = "SEARCH_ARTISTS_FAILURE";
+export const CLEAR_SEARCH_RESULTS = "CLEAR_SEARCH_RESULTS";
+
 export const INCREMENT_CLOUT_REQUEST = "INCREMENT_CLOUT_REQUEST";
 export const INCREMENT_CLOUT_SUCCESS = "INCREMENT_CLOUT_SUCCESS";
 export const INCREMENT_CLOUT_FAILURE = "INCREMENT_CLOUT_FAILURE";
 
-// Async Action Creator for fetching artists
-export const fetchArtists = () => async (dispatch) => {
-  dispatch({ type: FETCH_ARTISTS_REQUEST });
-  try {
-    const response = await axiosInstance.get("/artists");
+const mapArtistData = (artistData) =>
+  (artistData || [])
+    .filter((artist) => artist)
+    .map((artist) => ({
+      ...artist,
+      name: artist.artist_name,
+      count: artist.count || 0,
+    }));
 
-    // --- FIX STARTS HERE ---
-    // 1. Correctly access `response.data.artists` instead of `rappers`.
-    const artistData = response.data.artists || [];
+// Fetch first page of artists (replaces list)
+export const fetchArtists =
+  ({ page = 1, limit = 50, search = "", genre = "", state = "" } = {}) =>
+  async (dispatch) => {
+    dispatch({ type: FETCH_ARTISTS_REQUEST });
+    try {
+      const response = await axiosInstance.get("/artists", {
+        params: { page, limit, search, genre, state },
+      });
 
-    // 2. Map over the data to create a consistent structure for the frontend.
-    //    - Rename `artist_name` to `name` to match what the component expects.
-    //    - Ensure `count` has a default value of 0.
-    const artists = artistData
-      .filter((artist) => artist) // Remove any null or undefined artists
-      .map((artist) => ({
-        ...artist,
-        name: artist.artist_name, // Rename artist_name to name
-        count: artist.count || 0,
-      }));
-    // --- FIX ENDS HERE ---
+      const artists = mapArtistData(response.data.artists);
+      const { totalCount, totalPages, hasMore } = response.data;
 
-    dispatch({ type: FETCH_ARTISTS_SUCCESS, payload: artists });
-  } catch (error) {
-    console.error("Error fetching artists:", error);
-    dispatch({ type: FETCH_ARTISTS_FAILURE, payload: error.message });
-  }
-};
+      dispatch({
+        type: FETCH_ARTISTS_SUCCESS,
+        payload: { artists, page, totalCount, totalPages, hasMore },
+      });
+    } catch (error) {
+      console.error("Error fetching artists:", error);
+      dispatch({ type: FETCH_ARTISTS_FAILURE, payload: error.message });
+    }
+  };
+
+// Fetch next page (appends to list)
+export const fetchMoreArtists =
+  ({ page, limit = 50, search = "", genre = "", state = "" } = {}) =>
+  async (dispatch) => {
+    dispatch({ type: FETCH_MORE_ARTISTS_REQUEST });
+    try {
+      const response = await axiosInstance.get("/artists", {
+        params: { page, limit, search, genre, state },
+      });
+
+      const artists = mapArtistData(response.data.artists);
+      const { totalCount, totalPages, hasMore } = response.data;
+
+      dispatch({
+        type: FETCH_MORE_ARTISTS_SUCCESS,
+        payload: { artists, page, totalCount, totalPages, hasMore },
+      });
+    } catch (error) {
+      console.error("Error fetching more artists:", error);
+      dispatch({ type: FETCH_MORE_ARTISTS_FAILURE, payload: error.message });
+    }
+  };
+
+// Search artists (separate state for search results)
+export const searchArtists =
+  ({ search, limit = 20 } = {}) =>
+  async (dispatch) => {
+    dispatch({ type: SEARCH_ARTISTS_REQUEST });
+    try {
+      const response = await axiosInstance.get("/artists", {
+        params: { page: 1, limit, search },
+      });
+
+      const artists = mapArtistData(response.data.artists);
+
+      dispatch({ type: SEARCH_ARTISTS_SUCCESS, payload: artists });
+    } catch (error) {
+      console.error("Error searching artists:", error);
+      dispatch({ type: SEARCH_ARTISTS_FAILURE, payload: error.message });
+    }
+  };
+
+export const clearSearchResults = () => ({ type: CLEAR_SEARCH_RESULTS });
 
 // Async Action Creator for incrementing clout
 export const incrementClout = (artistId) => async (dispatch) => {
