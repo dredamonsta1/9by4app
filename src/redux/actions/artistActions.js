@@ -30,12 +30,12 @@ const mapArtistData = (artistData) =>
 
 // Fetch first page of artists (replaces list)
 export const fetchArtists =
-  ({ page = 1, limit = 50, search = "", genre = "", state = "" } = {}) =>
+  ({ page = 1, limit = 50, search = "", genre = "", state = "", sort = "clout" } = {}) =>
   async (dispatch) => {
     dispatch({ type: FETCH_ARTISTS_REQUEST });
     try {
       const response = await axiosInstance.get("/artists", {
-        params: { page, limit, search, genre, state },
+        params: { page, limit, search, genre, state, sort },
       });
 
       const artists = mapArtistData(response.data.artists);
@@ -53,12 +53,12 @@ export const fetchArtists =
 
 // Fetch next page (appends to list)
 export const fetchMoreArtists =
-  ({ page, limit = 50, search = "", genre = "", state = "" } = {}) =>
+  ({ page, limit = 50, search = "", genre = "", state = "", sort = "clout" } = {}) =>
   async (dispatch) => {
     dispatch({ type: FETCH_MORE_ARTISTS_REQUEST });
     try {
       const response = await axiosInstance.get("/artists", {
-        params: { page, limit, search, genre, state },
+        params: { page, limit, search, genre, state, sort },
       });
 
       const artists = mapArtistData(response.data.artists);
