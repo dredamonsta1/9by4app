@@ -319,6 +319,52 @@
   margin-top: 0.5rem !important;
 }
 
+/* ======= Upcoming Section in Modal ======= */
+.artist-modal-upcoming {
+  margin-bottom: 1.25rem;
+}
+
+.artist-modal-upcoming h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: var(--text-bright, #fff);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.artist-modal-upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: rgba(108, 99, 255, 0.1);
+  border: 1px solid rgba(108, 99, 255, 0.25);
+  border-radius: var(--radius, 8px);
+}
+
+.artist-modal-upcoming-image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.artist-modal-upcoming-title {
+  display: block;
+  font-weight: 600;
+  color: var(--text-bright, #fff);
+  font-size: 0.95rem;
+}
+
+.artist-modal-upcoming-date {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim, #aaa);
+  margin-top: 0.15rem;
+}
+
 .artist-modal-albums h3 {
   margin: 0 0 0.75rem;
   font-size: 1.1rem;

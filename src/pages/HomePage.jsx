@@ -5,10 +5,12 @@ import styles from "./HomePage.module.css";
 import ClickableList from "../components/RapperList";
 import { fetchArtists, searchArtists, clearSearchResults } from "../redux/actions/artistActions";
 import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
+import axiosInstance from "../utils/axiosInstance";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
+  const [upcomingReleases, setUpcomingReleases] = useState([]);
   const debounceTimer = useRef(null);
 
   const { artists, loading, error, searchResults, searchLoading } =
@@ -16,6 +18,9 @@ const HomePage = () => {
 
   useEffect(() => {
     dispatch(fetchArtists());
+    axiosInstance.get("/music/upcoming")
+      .then((res) => setUpcomingReleases(res.data))
+      .catch(() => {});
   }, [dispatch]);
 
   const handleSearchChange = (e) => {
@@ -42,6 +47,7 @@ const HomePage = () => {
             artists={artists}
             showAdminActions={false}
             showCloutButton={false}
+            upcomingReleases={upcomingReleases}
           />
         )}
 
@@ -62,6 +68,7 @@ const HomePage = () => {
               artists={searchResults}
               showAdminActions={false}
               showCloutButton={false}
+              upcomingReleases={upcomingReleases}
             />
           </div>
         )}

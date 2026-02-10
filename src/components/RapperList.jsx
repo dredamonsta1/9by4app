@@ -3,9 +3,14 @@ import { useDispatch } from "react-redux";
 import "./RapperList.css";
 import { incrementClout } from "../redux/actions/artistActions";
 
-const ArtistModal = ({ artist, onClose }) => {
+const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const API_BASE_URL = "https://ninebyfourapi.herokuapp.com";
   const albums = artist.albums || [];
+  const artistName = (artist.name || artist.artist_name || "").toLowerCase();
+
+  const upcoming = upcomingReleases.filter(
+    (r) => r.artist && r.artist.toLowerCase() === artistName
+  );
 
   return (
     <div className="artist-modal-overlay" onClick={onClose}>
@@ -30,6 +35,30 @@ const ArtistModal = ({ artist, onClose }) => {
             <p className="artist-modal-clout">Clout: {artist.count || 0}</p>
           </div>
         </div>
+
+        {upcoming.length > 0 && (
+          <div className="artist-modal-upcoming">
+            <h3>Upcoming</h3>
+            {upcoming.map((release) => (
+              <div key={release.id} className="artist-modal-upcoming-item">
+                {release.imageUrl && (
+                  <img
+                    src={release.imageUrl}
+                    alt={release.title}
+                    className="artist-modal-upcoming-image"
+                  />
+                )}
+                <div>
+                  <span className="artist-modal-upcoming-title">{release.title}</span>
+                  {release.date && (
+                    <span className="artist-modal-upcoming-date">{release.date}</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {albums.length > 0 && (
           <div className="artist-modal-albums">
             <h3>Albums</h3>
@@ -57,7 +86,7 @@ const ArtistModal = ({ artist, onClose }) => {
   );
 };
 
-const ClickableList = ({ artists, showAdminActions, showCloutButton }) => {
+const ClickableList = ({ artists, showAdminActions, showCloutButton, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
   const [selectedArtist, setSelectedArtist] = useState(null);
 
@@ -151,6 +180,7 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton }) => {
         <ArtistModal
           artist={selectedArtist}
           onClose={() => setSelectedArtist(null)}
+          upcomingReleases={upcomingReleases}
         />
       )}
     </div>
