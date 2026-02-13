@@ -77,7 +77,7 @@ const ArtVideoFeed = () => {
                 <iframe
                   width="100%"
                   height="100%"
-                  src={`https://www.youtube.com/embed/${video.video_url}?autoplay=1&mute=1&loop=1&playlist=${video.video_url}`}
+                  src={`https://www.youtube.com/embed/${video.video_url}?autoplay=1&mute=0&loop=1&playlist=${video.video_url}`}
                   title={video.caption || "Video"}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
