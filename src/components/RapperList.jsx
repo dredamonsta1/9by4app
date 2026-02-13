@@ -9,7 +9,7 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const artistName = (artist.name || artist.artist_name || "").toLowerCase();
 
   const upcoming = upcomingReleases.filter(
-    (r) => r.artist && r.artist.toLowerCase() === artistName
+    (r) => r.artist && r.artist.toLowerCase() === artistName && r.imageUrl
   );
 
   return (

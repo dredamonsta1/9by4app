@@ -237,10 +237,10 @@ function UpcomingMusic() {
 
   return (
     <div className={styles.gridContainer}>
-      {releases.map((release) => (
+      {releases.filter((release) => release.imageUrl).map((release) => (
         <div key={release.id} className={styles.card}>
           <img
-            src={release.imageUrl || "/placeholder.png"}
+            src={release.imageUrl}
             alt={release.title}
           />
           <h3>{release.title}</h3>
