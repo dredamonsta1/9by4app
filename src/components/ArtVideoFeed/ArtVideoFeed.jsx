@@ -14,8 +14,33 @@ const ArtVideoFeed = () => {
   useEffect(() => {
     const fetchVideoFeed = async () => {
       try {
-        const response = await axiosInstance.get("/art/combined-video-feed");
-        setVideos(response.data);
+        const [combinedRes, musicVideosRes] = await Promise.allSettled([
+          axiosInstance.get("/art/combined-video-feed"),
+          axiosInstance.get("/art/music-videos"),
+        ]);
+
+        const combinedVideos =
+          combinedRes.status === "fulfilled" ? combinedRes.value.data : [];
+
+        const musicVideos =
+          musicVideosRes.status === "fulfilled"
+            ? musicVideosRes.value.data.map((mv) => ({
+                id: mv.videoId,
+                video_url: mv.videoId,
+                video_type: "youtube",
+                caption: mv.title,
+                thumbnail_url: mv.thumbnail,
+                created_at: mv.publishedAt,
+                username: mv.artist,
+                source: "music_video",
+              }))
+            : [];
+
+        const merged = [...combinedVideos, ...musicVideos].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+
+        setVideos(merged);
       } catch (err) {
         setError("Failed to load video feed.");
         console.error(err);
@@ -48,7 +73,7 @@ const ArtVideoFeed = () => {
             className={styles.videoSlide}
           >
             <div className={styles.videoPlayer}>
-              {video.video_type === "youtube" || video.source === "youtube_playlist" ? (
+              {video.video_type === "youtube" || video.source === "youtube_playlist" || video.source === "music_video" ? (
                 <iframe
                   width="100%"
                   height="100%"
@@ -74,7 +99,7 @@ const ArtVideoFeed = () => {
               <h3>{video.caption || ""}</h3>
               {video.username && video.source !== "youtube_playlist" && (
                 <p style={{ margin: 0, fontSize: "0.9rem", opacity: 0.8 }}>
-                  @{video.username}
+                  {video.source === "music_video" ? video.username : `@${video.username}`}
                 </p>
               )}
             </div>
