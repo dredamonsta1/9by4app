@@ -20,10 +20,9 @@ const ProfilePage = () => {
   const { userId } = useParams();
   const dispatch = useDispatch();
 
-  const {
-    searchResults,
-    searchLoading,
-  } = useSelector((state) => state.artists);
+  const { searchResults, searchLoading } = useSelector(
+    (state) => state.artists,
+  );
   const {
     list: profileList,
     loading: profileListLoading,
@@ -93,9 +92,7 @@ const ProfilePage = () => {
     return () => clearTimeout(timer);
   }, [searchTerm, dispatch]);
 
-  const favoritedArtistIds = new Set(
-    profileList.map((a) => a.artist_id)
-  );
+  const favoritedArtistIds = new Set(profileList.map((a) => a.artist_id));
 
   const handleAddArtist = (artistToAdd) => {
     dispatch(addArtistToProfileList(artistToAdd));
@@ -109,7 +106,8 @@ const ProfilePage = () => {
 
   // Viewing another user's profile
   if (userId) {
-    const isOwnProfile = currentUser && String(currentUser.id) === String(userId);
+    const isOwnProfile =
+      currentUser && String(currentUser.id) === String(userId);
 
     if (!isOwnProfile) {
       return (
@@ -123,21 +121,31 @@ const ProfilePage = () => {
                   {viewedUser.username}'s Profile
                 </h2>
                 <div>
-                  <p><strong>Username:</strong> {viewedUser.username}</p>
-                  <p><strong>Role:</strong> {viewedUser.role}</p>
+                  <p>
+                    <strong>Username:</strong> {viewedUser.username}
+                  </p>
+                  <p>
+                    <strong>Role:</strong> {viewedUser.role}
+                  </p>
                 </div>
                 <FollowButton
                   targetUserId={Number(userId)}
                   initialIsFollowing={false}
                 />
 
-                <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>
+                <h3
+                  className={styles.sectionHeader}
+                  style={{ marginTop: "1.5rem" }}
+                >
                   Favorite Artists
                 </h3>
                 {viewedUserArtists.length > 0 ? (
                   <ul className={styles.favArtistList}>
                     {viewedUserArtists.map((artist) => (
-                      <li className={styles.favArtistItem} key={artist.artist_id}>
+                      <li
+                        className={styles.favArtistItem}
+                        key={artist.artist_id}
+                      >
                         <span>{artist.artist_name}</span>
                         <span className={styles.cloutBadge}>
                           Clout: {artist.count}
@@ -191,7 +199,10 @@ const ProfilePage = () => {
               {searchResults.map((artist) => {
                 const alreadyAdded = favoritedArtistIds.has(artist.artist_id);
                 return (
-                  <li className={styles.searchResultItem} key={artist.artist_id}>
+                  <li
+                    className={styles.searchResultItem}
+                    key={artist.artist_id}
+                  >
                     <span className={styles.searchResultItemSpan}>
                       {artist.name}
                     </span>
@@ -212,8 +223,7 @@ const ProfilePage = () => {
             <p className={styles.loadingText}>Loading your list...</p>
           )}
 
-          {!profileListLoading &&
-          hydratedProfileList.length > 0 ? (
+          {!profileListLoading && hydratedProfileList.length > 0 ? (
             <ul className={styles.favArtistList}>
               {hydratedProfileList.map((artist) => (
                 <li className={styles.favArtistItem} key={artist.artist_id}>
@@ -245,31 +255,20 @@ const ProfilePage = () => {
         <section className={`${styles.section} ${styles.communitySection}`}>
           <h2 className={styles.sectionHeader}>My Community</h2>
 
-          <div className={styles.quickFollowBox}>
-            <h4>Quick Follow (Test Mode)</h4>
-            <p>Enter a User ID to follow them.</p>
-            <input
-              type="number"
-              placeholder="User ID"
-              value={manualId}
-              onChange={(e) => setManualId(e.target.value)}
-              className={styles.quickFollowInput}
-            />
-            {manualId && (
-              <FollowButton targetUserId={manualId} initialIsFollowing={false} />
-            )}
-          </div>
-
           <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
             People I Follow
           </h3>
           {followingList.length === 0 ? (
-            <p className={styles.emptyState}>You aren't following anyone yet.</p>
+            <p className={styles.emptyState}>
+              You aren't following anyone yet.
+            </p>
           ) : (
             <ul className={styles.followingList}>
               {followingList.map((user) => (
                 <li key={user.user_id} className={styles.followingItem}>
-                  <span className={styles.followingUsername}>{user.username}</span>
+                  <span className={styles.followingUsername}>
+                    {user.username}
+                  </span>
                   <FollowButton
                     targetUserId={user.user_id}
                     initialIsFollowing={true}
