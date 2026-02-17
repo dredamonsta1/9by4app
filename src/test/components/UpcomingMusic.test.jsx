@@ -66,31 +66,40 @@ describe("UpcomingMusic Component", () => {
         imageUrl: null,
         source: "MusicBrainz",
       },
+      {
+        id: 3,
+        title: "Third Album",
+        artist: "Artist Three",
+        imageUrl: "/image3.jpg",
+        source: "MusicBrainz",
+      },
     ];
 
-    it("renders release cards", async () => {
+    it("renders only release cards with images", async () => {
       axiosInstance.get.mockResolvedValue({ data: mockReleases });
 
       render(<UpcomingMusic />);
 
       await waitFor(() => {
         expect(screen.getByText("New Album")).toBeInTheDocument();
-        expect(screen.getByText("Another Album")).toBeInTheDocument();
+        expect(screen.getByText("Third Album")).toBeInTheDocument();
+        expect(screen.queryByText("Another Album")).not.toBeInTheDocument();
       });
     });
 
-    it("renders artist names", async () => {
+    it("renders artist names for visible releases", async () => {
       axiosInstance.get.mockResolvedValue({ data: mockReleases });
 
       render(<UpcomingMusic />);
 
       await waitFor(() => {
         expect(screen.getByText("Artist One")).toBeInTheDocument();
-        expect(screen.getByText("Artist Two")).toBeInTheDocument();
+        expect(screen.getByText("Artist Three")).toBeInTheDocument();
+        expect(screen.queryByText("Artist Two")).not.toBeInTheDocument();
       });
     });
 
-    it("renders source tags", async () => {
+    it("renders source tags for visible releases", async () => {
       axiosInstance.get.mockResolvedValue({ data: mockReleases });
 
       render(<UpcomingMusic />);
@@ -101,7 +110,7 @@ describe("UpcomingMusic Component", () => {
       });
     });
 
-    it("renders images for releases with imageUrl", async () => {
+    it("renders images only for releases with imageUrl", async () => {
       axiosInstance.get.mockResolvedValue({ data: mockReleases });
 
       render(<UpcomingMusic />);
@@ -112,14 +121,13 @@ describe("UpcomingMusic Component", () => {
       });
     });
 
-    it("uses placeholder for missing images", async () => {
+    it("hides releases with null imageUrl", async () => {
       axiosInstance.get.mockResolvedValue({ data: mockReleases });
 
       render(<UpcomingMusic />);
 
       await waitFor(() => {
-        const images = screen.getAllByRole("img");
-        expect(images.some((img) => img.src.includes("placeholder"))).toBe(true);
+        expect(screen.queryByText("Another Album")).not.toBeInTheDocument();
       });
     });
   });
