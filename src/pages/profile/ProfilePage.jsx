@@ -14,6 +14,8 @@ import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm
 import styles from "./ProfilePage.module.css";
 import FollowButton from "../../components/FollowButton";
 import axiosInstance from "../../utils/axiosInstance";
+import { resolveImageUrl } from "../../utils/imageUrl";
+import { setCredentials } from "../../store/authSlice";
 import { jwtDecode } from "jwt-decode";
 
 const ProfilePage = () => {
@@ -38,6 +40,32 @@ const ProfilePage = () => {
   const [followingList, setFollowingList] = useState([]);
   const [manualId, setManualId] = useState("");
   const [myId, setMyId] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleProfileImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profileImage", file);
+
+    setUploadingImage(true);
+    try {
+      const res = await axiosInstance.post("/users/profile-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      // Update Redux auth state with new profile_image
+      dispatch(
+        setCredentials({
+          user: { ...currentUser, profile_image: res.data.profile_image },
+        })
+      );
+    } catch (err) {
+      console.error("Failed to upload profile image:", err);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   useEffect(() => {
     if (!userId) {
@@ -173,6 +201,30 @@ const ProfilePage = () => {
         {/* Section: Profile + Favorite Artists */}
         <section className={styles.section}>
           <h2 className={styles.sectionHeader}>Your Profile</h2>
+
+          <div className={styles.avatarSection}>
+            <div className={styles.avatarWrapper}>
+              <img
+                src={resolveImageUrl(
+                  currentUser?.profile_image,
+                  "https://via.placeholder.com/100?text=Avatar"
+                )}
+                alt="Profile"
+                className={styles.avatarImage}
+              />
+            </div>
+            <label className={styles.avatarUploadBtn}>
+              {uploadingImage ? "Uploading..." : "Change Photo"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/gif"
+                onChange={handleProfileImageUpload}
+                disabled={uploadingImage}
+                hidden
+              />
+            </label>
+          </div>
+
           <UserProfile />
 
           <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>

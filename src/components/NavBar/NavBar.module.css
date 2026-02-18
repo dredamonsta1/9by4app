@@ -71,6 +71,26 @@
     color: var(--text-main);
 }
 
+/* Profile avatar in navbar */
+.profileLink {
+    display: flex;
+    align-items: center;
+}
+
+.navAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-light);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.navAvatar:hover {
+    box-shadow: var(--shadow-glow);
+    transform: scale(1.1);
+}
+
 /* Logout button styling */
 .logoutButton {
     background: var(--accent-gradient);

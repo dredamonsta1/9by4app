@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./NavBar.module.css";
 
 const NavBar = () => {
@@ -89,8 +90,16 @@ const NavBar = () => {
                 </li>
               )}
               <li>
-                <Link to="/profile" onClick={closeMenu}>
-                  {user.username}
+                <Link to="/profile" onClick={closeMenu} className={styles.profileLink}>
+                  {user.profile_image ? (
+                    <img
+                      src={resolveImageUrl(user.profile_image)}
+                      alt={user.username}
+                      className={styles.navAvatar}
+                    />
+                  ) : (
+                    user.username
+                  )}
                 </Link>
               </li>
               <li>
