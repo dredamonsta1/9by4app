@@ -47,6 +47,7 @@ const HomePage = () => {
             artists={artists}
             showAdminActions={false}
             showCloutButton={false}
+            showRank={true}
             upcomingReleases={upcomingReleases}
           />
         )}

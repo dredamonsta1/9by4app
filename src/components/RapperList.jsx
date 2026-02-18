@@ -95,7 +95,7 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   );
 };
 
-const ClickableList = ({ artists, showAdminActions, showCloutButton, upcomingReleases = [] }) => {
+const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = false, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
   const [selectedArtist, setSelectedArtist] = useState(null);
 
@@ -182,7 +182,7 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, upcomingRel
                   )}
                 </div>
               </div>
-              {index < 5 && (
+              {showRank && index < 5 && (
                 <span className="rapperList-rank">{rankLabels[index]}</span>
               )}
             </li>
