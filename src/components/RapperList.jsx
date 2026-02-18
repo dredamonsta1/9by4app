@@ -128,56 +128,66 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, upcomingRel
   return (
     <div className="rapperList-outter-div">
       <ul className="rapperList">
-        {artists.map((item) => (
-          <li
-            className="rapperList-item"
-            key={item.artist_id}
-            onClick={() => setSelectedArtist(item)}
-          >
-            {item.image_url && (
-              <img
-                src={resolveImageUrl(item.image_url, "https://via.placeholder.com/60?text=No+Image")}
-                alt={item.name || "Artist"}
-                className="rapperList-item-image"
-              />
-            )}
-            <div className="rapperList-content-overlay">
-              <div className="rapperList-item-details">
-                <h3>{item.name || "N/A"}</h3>
-                <p>Genre: {item.genre || "N/A"}</p>
-              </div>
-
-              <div className="rapperList-item-clout-section">
-                {showCloutButton ? (
-                  <button
-                    className="rapperButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCloutClick(item.artist_id);
-                    }}
-                  >
-                    Clout: {item.count}
-                  </button>
-                ) : (
-                  <p className="clout-data-display">
-                    Clout: <span>{item.count}</span>
-                  </p>
+        {artists.map((item, index) => {
+          const rankLabels = ["1st", "2nd", "3rd", "4th", "5th"];
+          return (
+            <li
+              className="rapperList-item-wrapper"
+              key={item.artist_id}
+            >
+              <div
+                className="rapperList-item"
+                onClick={() => setSelectedArtist(item)}
+              >
+                {item.image_url && (
+                  <img
+                    src={resolveImageUrl(item.image_url, "https://via.placeholder.com/60?text=No+Image")}
+                    alt={item.name || "Artist"}
+                    className="rapperList-item-image"
+                  />
                 )}
-              </div>
+                <div className="rapperList-content-overlay">
+                  <div className="rapperList-item-details">
+                    <h3>{item.name || "N/A"}</h3>
+                    <p>Genre: {item.genre || "N/A"}</p>
+                  </div>
 
-              {showAdminActions && (
-                <div className="rapperList-admin-actions">
-                  <button onClick={(e) => { e.stopPropagation(); handleDelete(item.artist_id); }}>
-                    Delete
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); handleEdit(item.artist_id); }}>
-                    Edit
-                  </button>
+                  <div className="rapperList-item-clout-section">
+                    {showCloutButton ? (
+                      <button
+                        className="rapperButton"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCloutClick(item.artist_id);
+                        }}
+                      >
+                        Clout: {item.count}
+                      </button>
+                    ) : (
+                      <p className="clout-data-display">
+                        Clout: <span>{item.count}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  {showAdminActions && (
+                    <div className="rapperList-admin-actions">
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(item.artist_id); }}>
+                        Delete
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); handleEdit(item.artist_id); }}>
+                        Edit
+                      </button>
+                    </div>
+                  )}
                 </div>
+              </div>
+              {index < 5 && (
+                <span className="rapperList-rank">{rankLabels[index]}</span>
               )}
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
 
       {selectedArtist && (
