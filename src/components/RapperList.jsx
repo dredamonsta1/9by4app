@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import "./RapperList.css";
 import { incrementClout } from "../redux/actions/artistActions";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
-  const API_BASE_URL = "https://ninebyfourapi.herokuapp.com";
   const albums = artist.albums || [];
   const artistName = (artist.name || artist.artist_name || "").toLowerCase();
 
@@ -21,7 +21,7 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
         <div className="artist-modal-header">
           {artist.image_url && (
             <img
-              src={`${API_BASE_URL}${artist.image_url}`}
+              src={resolveImageUrl(artist.image_url)}
               alt={artist.name || "Artist"}
               className="artist-modal-image"
             />
@@ -65,17 +65,26 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
             <ul>
               {albums.map((album, i) => (
                 <li key={album.album_id || i} className="artist-modal-album-item">
-                  <span className="artist-modal-album-name">
-                    {album.album_name}
-                  </span>
-                  {album.year && (
-                    <span className="artist-modal-album-year">({album.year})</span>
+                  {album.album_image_url && (
+                    <img
+                      src={resolveImageUrl(album.album_image_url)}
+                      alt={album.album_name}
+                      className="artist-modal-album-image"
+                    />
                   )}
-                  {(album.certifications || album.Certifications) && (
-                    <span className="artist-modal-album-cert">
-                      {album.certifications || album.Certifications}
+                  <div className="artist-modal-album-text">
+                    <span className="artist-modal-album-name">
+                      {album.album_name}
                     </span>
-                  )}
+                    {album.year && (
+                      <span className="artist-modal-album-year">({album.year})</span>
+                    )}
+                    {(album.certifications || album.Certifications) && (
+                      <span className="artist-modal-album-cert">
+                        {album.certifications || album.Certifications}
+                      </span>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -89,8 +98,6 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
 const ClickableList = ({ artists, showAdminActions, showCloutButton, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
   const [selectedArtist, setSelectedArtist] = useState(null);
-
-  const API_BASE_URL = "https://ninebyfourapi.herokuapp.com";
 
   if (!artists) {
     return <p>Loading artists...</p>;
@@ -129,10 +136,7 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, upcomingRel
           >
             {item.image_url && (
               <img
-                src={
-                  `${API_BASE_URL}${item.image_url}` ||
-                  "https://via.placeholder.com/60?text=No+Image"
-                }
+                src={resolveImageUrl(item.image_url, "https://via.placeholder.com/60?text=No+Image")}
                 alt={item.name || "Artist"}
                 className="rapperList-item-image"
               />

@@ -3,13 +3,13 @@
 
 import React from "react";
 import styles from "./ArtistCard.module.css";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 const ArtistCard = ({ artist }) => {
-  // Construct the full image URL.
-  // IMPORTANT: Replace 'https://ninebyfourapi.herokuapp.com' with your actual API base URL.
-  const fullImageUrl = artist.image_url
-    ? `https://ninebyfourapi.herokuapp.com${artist.image_url}`
-    : "https://via.placeholder.com/60?text=No+Image"; // Placeholder if no image URL exists
+  const fullImageUrl = resolveImageUrl(
+    artist.image_url,
+    "https://via.placeholder.com/60?text=No+Image"
+  );
 
   return (
     <div className={styles.artistCard}>
