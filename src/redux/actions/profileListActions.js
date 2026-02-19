@@ -5,8 +5,9 @@ import {
   setProfileListSuccess,
   setProfileListFailure,
   addArtistToListSuccess,
+  removeArtistFromListSuccess,
 } from "../profileListSlice";
-import { incrementClout } from "./artistActions";
+import { incrementClout, decrementClout } from "./artistActions";
 
 // Action to fetch the user's curated list from the backend
 export const fetchProfileList = () => async (dispatch) => {
@@ -38,5 +39,16 @@ export const addArtistToProfileList = (artist) => async (dispatch, getState) => 
     dispatch(incrementClout(artist.artist_id));
   } catch (error) {
     console.error("Error adding artist to profile list:", error);
+  }
+};
+
+// Action to remove an artist from the user's curated list
+export const removeArtistFromProfileList = (artistId) => async (dispatch) => {
+  try {
+    await axiosInstance.delete(`/profile/list/${artistId}`);
+    dispatch(removeArtistFromListSuccess(artistId));
+    dispatch(decrementClout(artistId));
+  } catch (error) {
+    console.error("Error removing artist from profile list:", error);
   }
 };

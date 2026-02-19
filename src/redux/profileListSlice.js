@@ -34,6 +34,11 @@ const profileListSlice = createSlice({
         state.list.push(action.payload);
       }
     },
+    removeArtistFromListSuccess(state, action) {
+      state.list = state.list.filter(
+        (artist) => artist.artist_id !== action.payload
+      );
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(INCREMENT_CLOUT_SUCCESS, (state, action) => {
@@ -58,6 +63,7 @@ export const {
   setProfileListSuccess,
   setProfileListFailure,
   addArtistToListSuccess,
+  removeArtistFromListSuccess,
 } = profileListSlice.actions;
 
 export default profileListSlice.reducer;
