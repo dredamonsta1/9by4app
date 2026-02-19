@@ -13,6 +13,9 @@ import {
   INCREMENT_CLOUT_REQUEST,
   INCREMENT_CLOUT_SUCCESS,
   INCREMENT_CLOUT_FAILURE,
+  DECREMENT_CLOUT_REQUEST,
+  DECREMENT_CLOUT_SUCCESS,
+  DECREMENT_CLOUT_FAILURE,
 } from "../actions/artistActions";
 
 const initialState = {
@@ -124,6 +127,27 @@ const artistsReducer = (state = initialState, action) => {
     case INCREMENT_CLOUT_FAILURE:
       console.error(
         "Clout increment failed for artist:",
+        action.payload.artistId,
+        action.payload.error
+      );
+      return { ...state, error: action.payload.error };
+    case DECREMENT_CLOUT_REQUEST:
+      return { ...state };
+    case DECREMENT_CLOUT_SUCCESS: {
+      const { artistId: decArtistId } = action.payload;
+      const decrementCount = (artist) =>
+        artist.artist_id === decArtistId
+          ? { ...artist, count: Math.max((artist.count || 0) - 1, 0) }
+          : artist;
+      return {
+        ...state,
+        artists: state.artists.map(decrementCount).sort((a, b) => b.count - a.count),
+        searchResults: state.searchResults.map(decrementCount),
+      };
+    }
+    case DECREMENT_CLOUT_FAILURE:
+      console.error(
+        "Clout decrement failed for artist:",
         action.payload.artistId,
         action.payload.error
       );

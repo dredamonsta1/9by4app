@@ -1,6 +1,6 @@
 // src/redux/profileListSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { INCREMENT_CLOUT_SUCCESS } from "./actions/artistActions";
+import { INCREMENT_CLOUT_SUCCESS, DECREMENT_CLOUT_SUCCESS } from "./actions/artistActions";
 
 const initialState = {
   list: [],
@@ -41,6 +41,13 @@ const profileListSlice = createSlice({
       const artist = state.list.find((a) => a.artist_id === artistId);
       if (artist) {
         artist.count = (artist.count || 0) + 1;
+      }
+    });
+    builder.addCase(DECREMENT_CLOUT_SUCCESS, (state, action) => {
+      const { artistId } = action.payload;
+      const artist = state.list.find((a) => a.artist_id === artistId);
+      if (artist) {
+        artist.count = Math.max((artist.count || 0) - 1, 0);
       }
     });
   },

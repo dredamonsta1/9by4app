@@ -19,6 +19,10 @@ export const INCREMENT_CLOUT_REQUEST = "INCREMENT_CLOUT_REQUEST";
 export const INCREMENT_CLOUT_SUCCESS = "INCREMENT_CLOUT_SUCCESS";
 export const INCREMENT_CLOUT_FAILURE = "INCREMENT_CLOUT_FAILURE";
 
+export const DECREMENT_CLOUT_REQUEST = "DECREMENT_CLOUT_REQUEST";
+export const DECREMENT_CLOUT_SUCCESS = "DECREMENT_CLOUT_SUCCESS";
+export const DECREMENT_CLOUT_FAILURE = "DECREMENT_CLOUT_FAILURE";
+
 const mapArtistData = (artistData) =>
   (artistData || [])
     .filter((artist) => artist)
@@ -108,6 +112,24 @@ export const incrementClout = (artistId) => async (dispatch) => {
     );
     dispatch({
       type: INCREMENT_CLOUT_FAILURE,
+      payload: { artistId, error: error.response?.data || error.message },
+    });
+  }
+};
+
+// Async Action Creator for decrementing clout
+export const decrementClout = (artistId) => async (dispatch) => {
+  dispatch({ type: DECREMENT_CLOUT_REQUEST, payload: artistId });
+  try {
+    await axiosInstance.put(`/artists/${artistId}/clout/remove`);
+    dispatch({ type: DECREMENT_CLOUT_SUCCESS, payload: { artistId } });
+  } catch (error) {
+    console.error(
+      `Error decrementing clout for artist ${artistId}:`,
+      error.response?.data || error.message
+    );
+    dispatch({
+      type: DECREMENT_CLOUT_FAILURE,
       payload: { artistId, error: error.response?.data || error.message },
     });
   }

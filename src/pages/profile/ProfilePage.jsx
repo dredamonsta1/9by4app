@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   searchArtists,
   clearSearchResults,
+  decrementClout,
 } from "../../redux/actions/artistActions";
 import {
   fetchProfileList,
@@ -126,6 +127,10 @@ const ProfilePage = () => {
     dispatch(addArtistToProfileList(artistToAdd));
     setSearchTerm("");
     dispatch(clearSearchResults());
+  };
+
+  const handleRemoveClout = (artistId) => {
+    dispatch(decrementClout(artistId));
   };
 
   // Build hydrated profile list from the profile list data directly
@@ -280,9 +285,19 @@ const ProfilePage = () => {
               {hydratedProfileList.map((artist) => (
                 <li className={styles.favArtistItem} key={artist.artist_id}>
                   <span>{artist.artist_name || artist.name}</span>
-                  <span className={styles.cloutBadge}>
-                    Clout: {artist.count || 0}
-                  </span>
+                  <div className={styles.cloutActions}>
+                    <span className={styles.cloutBadge}>
+                      Clout: {artist.count || 0}
+                    </span>
+                    {(artist.count || 0) > 0 && (
+                      <button
+                        className={styles.removeCloutBtn}
+                        onClick={() => handleRemoveClout(artist.artist_id)}
+                      >
+                        -1
+                      </button>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

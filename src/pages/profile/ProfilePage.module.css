@@ -153,12 +153,34 @@
   border-bottom: none;
 }
 
+.cloutActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .cloutBadge {
   font-size: 0.75rem;
   background: rgba(0, 119, 182, 0.15);
   padding: 4px 10px;
   border-radius: 12px;
   color: var(--accent-light);
+}
+
+.removeCloutBtn {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  background: rgba(220, 53, 69, 0.15);
+  color: #ff6b6b;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.removeCloutBtn:hover {
+  background: rgba(220, 53, 69, 0.3);
 }
 
 /* Empty State */
