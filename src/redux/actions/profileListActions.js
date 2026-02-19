@@ -21,9 +21,14 @@ export const fetchProfileList = () => async (dispatch) => {
 };
 
 // Action to add an artist to the user's curated list
+export const MAX_FAVORITE_ARTISTS = 20;
+
 export const addArtistToProfileList = (artist) => async (dispatch, getState) => {
   const { list } = getState().profileList;
   if (list.some((a) => a.artist_id === artist.artist_id)) {
+    return;
+  }
+  if (list.length >= MAX_FAVORITE_ARTISTS) {
     return;
   }
 

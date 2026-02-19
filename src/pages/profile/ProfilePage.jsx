@@ -9,6 +9,7 @@ import {
 import {
   fetchProfileList,
   addArtistToProfileList,
+  MAX_FAVORITE_ARTISTS,
 } from "../../redux/actions/profileListActions";
 import UserProfile from "../../components/UserProfilee/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
@@ -122,8 +123,10 @@ const ProfilePage = () => {
   }, [searchTerm, dispatch]);
 
   const favoritedArtistIds = new Set(profileList.map((a) => a.artist_id));
+  const listFull = profileList.length >= MAX_FAVORITE_ARTISTS;
 
   const handleAddArtist = (artistToAdd) => {
+    if (listFull) return;
     dispatch(addArtistToProfileList(artistToAdd));
     setSearchTerm("");
     dispatch(clearSearchResults());
@@ -236,7 +239,7 @@ const ProfilePage = () => {
             Favorite Artists
           </h3>
           <p className={styles.sectionSubtext}>
-            Search and add your all-time favorite artists
+            Search and add your all-time favorite artists ({profileList.length}/{MAX_FAVORITE_ARTISTS})
           </p>
 
           <input
@@ -266,9 +269,9 @@ const ProfilePage = () => {
                     <button
                       className={styles.addArtistButton}
                       onClick={() => handleAddArtist(artist)}
-                      disabled={alreadyAdded}
+                      disabled={alreadyAdded || listFull}
                     >
-                      {alreadyAdded ? "Added" : "Add"}
+                      {alreadyAdded ? "Added" : listFull ? "List Full" : "Add"}
                     </button>
                   </li>
                 );
