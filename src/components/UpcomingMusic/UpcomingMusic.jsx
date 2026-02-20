@@ -237,19 +237,19 @@ function UpcomingMusic() {
 
   return (
     <div className={styles.gridContainer}>
-      {releases.filter((release) => release.imageUrl).map((release) => (
-        <div key={release.id} className={styles.card}>
-          <img
-            src={release.imageUrl}
-            alt={release.title}
-          />
-          <h3>{release.title}</h3>
-          <p>{release.artist}</p>
-          <span className={styles[release.source.toLowerCase()]}>
-            {release.source}
-          </span>
-        </div>
-      ))}
+      <h1 className={styles.upcomingTitle}>Upcoming Music</h1>
+      {releases
+        .filter((release) => release.imageUrl)
+        .map((release) => (
+          <div key={release.id} className={styles.card}>
+            <img src={release.imageUrl} alt={release.title} />
+            <h3>{release.title}</h3>
+            <p>{release.artist}</p>
+            <span className={styles[release.source.toLowerCase()]}>
+              {release.source}
+            </span>
+          </div>
+        ))}
     </div>
   );
 }
