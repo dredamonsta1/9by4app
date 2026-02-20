@@ -1,29 +1,228 @@
 :root {
-  --bg-color: #0B1622;
-  --bg-surface: #111D2E;
-  --card-bg: #162333;
-  --card-bg-hover: #1B2E44;
-  --card-bg-elevated: #1E3450;
-  --text-main: #E0E6ED;
-  --text-dim: #8899AA;
-  --text-bright: #FFFFFF;
-  --accent: #0077B6;
-  --accent-hover: #005F92;
-  --accent-light: #00B4D8;
-  --accent-glow: rgba(0,119,182,0.3);
-  --accent-gradient: linear-gradient(135deg, #0077B6, #00B4D8);
-  --error: #FF6B6B;
-  --success: #00E676;
-  --warning: #FFB347;
-  --border: #1E3450;
-  --border-light: #2A4060;
-  --radius: 12px;
-  --radius-pill: 500px;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
-  --shadow-glow: 0 0 20px rgba(0,119,182,0.3);
-  --transition: all 0.2s ease-in-out;
+  /* ============================================
+     9BY4 DESIGN TOKENS v1.0
+     ============================================ */
+
+  /* COLORS: BACKGROUND & SURFACES */
+  --color-bg-base:          #0B1622;
+  --color-bg-surface:       #111D2E;
+  --color-bg-card:          #162333;
+  --color-bg-card-hover:    #1B2E44;
+  --color-bg-card-elevated: #1E3450;
+  --color-bg-input:         #0B1622;
+  --color-bg-overlay:       rgba(0, 0, 0, 0.75);
+
+  /* COLORS: TEXT */
+  --color-text-primary:     #E0E6ED;
+  --color-text-secondary:   #8899AA;
+  --color-text-bright:      #FFFFFF;
+  --color-text-disabled:    #556677;
+  --color-text-inverse:     #0B1622;
+
+  /* COLORS: PRIMARY ACCENT (Blue) */
+  --color-accent:           #0077B6;
+  --color-accent-hover:     #005F92;
+  --color-accent-active:    #004D77;
+  --color-accent-light:     #00B4D8;
+  --color-accent-subtle:    rgba(0, 119, 182, 0.15);
+  --color-accent-glow:      rgba(0, 119, 182, 0.3);
+  --color-accent-gradient:  linear-gradient(135deg, #0077B6, #00B4D8);
+
+  /* COLORS: SECONDARY ACCENTS */
+  --color-violet:           #7C5CFC;
+  --color-violet-hover:     #6A4AE0;
+  --color-violet-subtle:    rgba(124, 92, 252, 0.15);
+
+  --color-amber:            #F5A623;
+  --color-amber-hover:      #D4901E;
+  --color-amber-subtle:     rgba(245, 166, 35, 0.15);
+
+  --color-teal:             #2DD4A8;
+  --color-teal-hover:       #20B890;
+  --color-teal-subtle:      rgba(45, 212, 168, 0.15);
+
+  /* COLORS: SEMANTIC */
+  --color-success:          #00E676;
+  --color-success-subtle:   rgba(0, 230, 118, 0.12);
+  --color-error:            #FF6B6B;
+  --color-error-subtle:     rgba(255, 107, 107, 0.12);
+  --color-warning:          #FFB347;
+  --color-warning-subtle:   rgba(255, 179, 71, 0.12);
+  --color-info:             #00B4D8;
+  --color-info-subtle:      rgba(0, 180, 216, 0.12);
+
+  /* COLORS: BORDERS */
+  --color-border-default:   #1E3450;
+  --color-border-light:     #2A4060;
+  --color-border-focus:     #0077B6;
+  --color-border-error:     #FF6B6B;
+
+  /* COLORS: RANK SYSTEM */
+  --color-rank-1st:         #FFD700;
+  --color-rank-1st-subtle:  rgba(255, 215, 0, 0.15);
+  --color-rank-2nd:         #C0C0C0;
+  --color-rank-2nd-subtle:  rgba(192, 192, 192, 0.15);
+  --color-rank-3rd:         #CD7F32;
+  --color-rank-3rd-subtle:  rgba(205, 127, 50, 0.15);
+  --color-rank-neutral:     #8899AA;
+  --color-rank-neutral-subtle: rgba(136, 153, 170, 0.10);
+
+  /* COLORS: SOURCE TAGS */
+  --color-spotify:          #1DB954;
+  --color-spotify-subtle:   rgba(29, 185, 84, 0.15);
+  --color-musicbrainz:      #EB743B;
+  --color-musicbrainz-subtle: rgba(235, 116, 59, 0.15);
+
+  /* TYPOGRAPHY: FONT FAMILIES */
+  --font-primary:   "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+                    "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-display:   "Montserrat", "Inter", -apple-system, sans-serif;
+  --font-mono:      "JetBrains Mono", "Fira Code", source-code-pro, Menlo,
+                    Monaco, Consolas, "Courier New", monospace;
+
+  /* TYPOGRAPHY: TYPE SCALE */
+  --text-display-size:          48px;
+  --text-display-weight:        900;
+  --text-display-line-height:   1.1;
+  --text-display-letter-spacing: -0.02em;
+
+  --text-page-title-size:       32px;
+  --text-page-title-weight:     700;
+  --text-page-title-line-height: 1.2;
+  --text-page-title-letter-spacing: -0.01em;
+
+  --text-section-header-size:   24px;
+  --text-section-header-weight: 600;
+  --text-section-header-line-height: 1.3;
+  --text-section-header-letter-spacing: 0;
+
+  --text-card-title-size:       18px;
+  --text-card-title-weight:     600;
+  --text-card-title-line-height: 1.35;
+  --text-card-title-letter-spacing: 0;
+
+  --text-body-size:             16px;
+  --text-body-weight:           400;
+  --text-body-line-height:      1.5;
+  --text-body-letter-spacing:   0;
+
+  --text-body-sm-size:          14px;
+  --text-body-sm-weight:        400;
+  --text-body-sm-line-height:   1.5;
+  --text-body-sm-letter-spacing: 0;
+
+  --text-caption-size:          12px;
+  --text-caption-weight:        400;
+  --text-caption-line-height:   1.4;
+  --text-caption-letter-spacing: 0.01em;
+
+  --text-badge-size:            11px;
+  --text-badge-weight:          600;
+  --text-badge-line-height:     1.2;
+  --text-badge-letter-spacing:  0.04em;
+
+  --text-overline-size:         11px;
+  --text-overline-weight:       600;
+  --text-overline-line-height:  1.4;
+  --text-overline-letter-spacing: 0.08em;
+
+  /* SPACING: 8px base unit */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-24:  96px;
+
+  /* Semantic spacing aliases */
+  --space-inset-card:       16px;
+  --space-inset-card-lg:    24px;
+  --space-inset-input:      12px;
+  --space-stack-section:    24px;
+  --space-gap-card-grid:    20px;
+  --space-gap-list-items:   12px;
+
+  /* BORDER RADIUS */
+  --radius-sm:    6px;
+  --radius:       12px;
+  --radius-pill:  500px;
+
+  /* SHADOWS */
+  --shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg:    0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow:  0 0 20px rgba(0, 119, 182, 0.3);
+
+  /* TRANSITIONS & TIMING */
+  --transition:           all 0.2s ease-in-out;
+  --transition-fast:      all 0.15s ease-in-out;
+  --transition-normal:    all 0.2s ease-in-out;
+  --transition-slow:      all 0.3s ease-in-out;
+  --ease-default:         ease-in-out;
+  --ease-bounce:          cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth:          cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:        150ms;
+  --duration-normal:      200ms;
+  --duration-slow:        300ms;
+  --duration-modal:       200ms;
+  --duration-toast:       300ms;
+
+  /* LAYOUT */
+  --max-width-app:        1400px;
+  --max-width-content:    600px;
+  --max-width-profile:    1200px;
+  --max-width-admin:      1200px;
+  --max-width-auth:       400px;
+
+  /* Z-INDEX SCALE */
+  --z-base:       1;
+  --z-dropdown:   100;
+  --z-sticky:     200;
+  --z-overlay:    500;
+  --z-modal:      1000;
+  --z-toast:      1100;
+  --z-tooltip:    1200;
+
+  /* ============================================
+     LEGACY ALIASES
+     Maps old token names to new ones for backward compatibility.
+     Remove after migrating all component CSS files.
+     ============================================ */
+  --bg-color:          var(--color-bg-base);
+  --bg-surface:        var(--color-bg-surface);
+  --card-bg:           var(--color-bg-card);
+  --card-bg-hover:     var(--color-bg-card-hover);
+  --card-bg-elevated:  var(--color-bg-card-elevated);
+  --text-main:         var(--color-text-primary);
+  --text-dim:          var(--color-text-secondary);
+  --text-bright:       var(--color-text-bright);
+  --accent:            var(--color-accent);
+  --accent-hover:      var(--color-accent-hover);
+  --accent-light:      var(--color-accent-light);
+  --accent-glow:       var(--color-accent-glow);
+  --accent-gradient:   var(--color-accent-gradient);
+  --error:             var(--color-error);
+  --success:           var(--color-success);
+  --warning:           var(--color-warning);
+  --border:            var(--color-border-default);
+  --border-light:      var(--color-border-light);
+}
+
+/* Responsive Typography */
+@media (max-width: 767px) {
+  :root {
+    --text-display-size:        36px;
+    --text-page-title-size:     26px;
+    --text-section-header-size: 20px;
+    --text-card-title-size:     16px;
+    --text-overline-size:       10px;
+  }
 }
 
 *,
