@@ -20,8 +20,8 @@
     padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
-    background: var(--accent-gradient);
-    color: var(--text-bright);
+    background: var(--color-accent-gradient);
+    color: var(--color-text-bright);
     border: none;
     border-radius: var(--radius-pill);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
@@ -33,8 +33,8 @@
 }
 
 .navigation button:disabled {
-    background: var(--border);
-    color: var(--text-dim);
+    background: var(--color-border-default);
+    color: var(--color-text-secondary);
     cursor: not-allowed;
 }
 
@@ -58,13 +58,13 @@
 }
 
 .videoThumbnail .selectedThumbnail {
-    border-color: var(--accent);
+    border-color: var(--color-accent);
 }
 
 .videoThumbnail p {
     width: 100%;
     font-size: 0.9rem;
-    color: var(--text-main);
+    color: var(--color-text-primary);
 }
 
 /* **************NewCode************** */
@@ -94,7 +94,7 @@
     max-width: 56.25vh;
     height: 100vh;
     max-height: 100vw;
-    background-color: var(--bg-surface);
+    background-color: var(--color-bg-surface);
 }
 
 /* Make the iframe fill its container */

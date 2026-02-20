@@ -16,25 +16,25 @@
 .adminLink {
   font-weight: 600;
   text-decoration: none;
-  color: var(--accent-light);
+  color: var(--color-accent-light);
   margin-top: 1rem;
   transition: var(--transition);
 }
 
 .adminLink:hover {
-  color: var(--text-bright);
+  color: var(--color-text-bright);
 }
 
 .adminLinkContainer {
-  border: 1px solid var(--accent);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius);
   padding: 10px;
-  background-color: var(--card-bg);
+  background-color: var(--color-bg-card);
   width: fit-content;
   transition: var(--transition);
 }
 
 .adminLinkContainer:hover {
-  background-color: var(--card-bg-hover);
+  background-color: var(--color-bg-card-hover);
   box-shadow: var(--shadow-sm);
 }

@@ -12,8 +12,8 @@
 
 /* Styling for each individual release card */
 .card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius);
   padding: 10px;
   box-shadow: var(--shadow-sm);
@@ -26,7 +26,7 @@
 .card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
-  background-color: var(--card-bg-hover);
+  background-color: var(--color-bg-card-hover);
 }
 
 /* Responsive card image */
@@ -43,27 +43,27 @@
 .releaseTitle {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-bright);
+  color: var(--color-text-bright);
   margin-bottom: 2px;
 }
 
 /* Artist's name */
 .artistName {
   font-size: 0.65rem;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
   margin-bottom: 4px;
 }
 
 /* Release date */
 .releaseDate {
   font-size: 0.6rem;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
 }
 
 /* Country of release */
 .country {
   font-size: 0.6rem;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
   font-style: italic;
 }
 
@@ -73,9 +73,9 @@
   text-align: center;
   padding: 40px;
   font-size: 1.2rem;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
 }
 
 .error {
-  color: var(--error);
+  color: var(--color-error);
 }

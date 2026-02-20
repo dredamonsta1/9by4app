@@ -14,16 +14,16 @@
 }
 
 .App-header {
-  background-color: var(--bg-surface);
+  background-color: var(--color-bg-surface);
   min-height: 100vh;
   display: flex;
   flex-direction: row;
   align-items: space-between;
   justify-content: center;
   font-size: calc(6px + 2vmin);
-  color: var(--text-bright);
+  color: var(--color-text-bright);
 }
 
 .App-link {
-  color: var(--accent-light);
+  color: var(--color-accent-light);
 }

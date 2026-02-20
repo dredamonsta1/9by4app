@@ -2,7 +2,7 @@
 
 .waitlist-admin-container {
     min-height: 100vh;
-    background-color: var(--bg-color);
+    background-color: var(--color-bg-base);
     padding: 2rem;
 }
 
@@ -13,12 +13,12 @@
 
 /* Header */
 .admin-header {
-    background: var(--card-bg);
+    background: var(--color-bg-card);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
 }
 
 .header-top {
@@ -37,13 +37,13 @@
 .title-icon {
     width: 2rem;
     height: 2rem;
-    color: var(--accent);
+    color: var(--color-accent);
 }
 
 .header-title h1 {
     font-size: 1.875rem;
     font-weight: bold;
-    color: var(--text-bright);
+    color: var(--color-text-bright);
     margin: 0;
 }
 
@@ -60,8 +60,8 @@
 }
 
 .toggle-button.enabled {
-    background-color: var(--success);
-    color: var(--bg-color);
+    background-color: var(--color-success);
+    color: var(--color-bg-base);
 }
 
 .toggle-button.enabled:hover {
@@ -69,12 +69,12 @@
 }
 
 .toggle-button.disabled {
-    background-color: var(--border-light);
-    color: var(--text-dim);
+    background-color: var(--color-border-light);
+    color: var(--color-text-secondary);
 }
 
 .toggle-button.disabled:hover {
-    background-color: var(--card-bg-elevated);
+    background-color: var(--color-bg-card-elevated);
 }
 
 .button-icon {
@@ -92,11 +92,11 @@
 .stat-card {
     padding: 1rem;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
 }
 
 .stat-card.total {
-    background-color: var(--card-bg-hover);
+    background-color: var(--color-bg-card-hover);
 }
 
 .stat-card.pending {
@@ -121,41 +121,41 @@
 }
 
 .stat-card.total .stat-number {
-    color: var(--text-bright);
+    color: var(--color-text-bright);
 }
 
 .stat-card.pending .stat-number {
-    color: var(--warning);
+    color: var(--color-warning);
 }
 
 .stat-card.approved .stat-number {
-    color: var(--success);
+    color: var(--color-success);
 }
 
 .stat-card.rejected .stat-number {
-    color: var(--error);
+    color: var(--color-error);
 }
 
 .stat-label {
     font-size: 0.875rem;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 .stat-card.pending .stat-label {
-    color: var(--warning);
+    color: var(--color-warning);
 }
 
 .stat-card.approved .stat-label {
-    color: var(--success);
+    color: var(--color-success);
 }
 
 .stat-card.rejected .stat-label {
-    color: var(--error);
+    color: var(--color-error);
 }
 
 /* Filters Section */
 .filters-section {
-    background: var(--card-bg);
+    background: var(--color-bg-card);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     padding: 1rem;
@@ -163,7 +163,7 @@
     display: flex;
     gap: 1rem;
     align-items: center;
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
 }
 
 .search-box {
@@ -178,23 +178,23 @@
     transform: translateY(-50%);
     width: 1.25rem;
     height: 1.25rem;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 .search-box input {
     width: 100%;
     padding: 0.5rem 1rem 0.5rem 2.5rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
     border-radius: var(--radius);
     font-size: 1rem;
-    background-color: var(--bg-color);
-    color: var(--text-main);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
 }
 
 .search-box input:focus {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
 .filter-buttons {
@@ -205,38 +205,38 @@
 .filter-buttons button {
     padding: 0.5rem 1rem;
     border-radius: var(--radius-pill);
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
     font-weight: 500;
     cursor: pointer;
-    background-color: var(--bg-color);
-    color: var(--text-dim);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-secondary);
     transition: all 0.2s;
 }
 
 .filter-buttons button:hover {
-    background-color: var(--card-bg-hover);
-    border-color: var(--border-light);
+    background-color: var(--color-bg-card-hover);
+    border-color: var(--color-border-light);
 }
 
 .filter-buttons button.active {
-    background: var(--accent);
-    color: var(--text-bright);
-    border-color: var(--accent);
+    background: var(--color-accent);
+    color: var(--color-text-bright);
+    border-color: var(--color-accent);
 }
 
 /* Table */
 .table-container {
-    background: var(--card-bg);
+    background: var(--color-bg-card);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
 }
 
 .empty-state {
     padding: 3rem;
     text-align: center;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 .waitlist-table {
@@ -245,8 +245,8 @@
 }
 
 .waitlist-table thead {
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border-default);
 }
 
 .waitlist-table th {
@@ -254,7 +254,7 @@
     text-align: left;
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -264,12 +264,12 @@
 }
 
 .waitlist-table tbody tr {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--color-border-default);
     transition: background-color 0.15s;
 }
 
 .waitlist-table tbody tr:hover {
-    background-color: var(--card-bg-hover);
+    background-color: var(--color-bg-card-hover);
 }
 
 .waitlist-table td {
@@ -286,17 +286,17 @@
 .user-icon {
     width: 1.25rem;
     height: 1.25rem;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 .user-name {
     font-weight: 500;
-    color: var(--text-bright);
+    color: var(--color-text-bright);
 }
 
 .user-email {
     font-size: 0.875rem;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 /* Status Badge */
@@ -310,17 +310,17 @@
 
 .status-badge.approved {
     background-color: rgba(0, 230, 118, 0.15);
-    color: var(--success);
+    color: var(--color-success);
 }
 
 .status-badge.rejected {
     background-color: rgba(255, 107, 107, 0.15);
-    color: var(--error);
+    color: var(--color-error);
 }
 
 .status-badge.pending {
     background-color: rgba(255, 179, 71, 0.15);
-    color: var(--warning);
+    color: var(--color-warning);
 }
 
 /* Date Cell */
@@ -329,7 +329,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 .date-icon {
@@ -341,22 +341,22 @@
 .invite-code-button {
     font-family: monospace;
     font-size: 0.875rem;
-    background-color: var(--bg-color);
+    background-color: var(--color-bg-base);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--color-border-default);
     cursor: pointer;
-    color: var(--accent-light);
+    color: var(--color-accent-light);
     transition: background-color 0.15s;
 }
 
 .invite-code-button:hover {
-    background-color: var(--card-bg-hover);
+    background-color: var(--color-bg-card-hover);
 }
 
 .no-code {
     font-size: 0.875rem;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
 }
 
 /* Action Buttons */
@@ -383,7 +383,7 @@
 }
 
 .action-btn.approve {
-    color: var(--success);
+    color: var(--color-success);
     background-color: transparent;
 }
 
@@ -392,7 +392,7 @@
 }
 
 .action-btn.reject {
-    color: var(--error);
+    color: var(--color-error);
     background-color: transparent;
 }
 
@@ -401,12 +401,12 @@
 }
 
 .action-btn.delete {
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
     background-color: transparent;
 }
 
 .action-btn.delete:hover {
-    background-color: var(--card-bg-hover);
+    background-color: var(--color-bg-card-hover);
 }
 
 /* Responsive */

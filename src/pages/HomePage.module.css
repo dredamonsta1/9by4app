@@ -3,7 +3,7 @@
   flex-direction: column;
   grid-template-columns: 280px 2fr;
   min-height: 100vh;
-  background-color: var(--bg-color);
+  background-color: var(--color-bg-base);
 }
 
 .mainContent {

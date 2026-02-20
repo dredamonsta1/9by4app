@@ -6,8 +6,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border-default);
     font-family: 'Montserrat', sans-serif;
     position: sticky;
     top: 0;
@@ -19,9 +19,9 @@
 .logo {
     font-size: 2rem;
     font-weight: 900;
-    color: var(--text-bright);
+    color: var(--color-text-bright);
     border-radius: var(--radius);
-    background: var(--accent-gradient);
+    background: var(--color-accent-gradient);
     padding: 0.5rem 1.25rem;
     text-decoration: none;
     transition: var(--transition);
@@ -44,7 +44,7 @@
 /* Individual navigation links */
 .navLinks a {
     text-decoration: none;
-    color: var(--text-dim);
+    color: var(--color-text-secondary);
     font-weight: 700;
     font-size: 1rem;
     padding-bottom: 0.5rem;
@@ -54,8 +54,8 @@
 
 /* Hover effect for links */
 .navLinks a:hover {
-    color: var(--text-bright);
-    border-bottom-color: var(--accent-light);
+    color: var(--color-text-bright);
+    border-bottom-color: var(--color-accent-light);
 }
 
 /* Container for user info and logout button */
@@ -68,7 +68,7 @@
 /* Username text */
 .username {
     font-weight: 700;
-    color: var(--text-main);
+    color: var(--color-text-primary);
 }
 
 /* Profile avatar in navbar */
@@ -82,7 +82,7 @@
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--accent-light);
+    border: 2px solid var(--color-accent-light);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
@@ -93,8 +93,8 @@
 
 /* Logout button styling */
 .logoutButton {
-    background: var(--accent-gradient);
-    color: var(--text-bright);
+    background: var(--color-accent-gradient);
+    color: var(--color-text-bright);
     border: none;
     border-radius: var(--radius-pill);
     padding: 0.75rem 1.5rem;
@@ -123,7 +123,7 @@
 .bar {
     width: 30px;
     height: 3px;
-    background-color: var(--text-main);
+    background-color: var(--color-text-primary);
     transition: all 0.3s ease;
 }
 
@@ -146,8 +146,8 @@
     top: 100%;
     left: 0;
     width: 100%;
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border-default);
     flex-direction: column;
     align-items: center;
     padding: 2rem 0;

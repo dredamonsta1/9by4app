@@ -13,14 +13,14 @@
 .feedTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-bright);
+  color: var(--color-text-bright);
   margin: 0 0 1.5rem 0;
 }
 
 /* Post Creator */
 .postCreator {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius);
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -35,29 +35,29 @@
 .toggleBtn {
   flex: 1;
   padding: 10px;
-  background: var(--bg-color);
-  border: 1px solid var(--border);
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border-default);
   border-radius: 6px;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   cursor: pointer;
   transition: var(--transition);
 }
 
 .toggleBtn:hover {
-  border-color: var(--text-dim);
+  border-color: var(--color-text-secondary);
 }
 
 .toggleBtn.active {
-  background: var(--accent);
-  color: var(--text-bright);
-  border-color: var(--accent);
+  background: var(--color-accent);
+  color: var(--color-text-bright);
+  border-color: var(--color-accent);
 }
 
 .errorMessage {
   background: rgba(255, 107, 107, 0.1);
-  border: 1px solid var(--error);
-  color: var(--error);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
   padding: 10px;
   border-radius: 6px;
   font-size: 0.875rem;
@@ -67,10 +67,10 @@
 .textInput {
   width: 100%;
   padding: 12px;
-  background: var(--bg-color);
-  border: 1px solid var(--border);
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border-default);
   border-radius: 6px;
-  color: var(--text-main);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   font-family: inherit;
   resize: vertical;
@@ -79,20 +79,20 @@
 
 .textInput:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
 .textInput::placeholder {
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
 }
 
 .fileInputLabel {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-color);
-  border: 2px dashed var(--border);
+  background: var(--color-bg-base);
+  border: 2px dashed var(--color-border-default);
   border-radius: 6px;
   padding: 2rem;
   cursor: pointer;
@@ -101,7 +101,7 @@
 }
 
 .fileInputLabel:hover {
-  border-color: var(--accent);
+  border-color: var(--color-accent);
 }
 
 .fileInput {
@@ -109,7 +109,7 @@
 }
 
 .fileInputText {
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -145,8 +145,8 @@
 .submitBtn {
   width: 100%;
   padding: 12px;
-  background: var(--accent-gradient);
-  color: var(--text-bright);
+  background: var(--color-accent-gradient);
+  color: var(--color-text-bright);
   border: none;
   border-radius: var(--radius-pill);
   font-weight: 600;
@@ -173,14 +173,14 @@
 
 .emptyState {
   text-align: center;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
   padding: 3rem;
 }
 
 /* Post Item */
 .postItem {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius);
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -196,7 +196,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .userInfo {
@@ -207,13 +207,13 @@
 
 .username {
   font-weight: 500;
-  color: var(--text-main);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
 }
 
 .timestamp {
   font-size: 0.75rem;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
 }
 
 .postActions {
@@ -229,13 +229,13 @@
   padding: 4px 8px;
   background: rgba(0, 119, 182, 0.15);
   border-radius: 4px;
-  color: var(--accent-light);
+  color: var(--color-accent-light);
 }
 
 .deleteBtn {
   background: transparent;
-  color: var(--error);
-  border: 1px solid var(--error);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -244,7 +244,7 @@
 }
 
 .deleteBtn:hover:not(:disabled) {
-  background: var(--error);
+  background: var(--color-error);
   color: white;
 }
 
@@ -256,7 +256,7 @@
 .textContent {
   padding: 1rem;
   margin: 0;
-  color: var(--text-main);
+  color: var(--color-text-primary);
   font-size: 0.9375rem;
   line-height: 1.5;
   white-space: pre-wrap;
@@ -275,9 +275,9 @@
 .caption {
   padding: 1rem;
   margin: 0;
-  color: var(--text-main);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--color-border-default);
 }
 
 /* Video Post */
@@ -313,23 +313,23 @@
 .subToggleBtn {
   flex: 1;
   padding: 8px;
-  background: var(--bg-color);
-  border: 1px solid var(--border);
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
   font-size: 0.8rem;
   cursor: pointer;
   transition: var(--transition);
 }
 
 .subToggleBtn:hover {
-  border-color: var(--text-dim);
+  border-color: var(--color-text-secondary);
 }
 
 .subToggleBtn.active {
-  background: var(--accent);
-  color: var(--text-bright);
-  border-color: var(--accent);
+  background: var(--color-accent);
+  color: var(--color-text-bright);
+  border-color: var(--color-accent);
 }
 
 .previewVideo {
@@ -343,22 +343,22 @@
 .urlInput {
   width: 100%;
   padding: 12px;
-  background: var(--bg-color);
-  border: 1px solid var(--border);
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border-default);
   border-radius: 6px;
-  color: var(--text-main);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   margin-bottom: 0.75rem;
 }
 
 .urlInput:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
 }
 
 .urlInput::placeholder {
-  color: var(--text-dim);
+  color: var(--color-text-secondary);
 }
 
 .youtubePreview {
@@ -382,14 +382,14 @@
 /* Error Container */
 .errorContainer {
   text-align: center;
-  color: var(--error);
+  color: var(--color-error);
   padding: 3rem;
 }
 
 /* Skeleton Loading */
 .skeletonWrapper {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius);
   padding: 1rem;
   margin-bottom: 1rem;
@@ -399,9 +399,9 @@
 .skeletonContent {
   background: linear-gradient(
     90deg,
-    var(--border) 25%,
-    var(--card-bg) 50%,
-    var(--border) 75%
+    var(--color-border-default) 25%,
+    var(--color-bg-card) 50%,
+    var(--color-border-default) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;

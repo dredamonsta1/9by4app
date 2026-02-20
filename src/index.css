@@ -189,29 +189,6 @@
   --z-toast:      1100;
   --z-tooltip:    1200;
 
-  /* ============================================
-     LEGACY ALIASES
-     Maps old token names to new ones for backward compatibility.
-     Remove after migrating all component CSS files.
-     ============================================ */
-  --bg-color:          var(--color-bg-base);
-  --bg-surface:        var(--color-bg-surface);
-  --card-bg:           var(--color-bg-card);
-  --card-bg-hover:     var(--color-bg-card-hover);
-  --card-bg-elevated:  var(--color-bg-card-elevated);
-  --text-main:         var(--color-text-primary);
-  --text-dim:          var(--color-text-secondary);
-  --text-bright:       var(--color-text-bright);
-  --accent:            var(--color-accent);
-  --accent-hover:      var(--color-accent-hover);
-  --accent-light:      var(--color-accent-light);
-  --accent-glow:       var(--color-accent-glow);
-  --accent-gradient:   var(--color-accent-gradient);
-  --error:             var(--color-error);
-  --success:           var(--color-success);
-  --warning:           var(--color-warning);
-  --border:            var(--color-border-default);
-  --border-light:      var(--color-border-light);
 }
 
 /* Responsive Typography */
@@ -232,18 +209,18 @@
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--text-bright);
+  background: var(--color-accent);
+  color: var(--color-text-bright);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-light);
+  outline: 2px solid var(--color-accent-light);
   outline-offset: 2px;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
@@ -264,20 +241,20 @@ code {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-color);
+  background: var(--color-bg-base);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-light);
+  background: var(--color-border-light);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--color-accent);
 }
 
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--border-light) var(--bg-color);
+  scrollbar-color: var(--color-border-light) var(--color-bg-base);
 }
