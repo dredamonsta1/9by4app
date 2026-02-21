@@ -20,6 +20,9 @@
 .rightColumn {
   position: sticky;
   top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -306,6 +309,13 @@
 .loadingText {
   color: var(--color-text-secondary);
   font-size: 0.875rem;
+}
+
+/* Profile Actions (follow + message buttons row) */
+.profileActions {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
 }
 
 /* Divider - hide the ugly hr */

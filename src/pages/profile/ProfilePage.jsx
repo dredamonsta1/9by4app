@@ -15,6 +15,8 @@ import UserProfile from "../../components/UserProfilee/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
 import styles from "./ProfilePage.module.css";
 import FollowButton from "../../components/FollowButton";
+import MessageButton from "../../components/MessageButton";
+import MessagesPanel from "../../components/Messages/MessagesPanel";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
@@ -164,10 +166,13 @@ const ProfilePage = () => {
                     <strong>Role:</strong> {viewedUser.role}
                   </p>
                 </div>
-                <FollowButton
-                  targetUserId={Number(userId)}
-                  initialIsFollowing={false}
-                />
+                <div className={styles.profileActions}>
+                  <FollowButton
+                    targetUserId={Number(userId)}
+                    initialIsFollowing={false}
+                  />
+                  <MessageButton targetUserId={Number(userId)} />
+                </div>
 
                 <h3
                   className={styles.sectionHeader}
@@ -318,7 +323,7 @@ const ProfilePage = () => {
         </section>
       </div>
 
-      {/* Right Column: Community */}
+      {/* Right Column: Community + Messages */}
       <div className={styles.rightColumn}>
         <section className={`${styles.section} ${styles.communitySection}`}>
           <h2 className={styles.sectionHeader}>My Community</h2>
@@ -346,6 +351,8 @@ const ProfilePage = () => {
             </ul>
           )}
         </section>
+
+        <MessagesPanel />
       </div>
     </div>
   );

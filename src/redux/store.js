@@ -3,12 +3,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import artistsReducer from "./reducers/artistsReducer";
 import authReducer from "../store/authSlice";
 import profileListReducer from "./profileListSlice";
+import messagesReducer from "./messagesSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     artists: artistsReducer,
     profileList: profileListReducer,
+    messages: messagesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
