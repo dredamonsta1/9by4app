@@ -30,7 +30,7 @@
 .artistNameInput {
   padding: 10px;
   border: 1px solid var(--color-border-default);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   width: 100%;
   box-sizing: border-box;
   background-color: var(--color-bg-base);
@@ -57,7 +57,7 @@
 .genreInput {
   padding: 10px;
   border: 1px solid var(--color-border-default);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   width: 100%;
   box-sizing: border-box;
   background-color: var(--color-bg-base);
@@ -80,7 +80,7 @@
 .artistImageInput {
   padding: 10px;
   border: 1px solid var(--color-border-default);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   width: 100%;
   box-sizing: border-box;
   background-color: var(--color-bg-base);

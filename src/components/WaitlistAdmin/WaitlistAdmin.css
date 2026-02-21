@@ -100,17 +100,17 @@
 }
 
 .stat-card.pending {
-    background-color: rgba(255, 179, 71, 0.1);
+    background-color: var(--color-warning-subtle);
     border-color: rgba(255, 179, 71, 0.3);
 }
 
 .stat-card.approved {
-    background-color: rgba(0, 230, 118, 0.1);
+    background-color: var(--color-success-subtle);
     border-color: rgba(0, 230, 118, 0.3);
 }
 
 .stat-card.rejected {
-    background-color: rgba(255, 107, 107, 0.1);
+    background-color: var(--color-error-subtle);
     border-color: rgba(255, 107, 107, 0.3);
 }
 
@@ -309,17 +309,17 @@
 }
 
 .status-badge.approved {
-    background-color: rgba(0, 230, 118, 0.15);
+    background-color: var(--color-success-subtle);
     color: var(--color-success);
 }
 
 .status-badge.rejected {
-    background-color: rgba(255, 107, 107, 0.15);
+    background-color: var(--color-error-subtle);
     color: var(--color-error);
 }
 
 .status-badge.pending {
-    background-color: rgba(255, 179, 71, 0.15);
+    background-color: var(--color-warning-subtle);
     color: var(--color-warning);
 }
 
@@ -343,7 +343,7 @@
     font-size: 0.875rem;
     background-color: var(--color-bg-base);
     padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    border-radius: var(--radius-xs);
     border: 1px solid var(--color-border-default);
     cursor: pointer;
     color: var(--color-accent-light);
@@ -388,7 +388,7 @@
 }
 
 .action-btn.approve:hover {
-    background-color: rgba(0, 230, 118, 0.15);
+    background-color: var(--color-success-subtle);
 }
 
 .action-btn.reject {
@@ -397,7 +397,7 @@
 }
 
 .action-btn.reject:hover {
-    background-color: rgba(255, 107, 107, 0.15);
+    background-color: var(--color-error-subtle);
 }
 
 .action-btn.delete {

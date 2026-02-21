@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap');
+
 :root {
   /* ============================================
      9BY4 DESIGN TOKENS v1.0
@@ -149,6 +151,7 @@
   --space-gap-list-items:   12px;
 
   /* BORDER RADIUS */
+  --radius-xs:    4px;
   --radius-sm:    6px;
   --radius:       12px;
   --radius-pill:  500px;
@@ -246,7 +249,7 @@ code {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border-light);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 ::-webkit-scrollbar-thumb:hover {

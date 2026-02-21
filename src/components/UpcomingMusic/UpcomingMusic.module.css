@@ -34,7 +34,7 @@
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   margin-bottom: 6px;
   object-fit: cover;
 }

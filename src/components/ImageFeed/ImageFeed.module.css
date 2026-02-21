@@ -38,11 +38,11 @@
 }
 
 .errorMessage {
-  background: rgba(255, 107, 107, 0.1);
+  background: var(--color-error-subtle);
   border: 1px solid var(--color-error);
   color: var(--color-error);
   padding: 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.875rem;
   margin-bottom: 1rem;
 }
@@ -53,7 +53,7 @@
   justify-content: center;
   background: var(--color-bg-base);
   border: 2px dashed var(--color-border-default);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 2rem;
   cursor: pointer;
   transition: var(--transition);
@@ -82,18 +82,18 @@
   width: 100%;
   max-height: 300px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .clearButton {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--color-bg-overlay);
   color: white;
   border: none;
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   cursor: pointer;
   font-size: 0.75rem;
 }
@@ -107,7 +107,7 @@
   padding: 12px;
   background: var(--color-bg-base);
   border: 1px solid var(--color-border-default);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: var(--color-text-primary);
   font-size: 0.875rem;
   resize: vertical;
@@ -193,7 +193,7 @@
   color: var(--color-error);
   border: 1px solid var(--color-error);
   padding: 4px 10px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   font-size: 0.75rem;
   cursor: pointer;
   transition: var(--transition);
@@ -252,7 +252,7 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .skeletonHeader {
