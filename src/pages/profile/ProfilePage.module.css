@@ -3,7 +3,7 @@
 .profilePage {
   min-height: 100vh;
   padding: 2rem;
-  max-width: 1200px;
+  max-width: var(--max-width-profile);
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 300px;
