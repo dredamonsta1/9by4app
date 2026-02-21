@@ -65,7 +65,8 @@
 }
 
 .toggle-button.enabled:hover {
-    background-color: #00c966;
+    background-color: var(--color-success);
+    filter: brightness(1.1);
 }
 
 .toggle-button.disabled {
@@ -118,6 +119,8 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 0.25rem;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
 }
 
 .stat-card.total .stat-number {
@@ -187,14 +190,15 @@
     border: 1px solid var(--color-border-default);
     border-radius: var(--radius);
     font-size: 1rem;
-    background-color: var(--color-bg-base);
+    background-color: var(--color-bg-input);
     color: var(--color-text-primary);
+    box-shadow: var(--shadow-inset);
 }
 
 .search-box input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px var(--color-accent-glow);
+    box-shadow: var(--shadow-inset-focus);
 }
 
 .filter-buttons {
@@ -339,7 +343,7 @@
 
 /* Invite Code Button */
 .invite-code-button {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: 0.875rem;
     background-color: var(--color-bg-base);
     padding: 0.25rem 0.5rem;

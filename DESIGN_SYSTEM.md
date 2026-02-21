@@ -1,6 +1,6 @@
 # 9by4 Design System
 
-**Version 1.0** | Last updated: 2026-02-20
+**Version 2.0 — "Raw & Premium"** | Last updated: 2026-02-21
 
 A comprehensive design system for 9by4 -- a music artist discovery and social platform where users browse artists across all genres, vote on their favorites through the clout system, curate personal lists, share posts, and follow other music fans.
 
@@ -23,6 +23,21 @@ A comprehensive design system for 9by4 -- a music artist discovery and social pl
 
 ## 1. Design Principles
 
+### Personality: Raw & Premium
+
+9by4's visual language draws from high-end creative tools (Ableton, Final Cut, Logic Pro) and streetwear aesthetics. The result feels like a cockpit or studio control surface — precise, dark, tactile — with creator street cred. Every surface should feel *recessed* or *elevated* with purpose; nothing floats aimlessly.
+
+**Key characteristics:**
+- **Sharper shapes**: 8px default radius (down from 12px) — precision, not softness
+- **Deeper contrast**: Surface colors have wider gaps, inputs feel *recessed* into the UI
+- **Tighter shadows**: Smaller blur, higher opacity — shadows are defined, not diffused
+- **Industrial typography**: Heavier weights, tighter letter-spacing on headings
+- **Cockpit controls**: Inset shadows on inputs, monospace numbers on stat displays
+- **Subtle texture**: CSS noise grain at 2.5% opacity adds analog warmth
+- **Content is hero**: Artist images dominate, UI recedes — the stage, not the scaffolding
+
+**Empowerment emotion**: Users should feel like they're operating a powerful instrument, not browsing a generic web app. The interface communicates competence and control.
+
 ### Core Principles
 
 **1. Every Genre Has a Stage**
@@ -42,7 +57,7 @@ The dark theme is not decorative -- it is the stage. Content (artist images, pos
 | 2 | **Do** use the accent gradient (`#0077B6 -> #00B4D8`) exclusively for primary actions: submit buttons, active tabs, the logo, and clout vote buttons. This preserves its meaning as "this is actionable." | **Don't** apply the accent gradient to passive elements like card backgrounds, section dividers, or decorative areas. Overuse dilutes its signal and fatigues the eye. |
 | 3 | **Do** provide loading skeletons that mirror the exact shape of the content they replace (card skeleton matches card layout, feed skeleton matches post layout). This gives users spatial memory of where things will appear. | **Don't** use a single generic spinner for all loading states. A centered spinner gives no information about what is loading or where it will appear, and causes layout shift when content arrives. |
 | 4 | **Do** keep interactive hit targets at minimum 44x44px on mobile (following WCAG 2.5.8). Pad small badges and icon buttons with invisible touch area if the visual element is smaller. | **Don't** make text-only buttons or small icon buttons without adequate padding. The delete button on posts (currently 4px 10px padding) and the copy button on invite codes are examples that need touch-area expansion on mobile. |
-| 5 | **Do** use consistent border-radius values from the token system: `--radius-sm` (6px) for inner elements, `--radius` (12px) for cards and sections, `--radius-pill` (500px) for buttons and badges. | **Don't** introduce arbitrary border-radius values (4px here, 8px there). The current codebase has instances of `4px`, `6px`, `8px`, and `12px` used inconsistently. Consolidate to the three-tier system. |
+| 5 | **Do** use consistent border-radius values from the token system: `--radius-xs` (3px) for micro elements, `--radius-sm` (4px) for inner elements/inputs, `--radius` (8px) for cards and sections, `--radius-pill` (500px) for buttons and badges. | **Don't** introduce arbitrary border-radius values. Consolidate to the four-tier system. The sharper 8px default radius (down from 12px) is intentional — it conveys precision. |
 
 ---
 
@@ -58,13 +73,13 @@ The existing palette is a deep navy/ocean-blue system that evokes the feel of a 
 
 | Token | Hex | Role | Usage |
 |-------|-----|------|-------|
-| `--color-bg-base` | `#0B1622` | Deepest background | Page body, scrollbar track, app shell |
-| `--color-bg-surface` | `#111D2E` | Raised surface | NavBar, sidebar, overlay panels |
-| `--color-bg-card` | `#162333` | Card default | ArtistCard, FeedPost, section containers |
-| `--color-bg-card-hover` | `#1B2E44` | Card hover | Card backgrounds on pointer hover |
+| `--color-bg-base` | `#0A1420` | Deepest background | Page body, scrollbar track, app shell |
+| `--color-bg-surface` | `#0F1A2A` | Raised surface | NavBar, sidebar, overlay panels |
+| `--color-bg-card` | `#142030` | Card default | ArtistCard, FeedPost, section containers |
+| `--color-bg-card-hover` | `#1A2C42` | Card hover | Card backgrounds on pointer hover |
 | `--color-bg-card-elevated` | `#1E3450` | Elevated card | Dropdowns, popovers, modals, search results |
-| `--color-bg-input` | `#0B1622` | Input field bg | Text inputs, textareas, select elements |
-| `--color-bg-overlay` | `rgba(0,0,0,0.75)` | Modal scrim | Semi-opaque backdrop behind modals |
+| `--color-bg-input` | `#080F1A` | Input field bg | Text inputs, textareas — recessed darker than base |
+| `--color-bg-overlay` | `rgba(0,0,0,0.82)` | Modal scrim | Dramatic semi-opaque backdrop behind modals |
 
 **Surface elevation hierarchy:** base (0) < surface (1) < card (2) < card-elevated (3). Each step is approximately +6-8% lighter to create a subtle depth stack without harsh borders.
 
@@ -78,11 +93,11 @@ The existing palette is a deep navy/ocean-blue system that evokes the feel of a 
 | `--color-text-disabled` | `#556677` | 2.8:1 | Disabled labels (pair with disabled bg, not alone) |
 | `--color-text-inverse` | `#0B1622` | N/A | Text on light/accent backgrounds |
 
-**Contrast verification:**
-- `--color-text-primary` on `--color-bg-card`: 10.2:1 (passes AAA)
-- `--color-text-secondary` on `--color-bg-card`: 4.8:1 (passes AA for normal text, AAA for large text)
-- `--color-text-bright` on `--color-bg-base`: 16.4:1 (passes AAA)
-- `--color-text-secondary` on `--color-bg-base`: 5.8:1 (passes AA)
+**Contrast verification (v2.0 — Raw & Premium):**
+- `--color-text-primary` (`#E0E6ED`) on `--color-bg-card` (`#142030`): ~10.5:1 (passes AAA)
+- `--color-text-secondary` (`#8899AA`) on `--color-bg-card` (`#142030`): ~5.0:1 (passes AA)
+- `--color-text-bright` (`#FFFFFF`) on `--color-bg-base` (`#0A1420`): ~17:1 (passes AAA)
+- `--color-text-secondary` (`#8899AA`) on `--color-bg-base` (`#0A1420`): ~6.0:1 (passes AA)
 
 #### Primary Accent (Blue)
 
@@ -137,12 +152,28 @@ Contrast check: `#F5A623` on `#162333` = 5.8:1 (passes AA for normal text).
 | `--color-warning` | `#FFB347` | `rgba(255,179,71,0.12)` | Warning toasts, pending badges, caution states |
 | `--color-info` | `#00B4D8` | `rgba(0,180,216,0.12)` | Info toasts, help text, informational badges |
 
+#### Hot / Trending Accent
+
+A dedicated red accent for trending content, fire indicators, and urgency. **Not** the same as `--color-error` — hot is celebratory/exciting, error is negative/destructive.
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-hot` | `#FF4D4D` | Trending badges, "hot" indicators, fire icons |
+| `--color-hot-hover` | `#E03E3E` | Hover state on hot elements |
+| `--color-hot-subtle` | `rgba(255,77,77,0.12)` | Background for hot badges |
+| `--color-hot-glow` | `rgba(255,77,77,0.3)` | Glow effect on trending items |
+
+**When to use `--color-hot` vs `--color-error`:**
+- `--color-hot`: Positive energy — "this artist is trending", "hot take", fire emoji contexts
+- `--color-error`: Negative feedback — validation errors, delete confirmations, failed actions
+
 #### Border Colors
 
 | Token | Hex | Role |
 |-------|-----|------|
 | `--color-border-default` | `#1E3450` | Card borders, section dividers, table rows |
 | `--color-border-light` | `#2A4060` | Hover borders, subtle separators |
+| `--color-border-strong` | `#2A4060` | Emphasized borders, NavBar bottom, dividers that need more presence |
 | `--color-border-focus` | `#0077B6` | Input focus borders |
 | `--color-border-error` | `#FF6B6B` | Input error borders |
 
@@ -197,15 +228,15 @@ All sizes use a modular scale with a ~1.25 ratio. Mobile sizes reduce by approxi
 
 | Level | CSS Class | Desktop | Mobile (<768px) | Weight | Line Height | Letter Spacing | Usage |
 |-------|-----------|---------|-----------------|--------|-------------|----------------|-------|
-| **Display** | `.text-display` | 48px | 36px | 900 | 1.1 | -0.02em | Hero sections, marketing pages, landing |
-| **Page Title** | `.text-page-title` | 32px | 26px | 700 | 1.2 | -0.01em | Page headings (Feed, Profile, Admin Dashboard) |
-| **Section Header** | `.text-section-header` | 24px | 20px | 600 | 1.3 | 0 | Section titles within pages (Favorite Artists, Following) |
-| **Card Title** | `.text-card-title` | 18px | 16px | 600 | 1.35 | 0 | Artist name on card, post author, stat card label |
+| **Display** | `.text-display` | 48px | 36px | 900 | 1.1 | -0.03em | Hero sections, marketing pages, landing |
+| **Page Title** | `.text-page-title` | 32px | 26px | 800 | 1.2 | -0.02em | Page headings (Feed, Profile, Admin Dashboard) |
+| **Section Header** | `.text-section-header` | 24px | 20px | 700 | 1.3 | -0.01em | Section titles within pages (Favorite Artists, Following) |
+| **Card Title** | `.text-card-title` | 18px | 16px | 700 | 1.35 | 0 | Artist name on card, post author, stat card label |
 | **Body** | `.text-body` | 16px | 16px | 400 | 1.5 | 0 | Primary body text, post content, descriptions |
 | **Body Small** | `.text-body-sm` | 14px | 14px | 400 | 1.5 | 0 | Secondary text, input text, captions |
 | **Caption** | `.text-caption` | 12px | 12px | 400 | 1.4 | 0.01em | Timestamps, helper text, table headers |
-| **Badge/Label** | `.text-badge` | 11px | 11px | 600 | 1.2 | 0.04em | Badge text, post type badges, status badges |
-| **Overline** | `.text-overline` | 11px | 10px | 600 | 1.4 | 0.08em | Category labels, uppercase section eyebrows |
+| **Badge/Label** | `.text-badge` | 11px | 11px | 600 | 1.2 | 0.06em | Badge text, post type badges, status badges |
+| **Overline** | `.text-overline` | 11px | 10px | 600 | 1.4 | 0.12em | Category labels, uppercase section eyebrows |
 
 #### Usage Guidelines
 
@@ -384,7 +415,7 @@ The primary unit for displaying an artist in the browsable grid/list. Currently 
 |----------|-------|
 | Min width | `220px` |
 | Aspect ratio | `3:4` |
-| Border radius | `var(--radius)` = 12px |
+| Border radius | `var(--radius)` = 8px |
 | Background | `var(--color-bg-card)` |
 | Border | `1px solid var(--color-border-default)` |
 | Shadow (default) | `var(--shadow-md)` |
@@ -458,7 +489,7 @@ Three variants: Text, Image, Video. All share a common shell.
 |----------|-------|
 | Background | `var(--color-bg-card)` |
 | Border | `1px solid var(--color-border-default)` |
-| Border radius | `var(--radius)` = 12px |
+| Border radius | `var(--radius)` = 8px |
 | Overflow | `hidden` |
 | Transition | `transform 0.2s ease, box-shadow 0.2s ease` |
 
@@ -575,31 +606,31 @@ Mobile (< 768px):
 | Property | Value |
 |----------|-------|
 | Background | `var(--color-bg-surface)` |
-| Border bottom | `1px solid var(--color-border-default)` |
+| Border bottom | `2px solid var(--color-border-default)` |
 | Padding | `16px 24px` |
 | Position | `sticky`, `top: 0`, `z-index: 1000` |
 | Backdrop filter | `blur(12px)` |
 | Height | Auto (approximately 64px with content) |
 
 **Logo:**
-- Font: Montserrat, 900 weight, 2rem
+- Font: Montserrat, 900 weight, 1.6rem, letter-spacing: 0.02em
 - Background: `var(--color-accent-gradient)`
 - Color: `var(--color-text-bright)`
 - Padding: `8px 20px`
-- Border radius: `var(--radius)` (12px)
+- Border radius: `var(--radius-sm)` (4px)
 - Hover: `box-shadow: var(--shadow-glow)`
 
 **Nav Links:**
 - Font: Montserrat, 700 weight, 1rem
 - Color (default): `var(--color-text-secondary)`
 - Color (hover): `var(--color-text-bright)`
-- Border bottom: `3px solid transparent` (default), `3px solid var(--color-accent-light)` (hover/active)
+- Border bottom: `2px solid transparent` (default), `2px solid var(--color-accent-light)` (hover/active)
 - Transition: `color 0.3s ease, border-bottom-color 0.3s ease`
 - Gap between links: `40px` (desktop), `24px` (mobile stack)
 
 **Active Tab:**
 - Color: `var(--color-text-bright)`
-- Border bottom: `3px solid var(--color-accent-light)`
+- Border bottom: `2px solid var(--color-accent-light)`
 
 **Nav Avatar:**
 - Size: `32px x 32px`, circle
@@ -671,7 +702,7 @@ Mobile (< 768px):
 |----------|-------|
 | Background | `var(--color-bg-card)` |
 | Border | `1px solid var(--color-border-default)` |
-| Border radius | `var(--radius)` = 12px |
+| Border radius | `var(--radius)` = 8px |
 | Padding | `24px 32px` |
 | Hover | `box-shadow: var(--shadow-sm)` |
 
@@ -988,7 +1019,7 @@ Style: same dimensions as post type badges.
 | Property | Value |
 |----------|-------|
 | Background | `var(--color-bg-surface)` |
-| Border radius | `var(--radius)` = 12px |
+| Border radius | `var(--radius)` = 8px |
 | Max width | `500px` |
 | Width | `100%` |
 | Max height | `85vh` |
@@ -1057,7 +1088,7 @@ Using react-toastify (already in dependencies). This defines the visual treatmen
 | Min width | `300px` |
 | Max width | `420px` |
 | Background | `var(--color-bg-card-elevated)` |
-| Border radius | `var(--radius)` = 12px |
+| Border radius | `var(--radius)` = 8px |
 | Border left | `4px solid {variant color}` |
 | Padding | `16px` |
 | Shadow | `var(--shadow-lg)` |
@@ -1584,25 +1615,25 @@ The following is the complete `:root` block, organized by category, ready to rep
      Ordered by elevation: base (lowest) to elevated (highest).
      Each step is ~6-8% lighter to create depth without harsh borders.
      -------------------------------------------- */
-  --color-bg-base:          #0B1622;
-  --color-bg-surface:       #111D2E;
-  --color-bg-card:          #162333;
-  --color-bg-card-hover:    #1B2E44;
+  --color-bg-base:          #0A1420;
+  --color-bg-surface:       #0F1A2A;
+  --color-bg-card:          #142030;
+  --color-bg-card-hover:    #1A2C42;
   --color-bg-card-elevated: #1E3450;
-  --color-bg-input:         #0B1622;
-  --color-bg-overlay:       rgba(0, 0, 0, 0.75);
+  --color-bg-input:         #080F1A;
+  --color-bg-overlay:       rgba(0, 0, 0, 0.82);
 
   /* --------------------------------------------
      COLORS: TEXT
      All pass WCAG AA contrast on card backgrounds.
-     --color-text-primary on --color-bg-card = 10.2:1 (AAA).
-     --color-text-secondary on --color-bg-card = 4.8:1 (AA).
+     --color-text-primary on --color-bg-card (#142030) = ~10.5:1 (AAA).
+     --color-text-secondary on --color-bg-card (#142030) = ~5.0:1 (AA).
      -------------------------------------------- */
   --color-text-primary:     #E0E6ED;
   --color-text-secondary:   #8899AA;
   --color-text-bright:      #FFFFFF;
   --color-text-disabled:    #556677;
-  --color-text-inverse:     #0B1622;
+  --color-text-inverse:     #0A1420;
 
   /* --------------------------------------------
      COLORS: PRIMARY ACCENT (Blue)
@@ -1696,20 +1727,20 @@ The following is the complete `:root` block, organized by category, ready to rep
   --text-display-size:          48px;
   --text-display-weight:        900;
   --text-display-line-height:   1.1;
-  --text-display-letter-spacing: -0.02em;
+  --text-display-letter-spacing: -0.03em;
 
   --text-page-title-size:       32px;
-  --text-page-title-weight:     700;
+  --text-page-title-weight:     800;
   --text-page-title-line-height: 1.2;
-  --text-page-title-letter-spacing: -0.01em;
+  --text-page-title-letter-spacing: -0.02em;
 
   --text-section-header-size:   24px;
-  --text-section-header-weight: 600;
+  --text-section-header-weight: 700;
   --text-section-header-line-height: 1.3;
-  --text-section-header-letter-spacing: 0;
+  --text-section-header-letter-spacing: -0.01em;
 
   --text-card-title-size:       18px;
-  --text-card-title-weight:     600;
+  --text-card-title-weight:     700;
   --text-card-title-line-height: 1.35;
   --text-card-title-letter-spacing: 0;
 
@@ -1731,12 +1762,12 @@ The following is the complete `:root` block, organized by category, ready to rep
   --text-badge-size:            11px;
   --text-badge-weight:          600;
   --text-badge-line-height:     1.2;
-  --text-badge-letter-spacing:  0.04em;
+  --text-badge-letter-spacing:  0.06em;
 
   --text-overline-size:         11px;
   --text-overline-weight:       600;
   --text-overline-line-height:  1.4;
-  --text-overline-letter-spacing: 0.08em;
+  --text-overline-letter-spacing: 0.12em;
 
   /* --------------------------------------------
      SPACING
@@ -1764,20 +1795,31 @@ The following is the complete `:root` block, organized by category, ready to rep
 
   /* --------------------------------------------
      BORDER RADIUS
-     Three-tier system: inner elements, cards, buttons/pills.
+     Four-tier system: micro, inner elements, cards, buttons/pills.
+     Sharper than v1.0 — precision, not softness.
      -------------------------------------------- */
-  --radius-sm:    6px;
-  --radius:       12px;
+  --radius-xs:    3px;
+  --radius-sm:    4px;
+  --radius:       8px;
   --radius-pill:  500px;
 
   /* --------------------------------------------
      SHADOWS
-     Elevation system from subtle to dramatic.
+     Tighter, more defined elevation system (Raw & Premium).
      -------------------------------------------- */
-  --shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg:    0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow:  0 0 20px rgba(0, 119, 182, 0.3);
+  --shadow-sm:    0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md:    0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-lg:    0 4px 16px rgba(0, 0, 0, 0.6);
+  --shadow-glow:  0 0 12px rgba(0, 119, 182, 0.4);
+
+  /* Inset shadows (cockpit controls) */
+  --shadow-inset:       inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-inset-focus: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--color-accent-glow);
+  --shadow-sharp:       0 1px 2px rgba(0, 0, 0, 0.6);
+  --shadow-focus-ring:  0 0 0 2px var(--color-accent-glow);
+
+  /* Texture */
+  --texture-noise-opacity: 0.025;
 
   /* --------------------------------------------
      TRANSITIONS & TIMING
@@ -2214,9 +2256,85 @@ During the audit of existing CSS, these inconsistencies were identified for reso
 
 | Issue | Current | Target |
 |-------|---------|--------|
-| Mixed border-radius | `4px`, `6px`, `8px`, `12px` used interchangeably | `6px` (--radius-sm), `12px` (--radius), `500px` (--radius-pill) |
+| Mixed border-radius | `4px`, `6px`, `8px`, `12px` used interchangeably | `3px` (--radius-xs), `4px` (--radius-sm), `8px` (--radius), `500px` (--radius-pill) |
 | Inconsistent input padding | `0.5rem`, `10px`, `12px`, `12px 16px` | `12px 16px` (standard), `12px` (compact) |
 | Hard-coded colors in overlays | `rgba(108,99,255,...)` in modal upcoming section | Use token-based `var(--color-accent-subtle)` or new secondary accents |
 | Duplicate skeleton keyframes | Defined separately in Feed, ImageFeed modules | Extract to shared utility or index.css |
 | Montserrat loaded in NavBar | `@import` in component CSS | Move to index.html `<link>` or global CSS for single load point |
 | Inconsistent variable names | Some files reference `--border-color`, `--text-color`, `--accent-color` (unused fallbacks) | Standardize to the new naming convention |
+
+---
+
+## Appendix: Shadows & Texture (v2.0)
+
+### Shadow System
+
+The "Raw & Premium" shadow system uses tighter, more defined shadows compared to v1.0. Shadows feel cast from a close light source, not ambient diffusion.
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--shadow-sm` | `0 1px 4px rgba(0,0,0,0.4)` | Cards at rest, subtle elevation |
+| `--shadow-md` | `0 2px 8px rgba(0,0,0,0.5)` | Cards on hover, dropdowns |
+| `--shadow-lg` | `0 4px 16px rgba(0,0,0,0.6)` | Modals, elevated panels |
+| `--shadow-glow` | `0 0 12px rgba(0,119,182,0.4)` | Accent glow on hover (buttons, logo) |
+| `--shadow-inset` | `inset 0 1px 3px rgba(0,0,0,0.4)` | Recessed inputs at rest (cockpit control feel) |
+| `--shadow-inset-focus` | `inset 0 1px 3px rgba(0,0,0,0.4), 0 0 0 2px var(--color-accent-glow)` | Recessed inputs on focus |
+| `--shadow-sharp` | `0 1px 2px rgba(0,0,0,0.6)` | Micro-elevation for tags, badges |
+| `--shadow-focus-ring` | `0 0 0 2px var(--color-accent-glow)` | Non-input focus rings (buttons, links) |
+
+### Noise Texture
+
+A subtle CSS-generated noise grain is applied via `body::after` at `--texture-noise-opacity: 0.025` (2.5%). This adds analog warmth without impacting performance or requiring an image asset. It uses an inline SVG `feTurbulence` filter.
+
+- `pointer-events: none` ensures it doesn't block interaction
+- `z-index: 9999` places it above all content as a visual overlay
+- `position: fixed` prevents scroll interference
+
+---
+
+## Appendix: iOS Token Mapping (SwiftUI)
+
+When building the 9by4 iOS app, map web tokens to SwiftUI equivalents:
+
+### Colors
+
+| Web Token | SwiftUI |
+|-----------|---------|
+| `--color-bg-base` (`#0A1420`) | `Color("bgBase")` or `Color(hex: 0x0A1420)` |
+| `--color-bg-surface` (`#0F1A2A`) | `Color("bgSurface")` |
+| `--color-bg-card` (`#142030`) | `Color("bgCard")` |
+| `--color-bg-input` (`#080F1A`) | `Color("bgInput")` |
+| `--color-accent` (`#0077B6`) | `Color.accentColor` (set in asset catalog) |
+| `--color-accent-light` (`#00B4D8`) | `Color("accentLight")` |
+| `--color-text-primary` (`#E0E6ED`) | `Color("textPrimary")` or `.primary` |
+| `--color-text-secondary` (`#8899AA`) | `Color("textSecondary")` or `.secondary` |
+| `--color-hot` (`#FF4D4D`) | `Color("hot")` |
+
+### Typography
+
+| Web Token | SwiftUI | Notes |
+|-----------|---------|-------|
+| `--font-primary` (Inter) | `.body` / SF Pro | iOS uses SF Pro as system font; Inter is the web equivalent |
+| `--font-display` (Montserrat) | `.title.bold()` / SF Pro Display | Use SF Pro Display for headings |
+| `--font-mono` (JetBrains Mono) | `.monospaced()` / SF Mono | System monospace |
+| `--text-page-title-weight: 800` | `.font(.title).fontWeight(.heavy)` | |
+| `--text-section-header-weight: 700` | `.font(.title2).fontWeight(.bold)` | |
+| `--text-card-title-weight: 700` | `.font(.headline).fontWeight(.bold)` | |
+
+### Shapes
+
+| Web Token | SwiftUI |
+|-----------|---------|
+| `--radius-xs` (3px) | `RoundedRectangle(cornerRadius: 3)` |
+| `--radius-sm` (4px) | `RoundedRectangle(cornerRadius: 4)` |
+| `--radius` (8px) | `RoundedRectangle(cornerRadius: 8)` |
+| `--radius-pill` (500px) | `Capsule()` |
+
+### Shadows
+
+| Web Token | SwiftUI |
+|-----------|---------|
+| `--shadow-sm` | `.shadow(color: .black.opacity(0.4), radius: 2, y: 1)` |
+| `--shadow-md` | `.shadow(color: .black.opacity(0.5), radius: 4, y: 2)` |
+| `--shadow-lg` | `.shadow(color: .black.opacity(0.6), radius: 8, y: 4)` |
+| `--shadow-inset` | Use `Material` or custom `ZStack` with inner shadow view |

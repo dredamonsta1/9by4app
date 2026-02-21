@@ -35,14 +35,15 @@
     border: 1px solid var(--color-border-default);
     border-radius: var(--radius-sm);
     outline: none;
-    background-color: var(--color-bg-base);
+    background-color: var(--color-bg-input);
     color: var(--color-text-primary);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: var(--shadow-inset);
 }
 
 .password-text-box:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px var(--color-accent-glow);
+    box-shadow: var(--shadow-inset-focus);
 }
 
 .email-text-box {
@@ -51,14 +52,15 @@
     border: 1px solid var(--color-border-default);
     border-radius: var(--radius-sm);
     outline: none;
-    background-color: var(--color-bg-base);
+    background-color: var(--color-bg-input);
     color: var(--color-text-primary);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: var(--shadow-inset);
 }
 
 .email-text-box:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px var(--color-accent-glow);
+    box-shadow: var(--shadow-inset-focus);
 }
 
 .signup-button {

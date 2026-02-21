@@ -43,6 +43,8 @@
   font-weight: 800;
   margin: 10px 0;
   color: var(--color-text-bright);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .actionHint {

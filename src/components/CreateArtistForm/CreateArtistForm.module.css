@@ -33,15 +33,16 @@
   border-radius: var(--radius-sm);
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--color-bg-base);
+  background-color: var(--color-bg-input);
   color: var(--color-text-primary);
   transition: var(--transition);
+  box-shadow: var(--shadow-inset);
 }
 
 .artistNameInput:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  box-shadow: var(--shadow-inset-focus);
 }
 
 .genreInputContainer {
@@ -60,15 +61,16 @@
   border-radius: var(--radius-sm);
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--color-bg-base);
+  background-color: var(--color-bg-input);
   color: var(--color-text-primary);
   transition: var(--transition);
+  box-shadow: var(--shadow-inset);
 }
 
 .genreInput:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  box-shadow: var(--shadow-inset-focus);
 }
 
 .artistImageLabel {
@@ -83,15 +85,16 @@
   border-radius: var(--radius-sm);
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--color-bg-base);
+  background-color: var(--color-bg-input);
   color: var(--color-text-primary);
   transition: var(--transition);
+  box-shadow: var(--shadow-inset);
 }
 
 .artistImageInput:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-glow);
+  box-shadow: var(--shadow-inset-focus);
 }
 
 .createArtistSubmitButton {

@@ -26,10 +26,11 @@
   font-size: 1rem;
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-sm);
-  background-color: var(--color-bg-card);
+  background-color: var(--color-bg-input);
   color: var(--color-text-primary);
   outline: none;
   transition: var(--transition);
+  box-shadow: var(--shadow-inset);
 }
 
 .searchInput::placeholder {

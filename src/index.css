@@ -6,13 +6,13 @@
      ============================================ */
 
   /* COLORS: BACKGROUND & SURFACES */
-  --color-bg-base:          #0B1622;
-  --color-bg-surface:       #111D2E;
-  --color-bg-card:          #162333;
-  --color-bg-card-hover:    #1B2E44;
+  --color-bg-base:          #0A1420;
+  --color-bg-surface:       #0F1A2A;
+  --color-bg-card:          #142030;
+  --color-bg-card-hover:    #1A2C42;
   --color-bg-card-elevated: #1E3450;
-  --color-bg-input:         #0B1622;
-  --color-bg-overlay:       rgba(0, 0, 0, 0.75);
+  --color-bg-input:         #080F1A;
+  --color-bg-overlay:       rgba(0, 0, 0, 0.82);
 
   /* COLORS: TEXT */
   --color-text-primary:     #E0E6ED;
@@ -56,8 +56,15 @@
   /* COLORS: BORDERS */
   --color-border-default:   #1E3450;
   --color-border-light:     #2A4060;
+  --color-border-strong:    #2A4060;
   --color-border-focus:     #0077B6;
   --color-border-error:     #FF6B6B;
+
+  /* COLORS: HOT / TRENDING ACCENT */
+  --color-hot:              #FF4D4D;
+  --color-hot-hover:        #E03E3E;
+  --color-hot-subtle:       rgba(255, 77, 77, 0.12);
+  --color-hot-glow:         rgba(255, 77, 77, 0.3);
 
   /* COLORS: RANK SYSTEM */
   --color-rank-1st:         #FFD700;
@@ -87,20 +94,20 @@
   --text-display-size:          48px;
   --text-display-weight:        900;
   --text-display-line-height:   1.1;
-  --text-display-letter-spacing: -0.02em;
+  --text-display-letter-spacing: -0.03em;
 
   --text-page-title-size:       32px;
-  --text-page-title-weight:     700;
+  --text-page-title-weight:     800;
   --text-page-title-line-height: 1.2;
-  --text-page-title-letter-spacing: -0.01em;
+  --text-page-title-letter-spacing: -0.02em;
 
   --text-section-header-size:   24px;
-  --text-section-header-weight: 600;
+  --text-section-header-weight: 700;
   --text-section-header-line-height: 1.3;
-  --text-section-header-letter-spacing: 0;
+  --text-section-header-letter-spacing: -0.01em;
 
   --text-card-title-size:       18px;
-  --text-card-title-weight:     600;
+  --text-card-title-weight:     700;
   --text-card-title-line-height: 1.35;
   --text-card-title-letter-spacing: 0;
 
@@ -122,12 +129,12 @@
   --text-badge-size:            11px;
   --text-badge-weight:          600;
   --text-badge-line-height:     1.2;
-  --text-badge-letter-spacing:  0.04em;
+  --text-badge-letter-spacing:  0.06em;
 
   --text-overline-size:         11px;
   --text-overline-weight:       600;
   --text-overline-line-height:  1.4;
-  --text-overline-letter-spacing: 0.08em;
+  --text-overline-letter-spacing: 0.12em;
 
   /* SPACING: 8px base unit */
   --space-1:   4px;
@@ -151,16 +158,25 @@
   --space-gap-list-items:   12px;
 
   /* BORDER RADIUS */
-  --radius-xs:    4px;
-  --radius-sm:    6px;
-  --radius:       12px;
+  --radius-xs:    3px;
+  --radius-sm:    4px;
+  --radius:       8px;
   --radius-pill:  500px;
 
   /* SHADOWS */
-  --shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg:    0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow:  0 0 20px rgba(0, 119, 182, 0.3);
+  --shadow-sm:    0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md:    0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-lg:    0 4px 16px rgba(0, 0, 0, 0.6);
+  --shadow-glow:  0 0 12px rgba(0, 119, 182, 0.4);
+
+  /* INSET SHADOWS (cockpit controls) */
+  --shadow-inset:       inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-inset-focus: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--color-accent-glow);
+  --shadow-sharp:       0 1px 2px rgba(0, 0, 0, 0.6);
+  --shadow-focus-ring:  0 0 0 2px var(--color-accent-glow);
+
+  /* TEXTURE */
+  --texture-noise-opacity: 0.025;
 
   /* TRANSITIONS & TIMING */
   --transition:           all 0.2s ease-in-out;
@@ -237,10 +253,26 @@ code {
     monospace;
 }
 
+/* Subtle noise texture overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--texture-noise-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -248,7 +280,7 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-light);
+  background: var(--color-border-default);
   border-radius: var(--radius-xs);
 }
 
@@ -259,5 +291,5 @@ code {
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-light) var(--color-bg-base);
+  scrollbar-color: var(--color-border-default) var(--color-bg-base);
 }
