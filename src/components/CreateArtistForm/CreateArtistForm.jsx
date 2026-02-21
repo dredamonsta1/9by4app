@@ -31,7 +31,7 @@ const CreateArtistForm = () => {
       let imageUrl = null;
       if (artistImage) {
         const uploadResponse = await axiosInstance.post(
-          "/upload-artist-image",
+          "/artists/upload-image",
           formData,
           {
             headers: {
@@ -67,7 +67,7 @@ const CreateArtistForm = () => {
       // If you want to send all in one go (more complex with different content types),
       // you'd need to modify your /api post route to handle multipart/form-data directly.
       // For now, this two-step process is simpler to implement.
-      const createArtistResponse = await axiosInstance.post("/", artistData);
+      const createArtistResponse = await axiosInstance.post("/artists", artistData);
       setMessage(
         createArtistResponse.data.message || "Artist created successfully!"
       );
