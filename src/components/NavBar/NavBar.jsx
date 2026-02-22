@@ -24,7 +24,7 @@ const NavBar = () => {
 
   return (
     <nav className={styles.navBar}>
-      <div className={styles.logo}>Vedioz</div>
+      <Link to="/" className={styles.logo} onClick={closeMenu}>Vedioz</Link>
 
       <button
         className={styles.hamburger}
@@ -38,12 +38,6 @@ const NavBar = () => {
 
       <div className={`${styles.navContent} ${isOpen ? styles.show : ""}`}>
         <ul className={styles.navLinks}>
-          <li>
-            <Link to="/" onClick={closeMenu}>
-              Home
-            </Link>
-          </li>
-
           {!user ? (
             <>
               <li>
