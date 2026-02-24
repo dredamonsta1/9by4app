@@ -42,6 +42,7 @@ const ProfilePage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [followingList, setFollowingList] = useState([]);
+  const [followersList, setFollowersList] = useState([]);
   const [manualId, setManualId] = useState("");
   const [myId, setMyId] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -100,9 +101,16 @@ const ProfilePage = () => {
         const decoded = jwtDecode(token);
         setMyId(decoded.id || decoded.user_id);
 
+        const uid = decoded.id || decoded.user_id;
+
         axiosInstance
-          .get(`/users/${decoded.id || decoded.user_id}/following`)
+          .get(`/users/${uid}/following`)
           .then((res) => setFollowingList(res.data))
+          .catch((err) => console.error("Network fetch error", err));
+
+        axiosInstance
+          .get(`/users/${uid}/followers`)
+          .then((res) => setFollowersList(res.data))
           .catch((err) => console.error("Network fetch error", err));
       } catch (e) {
         console.error("Token decode failed", e);
@@ -345,6 +353,31 @@ const ProfilePage = () => {
                   <FollowButton
                     targetUserId={user.user_id}
                     initialIsFollowing={true}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
+            My Followers
+          </h3>
+          {followersList.length === 0 ? (
+            <p className={styles.emptyState}>
+              No followers yet.
+            </p>
+          ) : (
+            <ul className={styles.followingList}>
+              {followersList.map((user) => (
+                <li key={user.user_id} className={styles.followingItem}>
+                  <span className={styles.followingUsername}>
+                    {user.username}
+                  </span>
+                  <FollowButton
+                    targetUserId={user.user_id}
+                    initialIsFollowing={followingList.some(
+                      (f) => f.user_id === user.user_id
+                    )}
                   />
                 </li>
               ))}
