@@ -351,10 +351,13 @@ const ProfilePage = () => {
                   <span className={styles.followingUsername}>
                     {user.username}
                   </span>
-                  <FollowButton
-                    targetUserId={user.user_id}
-                    initialIsFollowing={true}
-                  />
+                  <div className={styles.followingActions}>
+                    <FollowButton
+                      targetUserId={user.user_id}
+                      initialIsFollowing={true}
+                    />
+                    <MessageButton targetUserId={user.user_id} />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -372,12 +375,15 @@ const ProfilePage = () => {
                   <span className={styles.followingUsername}>
                     {user.username}
                   </span>
-                  <FollowButton
-                    targetUserId={user.user_id}
-                    initialIsFollowing={followingList.some(
-                      (f) => f.user_id === user.user_id,
-                    )}
-                  />
+                  <div className={styles.followingActions}>
+                    <FollowButton
+                      targetUserId={user.user_id}
+                      initialIsFollowing={followingList.some(
+                        (f) => f.user_id === user.user_id,
+                      )}
+                    />
+                    <MessageButton targetUserId={user.user_id} />
+                  </div>
                 </li>
               ))}
             </ul>
