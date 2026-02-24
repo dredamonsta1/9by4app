@@ -361,7 +361,7 @@ const ProfilePage = () => {
           )}
 
           <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
-            My Followers
+            Followers
           </h3>
           {followersList.length === 0 ? (
             <p className={styles.emptyState}>No followers yet.</p>
