@@ -35,7 +35,8 @@ export const addArtistToProfileList = (artist) => async (dispatch, getState) => 
 
   try {
     await axiosInstance.post(`/profile/list/${artist.artist_id}`);
-    dispatch(addArtistToListSuccess(artist));
+    // Optimistically add with incremented count so the UI updates immediately
+    dispatch(addArtistToListSuccess({ ...artist, count: (artist.count || 0) + 1 }));
     dispatch(incrementClout(artist.artist_id));
   } catch (error) {
     console.error("Error adding artist to profile list:", error);

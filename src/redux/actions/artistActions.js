@@ -103,8 +103,11 @@ export const clearSearchResults = () => ({ type: CLEAR_SEARCH_RESULTS });
 export const incrementClout = (artistId) => async (dispatch) => {
   dispatch({ type: INCREMENT_CLOUT_REQUEST, payload: artistId });
   try {
-    await axiosInstance.put(`/artists/${artistId}/clout`);
-    dispatch({ type: INCREMENT_CLOUT_SUCCESS, payload: { artistId } });
+    const response = await axiosInstance.put(`/artists/${artistId}/clout`);
+    dispatch({
+      type: INCREMENT_CLOUT_SUCCESS,
+      payload: { artistId, newCount: response.data.new_clout_count },
+    });
   } catch (error) {
     console.error(
       `Error incrementing clout for artist ${artistId}:`,

@@ -42,10 +42,13 @@ const profileListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(INCREMENT_CLOUT_SUCCESS, (state, action) => {
-      const { artistId } = action.payload;
+      const { artistId, newCount } = action.payload;
       const artist = state.list.find((a) => a.artist_id === artistId);
       if (artist) {
-        artist.count = (artist.count || 0) + 1;
+        // Use the server's confirmed count if available; otherwise keep optimistic value
+        if (newCount !== undefined) {
+          artist.count = newCount;
+        }
       }
     });
     builder.addCase(DECREMENT_CLOUT_SUCCESS, (state, action) => {

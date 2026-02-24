@@ -113,10 +113,10 @@ const artistsReducer = (state = initialState, action) => {
     case INCREMENT_CLOUT_REQUEST:
       return { ...state };
     case INCREMENT_CLOUT_SUCCESS: {
-      const { artistId } = action.payload;
+      const { artistId, newCount } = action.payload;
       const incrementCount = (artist) =>
         artist.artist_id === artistId
-          ? { ...artist, count: artist.count + 1 }
+          ? { ...artist, count: newCount !== undefined ? newCount : artist.count + 1 }
           : artist;
       return {
         ...state,
