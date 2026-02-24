@@ -63,7 +63,7 @@ const ProfilePage = () => {
       dispatch(
         setCredentials({
           user: { ...currentUser, profile_image: res.data.profile_image },
-        })
+        }),
       );
     } catch (err) {
       console.error("Failed to upload profile image:", err);
@@ -228,7 +228,7 @@ const ProfilePage = () => {
               <img
                 src={resolveImageUrl(
                   currentUser?.profile_image,
-                  "https://via.placeholder.com/100?text=Avatar"
+                  "https://via.placeholder.com/100?text=Avatar",
                 )}
                 alt="Profile"
                 className={styles.avatarImage}
@@ -252,7 +252,8 @@ const ProfilePage = () => {
             Favorite Artists
           </h3>
           <p className={styles.sectionSubtext}>
-            Search and add your all-time favorite artists ({profileList.length}/{MAX_FAVORITE_ARTISTS})
+            Search and add your all-time favorite artists ({profileList.length}/
+            {MAX_FAVORITE_ARTISTS})
           </p>
 
           <input
@@ -337,7 +338,7 @@ const ProfilePage = () => {
           <h2 className={styles.sectionHeader}>My Community</h2>
 
           <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
-            People I Follow
+            Following
           </h3>
           {followingList.length === 0 ? (
             <p className={styles.emptyState}>
@@ -363,9 +364,7 @@ const ProfilePage = () => {
             My Followers
           </h3>
           {followersList.length === 0 ? (
-            <p className={styles.emptyState}>
-              No followers yet.
-            </p>
+            <p className={styles.emptyState}>No followers yet.</p>
           ) : (
             <ul className={styles.followingList}>
               {followersList.map((user) => (
@@ -376,7 +375,7 @@ const ProfilePage = () => {
                   <FollowButton
                     targetUserId={user.user_id}
                     initialIsFollowing={followingList.some(
-                      (f) => f.user_id === user.user_id
+                      (f) => f.user_id === user.user_id,
                     )}
                   />
                 </li>
