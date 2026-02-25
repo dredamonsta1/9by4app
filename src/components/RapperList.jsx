@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import "./RapperList.css";
 import { incrementClout } from "../redux/actions/artistActions";
 import { resolveImageUrl } from "../utils/imageUrl";
+import axiosInstance from "../utils/axiosInstance";
 
 const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const albums = artist.albums || [];
   const artistName = (artist.name || artist.artist_name || "").toLowerCase();
+  const [awards, setAwards] = useState([]);
+
+  useEffect(() => {
+    if (!artist.artist_id) return;
+    axiosInstance
+      .get(`/awards/${artist.artist_id}`)
+      .then((res) => setAwards(res.data))
+      .catch(() => setAwards([]));
+  }, [artist.artist_id]);
 
   const upcoming = upcomingReleases.filter(
     (r) => r.artist && r.artist.toLowerCase() === artistName && r.imageUrl
@@ -83,6 +93,31 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                       <span className="artist-modal-album-cert">
                         {album.certifications || album.Certifications}
                       </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {awards.length > 0 && (
+          <div className="artist-modal-awards">
+            <h3>Awards</h3>
+            <ul>
+              {awards.map((award) => (
+                <li key={award.award_id} className="artist-modal-award-item">
+                  <span className="artist-modal-award-trophy">🏆</span>
+                  <div className="artist-modal-award-text">
+                    <span className="artist-modal-award-name">{award.award_name}</span>
+                    {award.show && (
+                      <span className="artist-modal-award-show">{award.show}</span>
+                    )}
+                    {award.category && (
+                      <span className="artist-modal-award-category">{award.category}</span>
+                    )}
+                    {award.year && (
+                      <span className="artist-modal-award-year">({award.year})</span>
                     )}
                   </div>
                 </li>
