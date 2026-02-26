@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styles from "./HomePage.module.css";
 import ClickableList from "../components/RapperList";
 import { fetchArtists, searchArtists, clearSearchResults } from "../redux/actions/artistActions";
+import { fetchProfileList } from "../redux/actions/profileListActions";
 import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -15,6 +16,7 @@ const HomePage = () => {
 
   const { artists, loading, error, searchResults, searchLoading } =
     useSelector((state) => state.artists);
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchArtists());
@@ -22,6 +24,10 @@ const HomePage = () => {
       .then((res) => setUpcomingReleases(res.data))
       .catch(() => {});
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isLoggedIn) dispatch(fetchProfileList());
+  }, [isLoggedIn, dispatch]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -46,7 +52,7 @@ const HomePage = () => {
           <ClickableList
             artists={artists}
             showAdminActions={false}
-            showCloutButton={false}
+            showCloutButton={isLoggedIn}
             showRank={true}
             upcomingReleases={upcomingReleases}
           />
@@ -68,7 +74,7 @@ const HomePage = () => {
             <ClickableList
               artists={searchResults}
               showAdminActions={false}
-              showCloutButton={false}
+              showCloutButton={isLoggedIn}
               upcomingReleases={upcomingReleases}
             />
           </div>

@@ -219,6 +219,22 @@
   color: var(--color-text-bright);
 }
 
+.clout-waitlist-nudge {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.7em;
+  color: var(--color-accent-light);
+  opacity: 0.75;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  line-height: 1.3;
+  transition: opacity 0.2s;
+}
+
+.clout-waitlist-nudge:hover {
+  opacity: 1;
+}
+
 /* Pagination Controls */
 .pagination-controls {
   display: flex;

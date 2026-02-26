@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import "./RapperList.css";
-import { incrementClout } from "../redux/actions/artistActions";
+import { addArtistToProfileList } from "../redux/actions/profileListActions";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -142,8 +143,8 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = 
     return <p>No artists found.</p>;
   }
 
-  const handleCloutClick = (artistId) => {
-    dispatch(incrementClout(artistId));
+  const handleCloutClick = (artist) => {
+    dispatch(addArtistToProfileList(artist));
   };
 
   const handleDelete = async (artistId) => {
@@ -193,15 +194,24 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = 
                         className="rapperButton"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleCloutClick(item.artist_id);
+                          handleCloutClick(item);
                         }}
                       >
                         Clout: {item.count}
                       </button>
                     ) : (
-                      <p className="clout-data-display">
-                        Clout: <span>{item.count}</span>
-                      </p>
+                      <>
+                        <p className="clout-data-display">
+                          Clout: <span>{item.count}</span>
+                        </p>
+                        <Link
+                          to="/signup"
+                          className="clout-waitlist-nudge"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Join the waitlist so you can get your favorite to first place
+                        </Link>
+                      </>
                     )}
                   </div>
 
