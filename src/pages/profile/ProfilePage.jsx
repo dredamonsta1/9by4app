@@ -46,6 +46,9 @@ const ProfilePage = () => {
   const [manualId, setManualId] = useState("");
   const [myId, setMyId] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [userSearchTerm, setUserSearchTerm] = useState("");
+  const [userSearchResults, setUserSearchResults] = useState([]);
+  const [userSearchLoading, setUserSearchLoading] = useState(false);
 
   const handleProfileImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -131,6 +134,23 @@ const ProfilePage = () => {
 
     return () => clearTimeout(timer);
   }, [searchTerm, dispatch]);
+
+  // Debounced user search
+  useEffect(() => {
+    if (userSearchTerm.length < 2) {
+      setUserSearchResults([]);
+      return;
+    }
+    setUserSearchLoading(true);
+    const timer = setTimeout(() => {
+      axiosInstance
+        .get(`/users/search?q=${encodeURIComponent(userSearchTerm)}`)
+        .then((res) => setUserSearchResults(res.data))
+        .catch((err) => console.error("User search error", err))
+        .finally(() => setUserSearchLoading(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [userSearchTerm]);
 
   const favoritedArtistIds = new Set(profileList.map((a) => a.artist_id));
   const listFull = profileList.length >= MAX_FAVORITE_ARTISTS;
@@ -336,6 +356,44 @@ const ProfilePage = () => {
       <div className={styles.rightColumn}>
         <section className={`${styles.section} ${styles.communitySection}`}>
           <h2 className={styles.sectionHeader}>My Community</h2>
+
+          <div className={styles.userSearchWrapper}>
+            <input
+              className={styles.userSearchBar}
+              type="text"
+              placeholder="Search users..."
+              value={userSearchTerm}
+              onChange={(e) => setUserSearchTerm(e.target.value)}
+            />
+            {userSearchLoading && (
+              <p className={styles.loadingText}>Searching...</p>
+            )}
+            {userSearchResults.length > 0 && userSearchTerm.length > 1 && (
+              <ul className={styles.userSearchResultsList}>
+                {userSearchResults.map((user) => (
+                  <li key={user.user_id} className={styles.userSearchResultItem}>
+                    <span className={styles.followingUsername}>
+                      {user.username}
+                    </span>
+                    <div className={styles.followingActions}>
+                      <FollowButton
+                        targetUserId={user.user_id}
+                        initialIsFollowing={followingList.some(
+                          (f) => f.user_id === user.user_id,
+                        )}
+                      />
+                      <MessageButton targetUserId={user.user_id} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {!userSearchLoading &&
+              userSearchTerm.length > 1 &&
+              userSearchResults.length === 0 && (
+                <p className={styles.loadingText}>No users found.</p>
+              )}
+          </div>
 
           <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
             Following

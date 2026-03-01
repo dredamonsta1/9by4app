@@ -236,6 +236,62 @@
   border-color: var(--color-accent);
 }
 
+/* User Search (My Community) */
+.userSearchWrapper {
+  margin-bottom: 1rem;
+}
+
+.userSearchBar {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  box-shadow: var(--shadow-inset);
+  box-sizing: border-box;
+}
+
+.userSearchBar:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-inset-focus);
+}
+
+.userSearchBar::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.userSearchResultsList {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+  background: var(--color-bg-card-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.userSearchResultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border-default);
+  transition: var(--transition);
+}
+
+.userSearchResultItem:last-child {
+  border-bottom: none;
+}
+
+.userSearchResultItem:hover {
+  background: var(--color-accent-subtle);
+}
+
 /* Following List */
 .followingList {
   list-style: none;
