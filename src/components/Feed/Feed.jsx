@@ -292,6 +292,59 @@ function PostCreator({ onPostCreated }) {
 // Individual Post Item
 function PostItem({ post, currentUserId, onDelete }) {
   const [deleting, setDeleting] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
+
+  const fetchComments = useCallback(async () => {
+    setCommentsLoading(true);
+    try {
+      const res = await axiosInstance.get(`/feed/comments/${post.post_type}/${post.id}`);
+      setComments(res.data);
+      setCommentCount(res.data.length);
+    } catch (err) {
+      console.error("Failed to fetch comments:", err);
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [post.post_type, post.id]);
+
+  const handleToggleComments = () => {
+    if (!showComments && comments.length === 0) fetchComments();
+    setShowComments((prev) => !prev);
+  };
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+    setSubmitting(true);
+    try {
+      const res = await axiosInstance.post(
+        `/feed/comments/${post.post_type}/${post.id}`,
+        { content: commentText.trim() }
+      );
+      setComments((prev) => [...prev, res.data]);
+      setCommentCount((prev) => prev + 1);
+      setCommentText("");
+    } catch (err) {
+      console.error("Failed to post comment:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await axiosInstance.delete(`/feed/comments/${commentId}`);
+      setComments((prev) => prev.filter((c) => c.comment_id !== commentId));
+      setCommentCount((prev) => prev - 1);
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
+    }
+  };
 
   if (!post) return null;
 
@@ -406,6 +459,62 @@ function PostItem({ post, currentUserId, onDelete }) {
         </>
       ) : (
         <p className={styles.textContent}>{post.content}</p>
+      )}
+
+      <div className={styles.postFooter}>
+        <button className={styles.commentToggleBtn} onClick={handleToggleComments}>
+          💬 {commentCount > 0 ? commentCount : ""} {commentCount === 1 ? "Comment" : "Comments"}
+        </button>
+      </div>
+
+      {showComments && (
+        <div className={styles.commentsSection}>
+          {commentsLoading ? (
+            <p className={styles.commentsLoading}>Loading comments...</p>
+          ) : comments.length === 0 ? (
+            <p className={styles.noComments}>No comments yet. Be the first!</p>
+          ) : (
+            <ul className={styles.commentsList}>
+              {comments.map((c) => (
+                <li key={c.comment_id} className={styles.commentItem}>
+                  <div className={styles.commentHeader}>
+                    <Link to={`/profile/${c.user_id}`} className={styles.commentUsername}>
+                      {c.username}
+                    </Link>
+                    <span className={styles.commentTime}>{formatTime(c.created_at)}</span>
+                    {c.user_id === currentUserId && (
+                      <button
+                        className={styles.deleteCommentBtn}
+                        onClick={() => handleDeleteComment(c.comment_id)}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                  <p className={styles.commentContent}>{c.content}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <form className={styles.commentForm} onSubmit={handleSubmitComment}>
+            <input
+              className={styles.commentInput}
+              type="text"
+              placeholder="Write a comment..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              maxLength={500}
+            />
+            <button
+              type="submit"
+              className={styles.commentSubmitBtn}
+              disabled={submitting || !commentText.trim()}
+            >
+              {submitting ? "..." : "Post"}
+            </button>
+          </form>
+        </div>
       )}
     </div>
   );
