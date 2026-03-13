@@ -183,3 +183,11 @@
         gap: 2.5rem;
     }
 }
+
+/* Live rooms nav link */
+.liveLink { color: #e53e3e !important; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; }
+.liveLink::before {
+  content: ""; display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; background: #e53e3e; animation: navPulse 1.5s infinite;
+}
+@keyframes navPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }

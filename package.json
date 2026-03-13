@@ -16,6 +16,7 @@
     "react-router-dom": "^7.5.2",
     "react-toastify": "^11.0.5",
     "redux": "^5.0.1",
+    "socket.io-client": "^4.8.3",
     "swr": "^2.3.0"
   },
   "scripts": {
@@ -28,7 +29,7 @@
     "lint": "eslint src",
     "format:check": "prettier --check src"
   },
-"browserslist": {
+  "browserslist": {
     "production": [
       ">0.2%",
       "not dead",

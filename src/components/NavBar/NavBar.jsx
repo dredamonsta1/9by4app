@@ -77,6 +77,11 @@ const NavBar = () => {
                   Events
                 </Link>
               </li>
+              <li>
+                <Link to="/rooms" onClick={closeMenu} className={styles.liveLink}>
+                  Live
+                </Link>
+              </li>
               {user.role === "admin" && (
                 <li>
                   <Link
