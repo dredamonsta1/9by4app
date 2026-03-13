@@ -385,6 +385,8 @@
 
 /* Post Footer (comment toggle) */
 .postFooter {
+  display: flex;
+  align-items: center;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--color-border-default);
@@ -527,6 +529,38 @@
 .commentSubmitBtn:disabled {
   opacity: 0.5;
   cursor: default;
+}
+
+/* Agent Post Styles */
+.agentPostItem {
+  border-left: 3px solid var(--color-amber);
+}
+
+.agentLabel {
+  font-weight: 600;
+  color: var(--color-amber);
+  font-size: 0.875rem;
+}
+
+.agentBadge {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  background: var(--color-amber-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--color-amber);
+}
+
+.sourceLink {
+  font-size: 0.75rem;
+  color: var(--color-accent-light);
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.sourceLink:hover {
+  text-decoration: underline;
 }
 
 /* Error Container */

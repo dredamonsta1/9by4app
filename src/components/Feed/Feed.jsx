@@ -352,6 +352,7 @@ function PostItem({ post, currentUserId, onDelete }) {
     import.meta.env.VITE_API_URL || "https://ninebyfourapi.herokuapp.com";
 
   const isOwner = currentUserId === post.user_id;
+  const isAgentPost = post.is_agent_post;
   const isImage = post.post_type === "image";
   const isVideo = post.post_type === "video";
 
@@ -399,17 +400,25 @@ function PostItem({ post, currentUserId, onDelete }) {
   };
 
   return (
-    <div className={styles.postItem}>
+    <div className={`${styles.postItem} ${isAgentPost ? styles.agentPostItem : ""}`}>
       <div className={styles.postHeader}>
         <div className={styles.userInfo}>
-          <Link to={`/profile/${post.user_id}`} className={styles.username}>{post.username || `User ${post.user_id}`}</Link>
+          {isAgentPost ? (
+            <span className={styles.agentLabel}>9by4 News</span>
+          ) : (
+            <Link to={`/profile/${post.user_id}`} className={styles.username}>{post.username || `User ${post.user_id}`}</Link>
+          )}
           <span className={styles.timestamp}>{formatTime(post.created_at)}</span>
         </div>
         <div className={styles.postActions}>
-          <span className={styles.postTypeBadge}>
-            {isVideo ? "Video" : isImage ? "Image" : "Text"}
-          </span>
-          {isOwner && (
+          {isAgentPost ? (
+            <span className={styles.agentBadge}>News</span>
+          ) : (
+            <span className={styles.postTypeBadge}>
+              {isVideo ? "Video" : isImage ? "Image" : "Text"}
+            </span>
+          )}
+          {isOwner && !isAgentPost && (
             <button
               onClick={handleDelete}
               disabled={deleting}
@@ -465,6 +474,16 @@ function PostItem({ post, currentUserId, onDelete }) {
         <button className={styles.commentToggleBtn} onClick={handleToggleComments}>
           💬 {commentCount > 0 ? commentCount : ""} {commentCount === 1 ? "Comment" : "Comments"}
         </button>
+        {isAgentPost && post.source_url && (
+          <a
+            href={post.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.sourceLink}
+          >
+            Read more →
+          </a>
+        )}
       </div>
 
       {showComments && (
