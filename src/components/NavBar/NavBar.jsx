@@ -72,6 +72,11 @@ const NavBar = () => {
                   Videos
                 </Link>
               </li>
+              <li>
+                <Link to="/events" onClick={closeMenu}>
+                  Events
+                </Link>
+              </li>
               {user.role === "admin" && (
                 <li>
                   <Link

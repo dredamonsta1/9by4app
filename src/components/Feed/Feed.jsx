@@ -21,9 +21,9 @@ function extractYouTubeId(url) {
   return match ? match[1] : null;
 }
 
-// Post Creator Component with toggle for text/image/video
+// Post Creator Component with toggle for text/image/video/music
 function PostCreator({ onPostCreated }) {
-  const [postType, setPostType] = useState("text"); // 'text', 'image', or 'video'
+  const [postType, setPostType] = useState("text"); // 'text', 'image', 'video', or 'music'
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -34,6 +34,11 @@ function PostCreator({ onPostCreated }) {
   // Video-specific state
   const [videoInputMode, setVideoInputMode] = useState("file"); // 'file' or 'url'
   const [videoUrl, setVideoUrl] = useState("");
+
+  // Music-specific state
+  const [musicInputMode, setMusicInputMode] = useState("file"); // 'file' or 'link'
+  const [musicStreamUrl, setMusicStreamUrl] = useState("");
+  const [musicTitle, setMusicTitle] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -106,6 +111,37 @@ function PostCreator({ onPostCreated }) {
           setVideoUrl("");
         }
         setCaption("");
+      } else if (postType === "music") {
+        if (musicInputMode === "file") {
+          if (!file) {
+            setError("Please select an audio file.");
+            setLoading(false);
+            return;
+          }
+          const formData = new FormData();
+          formData.append("audio", file);
+          if (musicTitle.trim()) formData.append("title", musicTitle.trim());
+          formData.append("caption", caption);
+          await axiosInstance.post("/feed/music", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          setFile(null);
+          setPreview(null);
+        } else {
+          if (!musicStreamUrl.trim()) {
+            setError("Please enter a stream URL.");
+            setLoading(false);
+            return;
+          }
+          await axiosInstance.post("/feed/music", {
+            streamUrl: musicStreamUrl.trim(),
+            title: musicTitle.trim() || undefined,
+            caption,
+          });
+          setMusicStreamUrl("");
+        }
+        setMusicTitle("");
+        setCaption("");
       }
       if (onPostCreated) onPostCreated();
     } catch (err) {
@@ -124,6 +160,9 @@ function PostCreator({ onPostCreated }) {
     if (postType === "image") return !file;
     if (postType === "video") {
       return videoInputMode === "file" ? !file : !videoUrl.trim();
+    }
+    if (postType === "music") {
+      return musicInputMode === "file" ? !file : !musicStreamUrl.trim();
     }
     return true;
   };
@@ -151,6 +190,13 @@ function PostCreator({ onPostCreated }) {
           onClick={() => { setPostType("video"); clearFile(); setVideoUrl(""); }}
         >
           Video
+        </button>
+        <button
+          type="button"
+          className={`${styles.toggleBtn} ${postType === "music" ? styles.active : ""}`}
+          onClick={() => { setPostType("music"); clearFile(); setMusicStreamUrl(""); setMusicTitle(""); }}
+        >
+          Music
         </button>
       </div>
 
@@ -277,6 +323,74 @@ function PostCreator({ onPostCreated }) {
           </>
         )}
 
+        {postType === "music" && (
+          <>
+            <div className={styles.videoInputToggle}>
+              <button
+                type="button"
+                className={`${styles.subToggleBtn} ${musicInputMode === "file" ? styles.active : ""}`}
+                onClick={() => { setMusicInputMode("file"); setMusicStreamUrl(""); }}
+              >
+                Upload File
+              </button>
+              <button
+                type="button"
+                className={`${styles.subToggleBtn} ${musicInputMode === "link" ? styles.active : ""}`}
+                onClick={() => { setMusicInputMode("link"); clearFile(); }}
+              >
+                Paste Link
+              </button>
+            </div>
+
+            <input
+              type="text"
+              className={styles.urlInput}
+              placeholder="Track title (optional)"
+              value={musicTitle}
+              onChange={(e) => setMusicTitle(e.target.value)}
+            />
+
+            {musicInputMode === "file" ? (
+              <>
+                {preview ? (
+                  <div className={styles.previewContainer}>
+                    <audio controls src={preview} className={styles.audioPreview} />
+                    <button type="button" onClick={clearFile} className={styles.clearButton}>
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <label className={styles.fileInputLabel}>
+                    <input
+                      type="file"
+                      accept="audio/mpeg,audio/wav,audio/flac,audio/x-m4a,audio/ogg"
+                      onChange={handleFileChange}
+                      className={styles.fileInput}
+                    />
+                    <span className={styles.fileInputText}>Click to select audio file</span>
+                  </label>
+                )}
+              </>
+            ) : (
+              <input
+                type="text"
+                className={styles.urlInput}
+                placeholder="Paste Spotify, SoundCloud, or Apple Music link..."
+                value={musicStreamUrl}
+                onChange={(e) => setMusicStreamUrl(e.target.value)}
+              />
+            )}
+
+            <textarea
+              className={styles.textInput}
+              placeholder="Add a caption..."
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              rows="2"
+            />
+          </>
+        )}
+
         <button
           type="submit"
           className={styles.submitBtn}
@@ -355,6 +469,7 @@ function PostItem({ post, currentUserId, onDelete }) {
   const isAgentPost = post.is_agent_post;
   const isImage = post.post_type === "image";
   const isVideo = post.post_type === "video";
+  const isMusic = post.post_type === "music";
 
   const fullImageUrl = post.image_url
     ? post.image_url.startsWith("http")
@@ -415,7 +530,7 @@ function PostItem({ post, currentUserId, onDelete }) {
             <span className={styles.agentBadge}>News</span>
           ) : (
             <span className={styles.postTypeBadge}>
-              {isVideo ? "Video" : isImage ? "Image" : "Text"}
+              {isVideo ? "Video" : isImage ? "Image" : isMusic ? "Music" : "Text"}
             </span>
           )}
           {isOwner && !isAgentPost && (
@@ -466,6 +581,26 @@ function PostItem({ post, currentUserId, onDelete }) {
           </div>
           {post.caption && <p className={styles.caption}>{post.caption}</p>}
         </>
+      ) : isMusic ? (
+        <div className={styles.musicContent}>
+          {post.music_title && <p className={styles.musicTitle}>{post.music_title}</p>}
+          {post.audio_url ? (
+            <audio controls className={styles.audioPlayer}>
+              <source src={post.audio_url} />
+              Your browser does not support the audio element.
+            </audio>
+          ) : post.stream_url ? (
+            <div className={styles.streamLink}>
+              {post.platform && post.platform !== "other" && (
+                <span className={styles.platformChip}>{post.platform}</span>
+              )}
+              <a href={post.stream_url} target="_blank" rel="noopener noreferrer" className={styles.streamAnchor}>
+                Listen on {post.platform ? post.platform.charAt(0).toUpperCase() + post.platform.slice(1) : "Platform"} →
+              </a>
+            </div>
+          ) : null}
+          {post.caption && <p className={styles.caption}>{post.caption}</p>}
+        </div>
       ) : (
         <p className={styles.textContent}>{post.content}</p>
       )}

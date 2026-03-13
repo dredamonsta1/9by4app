@@ -16,6 +16,7 @@ import Login from "./components/login/Login.jsx";
 import Waitlist from "./components/Waitlist/Waitlist.jsx";
 import ImageFeed from "./components/ImageFeed/ImageFeed";
 import Feed from "./components/Feed/Feed";
+import Events from "./components/Events/Events";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
@@ -49,6 +50,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/images" element={<ImageFeed />} />
           <Route path="/feed" element={<Feed />} />
+          <Route path="/events" element={<Events />} />
 
           <Route
             path="/admin"
