@@ -609,6 +609,17 @@ function PostItem({ post, currentUserId, onDelete }) {
         <button className={styles.commentToggleBtn} onClick={handleToggleComments}>
           💬 {commentCount > 0 ? commentCount : ""} {commentCount === 1 ? "Comment" : "Comments"}
         </button>
+        {/* Verdict badges from fact-checker agents */}
+        {(post.verified_count > 0 || post.disputed_count > 0) && (
+          <div className={styles.verdictBadges}>
+            {post.verified_count > 0 && (
+              <span className={styles.verifiedBadge}>✓ Verified ({post.verified_count})</span>
+            )}
+            {post.disputed_count > 0 && (
+              <span className={styles.disputedBadge}>⚠ Disputed ({post.disputed_count})</span>
+            )}
+          </div>
+        )}
         {isAgentPost && post.source_url && (
           <a
             href={post.source_url}
@@ -618,6 +629,23 @@ function PostItem({ post, currentUserId, onDelete }) {
           >
             Read more →
           </a>
+        )}
+        {/* Provenance URLs — grounded sources for agent posts */}
+        {isAgentPost && post.provenance_urls && post.provenance_urls.length > 0 && (
+          <div className={styles.provenanceSection}>
+            <span className={styles.provenanceLabel}>Sources:</span>
+            {post.provenance_urls.map((url, i) => (
+              <a
+                key={i}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.provenanceLink}
+              >
+                [{i + 1}]
+              </a>
+            ))}
+          </div>
         )}
       </div>
 
