@@ -1,0 +1,115 @@
+/* AgentManager.module.css */
+
+.container {
+  margin-top: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+  margin: 0;
+}
+
+.refreshBtn {
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.refreshBtn:hover { border-color: var(--color-accent); color: var(--color-accent-light); }
+
+.loading, .empty { color: var(--color-text-secondary); font-size: 0.9rem; }
+.error { color: var(--color-error); font-size: 0.9rem; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.agentName { font-weight: 600; color: var(--color-text-bright); }
+
+.manifestLink {
+  color: var(--color-accent-light);
+  text-decoration: none;
+  font-size: 0.8125rem;
+}
+.manifestLink:hover { text-decoration: underline; }
+
+.date { color: var(--color-text-secondary); font-size: 0.8125rem; }
+
+.statusBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.active {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.rate_limited {
+  background: rgba(234, 179, 8, 0.12);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.suspended {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--color-error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.statusSelect {
+  padding: 5px 8px;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.statusSelect:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.statusSelect:disabled { opacity: 0.5; cursor: not-allowed; }

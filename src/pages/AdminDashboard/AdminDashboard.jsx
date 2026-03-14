@@ -4,6 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { Link } from "react-router-dom";
 import styles from "./AdminDashboard.module.css";
 import WaitlistManager from "../../components/Admin/WaitlistManager.jsx";
+import AgentManager from "../../components/Admin/AgentManager.jsx";
 
 const AdminDashboard = () => {
   const [apiStatus, setApiStatus] = useState({ music: "checking..." });
@@ -152,6 +153,11 @@ const AdminDashboard = () => {
               Global Settings
             </button>
           </div>
+        </section>
+
+        <section className={styles.quickActions}>
+          <h2>Agent Gateway</h2>
+          <AgentManager />
         </section>
       </div>
     </>

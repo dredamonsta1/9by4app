@@ -22,6 +22,7 @@ import Room from "./components/Rooms/Room";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
+import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
@@ -55,6 +56,7 @@ const App = () => {
           <Route path="/events" element={<Events />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<Room />} />
+          <Route path="/agents/register" element={<AgentRegister />} />
 
           <Route
             path="/admin"
