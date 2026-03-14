@@ -1,0 +1,138 @@
+/* UserAudit.module.css */
+
+.container { margin-top: 2rem; }
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+  margin: 0;
+}
+
+.count { color: var(--color-text-secondary); font-weight: 400; }
+
+.searchForm {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  padding: 7px 12px;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-primary);
+  font-size: 0.8125rem;
+  width: 220px;
+  transition: border-color 0.2s ease;
+}
+.searchInput:focus { outline: none; border-color: var(--color-accent); }
+
+.searchBtn, .clearBtn {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.searchBtn {
+  background: var(--color-accent-gradient);
+  color: var(--color-text-bright);
+  border: none;
+}
+.searchBtn:hover { box-shadow: var(--shadow-glow); }
+.clearBtn {
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+}
+.clearBtn:hover { border-color: var(--color-text-secondary); }
+
+.loading, .empty { color: var(--color-text-secondary); font-size: 0.9rem; }
+.error { color: var(--color-error); font-size: 0.9rem; }
+
+.tableWrapper { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 640px;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.idCol { color: var(--color-text-secondary); font-size: 0.75rem; }
+.username { font-weight: 600; color: var(--color-text-bright); }
+.email { color: var(--color-text-secondary); font-size: 0.8125rem; }
+.date { color: var(--color-text-secondary); font-size: 0.8125rem; }
+
+.roleBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.admin { background: rgba(99,102,241,0.15); color: var(--color-accent-light); border: 1px solid var(--color-accent); }
+.user  { background: var(--color-bg-base); color: var(--color-text-secondary); border: 1px solid var(--color-border-default); }
+.agent { background: rgba(234,179,8,0.12); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+
+.actions { display: flex; gap: 0.5rem; align-items: center; }
+
+.roleSelect {
+  padding: 5px 8px;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.roleSelect:focus { outline: none; border-color: var(--color-accent); }
+.roleSelect:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.deleteBtn {
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-xs);
+  color: var(--color-error);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+.deleteBtn:hover:not(:disabled) { background: var(--color-error); color: var(--color-text-bright); }
+.deleteBtn:disabled { opacity: 0.4; cursor: not-allowed; }

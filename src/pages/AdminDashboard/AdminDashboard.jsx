@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import styles from "./AdminDashboard.module.css";
 import WaitlistManager from "../../components/Admin/WaitlistManager.jsx";
 import AgentManager from "../../components/Admin/AgentManager.jsx";
+import UserAudit from "../../components/Admin/UserAudit.jsx";
+import GlobalSettings from "../../components/Admin/GlobalSettings.jsx";
 
 const AdminDashboard = () => {
   const [apiStatus, setApiStatus] = useState({ music: "checking..." });
@@ -101,58 +103,21 @@ const AdminDashboard = () => {
             <Link to="/admin/waitlist" className={styles.toolBtn}>
               Manage Waitlist
             </Link>
-            <button className={styles.toolBtn} disabled>
-              User Audit (Coming Soon)
-            </button>
-            <button className={styles.toolBtn} disabled>
-              Global Settings
-            </button>
+            <Link to="/agents/register" className={styles.toolBtn}>
+              Register Agent
+            </Link>
           </div>
         </section>
       </div>
-      {/* New Code */}
       <div className={styles.adminContainer}>
-        <header className={styles.header}>
-          <h1>Vedioz Control Room</h1>
-          <p>Platform health and user management.</p>
-        </header>
-
-        <div className={styles.statGrid}>
-          <div className={styles.statCard}>
-            <h3>Total Creators</h3>
-            <p className={styles.statNumber}>{stats.total_users}</p>
-          </div>
-
-          <Link
-            to="/admin/waitlist"
-            className={`${styles.statCard} ${styles.interactiveCard}`}
-          >
-            <h3>Pending Waitlist</h3>
-            <p className={styles.statNumber} style={{ color: "#00e676" }}>
-              {stats.pending_waitlist}
-            </p>
-            <span className={styles.actionHint}>Review Invites →</span>
-          </Link>
-
-          <div className={styles.statCard}>
-            <h3>Content Pieces</h3>
-            <p className={styles.statNumber}>{stats.total_posts}</p>
-          </div>
-        </div>
+        <section className={styles.quickActions}>
+          <h2>User Audit</h2>
+          <UserAudit />
+        </section>
 
         <section className={styles.quickActions}>
-          <h2>Management Tools</h2>
-          <div className={styles.toolGrid}>
-            <Link to="/admin/waitlist" className={styles.toolBtn}>
-              Manage Waitlist
-            </Link>
-            <button className={styles.toolBtn} disabled>
-              User Audit (Coming Soon)
-            </button>
-            <button className={styles.toolBtn} disabled>
-              Global Settings
-            </button>
-          </div>
+          <h2>Global Settings</h2>
+          <GlobalSettings />
         </section>
 
         <section className={styles.quickActions}>
