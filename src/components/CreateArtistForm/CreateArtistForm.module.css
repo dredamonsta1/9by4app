@@ -68,6 +68,47 @@
   cursor: not-allowed;
 }
 
+/* ── Upgrade / paywall ── */
+
+.tierLoading {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  padding: 12px 0;
+}
+
+.upgradeBox {
+  margin: 20px 0;
+  padding: 28px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius);
+  background: var(--color-bg-card);
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upgradeText {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.upgradeBtn {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--color-accent-gradient);
+  color: var(--color-text-bright);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: box-shadow 0.2s;
+}
+
+.upgradeBtn:hover { box-shadow: var(--shadow-glow); }
+
 /* ── Album section ── */
 
 .albumSection {

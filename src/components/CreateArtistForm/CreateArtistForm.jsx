@@ -1,10 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./CreateArtistForm.module.css";
 
 const emptyAlbum = () => ({ album_name: "", year: "", certifications: "" });
 
 const CreateArtistForm = () => {
+  const { user } = useSelector((state) => state.auth);
+  const [tierStatus, setTierStatus] = useState(null); // null = loading, 'creator' | 'free'
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.role === "admin") { setTierStatus("creator"); return; }
+    axiosInstance.get("/payments/status")
+      .then((res) => setTierStatus(res.data.creator_tier))
+      .catch(() => setTierStatus("free"));
+  }, [user]);
+
   const [artistName, setArtistName] = useState("");
   const [artistGenre, setArtistGenre] = useState("");
   const [mixtape, setMixtape] = useState("");
@@ -103,6 +116,26 @@ const CreateArtistForm = () => {
       setSavingAlbums(false);
     }
   };
+
+  if (!user) return null;
+
+  if (tierStatus === null) {
+    return <p className={styles.tierLoading}>Checking account status...</p>;
+  }
+
+  if (tierStatus !== "creator") {
+    return (
+      <div className={styles.upgradeBox}>
+        <h2 className={styles.title}>Create New Artist</h2>
+        <p className={styles.upgradeText}>
+          Adding artists requires a <strong>Creator account</strong>.
+        </p>
+        <Link to="/pricing" className={styles.upgradeBtn}>
+          View Creator Plans →
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>

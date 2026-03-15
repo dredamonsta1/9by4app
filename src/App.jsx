@@ -23,6 +23,9 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
+import Pricing from "./pages/Pricing/Pricing.jsx";
+import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess.jsx";
+import PaymentCancel from "./pages/PaymentCancel/PaymentCancel.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
@@ -57,6 +60,9 @@ const App = () => {
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<Room />} />
           <Route path="/agents/register" element={<AgentRegister />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/cancel" element={<PaymentCancel />} />
 
           <Route
             path="/admin"
