@@ -1,143 +1,242 @@
-// src/components/CreateRapperForm/CreateRapperForm.jsx (New file, or integrate into Dashboard if you have a form there)
 import React, { useState } from "react";
-import axiosInstance from "../../utils/axiosInstance"; // Use axiosInstance for authenticated calls
+import axiosInstance from "../../utils/axiosInstance";
 import styles from "./CreateArtistForm.module.css";
+
+const emptyAlbum = () => ({ album_name: "", year: "", certifications: "" });
 
 const CreateArtistForm = () => {
   const [artistName, setArtistName] = useState("");
   const [artistGenre, setArtistGenre] = useState("");
-  const [artistImage, setArtistImage] = useState(null); // State for the selected file
+  const [mixtape, setMixtape] = useState("");
+  const [artistImage, setArtistImage] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Set after artist is created — unlocks album section
+  const [createdArtistId, setCreatedArtistId] = useState(null);
+
+  // Album rows state
+  const [albumRows, setAlbumRows] = useState([emptyAlbum()]);
+  const [albumMessage, setAlbumMessage] = useState("");
+  const [savingAlbums, setSavingAlbums] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    // 1. Create FormData object
-    const formData = new FormData();
-    formData.append("artist_name", artistName);
-    formData.append("genre", artistGenre);
-    // Append other artist details here
-
-    // CRITICAL: Append the image file if selected
-    if (artistImage) {
-      formData.append("artistImage", artistImage); // 'artistImage' MUST match the fieldname in multer's upload.single()
-    }
-
     try {
-      // First, upload the image (if any) and get its URL
       let imageUrl = null;
       if (artistImage) {
+        const formData = new FormData();
+        formData.append("artistImage", artistImage);
         const uploadResponse = await axiosInstance.post(
           "/artists/upload-image",
           formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data", // IMPORTANT: This header is crucial for file uploads
-            },
-          }
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
         imageUrl = uploadResponse.data.imageUrl;
-        setMessage("Image uploaded successfully! Now creating artist...");
       }
 
-      // 2. Now, create the artist record in your database, potentially with the image URL
-      // This assumes your /api POST endpoint for artists accepts an 'imageUrl' field
       const artistData = {
         artist_name: artistName,
         genre: artistGenre,
+        mixtape: mixtape,
         count: 0,
-
-        // ... other artist details
         image_url: imageUrl,
-        aka: "", // Default empty string for TEXT fields
-        state: "", // Default empty string for TEXT fields
-        region: "", // Default empty string for TEXT fields
-        label: "", // Default empty string for TEXT fields
-        mixtape: "", // Default empty string for TEXT fields
-        album: "", // Default empty string for TEXT fields
-        year: 0, // Default 0 for INTEGER fields
+        aka: "",
+        state: "",
+        region: "",
+        label: "",
+        album: "",
+        year: 0,
         certifications: "",
       };
 
-      // If you are uploading image and artist data in separate steps,
-      // make sure your /api route for new artists can receive the imageUrl.
-      // If you want to send all in one go (more complex with different content types),
-      // you'd need to modify your /api post route to handle multipart/form-data directly.
-      // For now, this two-step process is simpler to implement.
-      const createArtistResponse = await axiosInstance.post("/artists", artistData);
-      setMessage(
-        createArtistResponse.data.message || "Artist created successfully!"
-      );
-
-      // Clear form
+      const res = await axiosInstance.post("/artists", artistData);
+      const newId = res.data.artist?.artist_id ?? res.data.artist_id;
+      setCreatedArtistId(newId);
+      setMessage("Artist created! Now add albums below.");
       setArtistName("");
       setArtistGenre("");
+      setMixtape("");
       setArtistImage(null);
-      document.getElementById("artistImageInput").value = ""; // Clear file input
+      document.getElementById("artistImageInput").value = "";
     } catch (error) {
-      console.error(
-        "Error creating artist or uploading image:",
-        error.response?.data || error.message
-      );
       setMessage(error.response?.data?.message || "Failed to create artist.");
     } finally {
       setLoading(false);
     }
   };
 
+  const updateRow = (index, field, value) => {
+    setAlbumRows((rows) =>
+      rows.map((row, i) => (i === index ? { ...row, [field]: value } : row))
+    );
+  };
+
+  const addRow = () => setAlbumRows((rows) => [...rows, emptyAlbum()]);
+
+  const removeRow = (index) =>
+    setAlbumRows((rows) => rows.filter((_, i) => i !== index));
+
+  const handleSaveAlbums = async () => {
+    const valid = albumRows.filter((r) => r.album_name.trim());
+    if (!valid.length) {
+      setAlbumMessage("Enter at least one album name.");
+      return;
+    }
+    setSavingAlbums(true);
+    setAlbumMessage("");
+    try {
+      const payload = valid.map((r) => ({
+        album_name: r.album_name.trim(),
+        year: r.year ? parseInt(r.year) : null,
+        certifications: r.certifications.trim() || null,
+      }));
+      await axiosInstance.post(`/artists/${createdArtistId}/albums`, payload);
+      setAlbumMessage(`${valid.length} album(s) saved!`);
+      setAlbumRows([emptyAlbum()]);
+    } catch (err) {
+      setAlbumMessage(err.response?.data?.message || "Failed to save albums.");
+    } finally {
+      setSavingAlbums(false);
+    }
+  };
+
   return (
-    <form className={styles.createArtistForm} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>Create New Artist</h2>
-      {message && (
-        <p
-          className={
-            message.includes("successfully") ? styles.success : styles.error
-          }
+    <div>
+      <form className={styles.createArtistForm} onSubmit={handleSubmit}>
+        <h2 className={styles.title}>Create New Artist</h2>
+
+        {message && (
+          <p className={message.includes("created") ? styles.success : styles.error}>
+            {message}
+          </p>
+        )}
+
+        <div>
+          <label className={styles.fieldLabel}>Artist Name</label>
+          <input
+            className={styles.fieldInput}
+            type="text"
+            value={artistName}
+            onChange={(e) => setArtistName(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.fieldLabel}>Genre</label>
+          <input
+            className={styles.fieldInput}
+            type="text"
+            value={artistGenre}
+            onChange={(e) => setArtistGenre(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.fieldLabel}>Mixtape</label>
+          <input
+            className={styles.fieldInput}
+            type="text"
+            placeholder="e.g. So Far Gone"
+            value={mixtape}
+            onChange={(e) => setMixtape(e.target.value)}
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.fieldLabel}>Artist Image</label>
+          <input
+            className={styles.fieldInput}
+            type="file"
+            id="artistImageInput"
+            onChange={(e) => setArtistImage(e.target.files[0])}
+            accept="image/*"
+          />
+        </div>
+
+        <button
+          className={styles.createArtistSubmitButton}
+          type="submit"
+          disabled={loading || !!createdArtistId}
         >
-          {message}
-        </p>
+          {loading ? "Creating..." : createdArtistId ? "Artist Created ✓" : "Create Artist"}
+        </button>
+      </form>
+
+      {/* Album Manager — revealed after artist is created */}
+      {createdArtistId && (
+        <div className={styles.albumSection}>
+          <h3 className={styles.albumSectionTitle}>Add Albums</h3>
+          <p className={styles.albumSectionHint}>
+            Add discography below. Only Album Name is required.
+          </p>
+
+          {albumRows.map((row, i) => (
+            <div key={i} className={styles.albumRow}>
+              <input
+                className={styles.albumNameInput}
+                type="text"
+                placeholder="Album name *"
+                value={row.album_name}
+                onChange={(e) => updateRow(i, "album_name", e.target.value)}
+              />
+              <input
+                className={styles.albumSmallInput}
+                type="number"
+                placeholder="Year"
+                value={row.year}
+                onChange={(e) => updateRow(i, "year", e.target.value)}
+                min="1900"
+                max="2099"
+              />
+              <input
+                className={styles.albumSmallInput}
+                type="text"
+                placeholder="Certifications"
+                value={row.certifications}
+                onChange={(e) => updateRow(i, "certifications", e.target.value)}
+              />
+              {albumRows.length > 1 && (
+                <button
+                  className={styles.removeRowBtn}
+                  type="button"
+                  onClick={() => removeRow(i)}
+                  aria-label="Remove row"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+
+          <button className={styles.addRowBtn} type="button" onClick={addRow}>
+            + Add Another Album
+          </button>
+
+          {albumMessage && (
+            <p className={albumMessage.includes("saved") ? styles.success : styles.error}>
+              {albumMessage}
+            </p>
+          )}
+
+          <div className={styles.albumActions}>
+            <button
+              className={styles.saveAlbumsBtn}
+              type="button"
+              onClick={handleSaveAlbums}
+              disabled={savingAlbums}
+            >
+              {savingAlbums ? "Saving..." : "Save Albums"}
+            </button>
+          </div>
+        </div>
       )}
-      <div>
-        <label className={styles.artistNameLabel}>Artist Name:</label>
-        <input
-          className={styles.artistNameInput}
-          type="text"
-          value={artistName}
-          onChange={(e) => setArtistName(e.target.value)}
-          required
-        />
-      </div>
-      <div className={styles.genreInputContainer}>
-        <label className={styles.genreLabel}>Genre:</label>
-        <input
-          className={styles.genreInput}
-          type="text"
-          value={artistGenre}
-          onChange={(e) => setArtistGenre(e.target.value)}
-          required
-        />
-      </div>
-      <div className={styles.imageInputContainer}>
-        <label className={styles.artistImageLabel}>artist Image:</label>
-        <input
-          className={styles.artistImageInput}
-          type="file"
-          id="artistImageInput"
-          onChange={(e) => setArtistImage(e.target.files[0])} // Store the selected file object
-          accept="image/*" // Restrict to image files
-        />
-      </div>
-      <button
-        className={styles.createArtistSubmitButton}
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? "Submitting..." : "Create Artist"}
-      </button>
-    </form>
+    </div>
   );
 };
 
