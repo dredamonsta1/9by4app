@@ -7,9 +7,11 @@ import WaitlistManager from "../../components/Admin/WaitlistManager.jsx";
 import AgentManager from "../../components/Admin/AgentManager.jsx";
 import UserAudit from "../../components/Admin/UserAudit.jsx";
 import GlobalSettings from "../../components/Admin/GlobalSettings.jsx";
+import ModerationQueue from "../../components/Admin/ModerationQueue.jsx";
 
 const AdminDashboard = () => {
   const [apiStatus, setApiStatus] = useState({ music: "checking..." });
+  const [flaggedCount, setFlaggedCount] = useState(0);
 
   const [stats, setStats] = useState({
     total_users: 0,
@@ -118,6 +120,11 @@ const AdminDashboard = () => {
         <section className={styles.quickActions}>
           <h2>Global Settings</h2>
           <GlobalSettings />
+        </section>
+
+        <section className={styles.quickActions}>
+          <h2>Moderation Queue{flaggedCount > 0 ? ` (${flaggedCount})` : ""}</h2>
+          <ModerationQueue onCountChange={setFlaggedCount} />
         </section>
 
         <section className={styles.quickActions}>
