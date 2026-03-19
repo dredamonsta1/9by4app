@@ -79,7 +79,7 @@ vi.mock("../../redux/actions/authActions", () => ({
 }));
 
 // Mock the authSlice actions
-vi.mock("../../store/authSlice.jsx", () => ({
+vi.mock("../../store/authSlice", () => ({
   setCredentials: vi.fn(),
   logout: vi.fn(),
 }));

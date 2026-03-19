@@ -29,15 +29,16 @@
 
 import axios from "axios";
 import { logout } from "../store/authSlice";
+import type { AppDispatch } from "../redux/store";
 
 // We need to import the store to dispatch actions outside of React components
-let store;
-export const injectStore = (_store) => {
+let store: { dispatch: AppDispatch } | undefined;
+export const injectStore = (_store: { dispatch: AppDispatch }) => {
   store = _store;
 };
 
 const axiosInstance = axios.create({
-  baseURL: "https://ninebyfourapi.herokuapp.com/api",
+  baseURL: import.meta.env.VITE_API_URL ?? "https://ninebyfourapi.herokuapp.com/api",
 });
 
 // 1. Request Interceptor: Automatically attach the token to EVERY request

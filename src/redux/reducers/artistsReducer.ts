@@ -1,4 +1,5 @@
-// src/redux/reducers/artistsReducer.js
+// src/redux/reducers/artistsReducer.ts
+import type { Artist } from "../../types/api";
 import {
   FETCH_ARTISTS_REQUEST,
   FETCH_ARTISTS_SUCCESS,
@@ -18,7 +19,21 @@ import {
   DECREMENT_CLOUT_FAILURE,
 } from "../actions/artistActions";
 
-const initialState = {
+interface ArtistsState {
+  artists: Artist[];
+  loading: boolean;
+  loadingMore: boolean;
+  error: string | null;
+  page: number;
+  totalCount: number;
+  totalPages: number;
+  hasMore: boolean;
+  searchResults: Artist[];
+  searchLoading: boolean;
+  searchError: string | null;
+}
+
+const initialState: ArtistsState = {
   artists: [],
   loading: false,
   loadingMore: false,
@@ -33,7 +48,7 @@ const initialState = {
   searchError: null,
 };
 
-const artistsReducer = (state = initialState, action) => {
+const artistsReducer = (state: ArtistsState = initialState, action: { type: string; payload?: any }) => {
   switch (action.type) {
     case FETCH_ARTISTS_REQUEST:
       return {

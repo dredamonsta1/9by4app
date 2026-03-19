@@ -1,18 +1,29 @@
-// src/store/authSlice.js
+// src/store/authSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 import { loadUserFromToken } from "../redux/actions/authActions";
+import type { AuthUser } from "../types/api";
+
+interface AuthState {
+  user: AuthUser | null;
+  token: string | null;
+  isLoggedIn: boolean;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null | undefined;
+}
 
 const persistedToken = localStorage.getItem("token");
 
+const initialState: AuthState = {
+  user: null, // Don't persist the user object, only the token
+  token: persistedToken,
+  isLoggedIn: !!persistedToken,
+  status: "idle", // Start at idle. Let the useEffect/Thunk set it to loading.
+  error: null,
+};
+
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: null, // Don't persist the user object, only the token
-    token: persistedToken,
-    isLoggedIn: !!persistedToken,
-    status: "idle", // Start at idle. Let the useEffect/Thunk set it to loading.
-    error: null,
-  },
+  initialState,
 
   reducers: {
     setCredentials: (state, action) => {

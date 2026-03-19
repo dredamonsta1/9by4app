@@ -1,4 +1,4 @@
-// src/redux/store.js
+// src/redux/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import artistsReducer from "./reducers/artistsReducer";
 import authReducer from "../store/authSlice";
@@ -19,6 +19,9 @@ export const store = configureStore({
       serializableCheck: false,
     }),
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 // Important: Do not use default export if you want to avoid circular dependencies with Axios
 // But for now, we'll stay consistent with your style.
