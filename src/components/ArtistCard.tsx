@@ -1,11 +1,16 @@
-// src/components/ArtistCard.jsx
+// src/components/ArtistCard.tsx
 // This component displays an individual artist's details including the image.
 
 import React from "react";
 import styles from "./ArtistCard.module.css";
 import { resolveImageUrl } from "../utils/imageUrl";
+import type { Artist } from "../types/api";
 
-const ArtistCard = ({ artist }) => {
+interface Props {
+  artist: Artist;
+}
+
+const ArtistCard = ({ artist }: Props) => {
   const fullImageUrl = resolveImageUrl(
     artist.image_url,
     "https://via.placeholder.com/60?text=No+Image"

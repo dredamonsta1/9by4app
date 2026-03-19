@@ -1,6 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { Conversation, Message } from "../types/api";
 
-const initialState = {
+interface MessageBucket {
+  list: Message[];
+  hasMore: boolean;
+}
+
+interface MessagesState {
+  conversations: Conversation[];
+  activeConversationId: number | null;
+  messages: Record<number, MessageBucket>;
+  totalUnreadCount: number;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: MessagesState = {
   conversations: [],
   activeConversationId: null,
   messages: {},

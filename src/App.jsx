@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadUserFromToken } from "./redux/actions/authActions";
 import { ToastContainer } from "react-toastify";
-import { setCredentials, logout } from "./store/authSlice.jsx";
+import { setCredentials, logout } from "./store/authSlice";
 // import axiosInstance from "./utils/axiosInstance.js";
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
