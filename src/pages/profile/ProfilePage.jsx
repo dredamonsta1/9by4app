@@ -50,6 +50,10 @@ const ProfilePage = () => {
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [userSearchLoading, setUserSearchLoading] = useState(false);
 
+  const [personality, setPersonality] = useState(null);
+  const [personalityLoading, setPersonalityLoading] = useState(false);
+  const [personalityPublic, setPersonalityPublic] = useState(false);
+
   const handleProfileImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -78,6 +82,15 @@ const ProfilePage = () => {
   useEffect(() => {
     if (!userId) {
       dispatch(fetchProfileList());
+      axiosInstance.get("/users/me").then((res) => {
+        if (res.data.music_personality_title) {
+          setPersonality({
+            title: res.data.music_personality_title,
+            description: res.data.music_personality_desc,
+          });
+        }
+        setPersonalityPublic(res.data.music_personality_public || false);
+      }).catch(() => {});
     }
   }, [dispatch, userId]);
 
@@ -166,6 +179,33 @@ const ProfilePage = () => {
     dispatch(removeArtistFromProfileList(artistId));
   };
 
+  const handleAnalyzeTaste = async () => {
+    setPersonalityLoading(true);
+    try {
+      const artists = profileList.map((a) => ({
+        artist_name: a.artist_name || a.name,
+        genre: a.genre || null,
+      }));
+      const res = await axiosInstance.post("/users/me/music-personality", { artists });
+      setPersonality({ title: res.data.title, description: res.data.description });
+    } catch (err) {
+      console.error("Failed to analyze taste:", err);
+    } finally {
+      setPersonalityLoading(false);
+    }
+  };
+
+  const handlePersonalityVisibility = async (e) => {
+    const isPublic = e.target.checked;
+    setPersonalityPublic(isPublic);
+    try {
+      await axiosInstance.patch("/users/me/music-personality/visibility", { public: isPublic });
+    } catch (err) {
+      console.error("Failed to update visibility:", err);
+      setPersonalityPublic(!isPublic);
+    }
+  };
+
   // Build hydrated profile list from the profile list data directly
   // (no longer depends on having all artists loaded in Redux)
   const hydratedProfileList = profileList.filter(Boolean);
@@ -201,6 +241,13 @@ const ProfilePage = () => {
                   />
                   <MessageButton targetUserId={Number(userId)} />
                 </div>
+
+                {viewedUser.music_personality_public && viewedUser.music_personality_title && (
+                  <div className={styles.personalityCard}>
+                    <span className={styles.personalityBadge}>{viewedUser.music_personality_title}</span>
+                    <p className={styles.personalityDesc}>{viewedUser.music_personality_desc}</p>
+                  </div>
+                )}
 
                 <h3
                   className={styles.sectionHeader}
@@ -343,6 +390,31 @@ const ProfilePage = () => {
               </p>
             )
           )}
+          <div className={styles.analyzeSection}>
+            <button
+              className={styles.analyzeBtn}
+              onClick={handleAnalyzeTaste}
+              disabled={profileList.length < 3 || personalityLoading}
+              title={profileList.length < 3 ? "Add at least 3 artists first" : ""}
+            >
+              {personalityLoading ? "Analyzing..." : "Analyze My Taste"}
+            </button>
+
+            {personality && (
+              <div className={styles.personalityCard}>
+                <span className={styles.personalityBadge}>{personality.title}</span>
+                <p className={styles.personalityDesc}>{personality.description}</p>
+                <label className={styles.personalityToggle}>
+                  <input
+                    type="checkbox"
+                    checked={personalityPublic}
+                    onChange={handlePersonalityVisibility}
+                  />
+                  Show on my public profile
+                </label>
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Section: Artist Creation */}
