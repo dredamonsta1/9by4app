@@ -206,7 +206,7 @@ const ProfilePage = () => {
                   className={styles.sectionHeader}
                   style={{ marginTop: "1.5rem" }}
                 >
-                  Favorite Artists
+                  Personal List
                 </h3>
                 {viewedUserArtists.length > 0 ? (
                   <ul className={styles.favArtistList}>
@@ -223,7 +223,7 @@ const ProfilePage = () => {
                     ))}
                   </ul>
                 ) : (
-                  <p className={styles.emptyState}>No favorite artists yet.</p>
+                  <p className={styles.emptyState}>No artists on this list yet.</p>
                 )}
               </>
             ) : (
@@ -239,7 +239,7 @@ const ProfilePage = () => {
     <div className={styles.profilePage}>
       {/* Left Column */}
       <div className={styles.leftColumn}>
-        {/* Section: Profile + Favorite Artists */}
+        {/* Section: Profile + Personal List */}
         <section className={styles.section}>
           <h2 className={styles.sectionHeader}>Your Profile</h2>
 
@@ -269,10 +269,10 @@ const ProfilePage = () => {
           <UserProfile />
 
           <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>
-            Favorite Artists
+            Personal List
           </h3>
           <p className={styles.sectionSubtext}>
-            Search and add your all-time favorite artists ({profileList.length}/
+            Search and add artists to your personal list ({profileList.length}/
             {MAX_FAVORITE_ARTISTS})
           </p>
 
@@ -339,7 +339,7 @@ const ProfilePage = () => {
           ) : (
             !profileListLoading && (
               <p className={styles.emptyState}>
-                Your list is empty. Search for artists to add them.
+                Your personal list is empty. Search for artists to add them.
               </p>
             )
           )}
