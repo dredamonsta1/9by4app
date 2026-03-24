@@ -50,6 +50,8 @@ const ProfilePage = () => {
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [userSearchLoading, setUserSearchLoading] = useState(false);
 
+  const [tasteSuggestions, setTasteSuggestions] = useState([]);
+
   const [personality, setPersonality] = useState(null);
   const [personalityLoading, setPersonalityLoading] = useState(false);
   const [personalityPublic, setPersonalityPublic] = useState(false);
@@ -91,6 +93,10 @@ const ProfilePage = () => {
         }
         setPersonalityPublic(res.data.music_personality_public || false);
       }).catch(() => {});
+
+      axiosInstance.get("/profile/suggestions")
+        .then((res) => setTasteSuggestions(res.data))
+        .catch(() => {});
     }
   }, [dispatch, userId]);
 
@@ -466,6 +472,33 @@ const ProfilePage = () => {
                 <p className={styles.loadingText}>No users found.</p>
               )}
           </div>
+
+          {tasteSuggestions.length > 0 && (
+            <>
+              <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
+                People with similar taste
+              </h3>
+              <ul className={styles.followingList}>
+                {tasteSuggestions.map((user) => (
+                  <li key={user.user_id} className={styles.suggestionItem}>
+                    <div>
+                      <span className={styles.followingUsername}>{user.username}</span>
+                      <span className={styles.overlapBadge}>
+                        {user.overlap_count} shared {user.overlap_count === 1 ? "artist" : "artists"}
+                      </span>
+                    </div>
+                    <div className={styles.followingActions}>
+                      <FollowButton
+                        targetUserId={user.user_id}
+                        initialIsFollowing={false}
+                      />
+                      <MessageButton targetUserId={user.user_id} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           <h3 className={styles.sectionHeader} style={{ fontSize: "1rem" }}>
             Following
