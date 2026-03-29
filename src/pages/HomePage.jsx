@@ -6,6 +6,7 @@ import ClickableList from "../components/RapperList";
 import { fetchArtists, searchArtists, clearSearchResults } from "../redux/actions/artistActions";
 import { fetchProfileList } from "../redux/actions/profileListActions";
 import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
+import WeeklyTrending from "../components/WeeklyTrending/WeeklyTrending";
 import axiosInstance from "../utils/axiosInstance";
 
 const HomePage = () => {
@@ -82,6 +83,10 @@ const HomePage = () => {
         {!searchLoading && searchTerm.trim() && searchResults.length === 0 && (
           <p className={styles.noResults}>No artists found</p>
         )}
+
+        <div className={styles.weeklyTrendingSection}>
+          <WeeklyTrending />
+        </div>
 
         <div className={styles.upcomingMusicSection}>
           <UpcomingMusic />
