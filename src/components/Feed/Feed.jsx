@@ -1,9 +1,12 @@
 // src/components/Feed/Feed.jsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import styles from "./Feed.module.css";
+import { batchPrepare, evict } from "../../services/textMeasurement";
+import { useLiveCompose } from "../../hooks/useLiveCompose";
+import { useShrinkWrap } from "../../hooks/useShrinkWrap";
 
 // Skeleton for loading state
 const PostSkeleton = () => (
@@ -25,6 +28,7 @@ function extractYouTubeId(url) {
 function PostCreator({ onPostCreated }) {
   const [postType, setPostType] = useState("text"); // 'text', 'image', 'video', or 'music'
   const [content, setContent] = useState("");
+  const { lineCount, isOverLimit, containerRef: composeRef } = useLiveCompose(content, { maxLines: 20 });
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [caption, setCaption] = useState("");
@@ -204,13 +208,21 @@ function PostCreator({ onPostCreated }) {
 
       <form onSubmit={handleSubmit}>
         {postType === "text" && (
-          <textarea
-            className={styles.textInput}
-            placeholder="What's on your mind?"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows="3"
-          />
+          <>
+            <textarea
+              ref={composeRef}
+              className={`${styles.textInput} ${isOverLimit ? styles.textInputOverLimit : ""}`}
+              placeholder="What's on your mind?"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              rows="3"
+            />
+            {content.length > 0 && (
+              <span className={`${styles.lineCount} ${isOverLimit ? styles.lineCountOver : ""}`}>
+                {lineCount} {lineCount === 1 ? "line" : "lines"}{isOverLimit ? " — too long" : ""}
+              </span>
+            )}
+          </>
         )}
 
         {postType === "image" && (
@@ -403,6 +415,34 @@ function PostCreator({ onPostCreated }) {
   );
 }
 
+// Comment bubble with shrink-wrap width
+function CommentBubble({ comment: c, currentUserId, onDelete, formatTime }) {
+  const { optimalWidth, containerRef } = useShrinkWrap(c.content, 4);
+  return (
+    <li
+      ref={containerRef}
+      className={styles.commentItem}
+      style={optimalWidth ? { maxWidth: optimalWidth } : undefined}
+    >
+      <div className={styles.commentHeader}>
+        <Link to={`/profile/${c.user_id}`} className={styles.commentUsername}>
+          {c.username}
+        </Link>
+        <span className={styles.commentTime}>{formatTime(c.created_at)}</span>
+        {c.user_id === currentUserId && (
+          <button
+            className={styles.deleteCommentBtn}
+            onClick={() => onDelete(c.comment_id)}
+          >
+            ×
+          </button>
+        )}
+      </div>
+      <p className={styles.commentContent}>{c.content}</p>
+    </li>
+  );
+}
+
 // Individual Post Item
 function PostItem({ post, currentUserId, onDelete }) {
   const [deleting, setDeleting] = useState(false);
@@ -489,6 +529,7 @@ function PostItem({ post, currentUserId, onDelete }) {
     setDeleting(true);
     try {
       await axiosInstance.delete(`/feed/${post.post_type}/${post.id}`);
+      evict(`text-${post.id}`);
       if (onDelete) onDelete();
     } catch (err) {
       console.error("Delete error:", err);
@@ -658,23 +699,13 @@ function PostItem({ post, currentUserId, onDelete }) {
           ) : (
             <ul className={styles.commentsList}>
               {comments.map((c) => (
-                <li key={c.comment_id} className={styles.commentItem}>
-                  <div className={styles.commentHeader}>
-                    <Link to={`/profile/${c.user_id}`} className={styles.commentUsername}>
-                      {c.username}
-                    </Link>
-                    <span className={styles.commentTime}>{formatTime(c.created_at)}</span>
-                    {c.user_id === currentUserId && (
-                      <button
-                        className={styles.deleteCommentBtn}
-                        onClick={() => handleDeleteComment(c.comment_id)}
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-                  <p className={styles.commentContent}>{c.content}</p>
-                </li>
+                <CommentBubble
+                  key={c.comment_id}
+                  comment={c}
+                  currentUserId={currentUserId}
+                  onDelete={handleDeleteComment}
+                  formatTime={formatTime}
+                />
               ))}
             </ul>
           )}
@@ -717,6 +748,12 @@ function Feed() {
       const fetchedPosts = Array.isArray(response.data)
         ? response.data
         : response.data?.posts || [];
+      // Pre-measure all text post heights before render — no DOM reads needed
+      batchPrepare(
+        fetchedPosts
+          .filter((p) => p.post_type === "text" && p.content)
+          .map((p) => ({ id: `text-${p.id}`, text: p.content }))
+      );
       setPosts(fetchedPosts);
     } catch (err) {
       console.error("Fetch error:", err);
