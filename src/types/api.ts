@@ -131,6 +131,66 @@ export interface AdminStats {
   total_posts: string;
 }
 
+// ---------------------------------------------------------------------------
+// Stan Culture
+// ---------------------------------------------------------------------------
+
+export type StanTier = "casual" | "fan" | "stan" | "day-one";
+export type RelationshipType = "alliance" | "rival" | "neutral";
+
+export interface StanRank {
+  artist_id: number;
+  artist_name: string;
+  image_url?: string | null;
+  genre?: string | null;
+  days_as_member: number;
+  score: number;
+  tier: StanTier;
+}
+
+export interface CommunityMember {
+  user_id: number;
+  username: string;
+  profile_image?: string | null;
+  score: number;
+  tier: StanTier;
+  added_at?: string;
+}
+
+export interface ArtistCommunityInfo {
+  artist: {
+    artist_id: number;
+    artist_name: string;
+    image_url?: string | null;
+    genre?: string | null;
+    state?: string | null;
+    region?: string | null;
+    label?: string | null;
+  };
+  member_count: number;
+  top_stans: CommunityMember[];
+}
+
+export interface CommunityPost {
+  post_id: number;
+  post_type: string;
+  tagged_at: string;
+  username: string;
+  profile_image?: string | null;
+  preview?: string | null;
+}
+
+export interface ArtistRelationship {
+  artist_id_a: number;
+  artist_name_a: string;
+  image_url_a?: string | null;
+  artist_id_b: number;
+  artist_name_b: string;
+  image_url_b?: string | null;
+  overlap_count: number;
+  relationship_type: RelationshipType;
+}
+
 // AppSettings values are all string (VARCHAR in DB) — not boolean. Coerce in UI.
 export interface AppSettings {
   waitlist_enabled: string;
