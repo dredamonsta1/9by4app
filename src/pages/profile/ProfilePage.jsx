@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   searchArtists,
   clearSearchResults,
@@ -474,9 +474,9 @@ const ProfilePage = () => {
               <ul className={styles.userSearchResultsList}>
                 {userSearchResults.map((user) => (
                   <li key={user.user_id} className={styles.userSearchResultItem}>
-                    <span className={styles.followingUsername}>
+                    <Link to={`/profile/${user.user_id}`} className={styles.followingUsername}>
                       {user.username}
-                    </span>
+                    </Link>
                     <div className={styles.followingActions}>
                       <FollowButton
                         targetUserId={user.user_id}
@@ -506,7 +506,7 @@ const ProfilePage = () => {
                 {tasteSuggestions.map((user) => (
                   <li key={user.user_id} className={styles.suggestionItem}>
                     <div>
-                      <span className={styles.followingUsername}>{user.username}</span>
+                      <Link to={`/profile/${user.user_id}`} className={styles.followingUsername}>{user.username}</Link>
                       <span className={styles.overlapBadge}>
                         {user.overlap_count} shared {user.overlap_count === 1 ? "artist" : "artists"}
                       </span>
@@ -535,9 +535,9 @@ const ProfilePage = () => {
             <ul className={styles.followingList}>
               {followingList.map((user) => (
                 <li key={user.user_id} className={styles.followingItem}>
-                  <span className={styles.followingUsername}>
+                  <Link to={`/profile/${user.user_id}`} className={styles.followingUsername}>
                     {user.username}
-                  </span>
+                  </Link>
                   <div className={styles.followingActions}>
                     <FollowButton
                       targetUserId={user.user_id}
@@ -559,9 +559,9 @@ const ProfilePage = () => {
             <ul className={styles.followingList}>
               {followersList.map((user) => (
                 <li key={user.user_id} className={styles.followingItem}>
-                  <span className={styles.followingUsername}>
+                  <Link to={`/profile/${user.user_id}`} className={styles.followingUsername}>
                     {user.username}
-                  </span>
+                  </Link>
                   <div className={styles.followingActions}>
                     <FollowButton
                       targetUserId={user.user_id}

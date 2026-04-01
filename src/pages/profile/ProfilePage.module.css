@@ -314,6 +314,10 @@
 .followingUsername {
   font-weight: 500;
   color: var(--color-text-primary);
+  text-decoration: none;
+}
+.followingUsername:hover {
+  color: var(--color-accent);
 }
 
 .followingActions {
