@@ -139,14 +139,25 @@ export type StanTier = "casual" | "fan" | "stan" | "day-one";
 export type RelationshipType = "alliance" | "rival" | "neutral";
 
 export interface StanRank {
+  artist_id: number;
+  artist_name: string;
+  image_url?: string | null;
+  genre?: string | null;
+  tier: StanTier;
+  days_as_member: number;
+  score: number;
+}
+
 export interface TrendingArtist {
   artist_id: number;
   artist_name: string;
   image_url?: string | null;
   genre?: string | null;
-  days_as_member: number;
-  score: number;
-  tier: StanTier;
+  rank: number;
+  rank_delta: number;
+  play_count: number;
+  play_delta: number;
+  momentum_score: number;
 }
 
 export interface CommunityMember {
