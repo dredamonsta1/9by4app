@@ -139,6 +139,7 @@ export type StanTier = "casual" | "fan" | "stan" | "day-one";
 export type RelationshipType = "alliance" | "rival" | "neutral";
 
 export interface StanRank {
+export interface TrendingArtist {
   artist_id: number;
   artist_name: string;
   image_url?: string | null;
@@ -189,6 +190,29 @@ export interface ArtistRelationship {
   image_url_b?: string | null;
   overlap_count: number;
   relationship_type: RelationshipType;
+  play_count: number;
+  play_delta: number;        // change vs previous week
+  rank: number;
+  rank_delta: number;        // positive = moved up, negative = moved down
+  momentum_score: number;    // iterative ML score 0–1
+}
+
+export interface TrendingCreator {
+  user_id: number;
+  username: string;
+  profile_image?: string | null;
+  social_followers: number;
+  social_delta: number;      // follower change vs previous week
+  platform: 'instagram' | 'tiktok' | 'youtube' | 'twitter';
+  rank: number;
+  rank_delta: number;
+  momentum_score: number;
+}
+
+export interface WeeklyTrendingData {
+  week_of: string;           // ISO date string for start of week
+  artists: TrendingArtist[];
+  creators: TrendingCreator[];
 }
 
 // AppSettings values are all string (VARCHAR in DB) — not boolean. Coerce in UI.
