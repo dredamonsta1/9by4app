@@ -60,6 +60,9 @@ const ProfilePage = () => {
   const [personalityLoading, setPersonalityLoading] = useState(false);
   const [personalityPublic, setPersonalityPublic] = useState(false);
 
+  const [userPosts, setUserPosts] = useState([]);
+  const [userPostsLoading, setUserPostsLoading] = useState(false);
+
   const handleProfileImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -117,6 +120,13 @@ const ProfilePage = () => {
         .get(`/profile/user/${userId}`)
         .then((res) => setViewedUserArtists(res.data.list || []))
         .catch((err) => console.error("Failed to fetch user artists", err));
+
+      setUserPostsLoading(true);
+      axiosInstance
+        .get(`/feed/user/${userId}`)
+        .then((res) => setUserPosts(res.data))
+        .catch(() => {})
+        .finally(() => setUserPostsLoading(false));
     }
   }, [userId]);
 
@@ -138,6 +148,13 @@ const ProfilePage = () => {
           .get(`/users/${uid}/followers`)
           .then((res) => setFollowersList(res.data))
           .catch((err) => console.error("Network fetch error", err));
+
+        setUserPostsLoading(true);
+        axiosInstance
+          .get(`/feed/user/${uid}`)
+          .then((res) => setUserPosts(res.data))
+          .catch(() => {})
+          .finally(() => setUserPostsLoading(false));
       } catch (e) {
         console.error("Token decode failed", e);
       }
@@ -283,6 +300,43 @@ const ProfilePage = () => {
                   </ul>
                 ) : (
                   <p className={styles.emptyState}>No artists on this list yet.</p>
+                )}
+
+                <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>
+                  Content
+                </h3>
+                {userPostsLoading ? (
+                  <p className={styles.loadingText}>Loading posts...</p>
+                ) : userPosts.length === 0 ? (
+                  <p className={styles.emptyState}>No posts yet.</p>
+                ) : (
+                  <ul className={styles.postList}>
+                    {userPosts.map((post) => (
+                      <li key={`${post.post_type}-${post.id}`} className={styles.postItem}>
+                        <span className={styles.postTypeBadge}>{post.post_type}</span>
+                        <div className={styles.postBody}>
+                          {post.post_type === "text" && (
+                            <p className={styles.postContent}>{post.content}</p>
+                          )}
+                          {post.post_type === "image" && (
+                            <>
+                              <img src={post.image_url} alt={post.caption || ""} className={styles.postImage} />
+                              {post.caption && <p className={styles.postCaption}>{post.caption}</p>}
+                            </>
+                          )}
+                          {post.post_type === "video" && (
+                            <p className={styles.postCaption}>{post.caption || "Video post"}</p>
+                          )}
+                          {post.post_type === "music" && (
+                            <p className={styles.postContent}>{post.music_title || post.caption}</p>
+                          )}
+                        </div>
+                        <span className={styles.postDate}>
+                          {new Date(post.created_at).toLocaleDateString()}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </>
             ) : (
@@ -439,6 +493,44 @@ const ProfilePage = () => {
         <section className={styles.section}>
           <h2 className={styles.sectionHeader}>Create Artist</h2>
           <CreateArtistForm />
+        </section>
+
+        {/* Section: Content */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionHeader}>Content</h2>
+          {userPostsLoading ? (
+            <p className={styles.loadingText}>Loading posts...</p>
+          ) : userPosts.length === 0 ? (
+            <p className={styles.emptyState}>You haven't posted anything yet.</p>
+          ) : (
+            <ul className={styles.postList}>
+              {userPosts.map((post) => (
+                <li key={`${post.post_type}-${post.id}`} className={styles.postItem}>
+                  <span className={styles.postTypeBadge}>{post.post_type}</span>
+                  <div className={styles.postBody}>
+                    {post.post_type === "text" && (
+                      <p className={styles.postContent}>{post.content}</p>
+                    )}
+                    {post.post_type === "image" && (
+                      <>
+                        <img src={post.image_url} alt={post.caption || ""} className={styles.postImage} />
+                        {post.caption && <p className={styles.postCaption}>{post.caption}</p>}
+                      </>
+                    )}
+                    {post.post_type === "video" && (
+                      <p className={styles.postCaption}>{post.caption || "Video post"}</p>
+                    )}
+                    {post.post_type === "music" && (
+                      <p className={styles.postContent}>{post.music_title || post.caption}</p>
+                    )}
+                  </div>
+                  <span className={styles.postDate}>
+                    {new Date(post.created_at).toLocaleDateString()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
 
