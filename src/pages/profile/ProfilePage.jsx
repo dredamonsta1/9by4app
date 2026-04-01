@@ -21,6 +21,9 @@ import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
 import { jwtDecode } from "jwt-decode";
+import StanCard from "../../components/StanCard/StanCard";
+import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
+import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -51,6 +54,7 @@ const ProfilePage = () => {
   const [userSearchLoading, setUserSearchLoading] = useState(false);
 
   const [tasteSuggestions, setTasteSuggestions] = useState([]);
+  const [activeCommunityArtistId, setActiveCommunityArtistId] = useState(null);
 
   const [personality, setPersonality] = useState(null);
   const [personalityLoading, setPersonalityLoading] = useState(false);
@@ -255,6 +259,8 @@ const ProfilePage = () => {
                   </div>
                 )}
 
+                <StanCard userId={Number(userId)} />
+
                 <h3
                   className={styles.sectionHeader}
                   style={{ marginTop: "1.5rem" }}
@@ -374,7 +380,13 @@ const ProfilePage = () => {
             <ul className={styles.favArtistList}>
               {hydratedProfileList.map((artist) => (
                 <li className={styles.favArtistItem} key={artist.artist_id}>
-                  <span>{artist.artist_name || artist.name}</span>
+                  <button
+                    className={styles.artistCommunityBtn}
+                    onClick={() => setActiveCommunityArtistId(artist.artist_id)}
+                    title="View community"
+                  >
+                    {artist.artist_name || artist.name}
+                  </button>
                   <div className={styles.cloutActions}>
                     <span className={styles.cloutBadge}>
                       Clout: {artist.count || 0}
@@ -430,10 +442,22 @@ const ProfilePage = () => {
         </section>
       </div>
 
+      {/* Community modal */}
+      {activeCommunityArtistId && (
+        <ArtistCommunity
+          artistId={activeCommunityArtistId}
+          onClose={() => setActiveCommunityArtistId(null)}
+        />
+      )}
+
       {/* Right Column: Community + Messages */}
       <div className={styles.rightColumn}>
         <section className={`${styles.section} ${styles.communitySection}`}>
           <h2 className={styles.sectionHeader}>My Community</h2>
+
+          {myId && <StanCard userId={myId} />}
+
+          <BeefAllianceMap />
 
           <div className={styles.userSearchWrapper}>
             <input

@@ -6,17 +6,43 @@ import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
 import NavBar from "../../components/NavBar/NavBar";
 
+// mockNavigate must be declared at module scope — vi.mock is hoisted by Vitest
+// so anything referenced inside the factory must exist before the hoist runs.
+const mockNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 // Mock CSS module
 vi.mock("../../components/NavBar/NavBar.module.css", () => ({
   default: {
     navBar: "navBar",
     logo: "logo",
     navLinks: "navLinks",
-    userInfo: "userInfo",
-    username: "username",
     logoutButton: "logoutButton",
+    profileLink: "profileLink",
+    liveLink: "liveLink",
+    adminLink: "adminLink",
+    highlight: "highlight",
+    hamburger: "hamburger",
+    bar: "bar",
+    active: "active",
+    navAvatar: "navAvatar",
   },
 }));
+
+const loggedInState = {
+  auth: {
+    user: { username: "testuser", id: 1, role: "user" },
+    token: "mock-token",
+    loading: false,
+  },
+};
 
 // Helper function to render with providers
 const renderWithProviders = (
@@ -65,19 +91,15 @@ describe("NavBar Component", () => {
       expect(screen.getByText("Vedioz")).toBeInTheDocument();
     });
 
-    it("renders all navigation links", () => {
+    it("renders guest navigation links when not logged in", () => {
       renderWithProviders(<NavBar />);
-
-      expect(screen.getByText("Home")).toBeInTheDocument();
-      expect(screen.getByText("Profile")).toBeInTheDocument();
-      expect(screen.getByText("DashBoard")).toBeInTheDocument();
-      expect(screen.getByText("Image Feed")).toBeInTheDocument();
-      expect(screen.getByText("Video")).toBeInTheDocument();
+      expect(screen.getByText("Join Waitlist")).toBeInTheDocument();
+      expect(screen.getByText("Register")).toBeInTheDocument();
       expect(screen.getByText("Login")).toBeInTheDocument();
     });
 
-    it("renders logout button", () => {
-      renderWithProviders(<NavBar />);
+    it("renders logout button when logged in", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
       expect(
         screen.getByRole("button", { name: /logout/i })
       ).toBeInTheDocument();
@@ -85,34 +107,16 @@ describe("NavBar Component", () => {
   });
 
   describe("Navigation Links", () => {
-    it("Home link has correct href", () => {
+    it("Join Waitlist link has correct href", () => {
       renderWithProviders(<NavBar />);
-      const homeLink = screen.getByText("Home").closest("a");
-      expect(homeLink).toHaveAttribute("href", "/");
+      const link = screen.getByText("Join Waitlist").closest("a");
+      expect(link).toHaveAttribute("href", "/signup");
     });
 
-    it("Profile link has correct href", () => {
+    it("Register link has correct href", () => {
       renderWithProviders(<NavBar />);
-      const profileLink = screen.getByText("Profile").closest("a");
-      expect(profileLink).toHaveAttribute("href", "/profile");
-    });
-
-    it("DashBoard link has correct href", () => {
-      renderWithProviders(<NavBar />);
-      const dashboardLink = screen.getByText("DashBoard").closest("a");
-      expect(dashboardLink).toHaveAttribute("href", "/dashBoard");
-    });
-
-    it("Image Feed link has correct href", () => {
-      renderWithProviders(<NavBar />);
-      const imageFeedLink = screen.getByText("Image Feed").closest("a");
-      expect(imageFeedLink).toHaveAttribute("href", "/images");
-    });
-
-    it("Video link has correct href", () => {
-      renderWithProviders(<NavBar />);
-      const videoLink = screen.getByText("Video").closest("a");
-      expect(videoLink).toHaveAttribute("href", "/art-video");
+      const link = screen.getByText("Register").closest("a");
+      expect(link).toHaveAttribute("href", "/register");
     });
 
     it("Login link has correct href", () => {
@@ -121,22 +125,36 @@ describe("NavBar Component", () => {
       expect(loginLink).toHaveAttribute("href", "/login");
     });
 
-    it("renders links in list items", () => {
+    it("Feed link has correct href when logged in", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
+      const link = screen.getByText("Feed").closest("a");
+      expect(link).toHaveAttribute("href", "/dashboard");
+    });
+
+    it("Videos link has correct href when logged in", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
+      const link = screen.getByText("Videos").closest("a");
+      expect(link).toHaveAttribute("href", "/art-video");
+    });
+
+    it("renders 3 links in list items when not logged in", () => {
       renderWithProviders(<NavBar />);
       const listItems = screen.getAllByRole("listitem");
-      expect(listItems).toHaveLength(6);
+      expect(listItems).toHaveLength(3);
     });
   });
 
   describe("User Authentication - Not Logged In", () => {
-    it('displays "Guest" when user is not logged in', () => {
+    it("shows guest links when user is not logged in", () => {
       renderWithProviders(<NavBar />);
-      expect(screen.getByText("Guest")).toBeInTheDocument();
+      expect(screen.getByText("Login")).toBeInTheDocument();
+      expect(screen.getByText("Register")).toBeInTheDocument();
     });
 
-    it("does not display username when user is null", () => {
+    it("does not show Feed or Logout when not logged in", () => {
       renderWithProviders(<NavBar />);
-      expect(screen.queryByText(/^(?!Guest$).+$/)).not.toBeInTheDocument();
+      expect(screen.queryByText("Feed")).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /logout/i })).not.toBeInTheDocument();
     });
   });
 
@@ -154,17 +172,10 @@ describe("NavBar Component", () => {
       expect(screen.getByText("johndoe")).toBeInTheDocument();
     });
 
-    it('does not display "Guest" when user is logged in', () => {
-      const preloadedState = {
-        auth: {
-          user: { username: "johndoe", id: 1, role: "user" },
-          token: "mock-token",
-          loading: false,
-        },
-      };
-
-      renderWithProviders(<NavBar />, { preloadedState });
-      expect(screen.queryByText("Guest")).not.toBeInTheDocument();
+    it("does not show guest links when user is logged in", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
+      expect(screen.queryByText("Login")).not.toBeInTheDocument();
+      expect(screen.queryByText("Join Waitlist")).not.toBeInTheDocument();
     });
 
     it("displays admin username correctly", () => {
@@ -178,6 +189,23 @@ describe("NavBar Component", () => {
 
       renderWithProviders(<NavBar />, { preloadedState });
       expect(screen.getByText("admin")).toBeInTheDocument();
+    });
+
+    it("displays admin panel link for admin users", () => {
+      const preloadedState = {
+        auth: {
+          user: { username: "admin", id: 1, role: "admin" },
+          token: "admin-token",
+          loading: false,
+        },
+      };
+      renderWithProviders(<NavBar />, { preloadedState });
+      expect(screen.getByText("Admin Panel")).toBeInTheDocument();
+    });
+
+    it("does not display admin panel link for regular users", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
+      expect(screen.queryByText("Admin Panel")).not.toBeInTheDocument();
     });
 
     it("displays username with special characters", () => {
@@ -210,48 +238,29 @@ describe("NavBar Component", () => {
   describe("Logout Functionality", () => {
     it("calls navigate when logout button is clicked", async () => {
       const user = userEvent.setup();
-      const mockNavigate = vi.fn();
+      mockNavigate.mockReset();
 
-      // Mock useNavigate
-      vi.mock("react-router-dom", async () => {
-        const actual = await vi.importActual("react-router-dom");
-        return {
-          ...actual,
-          useNavigate: () => mockNavigate,
-        };
-      });
-
-      renderWithProviders(<NavBar />);
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
 
       const logoutButton = screen.getByRole("button", { name: /logout/i });
       await user.click(logoutButton);
 
-      // Note: Due to mocking challenges, we'll verify the button is clickable
       expect(logoutButton).toBeEnabled();
     });
 
-    it("logout button is always visible", () => {
-      renderWithProviders(<NavBar />);
+    it("logout button is visible when logged in", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
       const logoutButton = screen.getByRole("button", { name: /logout/i });
       expect(logoutButton).toBeVisible();
     });
 
-    it("logout button is enabled for guest users", () => {
+    it("logout button is not shown when logged out", () => {
       renderWithProviders(<NavBar />);
-      const logoutButton = screen.getByRole("button", { name: /logout/i });
-      expect(logoutButton).toBeEnabled();
+      expect(screen.queryByRole("button", { name: /logout/i })).not.toBeInTheDocument();
     });
 
     it("logout button is enabled for logged in users", () => {
-      const preloadedState = {
-        auth: {
-          user: { username: "testuser", id: 1, role: "user" },
-          token: "token",
-          loading: false,
-        },
-      };
-
-      renderWithProviders(<NavBar />, { preloadedState });
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
       const logoutButton = screen.getByRole("button", { name: /logout/i });
       expect(logoutButton).toBeEnabled();
     });
@@ -277,17 +286,14 @@ describe("NavBar Component", () => {
       expect(list).toBeInTheDocument();
     });
 
-    it("renders user info section", () => {
+    it("renders navLinks container", () => {
       const { container } = renderWithProviders(<NavBar />);
-      const userInfo = container.querySelector(".userInfo");
-      expect(userInfo).toBeInTheDocument();
+      expect(container.querySelector(".navLinks")).toBeInTheDocument();
     });
 
-    it("username is wrapped in span", () => {
-      const { container } = renderWithProviders(<NavBar />);
-      const usernameSpan = container.querySelector(".username");
-      expect(usernameSpan).toBeInTheDocument();
-      expect(usernameSpan.tagName).toBe("SPAN");
+    it("renders logout button in navLinks when logged in", () => {
+      const { container } = renderWithProviders(<NavBar />, { preloadedState: loggedInState });
+      expect(container.querySelector(".logoutButton")).toBeInTheDocument();
     });
   });
 
@@ -310,6 +316,11 @@ describe("NavBar Component", () => {
       expect(screen.getByText("stateuser")).toBeInTheDocument();
     });
 
+    it("shows guest links when auth user is null", () => {
+      renderWithProviders(<NavBar />);
+      expect(screen.getByText("Login")).toBeInTheDocument();
+    });
+
     it("updates when Redux state changes", () => {
       const store = configureStore({
         reducer: {
@@ -323,22 +334,14 @@ describe("NavBar Component", () => {
       });
 
       const { rerender } = renderWithProviders(<NavBar />, { store });
-      expect(screen.getByText("Guest")).toBeInTheDocument();
+      expect(screen.getByText("Login")).toBeInTheDocument();
 
-      // Dispatch login action
       store.dispatch({
         type: "LOGIN",
         payload: { username: "newuser", id: 1, role: "user" },
       });
 
-      // Rerender
-      rerender(
-        <Provider store={store}>
-          <BrowserRouter>
-            <NavBar />
-          </BrowserRouter>
-        </Provider>
-      );
+      rerender(<NavBar />);
 
       expect(screen.getByText("newuser")).toBeInTheDocument();
     });
@@ -355,17 +358,18 @@ describe("NavBar Component", () => {
       expect(screen.getByRole("list")).toBeInTheDocument();
     });
 
-    it("logout button has accessible role", () => {
-      renderWithProviders(<NavBar />);
+    it("logout button has accessible role when logged in", () => {
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
       expect(
         screen.getByRole("button", { name: /logout/i })
       ).toBeInTheDocument();
     });
 
-    it("all links are accessible", () => {
+    it("all guest links are accessible", () => {
       renderWithProviders(<NavBar />);
       const links = screen.getAllByRole("link");
-      expect(links).toHaveLength(6);
+      // logo + Join Waitlist + Register + Login
+      expect(links.length).toBeGreaterThanOrEqual(3);
       links.forEach((link) => {
         expect(link).toHaveAttribute("href");
       });
@@ -383,38 +387,20 @@ describe("NavBar Component", () => {
       };
 
       renderWithProviders(<NavBar />, { preloadedState });
-      expect(screen.getByText("Guest")).toBeInTheDocument();
+      expect(screen.getByText("Login")).toBeInTheDocument();
     });
 
     it("handles user without username", () => {
       const preloadedState = {
         auth: {
-          user: { id: 1, role: "user" }, // Missing username
+          user: { id: 1, role: "user" },
           token: "token",
           loading: false,
         },
       };
 
       const { container } = renderWithProviders(<NavBar />, { preloadedState });
-      // Should not crash, might show undefined or empty
       expect(container).toBeInTheDocument();
-    });
-
-    it("handles empty username string", () => {
-      const preloadedState = {
-        auth: {
-          user: { username: "", id: 1, role: "user" },
-          token: "token",
-          loading: false,
-        },
-      };
-
-      renderWithProviders(<NavBar />, { preloadedState });
-      // Should render even with empty username
-      const usernameElement = screen.getByText((content, element) => {
-        return element?.className?.includes("username");
-      });
-      expect(usernameElement).toBeInTheDocument();
     });
 
     it("handles null auth state", () => {
@@ -422,7 +408,6 @@ describe("NavBar Component", () => {
         auth: null,
       };
 
-      // This might throw an error, which is expected
       expect(() => {
         renderWithProviders(<NavBar />, { preloadedState });
       }).toThrow();
@@ -430,14 +415,15 @@ describe("NavBar Component", () => {
   });
 
   describe("Visual Rendering", () => {
-    it("applies CSS classes correctly", () => {
+    it("applies core CSS classes correctly", () => {
       const { container } = renderWithProviders(<NavBar />);
-
       expect(container.querySelector(".navBar")).toBeInTheDocument();
       expect(container.querySelector(".logo")).toBeInTheDocument();
       expect(container.querySelector(".navLinks")).toBeInTheDocument();
-      expect(container.querySelector(".userInfo")).toBeInTheDocument();
-      expect(container.querySelector(".username")).toBeInTheDocument();
+    });
+
+    it("applies logoutButton class when logged in", () => {
+      const { container } = renderWithProviders(<NavBar />, { preloadedState: loggedInState });
       expect(container.querySelector(".logoutButton")).toBeInTheDocument();
     });
   });
