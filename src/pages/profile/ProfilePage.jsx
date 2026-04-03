@@ -11,7 +11,6 @@ import {
   removeArtistFromProfileList,
   MAX_FAVORITE_ARTISTS,
 } from "../../redux/actions/profileListActions";
-import UserProfile from "../../components/UserProfilee/UserProfile";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
 import styles from "./ProfilePage.module.css";
 import FollowButton from "../../components/FollowButton";
@@ -411,8 +410,6 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
-
-          <UserProfile />
 
           <h3 className={styles.sectionHeader} style={{ marginTop: "1.5rem" }}>
             Personal List
