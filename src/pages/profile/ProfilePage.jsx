@@ -354,29 +354,62 @@ const ProfilePage = () => {
       <div className={styles.leftColumn}>
         {/* Section: Profile + Personal List */}
         <section className={styles.section}>
-          <h2 className={styles.sectionHeader}>Your Profile</h2>
+          <div className={styles.profileSectionHeader}>
+            <h2 className={styles.sectionHeader} style={{ margin: 0, border: 0, paddingBottom: 0 }}>Your Profile</h2>
+            {myId && (
+              <FollowButton targetUserId={myId} initialIsFollowing={false} />
+            )}
+          </div>
 
-          <div className={styles.avatarSection}>
-            <div className={styles.avatarWrapper}>
-              <img
-                src={resolveImageUrl(
-                  currentUser?.profile_image,
-                  "https://via.placeholder.com/100?text=Avatar",
-                )}
-                alt="Profile"
-                className={styles.avatarImage}
-              />
+          <div className={styles.profileTopRow}>
+            <div className={styles.avatarCol}>
+              <div className={styles.avatarWrapper}>
+                <img
+                  src={resolveImageUrl(
+                    currentUser?.profile_image,
+                    "https://via.placeholder.com/100?text=Avatar",
+                  )}
+                  alt="Profile"
+                  className={styles.avatarImage}
+                />
+              </div>
+              <label className={styles.avatarUploadBtn}>
+                {uploadingImage ? "Uploading..." : "Change Photo"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif"
+                  onChange={handleProfileImageUpload}
+                  disabled={uploadingImage}
+                  hidden
+                />
+              </label>
             </div>
-            <label className={styles.avatarUploadBtn}>
-              {uploadingImage ? "Uploading..." : "Change Photo"}
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/gif"
-                onChange={handleProfileImageUpload}
-                disabled={uploadingImage}
-                hidden
-              />
-            </label>
+
+            <div className={styles.analyzeSection}>
+              <button
+                className={styles.analyzeBtn}
+                onClick={handleAnalyzeTaste}
+                disabled={profileList.length < 3 || personalityLoading}
+                title={profileList.length < 3 ? "Add at least 3 artists first" : ""}
+              >
+                {personalityLoading ? "Analyzing..." : "Analyze My Taste"}
+              </button>
+
+              {personality && (
+                <div className={styles.personalityCard}>
+                  <span className={styles.personalityBadge}>{personality.title}</span>
+                  <p className={styles.personalityDesc}>{personality.description}</p>
+                  <label className={styles.personalityToggle}>
+                    <input
+                      type="checkbox"
+                      checked={personalityPublic}
+                      onChange={handlePersonalityVisibility}
+                    />
+                    Show on my public profile
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
 
           <UserProfile />
@@ -462,31 +495,6 @@ const ProfilePage = () => {
               </p>
             )
           )}
-          <div className={styles.analyzeSection}>
-            <button
-              className={styles.analyzeBtn}
-              onClick={handleAnalyzeTaste}
-              disabled={profileList.length < 3 || personalityLoading}
-              title={profileList.length < 3 ? "Add at least 3 artists first" : ""}
-            >
-              {personalityLoading ? "Analyzing..." : "Analyze My Taste"}
-            </button>
-
-            {personality && (
-              <div className={styles.personalityCard}>
-                <span className={styles.personalityBadge}>{personality.title}</span>
-                <p className={styles.personalityDesc}>{personality.description}</p>
-                <label className={styles.personalityToggle}>
-                  <input
-                    type="checkbox"
-                    checked={personalityPublic}
-                    onChange={handlePersonalityVisibility}
-                  />
-                  Show on my public profile
-                </label>
-              </div>
-            )}
-          </div>
         </section>
 
         {/* Section: Artist Creation */}
