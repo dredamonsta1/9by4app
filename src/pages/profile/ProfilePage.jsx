@@ -350,6 +350,14 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.profilePage}>
+      {/* Sidebar Column */}
+      <div className={styles.sidebarColumn}>
+        <section className={styles.sectionSm}>
+          <h2 className={styles.sectionHeader}>Create Artist</h2>
+          <CreateArtistForm />
+        </section>
+      </div>
+
       {/* Left Column */}
       <div className={styles.leftColumn}>
         {/* Section: Profile + Personal List */}
@@ -495,12 +503,6 @@ const ProfilePage = () => {
               </p>
             )
           )}
-        </section>
-
-        {/* Section: Artist Creation */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionHeader}>Create Artist</h2>
-          <CreateArtistForm />
         </section>
 
         {/* Section: Content */}
