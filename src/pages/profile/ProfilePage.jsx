@@ -314,15 +314,15 @@ const ProfilePage = () => {
                     {userPosts.map((post) => (
                       <li key={`${post.post_type}-${post.id}`} className={styles.postItem}>
                         <span className={styles.postTypeBadge}>{post.post_type}</span>
+                        {post.post_type === "image" && (
+                          <img src={post.image_url} alt={post.caption || ""} className={styles.postImage} />
+                        )}
                         <div className={styles.postBody}>
                           {post.post_type === "text" && (
                             <p className={styles.postContent}>{post.content}</p>
                           )}
-                          {post.post_type === "image" && (
-                            <>
-                              <img src={post.image_url} alt={post.caption || ""} className={styles.postImage} />
-                              {post.caption && <p className={styles.postCaption}>{post.caption}</p>}
-                            </>
+                          {post.post_type === "image" && post.caption && (
+                            <p className={styles.postCaption}>{post.caption}</p>
                           )}
                           {post.post_type === "video" && (
                             <p className={styles.postCaption}>{post.caption || "Video post"}</p>
@@ -507,15 +507,15 @@ const ProfilePage = () => {
               {userPosts.map((post) => (
                 <li key={`${post.post_type}-${post.id}`} className={styles.postItem}>
                   <span className={styles.postTypeBadge}>{post.post_type}</span>
+                  {post.post_type === "image" && (
+                    <img src={post.image_url} alt={post.caption || ""} className={styles.postImage} />
+                  )}
                   <div className={styles.postBody}>
                     {post.post_type === "text" && (
                       <p className={styles.postContent}>{post.content}</p>
                     )}
-                    {post.post_type === "image" && (
-                      <>
-                        <img src={post.image_url} alt={post.caption || ""} className={styles.postImage} />
-                        {post.caption && <p className={styles.postCaption}>{post.caption}</p>}
-                      </>
+                    {post.post_type === "image" && post.caption && (
+                      <p className={styles.postCaption}>{post.caption}</p>
                     )}
                     {post.post_type === "video" && (
                       <p className={styles.postCaption}>{post.caption || "Video post"}</p>
