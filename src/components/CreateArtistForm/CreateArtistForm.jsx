@@ -22,6 +22,7 @@ const CreateArtistForm = () => {
   const [artistGenre, setArtistGenre] = useState("");
   const [mixtape, setMixtape] = useState("");
   const [artistImage, setArtistImage] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -137,8 +138,10 @@ const CreateArtistForm = () => {
     );
   }
 
+  const previewAlbums = albumRows.filter((r) => r.album_name.trim());
+
   return (
-    <div>
+    <div className={styles.formAndPreview}>
       <form className={styles.createArtistForm} onSubmit={handleSubmit}>
         <h2 className={styles.title}>Create New Artist</h2>
 
@@ -187,7 +190,11 @@ const CreateArtistForm = () => {
             className={styles.fieldInput}
             type="file"
             id="artistImageInput"
-            onChange={(e) => setArtistImage(e.target.files[0])}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              setArtistImage(file);
+              setImagePreviewUrl(file ? URL.createObjectURL(file) : null);
+            }}
             accept="image/*"
           />
         </div>
@@ -200,6 +207,47 @@ const CreateArtistForm = () => {
           {loading ? "Creating..." : createdArtistId ? "Artist Created ✓" : "Create Artist"}
         </button>
       </form>
+
+      {/* Live Preview */}
+      <div className={styles.previewPanel}>
+        <p className={styles.previewLabel}>Preview</p>
+        <div className={styles.previewCard}>
+          <div className={styles.previewHeader}>
+            {imagePreviewUrl ? (
+              <img src={imagePreviewUrl} alt="artist" className={styles.previewImage} />
+            ) : (
+              <div className={styles.previewImagePlaceholder}>
+                {artistName ? artistName[0].toUpperCase() : "?"}
+              </div>
+            )}
+            <div>
+              <h3 className={styles.previewName}>{artistName || "Artist Name"}</h3>
+              <p className={styles.previewGenre}>{artistGenre || "Genre"}</p>
+            </div>
+          </div>
+
+          {mixtape && (
+            <p className={styles.previewMeta}>
+              <span className={styles.previewMetaLabel}>Mixtape</span> {mixtape}
+            </p>
+          )}
+
+          {previewAlbums.length > 0 && (
+            <div className={styles.previewAlbums}>
+              <p className={styles.previewMetaLabel}>Albums</p>
+              <ul className={styles.previewAlbumList}>
+                {previewAlbums.map((a, i) => (
+                  <li key={i} className={styles.previewAlbumItem}>
+                    <span>{a.album_name}</span>
+                    {a.year && <span className={styles.previewAlbumYear}>{a.year}</span>}
+                    {a.certifications && <span className={styles.previewCert}>{a.certifications}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Album Manager — revealed after artist is created */}
       {createdArtistId && (
