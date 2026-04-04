@@ -10,11 +10,41 @@
   margin: 0 auto;
 }
 
+.feedTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
 .feedTitle {
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--color-text-bright);
-  margin: 0 0 1.5rem 0;
+  margin: 0;
+}
+
+.uploadTriggerBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-accent-gradient);
+  color: var(--color-text-bright);
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.3));
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.uploadTriggerBtn:hover {
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px) scale(1.05);
 }
 
 /* Post Creator */

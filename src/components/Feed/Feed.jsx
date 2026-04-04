@@ -5,8 +5,8 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useSelector } from "react-redux";
 import styles from "./Feed.module.css";
 import { batchPrepare, evict } from "../../services/textMeasurement";
-import { useLiveCompose } from "../../hooks/useLiveCompose";
 import { useShrinkWrap } from "../../hooks/useShrinkWrap";
+import UploadModal from "../UploadModal/UploadModal";
 
 // Skeleton for loading state
 const PostSkeleton = () => (
@@ -24,396 +24,6 @@ function extractYouTubeId(url) {
   return match ? match[1] : null;
 }
 
-// Post Creator Component with toggle for text/image/video/music
-function PostCreator({ onPostCreated }) {
-  const [postType, setPostType] = useState("text"); // 'text', 'image', 'video', or 'music'
-  const [content, setContent] = useState("");
-  const { lineCount, isOverLimit, containerRef: composeRef } = useLiveCompose(content, { maxLines: 20 });
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [caption, setCaption] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Video-specific state
-  const [videoInputMode, setVideoInputMode] = useState("file"); // 'file' or 'url'
-  const [videoUrl, setVideoUrl] = useState("");
-
-  // Music-specific state
-  const [musicInputMode, setMusicInputMode] = useState("file"); // 'file' or 'link'
-  const [musicStreamUrl, setMusicStreamUrl] = useState("");
-  const [musicTitle, setMusicTitle] = useState("");
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
-      setError(null);
-    }
-  };
-
-  const clearFile = () => {
-    setFile(null);
-    setPreview(null);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      if (postType === "text") {
-        if (!content.trim()) {
-          setError("Please enter some content.");
-          setLoading(false);
-          return;
-        }
-        await axiosInstance.post("/feed/text", { content: content.trim() });
-        setContent("");
-      } else if (postType === "image") {
-        if (!file) {
-          setError("Please select an image.");
-          setLoading(false);
-          return;
-        }
-        const formData = new FormData();
-        formData.append("image", file);
-        formData.append("caption", caption);
-        await axiosInstance.post("/feed/image", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        setFile(null);
-        setPreview(null);
-        setCaption("");
-      } else if (postType === "video") {
-        if (videoInputMode === "file") {
-          if (!file) {
-            setError("Please select a video file.");
-            setLoading(false);
-            return;
-          }
-          const formData = new FormData();
-          formData.append("video", file);
-          formData.append("caption", caption);
-          await axiosInstance.post("/feed/video", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-          setFile(null);
-          setPreview(null);
-        } else {
-          if (!videoUrl.trim()) {
-            setError("Please enter a video URL.");
-            setLoading(false);
-            return;
-          }
-          await axiosInstance.post("/feed/video-url", {
-            videoUrl: videoUrl.trim(),
-            caption,
-          });
-          setVideoUrl("");
-        }
-        setCaption("");
-      } else if (postType === "music") {
-        if (musicInputMode === "file") {
-          if (!file) {
-            setError("Please select an audio file.");
-            setLoading(false);
-            return;
-          }
-          const formData = new FormData();
-          formData.append("audio", file);
-          if (musicTitle.trim()) formData.append("title", musicTitle.trim());
-          formData.append("caption", caption);
-          await axiosInstance.post("/feed/music", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-          setFile(null);
-          setPreview(null);
-        } else {
-          if (!musicStreamUrl.trim()) {
-            setError("Please enter a stream URL.");
-            setLoading(false);
-            return;
-          }
-          await axiosInstance.post("/feed/music", {
-            streamUrl: musicStreamUrl.trim(),
-            title: musicTitle.trim() || undefined,
-            caption,
-          });
-          setMusicStreamUrl("");
-        }
-        setMusicTitle("");
-        setCaption("");
-      }
-      if (onPostCreated) onPostCreated();
-    } catch (err) {
-      console.error("Post error:", err);
-      setError(err.response?.data?.message || "Failed to create post.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const youtubePreviewId = videoUrl ? extractYouTubeId(videoUrl) : null;
-
-  const isSubmitDisabled = () => {
-    if (loading) return true;
-    if (postType === "text") return !content.trim();
-    if (postType === "image") return !file;
-    if (postType === "video") {
-      return videoInputMode === "file" ? !file : !videoUrl.trim();
-    }
-    if (postType === "music") {
-      return musicInputMode === "file" ? !file : !musicStreamUrl.trim();
-    }
-    return true;
-  };
-
-  return (
-    <div className={styles.postCreator}>
-      <div className={styles.typeToggle}>
-        <button
-          type="button"
-          className={`${styles.toggleBtn} ${postType === "text" ? styles.active : ""}`}
-          onClick={() => { setPostType("text"); clearFile(); setVideoUrl(""); }}
-        >
-          Text
-        </button>
-        <button
-          type="button"
-          className={`${styles.toggleBtn} ${postType === "image" ? styles.active : ""}`}
-          onClick={() => { setPostType("image"); clearFile(); setVideoUrl(""); }}
-        >
-          Image
-        </button>
-        <button
-          type="button"
-          className={`${styles.toggleBtn} ${postType === "video" ? styles.active : ""}`}
-          onClick={() => { setPostType("video"); clearFile(); setVideoUrl(""); }}
-        >
-          Video
-        </button>
-        <button
-          type="button"
-          className={`${styles.toggleBtn} ${postType === "music" ? styles.active : ""}`}
-          onClick={() => { setPostType("music"); clearFile(); setMusicStreamUrl(""); setMusicTitle(""); }}
-        >
-          Music
-        </button>
-      </div>
-
-      {error && <div className={styles.errorMessage}>{error}</div>}
-
-      <form onSubmit={handleSubmit}>
-        {postType === "text" && (
-          <>
-            <textarea
-              ref={composeRef}
-              className={`${styles.textInput} ${isOverLimit ? styles.textInputOverLimit : ""}`}
-              placeholder="What's on your mind?"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows="3"
-            />
-            {content.length > 0 && (
-              <span className={`${styles.lineCount} ${isOverLimit ? styles.lineCountOver : ""}`}>
-                {lineCount} {lineCount === 1 ? "line" : "lines"}{isOverLimit ? " — too long" : ""}
-              </span>
-            )}
-          </>
-        )}
-
-        {postType === "image" && (
-          <>
-            {preview ? (
-              <div className={styles.previewContainer}>
-                <img src={preview} alt="Preview" className={styles.previewImage} />
-                <button
-                  type="button"
-                  onClick={clearFile}
-                  className={styles.clearButton}
-                >
-                  Remove
-                </button>
-              </div>
-            ) : (
-              <label className={styles.fileInputLabel}>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/gif"
-                  onChange={handleFileChange}
-                  className={styles.fileInput}
-                />
-                <span className={styles.fileInputText}>Click to select image</span>
-              </label>
-            )}
-            <textarea
-              className={styles.textInput}
-              placeholder="Add a caption..."
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              rows="2"
-            />
-          </>
-        )}
-
-        {postType === "video" && (
-          <>
-            <div className={styles.videoInputToggle}>
-              <button
-                type="button"
-                className={`${styles.subToggleBtn} ${videoInputMode === "file" ? styles.active : ""}`}
-                onClick={() => { setVideoInputMode("file"); setVideoUrl(""); }}
-              >
-                Upload File
-              </button>
-              <button
-                type="button"
-                className={`${styles.subToggleBtn} ${videoInputMode === "url" ? styles.active : ""}`}
-                onClick={() => { setVideoInputMode("url"); clearFile(); }}
-              >
-                Paste URL
-              </button>
-            </div>
-
-            {videoInputMode === "file" ? (
-              <>
-                {preview ? (
-                  <div className={styles.previewContainer}>
-                    <video src={preview} className={styles.previewVideo} controls />
-                    <button
-                      type="button"
-                      onClick={clearFile}
-                      className={styles.clearButton}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <label className={styles.fileInputLabel}>
-                    <input
-                      type="file"
-                      accept="video/mp4,video/webm,video/quicktime,video/x-msvideo"
-                      onChange={handleFileChange}
-                      className={styles.fileInput}
-                    />
-                    <span className={styles.fileInputText}>Click to select video</span>
-                  </label>
-                )}
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  className={styles.urlInput}
-                  placeholder="Paste YouTube or video URL..."
-                  value={videoUrl}
-                  onChange={(e) => setVideoUrl(e.target.value)}
-                />
-                {youtubePreviewId && (
-                  <div className={styles.youtubePreview}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${youtubePreviewId}`}
-                      title="YouTube preview"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
-            <textarea
-              className={styles.textInput}
-              placeholder="Add a caption..."
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              rows="2"
-            />
-          </>
-        )}
-
-        {postType === "music" && (
-          <>
-            <div className={styles.videoInputToggle}>
-              <button
-                type="button"
-                className={`${styles.subToggleBtn} ${musicInputMode === "file" ? styles.active : ""}`}
-                onClick={() => { setMusicInputMode("file"); setMusicStreamUrl(""); }}
-              >
-                Upload File
-              </button>
-              <button
-                type="button"
-                className={`${styles.subToggleBtn} ${musicInputMode === "link" ? styles.active : ""}`}
-                onClick={() => { setMusicInputMode("link"); clearFile(); }}
-              >
-                Paste Link
-              </button>
-            </div>
-
-            <input
-              type="text"
-              className={styles.urlInput}
-              placeholder="Track title (optional)"
-              value={musicTitle}
-              onChange={(e) => setMusicTitle(e.target.value)}
-            />
-
-            {musicInputMode === "file" ? (
-              <>
-                {preview ? (
-                  <div className={styles.previewContainer}>
-                    <audio controls src={preview} className={styles.audioPreview} />
-                    <button type="button" onClick={clearFile} className={styles.clearButton}>
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <label className={styles.fileInputLabel}>
-                    <input
-                      type="file"
-                      accept="audio/mpeg,audio/wav,audio/flac,audio/x-m4a,audio/ogg"
-                      onChange={handleFileChange}
-                      className={styles.fileInput}
-                    />
-                    <span className={styles.fileInputText}>Click to select audio file</span>
-                  </label>
-                )}
-              </>
-            ) : (
-              <input
-                type="text"
-                className={styles.urlInput}
-                placeholder="Paste Spotify, SoundCloud, or Apple Music link..."
-                value={musicStreamUrl}
-                onChange={(e) => setMusicStreamUrl(e.target.value)}
-              />
-            )}
-
-            <textarea
-              className={styles.textInput}
-              placeholder="Add a caption..."
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              rows="2"
-            />
-          </>
-        )}
-
-        <button
-          type="submit"
-          className={styles.submitBtn}
-          disabled={isSubmitDisabled()}
-        >
-          {loading ? "Posting..." : "Post"}
-        </button>
-      </form>
-    </div>
-  );
-}
 
 // Comment bubble with shrink-wrap width
 function CommentBubble({ comment: c, currentUserId, onDelete, formatTime }) {
@@ -736,6 +346,7 @@ function PostItem({ post, currentUserId, onDelete }) {
 // Main Feed Component
 function Feed() {
   const currentUserId = useSelector((state) => state.auth.user?.id);
+  const [uploadOpen, setUploadOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -774,9 +385,22 @@ function Feed() {
   return (
     <div className={styles.feedContainer}>
       <div className={styles.feedContent}>
-        <h1 className={styles.feedTitle}>Feed</h1>
+        <div className={styles.feedTitleRow}>
+          <h1 className={styles.feedTitle}>Feed</h1>
+          <button
+            className={styles.uploadTriggerBtn}
+            onClick={() => setUploadOpen(true)}
+            aria-label="Create post"
+          >
+            +
+          </button>
+        </div>
 
-        <PostCreator onPostCreated={fetchPosts} />
+        <UploadModal
+          isOpen={uploadOpen}
+          onClose={() => setUploadOpen(false)}
+          onPostCreated={fetchPosts}
+        />
 
         <div className={styles.postsList}>
           {loading ? (
