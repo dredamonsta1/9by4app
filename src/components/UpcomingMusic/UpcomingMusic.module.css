@@ -17,6 +17,8 @@
   border-radius: var(--radius);
   padding: 10px;
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  min-width: 0;
   transition:
     transform 0.2s ease-in-out,
     box-shadow 0.2s ease-in-out,
@@ -39,12 +41,36 @@
   object-fit: cover;
 }
 
+.card h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+  margin: 4px 0 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card p {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* Title of the release */
 .releaseTitle {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-text-bright);
   margin-bottom: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Artist's name */
@@ -52,12 +78,18 @@
   font-size: 0.65rem;
   color: var(--color-text-secondary);
   margin-bottom: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Release date */
 .releaseDate {
   font-size: 0.6rem;
   color: var(--color-text-secondary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Country of release */
@@ -65,6 +97,9 @@
   font-size: 0.6rem;
   color: var(--color-text-secondary);
   font-style: italic;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Loading and error message styles */
