@@ -9,6 +9,7 @@ import {
   fetchProfileList,
   addArtistToProfileList,
   removeArtistFromProfileList,
+  reorderProfileList,
   MAX_FAVORITE_ARTISTS,
 } from "../../redux/actions/profileListActions";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
@@ -61,6 +62,8 @@ const ProfilePage = () => {
 
   const [userPosts, setUserPosts] = useState([]);
   const [userPostsLoading, setUserPostsLoading] = useState(false);
+
+  const dragIndexRef = React.useRef(null);
 
   const handleProfileImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -235,6 +238,24 @@ const ProfilePage = () => {
   // Build hydrated profile list from the profile list data directly
   // (no longer depends on having all artists loaded in Redux)
   const hydratedProfileList = profileList.filter(Boolean);
+
+  const handleDragStart = (index) => {
+    dragIndexRef.current = index;
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (dragIndexRef.current === null || dragIndexRef.current === index) return;
+    const reordered = [...hydratedProfileList];
+    const [moved] = reordered.splice(dragIndexRef.current, 1);
+    reordered.splice(index, 0, moved);
+    dragIndexRef.current = index;
+    dispatch(reorderProfileList(reordered.map((a) => a.artist_id)));
+  };
+
+  const handleDragEnd = () => {
+    dragIndexRef.current = null;
+  };
 
   // Viewing another user's profile
   if (userId) {
@@ -462,8 +483,17 @@ const ProfilePage = () => {
 
           {!profileListLoading && hydratedProfileList.length > 0 ? (
             <ul className={styles.favArtistList}>
-              {hydratedProfileList.map((artist) => (
-                <li className={styles.favArtistItem} key={artist.artist_id}>
+              {hydratedProfileList.map((artist, index) => (
+                <li
+                  className={styles.favArtistItem}
+                  key={artist.artist_id}
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
+                  style={{ cursor: "grab" }}
+                >
+                  <span className={styles.dragHandle} title="Drag to reorder">⠿</span>
                   <button
                     className={styles.artistCommunityBtn}
                     onClick={() => setActiveCommunityArtistId(artist.artist_id)}

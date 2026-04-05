@@ -163,6 +163,19 @@
   padding: 12px 0;
   border-bottom: 1px solid var(--color-border-default);
   color: var(--color-text-primary);
+  gap: 8px;
+}
+
+.favArtistItem:active {
+  opacity: 0.6;
+}
+
+.dragHandle {
+  color: var(--color-text-muted, #888);
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 .favArtistItem:last-child {

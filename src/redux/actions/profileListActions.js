@@ -6,6 +6,7 @@ import {
   setProfileListFailure,
   addArtistToListSuccess,
   removeArtistFromListSuccess,
+  reorderList,
 } from "../profileListSlice";
 import { incrementClout, decrementClout } from "./artistActions";
 
@@ -40,6 +41,24 @@ export const addArtistToProfileList = (artist) => async (dispatch, getState) => 
     dispatch(incrementClout(artist.artist_id));
   } catch (error) {
     console.error("Error adding artist to profile list:", error);
+  }
+};
+
+// Action to persist a reordered list — optimistic update, then sync to backend
+export const reorderProfileList = (orderedIds) => async (dispatch) => {
+  dispatch(reorderList(orderedIds));
+  try {
+    await axiosInstance.patch("/profile/list/reorder", { order: orderedIds });
+  } catch (error) {
+    console.error("Error saving list order:", error);
+    // Re-fetch to restore server state if patch failed
+    dispatch(setProfileListStart());
+    try {
+      const response = await axiosInstance.get("/profile/list");
+      dispatch(setProfileListSuccess(response.data.list));
+    } catch (fetchErr) {
+      dispatch(setProfileListFailure(fetchErr.message));
+    }
   }
 };
 

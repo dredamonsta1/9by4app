@@ -39,6 +39,12 @@ const profileListSlice = createSlice({
         (artist) => artist.artist_id !== action.payload
       );
     },
+    reorderList(state, action) {
+      // action.payload = array of artist_ids in new order
+      const idOrder = action.payload;
+      const map = Object.fromEntries(state.list.map((a) => [a.artist_id, a]));
+      state.list = idOrder.map((id) => map[id]).filter(Boolean);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(INCREMENT_CLOUT_SUCCESS, (state, action) => {
@@ -67,6 +73,7 @@ export const {
   setProfileListFailure,
   addArtistToListSuccess,
   removeArtistFromListSuccess,
+  reorderList,
 } = profileListSlice.actions;
 
 export default profileListSlice.reducer;
