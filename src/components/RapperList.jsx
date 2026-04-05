@@ -7,17 +7,24 @@ import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
 
 const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
-  const albums = artist.albums || [];
-  const artistName = (artist.name || artist.artist_name || "").toLowerCase();
+  const [fullArtist, setFullArtist] = useState(null);
   const [awards, setAwards] = useState([]);
 
   useEffect(() => {
     if (!artist.artist_id) return;
     axiosInstance
+      .get(`/artists/${artist.artist_id}`)
+      .then((res) => setFullArtist(res.data.artist))
+      .catch(() => setFullArtist(artist));
+    axiosInstance
       .get(`/awards/${artist.artist_id}`)
       .then((res) => setAwards(res.data))
       .catch(() => setAwards([]));
   }, [artist.artist_id]);
+
+  const data = fullArtist || artist;
+  const albums = data.albums || [];
+  const artistName = (data.name || data.artist_name || "").toLowerCase();
 
   const upcoming = upcomingReleases.filter(
     (r) => r.artist && r.artist.toLowerCase() === artistName && r.imageUrl
@@ -30,20 +37,20 @@ const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
           &times;
         </button>
         <div className="artist-modal-header">
-          {artist.image_url && (
+          {data.image_url && (
             <img
-              src={resolveImageUrl(artist.image_url)}
-              alt={artist.name || "Artist"}
+              src={resolveImageUrl(data.image_url)}
+              alt={data.artist_name || "Artist"}
               className="artist-modal-image"
             />
           )}
           <div className="artist-modal-info">
-            <h2>{artist.name || artist.artist_name || "N/A"}</h2>
-            {artist.aka && <p className="artist-modal-aka">{artist.aka}</p>}
-            <p>Genre: {artist.genre || "N/A"}</p>
-            {artist.state && <p>State: {artist.state}</p>}
-            {artist.label && <p>Label: {artist.label}</p>}
-            <p className="artist-modal-clout">Clout: {artist.count || 0}</p>
+            <h2>{data.artist_name || data.name || "N/A"}</h2>
+            {data.aka && <p className="artist-modal-aka">{data.aka}</p>}
+            <p>Genre: {data.genre || "N/A"}</p>
+            {data.state && <p>State: {data.state}</p>}
+            {data.label && <p>Label: {data.label}</p>}
+            <p className="artist-modal-clout">Clout: {data.count || 0}</p>
           </div>
         </div>
 
