@@ -479,19 +479,20 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
 }
 
 .artist-modal-award-item {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.5rem;
+  padding: 0.6rem 0.75rem;
   background: rgba(255, 200, 50, 0.06);
   border: 1px solid rgba(255, 200, 50, 0.18);
   border-radius: var(--radius-sm);
+  min-width: 0;
 }
 
 .artist-modal-award-trophy {
