@@ -26,6 +26,7 @@ import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import Pricing from "./pages/Pricing/Pricing.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess.jsx";
 import PaymentCancel from "./pages/PaymentCancel/PaymentCancel.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
@@ -83,6 +84,7 @@ const App = () => {
           />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 };
