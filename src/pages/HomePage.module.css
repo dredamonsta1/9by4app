@@ -1,35 +1,69 @@
-.homePageContainer {
-  display: flex;
-  flex-direction: column;
-  grid-template-columns: 280px 2fr;
+.page {
   min-height: 100vh;
   background-color: var(--color-bg-base);
-}
-
-.mainContent {
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  padding: 2rem;
 }
 
-.searchContainer {
+/* Section 4 wrapper */
+.listSection {
+  flex: 1;
+  padding-bottom: 80px; /* space for sticky CTA bar */
+}
+
+.listHeader {
   display: flex;
-  justify-content: center;
-  margin: 1.5rem 0;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+/* View toggle */
+.viewToggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm, 6px);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.toggleBtn {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggleBtn + .toggleBtn {
+  border-left: 1px solid var(--color-border-default);
+}
+
+.toggleActive {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Search */
+.searchContainer {
+  flex: 1;
+  max-width: 420px;
 }
 
 .searchInput {
   width: 100%;
-  max-width: 500px;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.875rem;
   border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 6px);
   background-color: var(--color-bg-input);
   color: var(--color-text-primary);
   outline: none;
-  transition: var(--transition);
+  transition: border-color 0.15s;
   box-shadow: var(--shadow-inset);
 }
 
@@ -41,30 +75,32 @@
   border-color: var(--color-accent);
 }
 
-.searchResults {
-  margin-bottom: 1.5rem;
+.loadingText {
+  padding: 1.5rem 2rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.errorText {
+  padding: 1.5rem 2rem;
+  color: var(--color-error, #f87171);
+  font-size: 0.875rem;
 }
 
 .noResults {
+  padding: 1.5rem 2rem;
   text-align: center;
   color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  margin: 1rem 0;
+  font-size: 0.875rem;
 }
 
-.weeklyTrendingSection {
-  width: 100%;
-  margin-top: 2rem;
-}
-
-.upcomingMusicSection {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-  height: 100%;
-  width: 100%;
-  order: 5;
+@media (max-width: 480px) {
+  .listHeader {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+  }
+  .searchContainer {
+    max-width: 100%;
+    width: 100%;
+  }
 }

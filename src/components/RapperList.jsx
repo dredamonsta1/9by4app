@@ -6,7 +6,7 @@ import { addArtistToProfileList } from "../redux/actions/profileListActions";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
 
-const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
+export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const [fullArtist, setFullArtist] = useState(null);
   const [awards, setAwards] = useState([]);
 

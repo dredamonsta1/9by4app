@@ -1,23 +1,34 @@
-// src/pages/HomePage.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./HomePage.module.css";
 import ClickableList from "../components/RapperList";
+import { ArtistModal } from "../components/RapperList";
 import { fetchArtists, searchArtists, clearSearchResults } from "../redux/actions/artistActions";
 import { fetchProfileList } from "../redux/actions/profileListActions";
-import UpcomingMusic from "../components/UpcomingMusic/UpcomingMusic";
-import WeeklyTrending from "../components/WeeklyTrending/WeeklyTrending";
+import HeroSection from "../components/HeroSection/HeroSection";
+import FiltersBar from "../components/FiltersBar/FiltersBar";
+import TrendingShelf from "../components/TrendingShelf/TrendingShelf";
+import RankView from "../components/RankView/RankView";
+import StickyCtaBar from "../components/StickyCtaBar/StickyCtaBar";
 import axiosInstance from "../utils/axiosInstance";
+
+const VIEW_MODE_KEY = "9by4_view_mode";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [upcomingReleases, setUpcomingReleases] = useState([]);
+  const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
+  const [viewMode, setViewMode] = useState(
+    () => localStorage.getItem(VIEW_MODE_KEY) || "scroll"
+  );
+  const [trendingSelected, setTrendingSelected] = useState(null);
   const debounceTimer = useRef(null);
 
   const { artists, loading, error, searchResults, searchLoading } =
     useSelector((state) => state.artists);
   const { isLoggedIn } = useSelector((state) => state.auth);
+  const profileList = useSelector((state) => state.profileList.list);
 
   useEffect(() => {
     dispatch(fetchArtists());
@@ -30,10 +41,27 @@ const HomePage = () => {
     if (isLoggedIn) dispatch(fetchProfileList());
   }, [isLoggedIn, dispatch]);
 
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
+    setSearchTerm("");
+    dispatch(clearSearchResults());
+
+    if (filter.type === "mylist") return; // handled client-side
+
+    dispatch(fetchArtists({
+      genre: filter.type === "genre" ? filter.value : "",
+      region: filter.type === "region" ? filter.value : "",
+    }));
+  };
+
+  const handleViewToggle = (mode) => {
+    setViewMode(mode);
+    localStorage.setItem(VIEW_MODE_KEY, mode);
+  };
+
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-
     clearTimeout(debounceTimer.current);
     if (!value.trim()) {
       dispatch(clearSearchResults());
@@ -44,54 +72,102 @@ const HomePage = () => {
     }, 300);
   };
 
+  // My List filter: scope displayed artists to only those in profileList, ranked globally
+  const profileListIds = new Set(profileList.map((a) => a.artist_id));
+  const displayedArtists = activeFilter.type === "mylist"
+    ? artists.filter((a) => profileListIds.has(a.artist_id))
+    : artists;
+
+  const showSearch = !searchTerm.trim();
+
   return (
-    <div className={styles.homePageContainer}>
-      <div className={styles.mainContent}>
-        {loading && <p>Loading artists...</p>}
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
-        {!loading && !error && (
-          <ClickableList
-            artists={artists}
-            showAdminActions={false}
-            showCloutButton={isLoggedIn}
-            showRank={true}
-            upcomingReleases={upcomingReleases}
-          />
-        )}
+    <div className={styles.page}>
+      {/* Section 1 — Hero */}
+      <HeroSection />
 
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search artists..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
+      {/* Section 2 — Filters bar */}
+      <FiltersBar
+        activeFilter={activeFilter}
+        onFilterChange={handleFilterChange}
+        isLoggedIn={isLoggedIn}
+      />
 
-        {searchLoading && <p>Searching...</p>}
-        {!searchLoading && searchResults.length > 0 && (
-          <div className={styles.searchResults}>
-            <ClickableList
-              artists={searchResults}
-              showAdminActions={false}
-              showCloutButton={isLoggedIn}
-              upcomingReleases={upcomingReleases}
+      {/* Section 3 — Trending shelf */}
+      <TrendingShelf onArtistClick={setTrendingSelected} />
+
+      {/* Section 4 — Main list */}
+      <section className={styles.listSection}>
+        <div className={styles.listHeader}>
+          <div className={styles.viewToggle}>
+            <button
+              className={`${styles.toggleBtn} ${viewMode === "scroll" ? styles.toggleActive : ""}`}
+              onClick={() => handleViewToggle("scroll")}
+            >
+              Cards
+            </button>
+            <button
+              className={`${styles.toggleBtn} ${viewMode === "rank" ? styles.toggleActive : ""}`}
+              onClick={() => handleViewToggle("rank")}
+            >
+              Rank
+            </button>
+          </div>
+
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="Search artists..."
+              value={searchTerm}
+              onChange={handleSearchChange}
             />
           </div>
+        </div>
+
+        {loading && <p className={styles.loadingText}>Loading...</p>}
+        {error && <p className={styles.errorText}>Error: {error}</p>}
+
+        {searchLoading && <p className={styles.loadingText}>Searching...</p>}
+
+        {!searchLoading && searchResults.length > 0 && searchTerm.trim() && (
+          viewMode === "rank"
+            ? <RankView artists={searchResults} isLoggedIn={isLoggedIn} />
+            : <ClickableList
+                artists={searchResults}
+                showAdminActions={false}
+                showCloutButton={isLoggedIn}
+                upcomingReleases={upcomingReleases}
+              />
         )}
+
         {!searchLoading && searchTerm.trim() && searchResults.length === 0 && (
-          <p className={styles.noResults}>No artists found</p>
+          <p className={styles.noResults}>No artists found.</p>
         )}
 
-        <div className={styles.weeklyTrendingSection}>
-          <WeeklyTrending />
-        </div>
+        {showSearch && !loading && !error && (
+          viewMode === "rank"
+            ? <RankView artists={displayedArtists} isLoggedIn={isLoggedIn} />
+            : <ClickableList
+                artists={displayedArtists}
+                showAdminActions={false}
+                showCloutButton={isLoggedIn}
+                showRank={true}
+                upcomingReleases={upcomingReleases}
+              />
+        )}
+      </section>
 
-        <div className={styles.upcomingMusicSection}>
-          <UpcomingMusic />
-        </div>
-      </div>
+      {/* Trending shelf artist modal */}
+      {trendingSelected && (
+        <ArtistModal
+          artist={trendingSelected}
+          onClose={() => setTrendingSelected(null)}
+          upcomingReleases={upcomingReleases}
+        />
+      )}
+
+      {/* Section 6 — Sticky CTA bar (logged-out only) */}
+      {!isLoggedIn && <StickyCtaBar />}
     </div>
   );
 };

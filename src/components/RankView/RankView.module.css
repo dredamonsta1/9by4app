@@ -1,0 +1,141 @@
+.rankView {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.headRow th {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-default);
+  white-space: nowrap;
+}
+
+.row {
+  border-bottom: 1px solid var(--color-border-default);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.row:hover {
+  background: var(--color-bg-card, rgba(255,255,255,0.04));
+}
+
+.tdRank {
+  padding: 0.7rem 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  width: 40px;
+  white-space: nowrap;
+}
+
+.tdArtist {
+  padding: 0.7rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 160px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--color-bg-card);
+}
+
+.artistName {
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.tdFans {
+  padding: 0.7rem 0.75rem;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tdMeta {
+  padding: 0.7rem 0.75rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tdDelta {
+  padding: 0.7rem 0.75rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.deltaUp {
+  color: #4ade80;
+}
+
+.deltaDown {
+  color: #f87171;
+}
+
+.deltaFlat {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.tdAction {
+  padding: 0.7rem 0.75rem;
+  text-align: right;
+}
+
+.addBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.addBtn.inList {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.thRank { width: 40px; }
+.thArtist { min-width: 160px; }
+.thFans { width: 80px; }
+.thMeta { width: 100px; }
+.thDelta { width: 40px; }
+.thAction { width: 44px; }
