@@ -56,6 +56,18 @@
   scrollbar-color: var(--color-accent) transparent;
 }
 
+.releasesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 480px) {
+  .releasesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+}
+
 .albumCard {
   flex-shrink: 0;
   width: 110px;
@@ -63,6 +75,17 @@
   flex-direction: column;
   gap: 0.3rem;
   position: relative;
+}
+
+.releasesGrid .albumCard {
+  width: 100%;
+}
+
+.releasesGrid .albumImg,
+.releasesGrid .albumImgPlaceholder {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
 }
 
 .albumImg {

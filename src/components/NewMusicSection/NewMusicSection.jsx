@@ -35,7 +35,7 @@ const ArtistReleasesLane = ({ onArtistClick, upcomingReleases }) => {
 
   if (showUpcoming) {
     return (
-      <div className={styles.laneScroll}>
+      <div className={styles.releasesGrid}>
         {upcomingReleases.map((release) => (
           <div key={release.id} className={styles.albumCard}>
             {release.imageUrl ? (
