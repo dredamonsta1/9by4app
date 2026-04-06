@@ -168,7 +168,7 @@ const HomePage = () => {
       )}
 
       {/* Section 5 — New Music */}
-      <NewMusicSection isLoggedIn={isLoggedIn} />
+      <NewMusicSection isLoggedIn={isLoggedIn} upcomingReleases={upcomingReleases} />
 
       {/* Section 6 — Sticky CTA bar (logged-out only) */}
       {!isLoggedIn && <StickyCtaBar />}

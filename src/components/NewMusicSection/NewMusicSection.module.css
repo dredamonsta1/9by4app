@@ -127,6 +127,15 @@
   text-underline-offset: 2px;
 }
 
+.albumArtistStatic {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
 .albumMeta {
   display: flex;
   align-items: center;

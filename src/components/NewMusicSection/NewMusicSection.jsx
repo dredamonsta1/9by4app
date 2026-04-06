@@ -13,8 +13,8 @@ const timeAgo = (ts) => {
   return `${Math.floor(diff / 86400)}d ago`;
 };
 
-// Lane 1 — Artist releases from DB (current year)
-const ArtistReleasesLane = ({ onArtistClick }) => {
+// Lane 1 — Upcoming releases (Spotify/MusicBrainz) with DB albums as fallback
+const ArtistReleasesLane = ({ onArtistClick, upcomingReleases }) => {
   const [albums, setAlbums] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -25,8 +25,40 @@ const ArtistReleasesLane = ({ onArtistClick }) => {
       .finally(() => setLoaded(true));
   }, []);
 
-  if (loaded && albums.length === 0) {
-    return <p className={styles.empty}>No new releases added yet. Check back soon.</p>;
+  // Prefer upcoming releases (Spotify/MusicBrainz); fall back to DB albums
+  const showUpcoming = upcomingReleases && upcomingReleases.length > 0;
+  const showDbAlbums = loaded && albums.length > 0;
+
+  if (!showUpcoming && loaded && albums.length === 0) {
+    return <p className={styles.empty}>No new releases. Check back soon.</p>;
+  }
+
+  if (showUpcoming) {
+    return (
+      <div className={styles.laneScroll}>
+        {upcomingReleases.map((release) => (
+          <div key={release.id} className={styles.albumCard}>
+            {release.imageUrl ? (
+              <img
+                src={release.imageUrl}
+                alt={release.title}
+                className={styles.albumImg}
+              />
+            ) : (
+              <div className={styles.albumImgPlaceholder}>
+                {(release.title || "").split(" ").map((w) => w[0]).join("").slice(0, 2)}
+              </div>
+            )}
+            <span className={styles.newBadge}>{release.source}</span>
+            <span className={styles.albumName}>{release.title}</span>
+            <span className={styles.albumArtistStatic}>{release.artist}</span>
+            <div className={styles.albumMeta}>
+              <span>{release.date}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -143,7 +175,7 @@ const MusicPostsLane = ({ isLoggedIn }) => {
 };
 
 // Main component
-const NewMusicSection = ({ isLoggedIn }) => {
+const NewMusicSection = ({ isLoggedIn, upcomingReleases = [] }) => {
   const [modalArtist, setModalArtist] = useState(null);
 
   return (
@@ -155,9 +187,9 @@ const NewMusicSection = ({ isLoggedIn }) => {
       <div className={styles.lanes}>
         <div className={styles.lane}>
           <div className={styles.laneHeader}>
-            <span className={styles.laneLabel}>From the list</span>
+            <span className={styles.laneLabel}>Upcoming releases</span>
           </div>
-          <ArtistReleasesLane onArtistClick={setModalArtist} />
+          <ArtistReleasesLane onArtistClick={setModalArtist} upcomingReleases={upcomingReleases} />
         </div>
 
         <div className={styles.lane}>
