@@ -34,31 +34,6 @@ const Footer = () => {
           </div>
         </nav>
 
-        {/* Socials */}
-        <div className={styles.socials}>
-          <span className={styles.navLabel}>Follow</span>
-          <div className={styles.socialLinks}>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialLink}
-              aria-label="Twitter / X"
-            >
-              𝕏
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialLink}
-              aria-label="Instagram"
-            >
-              IG
-            </a>
-          </div>
-        </div>
-
       </div>
 
       <div className={styles.bottom}>
