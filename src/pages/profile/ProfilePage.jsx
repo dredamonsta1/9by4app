@@ -38,8 +38,10 @@ const ProfilePage = () => {
   const currentUser = useSelector((state) => state.auth.user);
 
   // ─── Derived constants ───────────────────────────────────────────────────
-  const isOwnProfile = !userId || (currentUser && String(currentUser.id) === String(userId));
-  const targetUserId = isOwnProfile ? currentUser?.id : userId;
+  // /users/me returns user_id; normalize to handle both field names
+  const myId = currentUser?.id ?? currentUser?.user_id;
+  const isOwnProfile = !userId || (myId != null && String(myId) === String(userId));
+  const targetUserId = isOwnProfile ? myId : userId;
   const hydratedProfileList = profileList.filter(Boolean);
   const favoritedArtistIds = new Set(profileList.map((a) => a.artist_id));
   const listFull = profileList.length >= MAX_FAVORITE_ARTISTS;
@@ -101,7 +103,7 @@ const ProfilePage = () => {
 
   // Own profile data
   useEffect(() => {
-    if (!isOwnProfile || !currentUser?.id) return;
+    if (!isOwnProfile || !myId) return;
     dispatch(fetchProfileList());
     axiosInstance.get("/users/me").then((res) => {
       if (res.data.music_personality_title) {
@@ -115,7 +117,7 @@ const ProfilePage = () => {
     axiosInstance.get("/profile/suggestions")
       .then((res) => setTasteSuggestions(res.data))
       .catch(() => {});
-  }, [dispatch, isOwnProfile, currentUser?.id]);
+  }, [dispatch, isOwnProfile, myId]);
 
   // Other user data
   useEffect(() => {
@@ -939,7 +941,7 @@ const ProfilePage = () => {
             </>
           )}
 
-          <StanCard userId={currentUser?.id} />
+          <StanCard userId={myId} />
           <BeefAllianceMap />
         </section>
       )}
