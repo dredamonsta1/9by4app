@@ -530,3 +530,388 @@
   font-size: 0.82rem;
   color: var(--color-text-secondary);
 }
+
+/* ======= Modal top bar ======= */
+.artist-modal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  min-height: 28px;
+}
+
+.artist-modal-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.artist-modal-back {
+  background: none;
+  border: none;
+  color: var(--color-accent-light);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.artist-modal-share-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.artist-modal-share-btn:hover {
+  color: var(--color-text-bright);
+}
+
+/* ======= Header badges + tags ======= */
+.artist-modal-badges {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin: 0.3rem 0;
+}
+
+.artist-modal-rank-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.artist-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.artist-modal-tag {
+  font-size: 0.74rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+}
+
+/* ======= Stan rank ======= */
+.artist-modal-stan-rank {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-accent-subtle, rgba(108,99,255,0.1));
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.stan-tier {
+  font-weight: 700;
+  color: var(--color-accent-light);
+  text-transform: capitalize;
+}
+
+.stan-score {
+  color: var(--color-text-secondary);
+}
+
+/* ======= Verifications ======= */
+.artist-modal-verifications {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.verif-badge {
+  font-size: 0.76rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.verif-verified {
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.verif-disputed {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+/* ======= Albums horizontal scroll ======= */
+.artist-modal-albums-scroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.artist-modal-album-card {
+  flex-shrink: 0;
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.artist-modal-album-card-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+}
+
+.artist-modal-album-card-placeholder {
+  width: 90px;
+  height: 90px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.artist-modal-album-card-name {
+  font-size: 0.75rem;
+  color: var(--color-text-bright);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.artist-modal-album-card-year {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+/* ======= Related artists ======= */
+.artist-modal-related {
+  margin-top: 1.25rem;
+}
+
+.artist-modal-related h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--color-text-bright);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 0.5rem;
+}
+
+.artist-modal-related-scroll {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.artist-modal-related-scroll::-webkit-scrollbar { display: none; }
+
+.artist-modal-related-chip {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 64px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.related-chip-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-bg-card);
+}
+
+.related-chip-name {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* ======= CTA block ======= */
+.artist-modal-cta {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.cta-add-btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.cta-add-btn:hover:not(:disabled) { opacity: 0.85; }
+.cta-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.cta-in-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.cta-in-list-label {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.cta-change-pos-btn {
+  font-size: 0.82rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  background: transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cta-change-pos-btn:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.cta-signup-btn {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cta-signup-btn:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* ======= Position selector ======= */
+.pos-selector-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: calc(var(--z-modal, 1000) + 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pos-selector {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius);
+  max-width: 360px;
+  width: 100%;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.pos-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+}
+
+.pos-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.pos-slot {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-default);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.25rem;
+  overflow: hidden;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pos-slot-empty {
+  color: var(--color-text-secondary);
+}
+
+.pos-slot-empty:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.pos-slot-occupied {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pos-slot-num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pos-slot-name {
+  font-size: 0.55rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin-top: 2px;
+}

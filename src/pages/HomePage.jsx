@@ -10,6 +10,7 @@ import FiltersBar from "../components/FiltersBar/FiltersBar";
 import TrendingShelf from "../components/TrendingShelf/TrendingShelf";
 import RankView from "../components/RankView/RankView";
 import StickyCtaBar from "../components/StickyCtaBar/StickyCtaBar";
+import NewMusicSection from "../components/NewMusicSection/NewMusicSection";
 import axiosInstance from "../utils/axiosInstance";
 
 const VIEW_MODE_KEY = "9by4_view_mode";
@@ -165,6 +166,9 @@ const HomePage = () => {
           upcomingReleases={upcomingReleases}
         />
       )}
+
+      {/* Section 5 — New Music */}
+      <NewMusicSection isLoggedIn={isLoggedIn} />
 
       {/* Section 6 — Sticky CTA bar (logged-out only) */}
       {!isLoggedIn && <StickyCtaBar />}

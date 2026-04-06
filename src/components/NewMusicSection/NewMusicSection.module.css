@@ -1,0 +1,250 @@
+.section {
+  padding: 2rem;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.sectionHeader {
+  margin-bottom: 1.25rem;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* Two lanes side-by-side on desktop, stacked on mobile */
+.lanes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .lanes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.laneHeader {
+  margin-bottom: 0.75rem;
+}
+
+.laneLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+}
+
+.empty {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* ---- Lane 1: Album cards ---- */
+.laneScroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) transparent;
+}
+
+.albumCard {
+  flex-shrink: 0;
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+}
+
+.albumImg {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-bg-card);
+}
+
+.albumImgPlaceholder {
+  width: 110px;
+  height: 110px;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.newBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.albumName {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+.albumArtist {
+  font-size: 0.72rem;
+  color: var(--color-accent-light);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.albumMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.albumMeta span {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+}
+
+.certBadge {
+  font-size: 0.65rem !important;
+  background: var(--color-rank-1st-subtle, rgba(255,215,0,0.1));
+  color: var(--color-rank-1st, gold) !important;
+  padding: 1px 5px;
+  border-radius: 999px;
+}
+
+/* ---- Lane 2: Music posts ---- */
+.postsLane {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.musicPost {
+  padding: 0.85rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.postUser {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+.postAvatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.postUsername {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.postTime {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.postTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 0.4rem;
+}
+
+.audioPlayer {
+  width: 100%;
+  height: 36px;
+  margin: 0.4rem 0;
+}
+
+.streamLink {
+  display: inline-block;
+  margin: 0.4rem 0;
+  font-size: 0.8rem;
+  color: var(--color-accent-light);
+  text-decoration: underline;
+}
+
+.platformBadge {
+  display: inline-block;
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.postCaption {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.postCaption.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+.expandBtn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--color-accent-light);
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.2rem;
+}
