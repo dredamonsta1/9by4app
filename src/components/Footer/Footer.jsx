@@ -38,6 +38,7 @@ const Footer = () => {
 
       <div className={styles.bottom}>
         <span>© {year} Vedioz. All rights reserved.</span>
+        <Link to="/terms" className={styles.termsLink}>Terms of Use</Link>
       </div>
     </footer>
   );

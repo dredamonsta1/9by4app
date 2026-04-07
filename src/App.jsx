@@ -26,6 +26,7 @@ import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import Pricing from "./pages/Pricing/Pricing.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess.jsx";
 import PaymentCancel from "./pages/PaymentCancel/PaymentCancel.jsx";
+import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -65,6 +66,7 @@ const App = () => {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />
           <Route path="/payment/cancel" element={<PaymentCancel />} />
+          <Route path="/terms" element={<TermsOfUse />} />
 
           <Route
             path="/admin"

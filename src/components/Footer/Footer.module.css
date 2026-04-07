@@ -111,9 +111,23 @@
 .bottom {
   border-top: 1px solid var(--color-border-default);
   padding: 1rem 1.5rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
   font-size: 0.75rem;
   color: var(--color-text-secondary);
+}
+
+.termsLink {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.termsLink:hover {
+  color: var(--color-accent);
 }
 
 /* Responsive */
