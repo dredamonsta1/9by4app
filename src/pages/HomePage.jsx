@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";
 import ClickableList from "../components/RapperList";
 import { ArtistModal } from "../components/RapperList";
@@ -17,6 +18,8 @@ const VIEW_MODE_KEY = "9by4_view_mode";
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const { artistId } = useParams();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [upcomingReleases, setUpcomingReleases] = useState([]);
   const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
@@ -24,6 +27,7 @@ const HomePage = () => {
     () => localStorage.getItem(VIEW_MODE_KEY) || "scroll"
   );
   const [trendingSelected, setTrendingSelected] = useState(null);
+  const [deepLinkedArtist, setDeepLinkedArtist] = useState(null);
   const debounceTimer = useRef(null);
 
   const { artists, loading, error, searchResults, searchLoading } =
@@ -41,6 +45,14 @@ const HomePage = () => {
   useEffect(() => {
     if (isLoggedIn) dispatch(fetchProfileList());
   }, [isLoggedIn, dispatch]);
+
+  // Deep link: /artist/:id — fetch artist and open modal
+  useEffect(() => {
+    if (!artistId) return;
+    axiosInstance.get(`/artists/${artistId}`)
+      .then((res) => setDeepLinkedArtist(res.data.artist || res.data))
+      .catch(() => navigate("/", { replace: true }));
+  }, [artistId, navigate]);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -163,6 +175,18 @@ const HomePage = () => {
         <ArtistModal
           artist={trendingSelected}
           onClose={() => setTrendingSelected(null)}
+          upcomingReleases={upcomingReleases}
+        />
+      )}
+
+      {/* Deep-link modal: /artist/:id */}
+      {deepLinkedArtist && (
+        <ArtistModal
+          artist={deepLinkedArtist}
+          onClose={() => {
+            setDeepLinkedArtist(null);
+            navigate("/", { replace: true });
+          }}
           upcomingReleases={upcomingReleases}
         />
       )}

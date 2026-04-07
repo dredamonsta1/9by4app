@@ -48,6 +48,7 @@ const App = () => {
       <main className="content">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/artist/:artistId" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/dashBoard" element={<DashBoard />} />
