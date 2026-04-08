@@ -23,7 +23,7 @@ const HeroSection = () => {
 
   return (
     <header className={styles.hero}>
-      <div className={styles.wordmark}>9by4</div>
+      <div className={styles.wordmark}>Vedioz</div>
       <p className={styles.tagline}>The list is decided by the people.</p>
       {stats && (
         <div className={styles.statRow}>
