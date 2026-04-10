@@ -21,9 +21,13 @@ const ACCEPT = {
 
 const HINT = {
   photo: "JPG, PNG, GIF, WEBP",
-  video: "MP4, WEBM, MOV",
+  video: "MP4, WEBM, MOV · max 50MB",
   music: "MP3, WAV, FLAC, M4A",
 };
+
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const RECORD_LIMIT_DEFAULT = 60;       // seconds for regular video
+const RECORD_LIMIT_MUSIC_VIDEO = 100;  // seconds for music video
 
 function formatBytes(bytes) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -54,6 +58,7 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   // Video
   const [videoInputMode, setVideoInputMode] = useState("file");
   const [videoUrl, setVideoUrl] = useState("");
+  const [isMusicVideoRecord, setIsMusicVideoRecord] = useState(false);
 
   // Music
   const [musicInputMode, setMusicInputMode] = useState("file");
@@ -79,6 +84,7 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
     if (!isOpen) {
       setStep(1); setCategory(null); setContent(""); setFile(null); setPreview(null);
       setIsDragging(false); setVideoInputMode("file"); setVideoUrl("");
+      setIsMusicVideoRecord(false);
       setMusicInputMode("file"); setMusicStreamUrl("");
       setTitle(""); setDescription(""); setContentType("");
       setLoading(false); setError(null); setSuccess(false);
@@ -88,8 +94,24 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   const handleCategorySelect = (cat) => { setCategory(cat); setStep(2); };
 
   const handleFileSelect = (f) => {
+    if ((category === "video") && f.size > MAX_FILE_SIZE_BYTES) {
+      setError(`File too large. Maximum size is 50MB.`);
+      return;
+    }
     setFile(f);
     setPreview(URL.createObjectURL(f));
+    setError(null);
+  };
+
+  const handleRecorded = (blob) => {
+    const f = new File([blob], "recording.webm", { type: blob.type || "video/webm" });
+    if (f.size > MAX_FILE_SIZE_BYTES) {
+      setError("Recording exceeds 50MB. Please try a shorter recording.");
+      return;
+    }
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+    if (isMusicVideoRecord) setContentType("Music Video");
     setError(null);
   };
 
@@ -109,7 +131,10 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   const canProceed = () => {
     if (category === "text")  return content.trim().length > 0 && !isOverLimit;
     if (category === "photo") return !!file;
-    if (category === "video") return videoInputMode === "file" ? !!file : videoUrl.trim().length > 0;
+    if (category === "video") {
+      if (videoInputMode === "url") return videoUrl.trim().length > 0;
+      return !!file; // covers both "file" and "record" modes
+    }
     if (category === "music") return musicInputMode === "file" ? !!file : musicStreamUrl.trim().length > 0;
     return false;
   };
@@ -134,20 +159,20 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
         await axiosInstance.post("/feed/image", fd, { headers: { "Content-Type": "multipart/form-data" } });
 
       } else if (category === "video") {
-        if (videoInputMode === "file") {
-          const fd = new FormData();
-          fd.append("video", file);
-          if (description.trim()) fd.append("caption", description.trim());
-          if (title.trim())       fd.append("title", title.trim());
-          if (contentType)        fd.append("content_type", contentType);
-          await axiosInstance.post("/feed/video", fd, { headers: { "Content-Type": "multipart/form-data" } });
-        } else {
+        if (videoInputMode === "url") {
           await axiosInstance.post("/feed/video-url", {
             videoUrl: videoUrl.trim(),
             caption:      description.trim() || undefined,
             title:        title.trim() || undefined,
             content_type: contentType || undefined,
           });
+        } else {
+          const fd = new FormData();
+          fd.append("video", file);
+          if (description.trim()) fd.append("caption", description.trim());
+          if (title.trim())       fd.append("title", title.trim());
+          if (contentType)        fd.append("content_type", contentType);
+          await axiosInstance.post("/feed/video", fd, { headers: { "Content-Type": "multipart/form-data" } });
         }
 
       } else if (category === "music") {
@@ -182,6 +207,7 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
 
   const ytId = videoUrl ? extractYouTubeId(videoUrl) : null;
   const dropZoneIcon = { photo: "⬜", video: "▶", music: "♪" }[category];
+  const recordTimeLimit = isMusicVideoRecord ? RECORD_LIMIT_MUSIC_VIDEO : RECORD_LIMIT_DEFAULT;
 
   return (
     <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -282,10 +308,12 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
             {category === "video" && (
               <>
                 <div className={styles.subToggleRow}>
-                  <button className={`${styles.subToggle} ${videoInputMode === "file" ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("file"); clearFile(); setVideoUrl(""); }}>Upload File</button>
-                  <button className={`${styles.subToggle} ${videoInputMode === "url"  ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("url");  clearFile(); }}>Paste URL</button>
+                  <button className={`${styles.subToggle} ${videoInputMode === "file"   ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("file");   clearFile(); setVideoUrl(""); }}>Upload File</button>
+                  <button className={`${styles.subToggle} ${videoInputMode === "record" ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("record"); clearFile(); setVideoUrl(""); }}>Record</button>
+                  <button className={`${styles.subToggle} ${videoInputMode === "url"    ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("url");    clearFile(); }}>Paste URL</button>
                 </div>
-                {videoInputMode === "file" ? (
+
+                {videoInputMode === "file" && (
                   preview ? (
                     <div className={styles.previewContainer}>
                       <video src={preview} className={styles.previewVideo} controls />
@@ -305,7 +333,33 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
                       onChange={(e) => e.target.files[0] && handleFileSelect(e.target.files[0])}
                     />
                   )
-                ) : (
+                )}
+
+                {videoInputMode === "record" && (
+                  preview ? (
+                    <div className={styles.previewContainer}>
+                      <video src={preview} className={styles.previewVideo} controls />
+                      <button type="button" onClick={clearFile} className={styles.clearBtn}>Re-record</button>
+                    </div>
+                  ) : (
+                    <>
+                      <label className={styles.musicVideoToggle}>
+                        <input
+                          type="checkbox"
+                          checked={isMusicVideoRecord}
+                          onChange={(e) => setIsMusicVideoRecord(e.target.checked)}
+                        />
+                        Music video <span className={styles.timeLimitNote}>({isMusicVideoRecord ? "100s" : "60s"} limit)</span>
+                      </label>
+                      <VideoRecorder
+                        timeLimit={recordTimeLimit}
+                        onRecorded={handleRecorded}
+                      />
+                    </>
+                  )
+                )}
+
+                {videoInputMode === "url" && (
                   <>
                     <input type="text" className={styles.urlInput} placeholder="Paste YouTube or video URL..." value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} autoFocus />
                     {ytId && (
@@ -441,7 +495,147 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   );
 }
 
-// Shared drop zone used by photo / video / music
+// ── VideoRecorder ──────────────────────────────────────────────────────────
+function VideoRecorder({ timeLimit, onRecorded }) {
+  const [recState, setRecState] = useState("idle"); // idle | requesting | recording | preview
+  const [countdown, setCountdown] = useState(timeLimit);
+  const [recError, setRecError] = useState(null);
+
+  const liveRef    = useRef(null);
+  const previewRef = useRef(null);
+  const streamRef  = useRef(null);
+  const recorderRef = useRef(null);
+  const chunksRef  = useRef([]);
+  const timerRef   = useRef(null);
+  const blobRef    = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(timerRef.current);
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
+  // Reset countdown when timeLimit changes (music video toggle)
+  useEffect(() => {
+    if (recState === "idle") setCountdown(timeLimit);
+  }, [timeLimit, recState]);
+
+  const stopStream = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  };
+
+  const startRecording = async () => {
+    setRecError(null);
+    setRecState("requesting");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      streamRef.current = stream;
+      if (liveRef.current) {
+        liveRef.current.srcObject = stream;
+      }
+
+      chunksRef.current = [];
+      const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+        ? "video/webm;codecs=vp9"
+        : "video/webm";
+      const recorder = new MediaRecorder(stream, { mimeType });
+      recorderRef.current = recorder;
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: mimeType });
+        blobRef.current = blob;
+        if (previewRef.current) {
+          previewRef.current.src = URL.createObjectURL(blob);
+        }
+        stopStream();
+        setRecState("preview");
+      };
+
+      recorder.start(250);
+      setRecState("recording");
+
+      let remaining = timeLimit;
+      setCountdown(remaining);
+      timerRef.current = setInterval(() => {
+        remaining -= 1;
+        setCountdown(remaining);
+        if (remaining <= 0) {
+          clearInterval(timerRef.current);
+          recorder.stop();
+        }
+      }, 1000);
+
+    } catch {
+      setRecState("idle");
+      setRecError("Camera access denied. Please allow camera and microphone access.");
+    }
+  };
+
+  const stopRecording = () => {
+    clearInterval(timerRef.current);
+    recorderRef.current?.stop();
+  };
+
+  const reRecord = () => {
+    blobRef.current = null;
+    chunksRef.current = [];
+    setCountdown(timeLimit);
+    setRecState("idle");
+  };
+
+  const useRecording = () => {
+    onRecorded(blobRef.current);
+  };
+
+  const progressPct = Math.min(100, ((timeLimit - countdown) / timeLimit) * 100);
+
+  return (
+    <div className={styles.recorder}>
+      {recError && <p className={styles.errorMsg}>{recError}</p>}
+
+      {recState === "idle" && (
+        <button className={styles.recordStartBtn} onClick={startRecording}>
+          ● Start Recording
+        </button>
+      )}
+
+      {recState === "requesting" && (
+        <p className={styles.recorderStatus}>Requesting camera access...</p>
+      )}
+
+      {recState === "recording" && (
+        <div className={styles.recorderLive}>
+          <video ref={liveRef} className={styles.recorderVideo} muted playsInline autoPlay />
+          <div className={styles.recorderOverlay}>
+            <span className={styles.recorderCountdown}>{countdown}s</span>
+            <div className={styles.recorderProgressBar}>
+              <div className={styles.recorderProgressFill} style={{ width: `${progressPct}%` }} />
+            </div>
+            <button className={styles.recordStopBtn} onClick={stopRecording}>■ Stop</button>
+          </div>
+        </div>
+      )}
+
+      {recState === "preview" && (
+        <div className={styles.recorderPreviewWrap}>
+          <video ref={previewRef} className={styles.recorderVideo} controls />
+          <div className={styles.recorderPreviewActions}>
+            <button className={styles.reRecordBtn} onClick={reRecord}>Re-record</button>
+            <button className={styles.useRecordingBtn} onClick={useRecording}>Use this ✓</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── DropZone ───────────────────────────────────────────────────────────────
 function DropZone({ icon, hint, isDragging, onDragOver, onDragLeave, onDrop, onClick, fileInputRef, accept, onChange }) {
   return (
     <div
