@@ -1,5 +1,5 @@
-// src/components/Rooms/Room.jsx — Live room page
-import React, { useState, useEffect, useCallback, useRef } from "react";
+// src/components/Rooms/Room.jsx — Live room page (audio + video)
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -9,6 +9,7 @@ import {
   useDataChannel,
   useTracks,
   AudioTrack,
+  VideoTrack,
   RoomAudioRenderer,
 } from "@livekit/components-react";
 import { Track, DataPacket_Kind } from "livekit-client";
@@ -17,16 +18,16 @@ import styles from "./Room.module.css";
 
 const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://placeholder.livekit.cloud";
 
-// ─── Data message types (sent over LiveKit data channel) ────────────────────
+// ─── Data message types ──────────────────────────────────────────────────────
 const MSG = {
-  RAISE_HAND: "raise_hand",
-  LOWER_HAND: "lower_hand",
-  CHAT: "chat",
+  RAISE_HAND:    "raise_hand",
+  LOWER_HAND:    "lower_hand",
+  CHAT:          "chat",
   HAND_APPROVED: "hand_approved",
-  HAND_DENIED: "hand_denied",
+  HAND_DENIED:   "hand_denied",
 };
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function parseMeta(metaStr) {
   try { return JSON.parse(metaStr || "{}"); } catch { return {}; }
 }
@@ -35,7 +36,7 @@ function getRole(participant) {
   return parseMeta(participant?.metadata)?.role || "listener";
 }
 
-// ─── Individual speaker audio track ─────────────────────────────────────────
+// ─── Individual speaker audio track ──────────────────────────────────────────
 function ParticipantAudio({ participant }) {
   const tracks = useTracks(
     [{ source: Track.Source.Microphone, withPlaceholder: false }],
@@ -44,8 +45,8 @@ function ParticipantAudio({ participant }) {
   return tracks.map((t) => <AudioTrack key={t.publication.trackSid} trackRef={t} />);
 }
 
-// ─── Participant tile ────────────────────────────────────────────────────────
-function ParticipantTile({ participant, isLocalHost, roomId, onPromote, handsUp }) {
+// ─── Speaker video tile (large, with fallback avatar) ────────────────────────
+function SpeakerVideoTile({ participant, isLocalHost, roomId, onPromote, handsUp, videoTrack }) {
   const role = getRole(participant);
   const meta = parseMeta(participant?.metadata);
   const isSpeaking = participant?.isSpeaking;
@@ -53,16 +54,53 @@ function ParticipantTile({ participant, isLocalHost, roomId, onPromote, handsUp 
   const hasHandUp = handsUp.has(participant?.identity);
 
   return (
-    <div className={`${styles.participantTile} ${isSpeaking ? styles.speaking : ""}`}>
+    <div className={`${styles.videoTile} ${isSpeaking ? styles.videoTileSpeaking : ""}`}>
+      {/* Video feed or avatar fallback */}
+      {videoTrack ? (
+        <VideoTrack trackRef={videoTrack} className={styles.videoFeed} />
+      ) : (
+        <div className={styles.videoAvatarFallback}>
+          <div className={styles.videoAvatar}>{name[0]?.toUpperCase()}</div>
+        </div>
+      )}
+
+      {/* Info overlay at bottom */}
+      <div className={styles.videoOverlay}>
+        <span className={styles.videoName}>{name}</span>
+        <span className={`${styles.videoRoleBadge} ${styles[role]}`}>{role}</span>
+        {hasHandUp && <span className={styles.handIcon}>✋</span>}
+      </div>
+
+      {/* Host controls */}
+      {isLocalHost && role === "listener" && !hasHandUp && (
+        <button className={styles.inviteBtn} onClick={() => onPromote(participant.identity)}>
+          Invite to speak
+        </button>
+      )}
+      {isLocalHost && hasHandUp && (
+        <button className={styles.approveBtn} onClick={() => onPromote(participant.identity)}>
+          Approve ✋
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Listener tile (small, audio only) ───────────────────────────────────────
+function ListenerTile({ participant, isLocalHost, onPromote, handsUp }) {
+  const role = getRole(participant);
+  const meta = parseMeta(participant?.metadata);
+  const name = participant?.name || `User ${meta.userId}`;
+  const hasHandUp = handsUp.has(participant?.identity);
+
+  return (
+    <div className={`${styles.participantTile} ${participant?.isSpeaking ? styles.speaking : ""}`}>
       <div className={styles.avatar}>{name[0]?.toUpperCase()}</div>
       <span className={styles.participantName}>{name}</span>
       <span className={`${styles.roleBadge} ${styles[role]}`}>{role}</span>
       {hasHandUp && <span className={styles.handIcon}>✋</span>}
       {isLocalHost && role === "listener" && !hasHandUp && (
-        <button
-          className={styles.promoteBtn}
-          onClick={() => onPromote(participant.identity)}
-        >
+        <button className={styles.promoteBtn} onClick={() => onPromote(participant.identity)}>
           Invite to speak
         </button>
       )}
@@ -77,12 +115,13 @@ function ParticipantTile({ participant, isLocalHost, roomId, onPromote, handsUp 
   );
 }
 
-// ─── Main inner room UI (rendered inside <LiveKitRoom>) ──────────────────────
+// ─── Main inner room UI ───────────────────────────────────────────────────────
 function RoomInner({ room, currentUser, onEnd }) {
   const navigate = useNavigate();
   const { localParticipant } = useLocalParticipant();
   const participants = useParticipants();
   const [muted, setMuted] = useState(true);
+  const [camOn, setCamOn] = useState(false);
   const [chat, setChat] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [handsUp, setHandsUp] = useState(new Set());
@@ -93,6 +132,16 @@ function RoomInner({ room, currentUser, onEnd }) {
   const isHost = myRole === "host";
   const isSpeaker = myRole === "speaker" || myRole === "host";
 
+  // Get all camera tracks and build identity → trackRef map
+  const cameraTracks = useTracks([{ source: Track.Source.Camera, withPlaceholder: false }]);
+  const videoTrackMap = useMemo(() => {
+    const map = new Map();
+    cameraTracks.forEach((t) => {
+      if (t.participant?.identity) map.set(t.participant.identity, t);
+    });
+    return map;
+  }, [cameraTracks]);
+
   // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -101,8 +150,7 @@ function RoomInner({ room, currentUser, onEnd }) {
   // Handle incoming data messages
   const handleDataReceived = useCallback((msg) => {
     try {
-      const { type, payload, from } = JSON.parse(new TextDecoder().decode(msg.payload));
-
+      const { type, payload } = JSON.parse(new TextDecoder().decode(msg.payload));
       if (type === MSG.CHAT) {
         setChat((prev) => [...prev, { from: payload.username, text: payload.text, ts: Date.now() }]);
       } else if (type === MSG.RAISE_HAND) {
@@ -110,7 +158,6 @@ function RoomInner({ room, currentUser, onEnd }) {
       } else if (type === MSG.LOWER_HAND) {
         setHandsUp((prev) => { const s = new Set(prev); s.delete(msg.from?.identity); return s; });
       } else if (type === MSG.HAND_APPROVED) {
-        // Host approved our raise — re-fetch token with speaker role (handled via LiveKit permission update)
         setMyHandUp(false);
       }
     } catch { /* ignore malformed messages */ }
@@ -130,6 +177,12 @@ function RoomInner({ room, currentUser, onEnd }) {
     setMuted(!muted);
   };
 
+  const toggleCamera = () => {
+    if (!localParticipant) return;
+    localParticipant.setCameraEnabled(!camOn);
+    setCamOn(!camOn);
+  };
+
   const handleRaiseHand = () => {
     const next = !myHandUp;
     setMyHandUp(next);
@@ -140,7 +193,6 @@ function RoomInner({ room, currentUser, onEnd }) {
     try {
       await axiosInstance.post(`/rooms/${room.room_id}/promote/${identity}`);
       setHandsUp((prev) => { const s = new Set(prev); s.delete(identity); return s; });
-      // Notify the promoted participant
       sendData({ type: MSG.HAND_APPROVED, payload: { identity } });
     } catch (err) {
       console.error("Promote failed:", err);
@@ -166,15 +218,14 @@ function RoomInner({ room, currentUser, onEnd }) {
   };
 
   // Partition participants
-  const speakers = participants.filter((p) => ["host", "speaker"].includes(getRole(p)));
+  const speakers  = participants.filter((p) => ["host", "speaker"].includes(getRole(p)));
   const listeners = participants.filter((p) => getRole(p) === "listener");
 
   return (
     <div className={styles.roomLayout}>
-      {/* Render all audio tracks */}
       <RoomAudioRenderer />
 
-      {/* Left panel — room info + participants */}
+      {/* ── Left panel ── */}
       <div className={styles.leftPanel}>
         <div className={styles.roomInfo}>
           <div className={styles.liveChip}><span className={styles.liveDot} />LIVE</div>
@@ -183,31 +234,33 @@ function RoomInner({ room, currentUser, onEnd }) {
           <p className={styles.hostLine}>Hosted by {room.host_username}</p>
         </div>
 
+        {/* Speakers — video grid */}
         <div className={styles.participantsSection}>
           <h3 className={styles.sectionLabel}>On stage ({speakers.length})</h3>
-          <div className={styles.speakerGrid}>
+          <div className={styles.videoGrid}>
             {speakers.map((p) => (
-              <ParticipantTile
+              <SpeakerVideoTile
                 key={p.identity}
                 participant={p}
                 isLocalHost={isHost}
                 roomId={room.room_id}
                 onPromote={handlePromote}
                 handsUp={handsUp}
+                videoTrack={videoTrackMap.get(p.identity) || null}
               />
             ))}
           </div>
 
+          {/* Listeners — small tiles */}
           {listeners.length > 0 && (
             <>
               <h3 className={styles.sectionLabel}>Audience ({listeners.length})</h3>
               <div className={styles.listenerGrid}>
                 {listeners.map((p) => (
-                  <ParticipantTile
+                  <ListenerTile
                     key={p.identity}
                     participant={p}
                     isLocalHost={isHost}
-                    roomId={room.room_id}
                     onPromote={handlePromote}
                     handsUp={handsUp}
                   />
@@ -218,7 +271,7 @@ function RoomInner({ room, currentUser, onEnd }) {
         </div>
       </div>
 
-      {/* Right panel — chat */}
+      {/* ── Right panel (chat) ── */}
       <div className={styles.rightPanel}>
         <div className={styles.chatHeader}>Room Chat</div>
         <div className={styles.chatMessages}>
@@ -249,15 +302,23 @@ function RoomInner({ room, currentUser, onEnd }) {
         </form>
       </div>
 
-      {/* Bottom controls bar */}
+      {/* ── Controls bar ── */}
       <div className={styles.controlsBar}>
         {isSpeaker && (
-          <button
-            className={`${styles.controlBtn} ${muted ? styles.mutedBtn : styles.unmutedBtn}`}
-            onClick={toggleMute}
-          >
-            {muted ? "🎤 Unmute" : "🔇 Mute"}
-          </button>
+          <>
+            <button
+              className={`${styles.controlBtn} ${muted ? styles.mutedBtn : styles.unmutedBtn}`}
+              onClick={toggleMute}
+            >
+              {muted ? "🎤 Unmute" : "🔇 Mute"}
+            </button>
+            <button
+              className={`${styles.controlBtn} ${camOn ? styles.camOnBtn : styles.camOffBtn}`}
+              onClick={toggleCamera}
+            >
+              {camOn ? "📹 Camera On" : "📷 Camera Off"}
+            </button>
+          </>
         )}
         {!isSpeaker && (
           <button
@@ -275,27 +336,24 @@ function RoomInner({ room, currentUser, onEnd }) {
   );
 }
 
-// ─── Room page — fetches token then connects ─────────────────────────────────
+// ─── Room page — fetches token then connects ──────────────────────────────────
 function Room() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  const [token, setToken] = useState(location.state?.token || null);
-  const [room, setRoom] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [token, setToken]       = useState(location.state?.token || null);
+  const [room, setRoom]         = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       try {
-        // Always fetch room details
         const roomRes = await axiosInstance.get(`/rooms/${id}`);
         setRoom(roomRes.data);
-
-        // If we don't already have a token (came from lobby, not from creation)
         if (!token) {
           const tokenRes = await axiosInstance.post(`/rooms/${id}/token`);
           setToken(tokenRes.data.token);
@@ -312,17 +370,13 @@ function Room() {
     init();
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (loading) {
-    return <div className={styles.centerState}>Joining room...</div>;
-  }
+  if (loading) return <div className={styles.centerState}>Joining room...</div>;
 
   if (error) {
     return (
       <div className={styles.centerState}>
         <p className={styles.errorText}>{error}</p>
-        <button className={styles.backBtn} onClick={() => navigate("/rooms")}>
-          Back to Rooms
-        </button>
+        <button className={styles.backBtn} onClick={() => navigate("/rooms")}>Back to Rooms</button>
       </div>
     );
   }
@@ -333,17 +387,13 @@ function Room() {
       token={token}
       connect={true}
       audio={true}
-      video={false}
+      video={true}
       onConnected={() => setConnected(true)}
       onDisconnected={() => navigate("/rooms")}
       className={styles.lkRoom}
     >
       {connected && room && (
-        <RoomInner
-          room={room}
-          currentUser={user}
-          onEnd={() => {}}
-        />
+        <RoomInner room={room} currentUser={user} onEnd={() => {}} />
       )}
       {!connected && <div className={styles.centerState}>Connecting...</div>}
     </LiveKitRoom>
