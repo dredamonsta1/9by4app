@@ -27,6 +27,7 @@ import Pricing from "./pages/Pricing/Pricing.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess.jsx";
 import PaymentCancel from "./pages/PaymentCancel/PaymentCancel.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
+import StreamersPage from "./pages/Streamers/StreamersPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -67,6 +68,7 @@ const App = () => {
           <Route path="/payment/success" element={<PaymentSuccess />} />
           <Route path="/payment/cancel" element={<PaymentCancel />} />
           <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/streamers" element={<StreamersPage />} />
 
           <Route
             path="/admin"

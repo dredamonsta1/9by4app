@@ -82,6 +82,11 @@ const NavBar = () => {
                   Live
                 </Link>
               </li>
+              <li>
+                <Link to="/streamers" onClick={closeMenu}>
+                  Streamers
+                </Link>
+              </li>
               {user.role === "admin" && (
                 <li>
                   <Link
