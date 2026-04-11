@@ -226,6 +226,28 @@ export interface WeeklyTrendingData {
   creators: TrendingCreator[];
 }
 
+// ---------------------------------------------------------------------------
+// Streamers
+// ---------------------------------------------------------------------------
+
+export type StreamerPlatform = "twitch" | "youtube" | "kick" | "tiktok" | "vedioz";
+export type StreamerCategory = "Gaming" | "Music" | "IRL" | "Sports" | "Podcasts";
+
+export interface Streamer {
+  streamer_id: number;
+  name: string;
+  platform: StreamerPlatform;
+  stream_url: string;
+  category?: StreamerCategory | null;
+  image_url?: string | null;
+  bio?: string | null;
+  count: number;
+  added_by?: number | null;
+  added_by_username?: string | null;
+  created_at: string;
+  is_live?: boolean;
+}
+
 // AppSettings values are all string (VARCHAR in DB) — not boolean. Coerce in UI.
 export interface AppSettings {
   waitlist_enabled: string;
