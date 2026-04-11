@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./FiltersBar.module.css";
 
-const GENRES = ["Hip Hop", "R&B", "Pop", "Rock", "Latin", "Drill", "Trap"];
+const GENRES = ["Hip Hop", "R&B", "Pop", "Rock", "Latin", "Drill", "Trap", "Reggae"];
 const REGIONS = ["NY", "Georgia", "LA", "Chicago", "Houston", "Detroit", "South", "East", "UK"];
 
 const FiltersBar = ({ activeFilter, onFilterChange, isLoggedIn }) => {
