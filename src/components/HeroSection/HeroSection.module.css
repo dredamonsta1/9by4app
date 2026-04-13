@@ -5,8 +5,9 @@
 }
 
 .wordmark {
-  height: 120px;
+  height: 160px;
   width: auto;
+  max-width: 100%;
   display: block;
   margin: 0 auto 0.5rem;
 }

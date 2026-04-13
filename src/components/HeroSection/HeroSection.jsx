@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./HeroSection.module.css";
-import vediozLogo from "../../assets/vedioz-logo.png";
+import vediozLogo from "../../assets/vedioz-logo-full.png";
 
 const HeroSection = () => {
   const [stats, setStats] = useState(null);
@@ -25,7 +25,6 @@ const HeroSection = () => {
   return (
     <header className={styles.hero}>
       <img src={vediozLogo} alt="Vedioz" className={styles.wordmark} />
-      <p className={styles.tagline}>The list is decided by the people.</p>
       {stats && (
         <div className={styles.statRow}>
           <span>{stats.artist_count.toLocaleString()} artists</span>
