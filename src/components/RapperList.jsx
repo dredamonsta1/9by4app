@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "./RapperList.css";
 import { addArtistToProfileList, reorderProfileList } from "../redux/actions/profileListActions";
+import { setQueue } from "../redux/playerSlice";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -58,6 +59,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const [verifications, setVerifications] = useState([]);
   const [stanRank, setStanRank] = useState(null);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
+  const [artistTracks, setArtistTracks] = useState([]);
 
   // Re-fetch whenever the top of the stack changes
   useEffect(() => {
@@ -89,6 +91,10 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
         .then((res) => setStanRank(res.data))
         .catch(() => {});
     }
+
+    axiosInstance.get(`/music/posts/artist/${current.artist_id}`)
+      .then((res) => setArtistTracks(res.data))
+      .catch(() => setArtistTracks([]));
   }, [current?.artist_id, isLoggedIn]);
 
   // Escape key to close
@@ -229,28 +235,52 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
           <div className="artist-modal-albums">
             <h3>Albums</h3>
             <div className="artist-modal-albums-scroll">
-              {albums.map((album, i) => (
-                <div key={album.album_id || i} className="artist-modal-album-card">
-                  {album.album_image_url ? (
-                    <img
-                      src={resolveImageUrl(album.album_image_url)}
-                      alt={album.album_name}
-                      className="artist-modal-album-card-img"
-                    />
-                  ) : (
-                    <div className="artist-modal-album-card-placeholder">
-                      {(album.album_name || "").split(" ").map((w) => w[0]).join("").slice(0, 3)}
+              {albums.map((album, i) => {
+                const hasTracks = artistTracks.length > 0;
+                return (
+                  <div key={album.album_id || i} className="artist-modal-album-card">
+                    <div className="artist-modal-album-img-wrap">
+                      {album.album_image_url ? (
+                        <img
+                          src={resolveImageUrl(album.album_image_url)}
+                          alt={album.album_name}
+                          className="artist-modal-album-card-img"
+                        />
+                      ) : (
+                        <div className="artist-modal-album-card-placeholder">
+                          {(album.album_name || "").split(" ").map((w) => w[0]).join("").slice(0, 3)}
+                        </div>
+                      )}
+                      {hasTracks && (
+                        <button
+                          className="artist-modal-album-play-btn"
+                          onClick={() => dispatch(setQueue({
+                            tracks: artistTracks.map((t) => ({
+                              post_id: t.post_id,
+                              title: t.title,
+                              audio_url: t.audio_url,
+                              username: t.username,
+                              artist_name: data.artist_name,
+                              album_image_url: album.album_image_url,
+                            })),
+                            startIndex: 0,
+                          }))}
+                          aria-label={`Play ${album.album_name}`}
+                        >
+                          ▶
+                        </button>
+                      )}
                     </div>
-                  )}
-                  <span className="artist-modal-album-card-name">{album.album_name}</span>
-                  <span className="artist-modal-album-card-year">{album.year}</span>
-                  {(album.certifications || album.Certifications) && (
-                    <span className="artist-modal-album-cert">
-                      {album.certifications || album.Certifications}
-                    </span>
-                  )}
-                </div>
-              ))}
+                    <span className="artist-modal-album-card-name">{album.album_name}</span>
+                    <span className="artist-modal-album-card-year">{album.year}</span>
+                    {(album.certifications || album.Certifications) && (
+                      <span className="artist-modal-album-cert">
+                        {album.certifications || album.Certifications}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
