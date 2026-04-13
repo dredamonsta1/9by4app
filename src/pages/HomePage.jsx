@@ -27,6 +27,7 @@ const HomePage = () => {
   );
   const [trendingSelected, setTrendingSelected] = useState(null);
   const [deepLinkedArtist, setDeepLinkedArtist] = useState(null);
+  const [platformStats, setPlatformStats] = useState(null);
   const debounceTimer = useRef(null);
 
   const { artists, loading, error, searchResults, searchLoading } =
@@ -38,6 +39,9 @@ const HomePage = () => {
     dispatch(fetchArtists());
     axiosInstance.get("/music/upcoming")
       .then((res) => setUpcomingReleases(res.data))
+      .catch(() => {});
+    axiosInstance.get("/artists/stats")
+      .then((res) => setPlatformStats(res.data))
       .catch(() => {});
   }, [dispatch]);
 
@@ -94,7 +98,16 @@ const HomePage = () => {
 
   return (
     <div className={styles.page}>
-      {/* Section 1 — Filters bar */}
+      {/* Section 1 — Platform stats */}
+      {platformStats && (
+        <div className={styles.statsBar}>
+          <span>{platformStats.artist_count.toLocaleString()} artists</span>
+          <span className={styles.statsDot}>·</span>
+          <span>{platformStats.fan_count.toLocaleString()} fans voting</span>
+        </div>
+      )}
+
+      {/* Section 2 — Filters bar */}
       <FiltersBar
         activeFilter={activeFilter}
         onFilterChange={handleFilterChange}
