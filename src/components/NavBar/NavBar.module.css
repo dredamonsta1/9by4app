@@ -15,19 +15,20 @@
 
 /* Logo styling */
 .logo {
-    font-size: 1.6rem;
-    font-weight: 900;
-    color: var(--color-text-bright);
-    border-radius: var(--radius-sm);
-    background: var(--color-accent-gradient);
-    padding: 0.5rem 1.25rem;
-    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
     text-decoration: none;
     transition: var(--transition);
 }
 
+.logoImg {
+    height: 40px;
+    width: auto;
+    display: block;
+}
+
 .logo:hover {
-    box-shadow: var(--shadow-glow);
+    opacity: 0.85;
 }
 
 /* Container for navigation links */
