@@ -915,3 +915,32 @@
   max-width: 100%;
   margin-top: 2px;
 }
+
+
+/* ── Album play button overlay ── */
+.artist-modal-album-img-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.artist-modal-album-play-btn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: var(--radius-xs, 4px);
+}
+
+.artist-modal-album-card:hover .artist-modal-album-play-btn {
+  opacity: 1;
+}

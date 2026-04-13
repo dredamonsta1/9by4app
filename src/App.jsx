@@ -29,6 +29,7 @@ import PaymentCancel from "./pages/PaymentCancel/PaymentCancel.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import StreamersPage from "./pages/Streamers/StreamersPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
+import PlayerBar from "./components/PlayerBar/PlayerBar";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
@@ -90,6 +91,7 @@ const App = () => {
         </Routes>
       </main>
       <Footer />
+      <PlayerBar />
     </div>
   );
 };

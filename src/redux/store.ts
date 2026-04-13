@@ -4,6 +4,7 @@ import artistsReducer from "./reducers/artistsReducer";
 import authReducer from "../store/authSlice";
 import profileListReducer from "./profileListSlice";
 import messagesReducer from "./messagesSlice";
+import playerReducer from "./playerSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     artists: artistsReducer,
     profileList: profileListReducer,
     messages: messagesReducer,
+    player:   playerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
