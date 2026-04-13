@@ -4,6 +4,7 @@ import { logout } from "../../store/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./NavBar.module.css";
+import vediozLogo from "../../assets/vedioz-logo.png";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +25,9 @@ const NavBar = () => {
 
   return (
     <nav className={styles.navBar}>
-      <Link to="/" className={styles.logo} onClick={closeMenu}>Vedioz</Link>
+      <Link to="/" className={styles.logo} onClick={closeMenu}>
+        <img src={vediozLogo} alt="Vedioz" className={styles.logoImg} />
+      </Link>
 
       <button
         className={styles.hamburger}
