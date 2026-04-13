@@ -6,7 +6,6 @@ import ClickableList from "../components/RapperList";
 import { ArtistModal } from "../components/RapperList";
 import { fetchArtists, searchArtists, clearSearchResults } from "../redux/actions/artistActions";
 import { fetchProfileList } from "../redux/actions/profileListActions";
-import HeroSection from "../components/HeroSection/HeroSection";
 import FiltersBar from "../components/FiltersBar/FiltersBar";
 import TrendingShelf from "../components/TrendingShelf/TrendingShelf";
 import RankView from "../components/RankView/RankView";
@@ -95,10 +94,7 @@ const HomePage = () => {
 
   return (
     <div className={styles.page}>
-      {/* Section 1 — Hero */}
-      <HeroSection />
-
-      {/* Section 2 — Filters bar */}
+      {/* Section 1 — Filters bar */}
       <FiltersBar
         activeFilter={activeFilter}
         onFilterChange={handleFilterChange}
