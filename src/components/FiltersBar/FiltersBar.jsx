@@ -4,7 +4,7 @@ import styles from "./FiltersBar.module.css";
 const GENRES = ["Hip Hop", "R&B", "Pop", "Rock", "Latin", "Drill", "Trap", "Reggae"];
 const REGIONS = ["NY", "Georgia", "LA", "Chicago", "Houston", "Detroit", "South", "East", "UK"];
 
-const FiltersBar = ({ activeFilter, onFilterChange, isLoggedIn }) => {
+const FiltersBar = ({ activeFilter, onFilterChange, isLoggedIn, hasListItems }) => {
   const isActive = (type, value = "") =>
     activeFilter.type === type && activeFilter.value === value;
 
@@ -42,23 +42,12 @@ const FiltersBar = ({ activeFilter, onFilterChange, isLoggedIn }) => {
           </button>
         ))}
 
-        {isLoggedIn ? (
+        {isLoggedIn && hasListItems && (
           <>
             <span className={styles.divider} />
             <button
               className={`${styles.pill} ${styles.myListPill} ${isActive("mylist") ? styles.active : ""}`}
               onClick={() => onFilterChange({ type: "mylist", value: "" })}
-            >
-              My List
-            </button>
-          </>
-        ) : (
-          <>
-            <span className={styles.divider} />
-            <button
-              className={`${styles.pill} ${styles.myListPill} ${styles.disabled}`}
-              title="Sign up to see your list ranked"
-              disabled
             >
               My List
             </button>

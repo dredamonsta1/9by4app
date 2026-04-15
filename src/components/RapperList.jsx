@@ -373,7 +373,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   );
 };
 
-const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = false, upcomingReleases = [] }) => {
+const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = false, simplified = false, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
   const [selectedArtist, setSelectedArtist] = useState(null);
 
@@ -427,35 +427,37 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = 
                 <div className="rapperList-content-overlay">
                   <div className="rapperList-item-details">
                     <h3>{item.name || "N/A"}</h3>
-                    <p>Genre: {item.genre || "N/A"}</p>
+                    {!simplified && <p>Genre: {item.genre || "N/A"}</p>}
                   </div>
 
-                  <div className="rapperList-item-clout-section">
-                    {showCloutButton ? (
-                      <button
-                        className="rapperButton"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCloutClick(item);
-                        }}
-                      >
-                        Clout: {item.count}
-                      </button>
-                    ) : (
-                      <>
-                        <p className="clout-data-display">
-                          Clout: <span>{item.count}</span>
-                        </p>
-                        <Link
-                          to="/signup"
-                          className="clout-waitlist-nudge"
-                          onClick={(e) => e.stopPropagation()}
+                  {!simplified && (
+                    <div className="rapperList-item-clout-section">
+                      {showCloutButton ? (
+                        <button
+                          className="rapperButton"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCloutClick(item);
+                          }}
                         >
-                          Join the waitlist so you can get your favorite to first place
-                        </Link>
-                      </>
-                    )}
-                  </div>
+                          Clout: {item.count}
+                        </button>
+                      ) : (
+                        <>
+                          <p className="clout-data-display">
+                            Clout: <span>{item.count}</span>
+                          </p>
+                          <Link
+                            to="/signup"
+                            className="clout-waitlist-nudge"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Join the waitlist so you can get your favorite to first place
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   {showAdminActions && (
                     <div className="rapperList-admin-actions">

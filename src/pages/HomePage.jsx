@@ -94,6 +94,8 @@ const HomePage = () => {
     ? artists.filter((a) => profileListIds.has(a.artist_id))
     : artists;
 
+  const hasListItems = profileList.length > 0;
+  const isNewUser = !isLoggedIn || !hasListItems;
   const showSearch = !searchTerm.trim();
 
   return (
@@ -112,10 +114,11 @@ const HomePage = () => {
         activeFilter={activeFilter}
         onFilterChange={handleFilterChange}
         isLoggedIn={isLoggedIn}
+        hasListItems={hasListItems}
       />
 
-      {/* Section 3 — Trending shelf */}
-      <TrendingShelf onArtistClick={setTrendingSelected} />
+      {/* Section 3 — Trending shelf (hidden for new users) */}
+      {!isNewUser && <TrendingShelf onArtistClick={setTrendingSelected} />}
 
       {/* Section 4 — Main list */}
       <section className={styles.listSection}>
@@ -158,6 +161,7 @@ const HomePage = () => {
                 artists={searchResults}
                 showAdminActions={false}
                 showCloutButton={isLoggedIn}
+                simplified={isNewUser}
                 upcomingReleases={upcomingReleases}
               />
         )}
@@ -174,6 +178,7 @@ const HomePage = () => {
                 showAdminActions={false}
                 showCloutButton={isLoggedIn}
                 showRank={true}
+                simplified={isNewUser}
                 upcomingReleases={upcomingReleases}
               />
         )}
