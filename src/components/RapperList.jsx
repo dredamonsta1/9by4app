@@ -60,6 +60,8 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const [stanRank, setStanRank] = useState(null);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [artistTracks, setArtistTracks] = useState([]);
+  const [liveRecordings, setLiveRecordings] = useState([]);
+  const [loadingTracks, setLoadingTracks] = useState(null); // recording_id being loaded
 
   // Re-fetch whenever the top of the stack changes
   useEffect(() => {
@@ -69,6 +71,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
     setRelated([]);
     setVerifications([]);
     setStanRank(null);
+    setLiveRecordings([]);
 
     axiosInstance.get(`/artists/${current.artist_id}`)
       .then((res) => setFullArtist(res.data.artist))
@@ -95,6 +98,10 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
     axiosInstance.get(`/music/posts/artist/${current.artist_id}`)
       .then((res) => setArtistTracks(res.data))
       .catch(() => setArtistTracks([]));
+
+    axiosInstance.get(`/live-recordings?artist_id=${current.artist_id}&limit=50`)
+      .then((res) => setLiveRecordings(res.data.recordings || []))
+      .catch(() => setLiveRecordings([]));
   }, [current?.artist_id, isLoggedIn]);
 
   // Escape key to close
@@ -278,6 +285,60 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                         {album.certifications || album.Certifications}
                       </span>
                     )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Live Recordings */}
+        {liveRecordings.length > 0 && (
+          <div className="artist-modal-albums">
+            <h3>Live Recordings</h3>
+            <div className="artist-modal-albums-scroll">
+              {liveRecordings.map((rec) => {
+                const date = rec.recorded_date
+                  ? new Date(rec.recorded_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+                  : "Unknown date";
+                const isLoading = loadingTracks === rec.recording_id;
+                return (
+                  <div key={rec.recording_id} className="artist-modal-album-card">
+                    <div className="artist-modal-album-img-wrap">
+                      <div className="artist-modal-album-card-placeholder" style={{ fontSize: "1.4rem" }}>🎙</div>
+                      <button
+                        className="artist-modal-album-play-btn"
+                        disabled={isLoading}
+                        aria-label={`Play ${rec.title}`}
+                        onClick={async () => {
+                          setLoadingTracks(rec.recording_id);
+                          try {
+                            const res = await axiosInstance.get(`/live-recordings/${rec.recording_id}/tracks`);
+                            const { tracks, artist_name } = res.data;
+                            if (!tracks.length) return;
+                            dispatch(setQueue({
+                              tracks: tracks.map((t, i) => ({
+                                post_id: rec.recording_id * 1000 + i,
+                                title: t.title,
+                                audio_url: t.stream_url,
+                                username: artist_name,
+                                artist_name,
+                                album_image_url: data.image_url || null,
+                              })),
+                              startIndex: 0,
+                            }));
+                          } catch (e) {
+                            console.error("Failed to load live tracks", e);
+                          } finally {
+                            setLoadingTracks(null);
+                          }
+                        }}
+                      >
+                        {isLoading ? "…" : "▶"}
+                      </button>
+                    </div>
+                    <span className="artist-modal-album-card-name">{rec.venue || "Live"}</span>
+                    <span className="artist-modal-album-card-year">{date}</span>
                   </div>
                 );
               })}
