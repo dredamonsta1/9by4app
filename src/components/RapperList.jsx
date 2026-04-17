@@ -280,11 +280,15 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                     </div>
                     <span className="artist-modal-album-card-name">{album.album_name}</span>
                     <span className="artist-modal-album-card-year">{album.year}</span>
-                    {(album.certifications || album.Certifications) && (
-                      <span className="artist-modal-album-cert">
-                        {album.certifications || album.Certifications}
-                      </span>
-                    )}
+                    {(album.certifications || album.Certifications) && (() => {
+                      const cert = album.certifications || album.Certifications;
+                      const isEligible = cert.toLowerCase().startsWith("eligible");
+                      return (
+                        <span className={isEligible ? "artist-modal-album-cert artist-modal-album-cert--eligible" : "artist-modal-album-cert"}>
+                          {cert}
+                        </span>
+                      );
+                    })()}
                   </div>
                 );
               })}

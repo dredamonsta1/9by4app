@@ -462,6 +462,12 @@
   border-radius: var(--radius-pill);
 }
 
+.artist-modal-album-cert--eligible {
+  color: #FFB347;
+  background: rgba(255, 179, 71, 0.12);
+  border: 1px dashed #FFB347;
+}
+
 /* ======= Awards Section in Modal ======= */
 .artist-modal-awards {
   margin-top: 1.25rem;
