@@ -6,7 +6,7 @@ import StreamerCard from "../../components/StreamerCard/StreamerCard";
 import AddStreamerModal from "../../components/AddStreamerModal/AddStreamerModal";
 import styles from "./StreamersPage.module.css";
 
-const PLATFORMS  = ["All", "Twitch", "YouTube", "Kick", "TikTok", "Vedioz"];
+const PLATFORMS  = ["All", "Twitch", "YouTube", "Kick", "TikTok", "crates.fyi"];
 const CATEGORIES = ["All", "Gaming", "Music", "IRL", "Sports", "Podcasts"];
 
 const StreamersPage = () => {

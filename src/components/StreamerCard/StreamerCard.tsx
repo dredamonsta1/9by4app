@@ -9,7 +9,7 @@ const PLATFORM_LABELS: Record<string, string> = {
   youtube: "YouTube",
   kick:    "Kick",
   tiktok:  "TikTok",
-  vedioz:  "Vedioz",
+  cratesfyi: "crates.fyi",
 };
 
 const PLATFORM_COLORS: Record<string, string> = {
@@ -17,7 +17,7 @@ const PLATFORM_COLORS: Record<string, string> = {
   youtube: "#ff0000",
   kick:    "#53fc18",
   tiktok:  "#010101",
-  vedioz:  "var(--color-accent)",
+  cratesfyi: "var(--color-accent)",
 };
 
 interface Props {

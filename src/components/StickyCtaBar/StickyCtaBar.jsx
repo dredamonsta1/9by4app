@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./StickyCtaBar.module.css";
 
-const SESSION_KEY = "9by4_cta_dismissed";
+const SESSION_KEY = "cratesfyi_cta_dismissed";
 
 const StickyCtaBar = () => {
   const [dismissed, setDismissed] = useState(
@@ -22,7 +22,7 @@ const StickyCtaBar = () => {
         Where do they rank on your list? Build your Top 20.
       </p>
       <Link to="/signup" className={styles.cta}>
-        Join Vedioz
+        Join crates.fyi
       </Link>
       <button className={styles.close} onClick={handleDismiss} aria-label="Dismiss">
         &times;

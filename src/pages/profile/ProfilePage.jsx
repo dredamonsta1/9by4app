@@ -24,7 +24,7 @@ import StanCard from "../../components/StanCard/StanCard";
 import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
 import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
-const PROFILE_MODE_KEY = "9by4_profile_mode";
+const PROFILE_MODE_KEY = "cratesfyi_profile_mode";
 
 const ProfilePage = () => {
   const { userId } = useParams();
