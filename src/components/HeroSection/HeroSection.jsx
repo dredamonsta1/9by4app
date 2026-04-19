@@ -24,7 +24,7 @@ const HeroSection = () => {
 
   return (
     <header className={styles.hero}>
-      <img src={vediozLogo} alt="Vedioz" className={styles.wordmark} />
+      <img src={vediozLogo} alt="crates.fyi" className={styles.wordmark} />
       {stats && (
         <div className={styles.statRow}>
           <span>{stats.artist_count.toLocaleString()} artists</span>

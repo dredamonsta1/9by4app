@@ -51,7 +51,7 @@ const Waitlist = () => {
         ) : (
           <>
             <p className={styles.subtitle}>
-              Vedioz is currently invite-only to ensure a high-quality
+              crates.fyi is currently invite-only to ensure a high-quality
               community.
             </p>
 

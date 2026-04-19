@@ -11,7 +11,7 @@ const Footer = () => {
 
         {/* Brand */}
         <div className={styles.brand}>
-          <Link to="/" className={styles.logo}>Vedioz</Link>
+          <Link to="/" className={styles.logo}>crates.fyi</Link>
           <p className={styles.tagline}>The culture's ranking system.</p>
         </div>
 
@@ -37,7 +37,7 @@ const Footer = () => {
       </div>
 
       <div className={styles.bottom}>
-        <span>© {year} Vedioz. All rights reserved.</span>
+        <span>© {year} crates.fyi. All rights reserved.</span>
         <Link to="/terms" className={styles.termsLink}>Terms of Use</Link>
       </div>
     </footer>

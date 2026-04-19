@@ -230,7 +230,7 @@ export interface WeeklyTrendingData {
 // Streamers
 // ---------------------------------------------------------------------------
 
-export type StreamerPlatform = "twitch" | "youtube" | "kick" | "tiktok" | "vedioz";
+export type StreamerPlatform = "twitch" | "youtube" | "kick" | "tiktok" | "cratesfyi";
 export type StreamerCategory = "Gaming" | "Music" | "IRL" | "Sports" | "Podcasts";
 
 export interface Streamer {

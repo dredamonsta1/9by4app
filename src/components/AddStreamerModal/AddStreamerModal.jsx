@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./AddStreamerModal.module.css";
 
-const PLATFORMS  = ["twitch", "youtube", "kick", "tiktok", "vedioz"];
+const PLATFORMS  = ["twitch", "youtube", "kick", "tiktok", "cratesfyi"];
 const CATEGORIES = ["Gaming", "Music", "IRL", "Sports", "Podcasts"];
 
 const AddStreamerModal = ({ onClose, onAdded }) => {

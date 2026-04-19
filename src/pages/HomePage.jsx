@@ -13,7 +13,7 @@ import StickyCtaBar from "../components/StickyCtaBar/StickyCtaBar";
 import NewMusicSection from "../components/NewMusicSection/NewMusicSection";
 import axiosInstance from "../utils/axiosInstance";
 
-const VIEW_MODE_KEY = "9by4_view_mode";
+const VIEW_MODE_KEY = "cratesfyi_view_mode";
 
 const HomePage = () => {
   const dispatch = useDispatch();
