@@ -118,6 +118,14 @@ function PostItem({ post, currentUserId, onDelete }) {
   const isOwner = currentUserId === post.user_id;
   const isAgentPost = post.is_agent_post;
   const isImage = post.post_type === "image";
+
+  const AGENT_CATEGORY = {
+    music:         { label: "stanbox Music",         badge: "Music" },
+    sports:        { label: "stanbox Sports",        badge: "Sports" },
+    entertainment: { label: "stanbox Entertainment", badge: "Entertainment" },
+    news:          { label: "stanbox News",          badge: "News" },
+  };
+  const agentMeta = AGENT_CATEGORY[post.category] ?? AGENT_CATEGORY.news;
   const isVideo = post.post_type === "video";
   const isMusic = post.post_type === "music";
 
@@ -170,7 +178,7 @@ function PostItem({ post, currentUserId, onDelete }) {
       <div className={styles.postHeader}>
         <div className={styles.userInfo}>
           {isAgentPost ? (
-            <span className={styles.agentLabel}>stanbox News</span>
+            <span className={styles.agentLabel}>{agentMeta.label}</span>
           ) : (
             <Link to={`/profile/${post.user_id}`} className={styles.username}>{post.username || `User ${post.user_id}`}</Link>
           )}
@@ -178,7 +186,7 @@ function PostItem({ post, currentUserId, onDelete }) {
         </div>
         <div className={styles.postActions}>
           {isAgentPost ? (
-            <span className={styles.agentBadge}>News</span>
+            <span className={styles.agentBadge}>{agentMeta.badge}</span>
           ) : (
             <span className={styles.postTypeBadge}>
               {isVideo ? "Video" : isImage ? "Image" : isMusic ? "Music" : "Text"}
