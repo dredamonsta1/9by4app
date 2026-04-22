@@ -6,11 +6,11 @@ const LAST_UPDATED = "April 7, 2026";
 const sections = [
   {
     title: "1. Acceptance of Terms",
-    body: `By accessing or using crates.fyi ("the Platform", "we", "us", or "our"), you agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, do not access or use the Platform. These Terms constitute a legally binding agreement between you and crates.fyi.`,
+    body: `By accessing or using stanbox ("the Platform", "we", "us", or "our"), you agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, do not access or use the Platform. These Terms constitute a legally binding agreement between you and stanbox.`,
   },
   {
     title: "2. Eligibility",
-    body: `You must be at least 13 years of age to use the Platform. By using crates.fyi, you represent and warrant that you meet this requirement. Access to the Platform is currently invite-only. Creating an account requires a valid invite code. Sharing, selling, or transferring invite codes is prohibited and may result in account termination.`,
+    body: `You must be at least 13 years of age to use the Platform. By using stanbox, you represent and warrant that you meet this requirement. Access to the Platform is currently invite-only. Creating an account requires a valid invite code. Sharing, selling, or transferring invite codes is prohibited and may result in account termination.`,
   },
   {
     title: "3. User Accounts",
@@ -18,11 +18,11 @@ const sections = [
   },
   {
     title: "4. User-Generated Content",
-    body: `You retain ownership of content you post on crates.fyi ("User Content"), including text posts, images, and music. By posting User Content, you grant crates.fyi a non-exclusive, worldwide, royalty-free license to display, distribute, and promote that content on and through the Platform.\n\nYou represent and warrant that: (a) you own or have the necessary rights to post your User Content; (b) your User Content does not infringe any third-party intellectual property, privacy, or publicity rights; and (c) your User Content complies with these Terms.`,
+    body: `You retain ownership of content you post on stanbox ("User Content"), including text posts, images, and music. By posting User Content, you grant stanbox a non-exclusive, worldwide, royalty-free license to display, distribute, and promote that content on and through the Platform.\n\nYou represent and warrant that: (a) you own or have the necessary rights to post your User Content; (b) your User Content does not infringe any third-party intellectual property, privacy, or publicity rights; and (c) your User Content complies with these Terms.`,
   },
   {
     title: "5. AI-Powered Content Moderation",
-    body: `crates.fyi uses automated AI systems to detect potentially false, misleading, or harmful content ("Misinformation Detection"). Content flagged by these systems may be labeled, restricted, or removed. AI moderation is supplementary and not infallible — flagged content is subject to human review.\n\nYou acknowledge that automated moderation decisions may occasionally be incorrect. You may appeal a moderation action by contacting us. We reserve the right to make final decisions on all content disputes.`,
+    body: `stanbox uses automated AI systems to detect potentially false, misleading, or harmful content ("Misinformation Detection"). Content flagged by these systems may be labeled, restricted, or removed. AI moderation is supplementary and not infallible — flagged content is subject to human review.\n\nYou acknowledge that automated moderation decisions may occasionally be incorrect. You may appeal a moderation action by contacting us. We reserve the right to make final decisions on all content disputes.`,
   },
   {
     title: "6. Prohibited Conduct",
@@ -30,11 +30,11 @@ const sections = [
   },
   {
     title: "7. Artist Profiles and Music Data",
-    body: `Artist profile data on crates.fyi — including names, discographies, certifications, and biographical information — is aggregated from public sources for informational purposes. We do not claim ownership of this data and make no guarantees as to its accuracy or completeness.\n\nIf you are an artist or represent an artist and believe information is incorrect or wish to claim a profile, please contact us.`,
+    body: `Artist profile data on stanbox — including names, discographies, certifications, and biographical information — is aggregated from public sources for informational purposes. We do not claim ownership of this data and make no guarantees as to its accuracy or completeness.\n\nIf you are an artist or represent an artist and believe information is incorrect or wish to claim a profile, please contact us.`,
   },
   {
     title: "8. Intellectual Property",
-    body: `The crates.fyi name, logo, design, and platform software are the exclusive property of crates.fyi and are protected by applicable intellectual property laws. Nothing in these Terms grants you any right to use crates.fyi's trademarks, logos, or proprietary content without our prior written consent.\n\nIf you believe content on the Platform infringes your copyright, please submit a notice to us with sufficient detail to identify the allegedly infringing material and your contact information.`,
+    body: `The stanbox name, logo, design, and platform software are the exclusive property of stanbox and are protected by applicable intellectual property laws. Nothing in these Terms grants you any right to use stanbox's trademarks, logos, or proprietary content without our prior written consent.\n\nIf you believe content on the Platform infringes your copyright, please submit a notice to us with sufficient detail to identify the allegedly infringing material and your contact information.`,
   },
   {
     title: "9. Creator Subscriptions and Payments",
@@ -54,7 +54,7 @@ const sections = [
   },
   {
     title: "13. Governing Law",
-    body: `These Terms are governed by the laws of the United States, without regard to conflict of law principles. Any disputes arising under these Terms shall be resolved through binding arbitration on an individual basis. You waive any right to participate in a class action lawsuit or class-wide arbitration against crates.fyi.`,
+    body: `These Terms are governed by the laws of the United States, without regard to conflict of law principles. Any disputes arising under these Terms shall be resolved through binding arbitration on an individual basis. You waive any right to participate in a class action lawsuit or class-wide arbitration against stanbox.`,
   },
   {
     title: "14. Changes to These Terms",
@@ -62,7 +62,7 @@ const sections = [
   },
   {
     title: "15. Contact",
-    body: `If you have questions about these Terms or wish to report a violation, please contact us through the Platform or reach out to the crates.fyi team directly.`,
+    body: `If you have questions about these Terms or wish to report a violation, please contact us through the Platform or reach out to the stanbox team directly.`,
   },
 ];
 
@@ -73,7 +73,7 @@ const TermsOfUse = () => (
         <h1 className={styles.title}>Terms of Use</h1>
         <p className={styles.meta}>Last updated: {LAST_UPDATED}</p>
         <p className={styles.intro}>
-          Welcome to crates.fyi — a social platform for hip-hop artists and fans.
+          Welcome to stanbox — a social platform for hip-hop artists and fans.
           Please read these Terms carefully before using the Platform.
         </p>
       </header>

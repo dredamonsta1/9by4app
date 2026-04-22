@@ -9,7 +9,7 @@ const PLATFORM_LABELS: Record<string, string> = {
   youtube: "YouTube",
   kick:    "Kick",
   tiktok:  "TikTok",
-  cratesfyi: "crates.fyi",
+  cratesfyi: "stanbox",
 };
 
 const PLATFORM_COLORS: Record<string, string> = {

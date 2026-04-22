@@ -22,7 +22,7 @@ const StickyCtaBar = () => {
         Where do they rank on your list? Build your Top 20.
       </p>
       <Link to="/signup" className={styles.cta}>
-        Join crates.fyi
+        Join stanbox
       </Link>
       <button className={styles.close} onClick={handleDismiss} aria-label="Dismiss">
         &times;

@@ -149,7 +149,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
 
   const handleShare = () => {
     const url = `${window.location.origin}/artist/${data.artist_id}`;
-    const text = `${data.artist_name || data.name} — #${rank ?? "?"} on crates.fyi`;
+    const text = `${data.artist_name || data.name} — #${rank ?? "?"} on stanbox`;
     if (navigator.share) {
       navigator.share({ title: text, url }).catch(() => {});
     } else {

@@ -170,7 +170,7 @@ function PostItem({ post, currentUserId, onDelete }) {
       <div className={styles.postHeader}>
         <div className={styles.userInfo}>
           {isAgentPost ? (
-            <span className={styles.agentLabel}>crates.fyi News</span>
+            <span className={styles.agentLabel}>stanbox News</span>
           ) : (
             <Link to={`/profile/${post.user_id}`} className={styles.username}>{post.username || `User ${post.user_id}`}</Link>
           )}
