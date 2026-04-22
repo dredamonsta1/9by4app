@@ -96,7 +96,7 @@ function Login() {
       <div className={styles.authCard}>
         <h1 className={styles.title}>Welcome Back</h1>
         <p className={styles.subtitle}>
-          Enter your credentials to access crates.fyi.
+          Enter your credentials to access stanbox.
         </p>
 
         {error && <div className={styles.errorBox}>{error}</div>}

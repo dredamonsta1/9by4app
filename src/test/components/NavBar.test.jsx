@@ -88,7 +88,7 @@ describe("NavBar Component", () => {
 
     it("renders the logo", () => {
       renderWithProviders(<NavBar />);
-      expect(screen.getByText("crates.fyi")).toBeInTheDocument();
+      expect(screen.getByText("stanbox")).toBeInTheDocument();
     });
 
     it("renders guest navigation links when not logged in", () => {
@@ -277,7 +277,7 @@ describe("NavBar Component", () => {
       const { container } = renderWithProviders(<NavBar />);
       const logo = container.querySelector(".logo");
       expect(logo).toBeInTheDocument();
-      expect(logo).toHaveTextContent("crates.fyi");
+      expect(logo).toHaveTextContent("stanbox");
     });
 
     it("renders navigation links list", () => {

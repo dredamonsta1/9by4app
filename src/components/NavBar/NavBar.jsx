@@ -26,7 +26,7 @@ const NavBar = () => {
   return (
     <nav className={styles.navBar}>
       <Link to="/" className={styles.logo} onClick={closeMenu}>
-        <img src={vediozLogo} alt="crates.fyi" className={styles.logoImg} />
+        <img src={vediozLogo} alt="stanbox" className={styles.logoImg} />
       </Link>
 
       <button

@@ -72,7 +72,7 @@ const AdminDashboard = () => {
 
       <div className={styles.adminContainer}>
         <header className={styles.header}>
-          <h1>crates.fyi Control Room</h1>
+          <h1>stanbox Control Room</h1>
           <p>Platform health and user management.</p>
         </header>
 
