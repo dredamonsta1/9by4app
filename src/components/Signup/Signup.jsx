@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../store/authSlice";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
 
 function Signup() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -34,13 +37,15 @@ function Signup() {
         invite_code: formData.inviteCode.trim().toUpperCase(),
       });
 
-      setMessage({
-        text: "Account verified! Redirecting to login...",
-        type: "success",
+      // Auto-login after successful registration
+      const loginRes = await axiosInstance.post("/users/login", {
+        username: formData.username.trim(),
+        password: formData.password,
       });
-
-      // High-level UX: shorter delay for a snappier feel
-      setTimeout(() => navigate("/login"), 1500);
+      const { token, user } = loginRes.data;
+      localStorage.setItem("token", token);
+      dispatch(setCredentials({ user, token }));
+      navigate("/");
     } catch (error) {
       setMessage({
         text:
