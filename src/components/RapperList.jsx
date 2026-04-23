@@ -116,6 +116,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
 
   const data = fullArtist || current;
   const albums = data.albums || [];
+  const singles = data.singles || [];
   const artistName = (data.name || data.artist_name || "").toLowerCase();
 
   // Global rank — index in sorted artists array
@@ -292,6 +293,45 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* Singles — horizontal scroll */}
+        {singles.length > 0 && (
+          <div className="artist-modal-albums">
+            <h3>Singles</h3>
+            <div className="artist-modal-albums-scroll">
+              {singles.map((single, i) => (
+                <div key={single.single_id || i} className="artist-modal-album-card">
+                  <div className="artist-modal-album-img-wrap">
+                    {single.single_image_url ? (
+                      <img
+                        src={resolveImageUrl(single.single_image_url)}
+                        alt={single.single_name}
+                        className="artist-modal-album-card-img"
+                      />
+                    ) : (
+                      <div className="artist-modal-album-card-placeholder">
+                        {(single.single_name || "").split(" ").map((w) => w[0]).join("").slice(0, 3)}
+                      </div>
+                    )}
+                    {single.stream_url && (
+                      <a
+                        href={single.stream_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="artist-modal-album-play-btn"
+                        aria-label={`Listen to ${single.single_name}`}
+                      >
+                        ▶
+                      </a>
+                    )}
+                  </div>
+                  <span className="artist-modal-album-card-name">{single.single_name}</span>
+                  <span className="artist-modal-album-card-year">{single.year}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
