@@ -355,6 +355,49 @@
   margin-top: 0.5rem !important;
 }
 
+/* ======= Members Section in Modal ======= */
+.artist-modal-members {
+  margin-bottom: 1.25rem;
+}
+
+.artist-modal-members h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.artist-modal-members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.artist-modal-member-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem 0.3rem 0.3rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.artist-modal-member-chip:hover {
+  background: rgba(255,255,255,0.16);
+}
+
+.artist-modal-member-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* ======= Upcoming Section in Modal ======= */
 .artist-modal-upcoming {
   margin-bottom: 1.25rem;
