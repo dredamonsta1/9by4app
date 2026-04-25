@@ -220,6 +220,31 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
           </div>
         )}
 
+        {/* Group members */}
+        {data.members && data.members.length > 0 && (
+          <div className="artist-modal-members">
+            <h3>Members</h3>
+            <div className="artist-modal-members-list">
+              {data.members.map((member) => (
+                <div
+                  key={member.artist_id}
+                  className="artist-modal-member-chip"
+                  onClick={() => pushArtist(member.artist_id)}
+                >
+                  {member.image_url && (
+                    <img
+                      src={resolveImageUrl(member.image_url, "https://via.placeholder.com/32?text=?")}
+                      alt={member.artist_name}
+                      className="artist-modal-member-avatar"
+                    />
+                  )}
+                  <span>{member.artist_name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Upcoming releases */}
         {upcoming.length > 0 && (
           <div className="artist-modal-upcoming">
