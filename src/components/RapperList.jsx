@@ -229,7 +229,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                 <div
                   key={member.artist_id}
                   className="artist-modal-member-chip"
-                  onClick={() => pushArtist(member.artist_id)}
+                  onClick={() => pushArtist({ artist_id: member.artist_id, artist_name: member.artist_name, image_url: member.image_url })}
                 >
                   {member.image_url && (
                     <img
