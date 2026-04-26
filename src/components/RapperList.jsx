@@ -245,6 +245,31 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
           </div>
         )}
 
+        {/* Groups this artist belongs to */}
+        {data.groups && data.groups.length > 0 && (
+          <div className="artist-modal-members">
+            <h3>Member of</h3>
+            <div className="artist-modal-members-list">
+              {data.groups.map((group) => (
+                <div
+                  key={group.artist_id}
+                  className="artist-modal-member-chip"
+                  onClick={() => pushArtist({ artist_id: group.artist_id, artist_name: group.artist_name, image_url: group.image_url })}
+                >
+                  {group.image_url && (
+                    <img
+                      src={resolveImageUrl(group.image_url, "https://via.placeholder.com/32?text=?")}
+                      alt={group.artist_name}
+                      className="artist-modal-member-avatar"
+                    />
+                  )}
+                  <span>{group.artist_name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Upcoming releases */}
         {upcoming.length > 0 && (
           <div className="artist-modal-upcoming">
