@@ -653,6 +653,24 @@
   color: var(--color-text-secondary);
 }
 
+/* ======= Shop link ======= */
+.artist-modal-shop-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-accent, #6c63ff);
+  text-decoration: none;
+  border: 1px solid var(--color-accent, #6c63ff);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  transition: background 0.15s, color 0.15s;
+}
+.artist-modal-shop-link:hover {
+  background: var(--color-accent, #6c63ff);
+  color: #fff;
+}
+
 /* ======= Stan rank ======= */
 .artist-modal-stan-rank {
   display: flex;
