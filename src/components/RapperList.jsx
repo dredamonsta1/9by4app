@@ -197,6 +197,16 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
               {data.region && <span className="artist-modal-tag">{data.region}</span>}
               {data.label && <span className="artist-modal-tag">{data.label}</span>}
             </div>
+            {data.website_url && (
+              <a
+                href={data.website_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="artist-modal-shop-link"
+              >
+                Official Shop
+              </a>
+            )}
           </div>
         </div>
 
