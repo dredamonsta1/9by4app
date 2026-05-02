@@ -6,7 +6,7 @@ import { addArtistToProfileList, reorderProfileList } from "../redux/actions/pro
 import { setQueue } from "../redux/playerSlice";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
-import ArtistPreviewPlayer from "./ArtistPreviewPlayer/ArtistPreviewPlayer";
+import AlbumPreviewButton from "./AlbumPreviewButton/AlbumPreviewButton";
 
 // ---- Position Selector ----
 const PositionSelector = ({ profileList, artistId, onSelect, onClose }) => {
@@ -211,9 +211,6 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
           </div>
         </div>
 
-        {/* Audio Preview */}
-        <ArtistPreviewPlayer artistId={data.artist_id} onPlayStart={() => {}} />
-
         {/* Stan rank (logged-in, if record exists) */}
         {isLoggedIn && stanRank && (
           <div className="artist-modal-stan-rank">
@@ -345,6 +342,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                     </div>
                     <span className="artist-modal-album-card-name">{album.album_name}</span>
                     <span className="artist-modal-album-card-year">{album.year}</span>
+                    <AlbumPreviewButton artistId={data.artist_id} albumName={album.album_name} />
                     {(album.certifications || album.Certifications) && (() => {
                       const cert = album.certifications || album.Certifications;
                       const isEligible = cert.toLowerCase().startsWith("eligible");
