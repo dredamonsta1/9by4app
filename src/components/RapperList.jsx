@@ -6,6 +6,7 @@ import { addArtistToProfileList, reorderProfileList } from "../redux/actions/pro
 import { setQueue } from "../redux/playerSlice";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
+import ArtistPreviewPlayer from "./ArtistPreviewPlayer/ArtistPreviewPlayer";
 
 // ---- Position Selector ----
 const PositionSelector = ({ profileList, artistId, onSelect, onClose }) => {
@@ -209,6 +210,9 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
             )}
           </div>
         </div>
+
+        {/* Audio Preview */}
+        <ArtistPreviewPlayer artistId={data.artist_id} onPlayStart={() => {}} />
 
         {/* Stan rank (logged-in, if record exists) */}
         {isLoggedIn && stanRank && (

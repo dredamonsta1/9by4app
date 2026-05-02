@@ -1,0 +1,121 @@
+.artist-preview-player {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  margin: 0.5rem 0 0.25rem;
+  background: var(--color-surface-raised, rgba(255,255,255,0.04));
+  border: 1px solid var(--color-border-default, rgba(255,255,255,0.08));
+  border-radius: var(--radius-md, 10px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Thumb */
+.app-thumb-wrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--color-surface-sunken, rgba(0,0,0,0.3));
+  border: none;
+  padding: 0;
+}
+
+.app-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.app-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface-sunken, rgba(0,0,0,0.3));
+}
+
+.app-play-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.app-thumb-wrap:hover .app-play-icon,
+.app-thumb-wrap.app-playing .app-play-icon {
+  opacity: 1;
+}
+
+/* Spinner */
+.app-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: app-spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes app-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Meta */
+.app-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.app-track-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-album-name {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary, rgba(255,255,255,0.55));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-provider-badge {
+  font-size: 0.65rem;
+  color: var(--color-text-tertiary, rgba(255,255,255,0.35));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Progress bar — sits at the bottom of the card */
+.app-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-border-default, rgba(255,255,255,0.08));
+}
+
+.app-progress-fill {
+  height: 100%;
+  background: var(--color-accent, #6c63ff);
+  transition: width 0.25s linear;
+}
