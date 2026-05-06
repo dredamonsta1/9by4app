@@ -3,6 +3,9 @@
 .feedContainer {
   min-height: 100vh;
   padding: 2rem;
+  background: rgba(8, 15, 26, 0.82);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 .feedContent {
