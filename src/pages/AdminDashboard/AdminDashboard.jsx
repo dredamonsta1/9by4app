@@ -17,8 +17,20 @@ const AdminDashboard = () => {
     total_users: 0,
     pending_waitlist: 0,
     total_posts: 0,
+    total_artists: 0,
+    artists_with_image: 0,
+    artists_with_albums: 0,
+    total_albums: 0,
+    albums_with_cover: 0,
+    enriched_last_hour: 0,
+    enriched_last_24h: 0,
   });
   const [loading, setLoading] = useState(true);
+
+  const pct = (num, den) => {
+    if (!den) return "0";
+    return ((Number(num) / Number(den)) * 100).toFixed(1);
+  };
 
   const checkHealth = async () => {
     try {
@@ -108,6 +120,55 @@ const AdminDashboard = () => {
             <Link to="/agents/register" className={styles.toolBtn}>
               Register Agent
             </Link>
+          </div>
+        </section>
+
+        <section className={styles.quickActions}>
+          <h2>Catalog Coverage</h2>
+          <div className={styles.statGrid}>
+            <div className={styles.statCard}>
+              <h3>Total Artists</h3>
+              <p className={styles.statNumber}>
+                {Number(stats.total_artists).toLocaleString()}
+              </p>
+            </div>
+            <div className={styles.statCard}>
+              <h3>Artists w/ Image</h3>
+              <p className={styles.statNumber}>
+                {Number(stats.artists_with_image).toLocaleString()}
+              </p>
+              <span className={styles.actionHint}>
+                {pct(stats.artists_with_image, stats.total_artists)}% of catalog
+              </span>
+            </div>
+            <div className={styles.statCard}>
+              <h3>Artists w/ Albums</h3>
+              <p className={styles.statNumber}>
+                {Number(stats.artists_with_albums).toLocaleString()}
+              </p>
+              <span className={styles.actionHint}>
+                {pct(stats.artists_with_albums, stats.total_artists)}% of catalog
+              </span>
+            </div>
+            <div className={styles.statCard}>
+              <h3>Total Albums</h3>
+              <p className={styles.statNumber}>
+                {Number(stats.total_albums).toLocaleString()}
+              </p>
+              <span className={styles.actionHint}>
+                {Number(stats.albums_with_cover).toLocaleString()} with cover
+                ({pct(stats.albums_with_cover, stats.total_albums)}%)
+              </span>
+            </div>
+            <div className={styles.statCard}>
+              <h3>Enriched (1h)</h3>
+              <p className={styles.statNumber}>
+                {Number(stats.enriched_last_hour).toLocaleString()}
+              </p>
+              <span className={styles.actionHint}>
+                {Number(stats.enriched_last_24h).toLocaleString()} in last 24h
+              </span>
+            </div>
           </div>
         </section>
       </div>
