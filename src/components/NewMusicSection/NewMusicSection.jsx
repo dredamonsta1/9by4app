@@ -13,6 +13,13 @@ const timeAgo = (ts) => {
   return `${Math.floor(diff / 86400)}d ago`;
 };
 
+const formatReleaseDate = (dateStr) => {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+};
+
 // Lane 1 — Upcoming releases (Spotify/MusicBrainz) with DB albums as fallback
 const ArtistReleasesLane = ({ onArtistClick, upcomingReleases }) => {
   const [albums, setAlbums] = useState([]);
@@ -85,7 +92,7 @@ const ArtistReleasesLane = ({ onArtistClick, upcomingReleases }) => {
             {album.artist_name}
           </button>
           <div className={styles.albumMeta}>
-            <span>{album.year}</span>
+            <span>{formatReleaseDate(album.release_date) || album.year}</span>
             {album.certifications && (
               <span className={styles.certBadge}>{album.certifications}</span>
             )}
