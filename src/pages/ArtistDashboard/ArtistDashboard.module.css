@@ -1,0 +1,217 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  color: #ededed;
+}
+
+.header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.25rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0;
+  color: #9a9a9a;
+  font-size: 1rem;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.statCard {
+  background: #161616;
+  border: 1px solid #262626;
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statNum {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: #9a9a9a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.listSection {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.listTitle {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #1d1d1d;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #262626;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.rank.top5 {
+  background: linear-gradient(135deg, #f5d76e, #b78a1a);
+  color: #1a1a1a;
+}
+
+.rank.top10 {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.rank.top20 {
+  background: #1f1f1f;
+  color: #c9c9c9;
+}
+
+.rank.unranked {
+  background: #1a1a1a;
+  color: #6a6a6a;
+}
+
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.userLink:hover .username {
+  text-decoration: underline;
+}
+
+.avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #2a2a2a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #c9c9c9;
+}
+
+.username {
+  font-weight: 600;
+}
+
+.added {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.muted {
+  color: #888;
+  margin: 0;
+}
+
+.error {
+  color: #ff6b6b;
+  margin: 0;
+}
+
+.gate {
+  text-align: center;
+  padding: 4rem 1.25rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.gate h1 {
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
+}
+
+.gate p {
+  color: #b3b3b3;
+  margin: 0 0 0.5rem;
+}
+
+.gateSub {
+  color: #888 !important;
+  font-size: 0.95rem;
+}
+
+.gateBtn {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.65rem 1.25rem;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+  .row {
+    grid-template-columns: 2.5rem 1fr;
+  }
+  .added {
+    grid-column: 2 / 3;
+    text-align: left;
+    font-size: 0.8rem;
+  }
+}
