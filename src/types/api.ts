@@ -12,6 +12,8 @@ export interface AuthUser {
   role: UserRole;
   creator_tier?: CreatorTier;
   profile_image?: string | null;
+  artist_id?: number | null;
+  created_at?: string;
 }
 
 export interface Post {
