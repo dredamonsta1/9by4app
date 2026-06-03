@@ -46,7 +46,7 @@ const PositionSelector = ({ profileList, artistId, onSelect, onClose }) => {
 // ---- Artist Modal ----
 export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
   const profileList = useSelector((state) => state.profileList.list);
   const allArtists = useSelector((state) => state.artists.artists);
 
@@ -171,6 +171,11 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
             <button className="artist-modal-back" onClick={popArtist}>← Back</button>
           )}
           <div className="artist-modal-topbar-actions">
+            {user?.artist_id && data?.artist_id && user.artist_id === data.artist_id && (
+              <Link to="/artist-settings" className="artist-modal-edit-world-link" title="Edit your world">
+                Edit your world
+              </Link>
+            )}
             <button className="artist-modal-share-btn" onClick={handleShare} title="Share">⬆</button>
             <button className="artist-modal-close" onClick={onClose}>&times;</button>
           </div>

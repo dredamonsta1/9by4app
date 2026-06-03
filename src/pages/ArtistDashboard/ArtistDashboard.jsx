@@ -91,6 +91,9 @@ const ArtistDashboard = () => {
         <p className={styles.subtitle}>
           People who have you in their Top 20 on stanbox.
         </p>
+        <Link to="/artist-settings" className={styles.editWorldLink}>
+          Edit your world →
+        </Link>
       </header>
 
       <section className={styles.statsRow}>

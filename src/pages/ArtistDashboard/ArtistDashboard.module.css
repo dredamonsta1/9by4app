@@ -22,6 +22,21 @@
   font-size: 1rem;
 }
 
+.editWorldLink {
+  display: inline-block;
+  margin-top: 0.85rem;
+  color: #c9c9c9;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-bottom: 1px solid #2f2f2f;
+  padding-bottom: 2px;
+}
+
+.editWorldLink:hover {
+  color: #fff;
+  border-bottom-color: #6a6a6a;
+}
+
 .statsRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
