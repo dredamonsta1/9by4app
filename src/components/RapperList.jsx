@@ -203,15 +203,34 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
               {data.region && <span className="artist-modal-tag">{data.region}</span>}
               {data.label && <span className="artist-modal-tag">{data.label}</span>}
             </div>
-            {data.website_url && (
-              <a
-                href={data.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="artist-modal-shop-link"
-              >
-                Official Shop
-              </a>
+            {(data.website_url || data.merch_url || data.newsletter_url || data.spotify_url || data.apple_music_url) && (
+              <div className="artist-modal-world">
+                {data.website_url && (
+                  <a href={data.website_url} target="_blank" rel="noopener noreferrer" className="artist-modal-world-btn">
+                    Website
+                  </a>
+                )}
+                {data.merch_url && (
+                  <a href={data.merch_url} target="_blank" rel="noopener noreferrer" className="artist-modal-world-btn artist-modal-world-btn--merch">
+                    Shop
+                  </a>
+                )}
+                {data.newsletter_url && (
+                  <a href={data.newsletter_url} target="_blank" rel="noopener noreferrer" className="artist-modal-world-btn">
+                    Newsletter
+                  </a>
+                )}
+                {data.spotify_url && (
+                  <a href={data.spotify_url} target="_blank" rel="noopener noreferrer" className="artist-modal-world-btn artist-modal-world-btn--spotify">
+                    Listen on Spotify
+                  </a>
+                )}
+                {data.apple_music_url && (
+                  <a href={data.apple_music_url} target="_blank" rel="noopener noreferrer" className="artist-modal-world-btn artist-modal-world-btn--apple">
+                    Listen on Apple Music
+                  </a>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -348,6 +367,40 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                     <span className="artist-modal-album-card-name">{album.album_name}</span>
                     <span className="artist-modal-album-card-year">{album.year}</span>
                     <AlbumPreviewButton artistId={data.artist_id} albumName={album.album_name} />
+                    {(album.spotify_url || album.apple_music_url) && (
+                      <div className="artist-modal-album-streaming">
+                        {album.spotify_url && (
+                          <a
+                            href={album.spotify_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="artist-modal-album-stream-btn artist-modal-album-stream-btn--spotify"
+                            title="Listen on Spotify"
+                          >
+                            Spotify
+                          </a>
+                        )}
+                        {album.apple_music_url && (
+                          <a
+                            href={album.apple_music_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="artist-modal-album-stream-btn artist-modal-album-stream-btn--apple"
+                            title="Listen on Apple Music"
+                          >
+                            Apple Music
+                          </a>
+                        )}
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      className="artist-modal-album-buy-btn"
+                      disabled
+                      title="Coming soon — downloads launching as part of Pillar B"
+                    >
+                      Buy · coming soon
+                    </button>
                     {(album.certifications || album.Certifications) && (() => {
                       const cert = album.certifications || album.Certifications;
                       const isEligible = cert.toLowerCase().startsWith("eligible");
