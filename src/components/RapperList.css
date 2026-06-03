@@ -687,6 +687,104 @@
   color: #fff;
 }
 
+/* ======= Artist "world" link-out buttons ======= */
+.artist-modal-world {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.artist-modal-world-btn {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border: 1px solid var(--color-text-secondary);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.artist-modal-world-btn:hover {
+  color: var(--color-text-bright);
+  border-color: var(--color-text-bright);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.artist-modal-world-btn--spotify {
+  color: #1db954;
+  border-color: #1db954;
+}
+.artist-modal-world-btn--spotify:hover {
+  background: #1db954;
+  color: #fff;
+}
+
+.artist-modal-world-btn--apple {
+  color: #fa57c1;
+  border-color: #fa57c1;
+}
+.artist-modal-world-btn--apple:hover {
+  background: #fa57c1;
+  color: #fff;
+}
+
+.artist-modal-world-btn--merch {
+  color: var(--color-accent, #6c63ff);
+  border-color: var(--color-accent, #6c63ff);
+}
+.artist-modal-world-btn--merch:hover {
+  background: var(--color-accent, #6c63ff);
+  color: #fff;
+}
+
+/* ======= Per-album streaming + buy buttons ======= */
+.artist-modal-album-streaming {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.artist-modal-album-stream-btn {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid currentColor;
+  transition: background 0.15s, color 0.15s;
+}
+
+.artist-modal-album-stream-btn--spotify {
+  color: #1db954;
+}
+.artist-modal-album-stream-btn--spotify:hover {
+  background: #1db954;
+  color: #fff;
+}
+
+.artist-modal-album-stream-btn--apple {
+  color: #fa57c1;
+}
+.artist-modal-album-stream-btn--apple:hover {
+  background: #fa57c1;
+  color: #fff;
+}
+
+.artist-modal-album-buy-btn {
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1px dashed #4a4a4a;
+  color: #6a6a6a;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  cursor: not-allowed;
+}
+
 /* ======= Stan rank ======= */
 .artist-modal-stan-rank {
   display: flex;
