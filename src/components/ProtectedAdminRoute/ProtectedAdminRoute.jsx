@@ -12,8 +12,10 @@ const ProtectedAdminRoute = ({ children }) => {
     return children;
   }
 
-  // 2. Only show loading if we have a token but NO user data yet.
-  if (status === "loading" && token && !user) {
+  // 2. Token present but user not loaded yet — wait, regardless of status.
+  // Covers the cold-load race where status starts as "idle" and the thunk
+  // hasn't dispatched yet. "failed" still falls through to the redirect below.
+  if (token && !user && status !== "failed") {
     return (
       <div className="p-10 text-center text-white">
         <h2 className="text-xl font-bold">Verifying Admin Credentials...</h2>
