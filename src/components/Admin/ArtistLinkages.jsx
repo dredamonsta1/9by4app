@@ -170,6 +170,7 @@ function ArtistLinkages() {
             type="text"
             className={styles.searchInput}
             placeholder="Search by artist name…"
+            data-testid="artist-linkage-artist-search"
             value={artistQuery}
             onChange={(e) => { setArtistQuery(e.target.value); setSelectedArtist(null); }}
           />
@@ -197,6 +198,7 @@ function ArtistLinkages() {
             type="text"
             className={styles.searchInput}
             placeholder="Search by username or email…"
+            data-testid="artist-linkage-user-search"
             value={userQuery}
             onChange={(e) => { setUserQuery(e.target.value); setSelectedUser(null); }}
           />
