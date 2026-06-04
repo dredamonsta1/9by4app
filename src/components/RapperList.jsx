@@ -393,14 +393,16 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                         )}
                       </div>
                     )}
-                    <button
-                      type="button"
-                      className="artist-modal-album-buy-btn"
-                      disabled
-                      title="Coming soon — downloads launching as part of Pillar B"
-                    >
-                      Buy · coming soon
-                    </button>
+                    {data.is_verified && (
+                      <button
+                        type="button"
+                        className="artist-modal-album-buy-btn"
+                        disabled
+                        title="Coming soon — downloads launching as part of Pillar B"
+                      >
+                        Buy · coming soon
+                      </button>
+                    )}
                     {(album.certifications || album.Certifications) && (() => {
                       const cert = album.certifications || album.Certifications;
                       const isEligible = cert.toLowerCase().startsWith("eligible");
