@@ -6,6 +6,7 @@ import styles from "./AdminDashboard.module.css";
 import WaitlistManager from "../../components/Admin/WaitlistManager.jsx";
 import AgentManager from "../../components/Admin/AgentManager.jsx";
 import UserAudit from "../../components/Admin/UserAudit.jsx";
+import ArtistLinkages from "../../components/Admin/ArtistLinkages.jsx";
 import GlobalSettings from "../../components/Admin/GlobalSettings.jsx";
 import ModerationQueue from "../../components/Admin/ModerationQueue.jsx";
 
@@ -176,6 +177,11 @@ const AdminDashboard = () => {
         <section className={styles.quickActions}>
           <h2>User Audit</h2>
           <UserAudit />
+        </section>
+
+        <section className={styles.quickActions}>
+          <h2>Artist Linkages</h2>
+          <ArtistLinkages />
         </section>
 
         <section className={styles.quickActions}>
