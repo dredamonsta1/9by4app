@@ -1,0 +1,295 @@
+.container { margin-top: 1rem; }
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+  margin: 0 0 0.25rem;
+}
+
+.subTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-bright);
+  margin: 1.25rem 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.intro {
+  margin: 0 0 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.intro code {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text-bright);
+}
+
+.searchInput,
+.input {
+  padding: 0.55rem 0.85rem;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.searchInput:focus,
+.input:focus { outline: none; border-color: var(--color-accent); }
+
+.selected {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.clearBtn {
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  padding: 2px 9px;
+  cursor: pointer;
+}
+.clearBtn:hover { color: var(--color-text-bright); }
+
+.dropdown {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0.3rem;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.dropdown button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dropdown button:hover { background: rgba(255, 255, 255, 0.06); }
+
+.muted { color: var(--color-text-secondary); font-size: 0.78rem; margin: 0; }
+
+.verifiedTag,
+.commerceTag,
+.stripeTag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+.verifiedTag {
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.08);
+}
+.commerceTag {
+  color: #f0a000;
+  border: 1px solid rgba(240, 160, 0, 0.4);
+  background: rgba(240, 160, 0, 0.08);
+}
+.stripeTag {
+  color: #635bff;
+  border: 1px solid rgba(99, 91, 255, 0.4);
+  background: rgba(99, 91, 255, 0.08);
+}
+
+.albumPicker { margin-top: 0.5rem; }
+
+.albumList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.albumRow {
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-default);
+  border-radius: 10px;
+}
+.albumRowActive {
+  border-color: var(--color-accent);
+}
+
+.albumBtn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.88rem;
+  border-radius: 10px;
+}
+.albumBtn:hover { background: rgba(255, 255, 255, 0.04); }
+
+.albumName {
+  font-weight: 600;
+  color: var(--color-text-bright);
+}
+
+.albumBadges {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.priceBadge,
+.dlBadge,
+.audioBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.priceBadge {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.dlBadge {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+.audioBadge {
+  color: #b3b3b3;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.help {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.checkboxRow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  color: var(--color-text-primary);
+  font-size: 0.88rem;
+}
+.checkboxRow input { width: 16px; height: 16px; }
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.saveBtn {
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.saveBtn:hover:not(:disabled) { opacity: 0.9; }
+.saveBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.cancelBtn {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  padding: 0.55rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.cancelBtn:hover:not(:disabled) {
+  color: var(--color-text-bright);
+  border-color: var(--color-text-secondary);
+}
+.cancelBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.flash {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #b4f0bf;
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
+
+.error {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 91, 91, 0.08);
+  border: 1px solid rgba(255, 91, 91, 0.3);
+  color: #ff7a7a;
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
