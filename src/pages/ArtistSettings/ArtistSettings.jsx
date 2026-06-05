@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import ClaimSearch from "../../components/ClaimSearch/ClaimSearch";
+import StripeOnboardingSection from "../../components/StripeOnboardingSection/StripeOnboardingSection";
 import styles from "./ArtistSettings.module.css";
 
 const FIELDS = [
@@ -200,6 +201,8 @@ const ArtistSettings = () => {
           Edit your world — what shows up on your stanbox artist page.
         </p>
       </header>
+
+      <StripeOnboardingSection />
 
       {loading && <p className={styles.muted}>Loading your world…</p>}
       {error && <p className={styles.errorBanner}>{error}</p>}
