@@ -7,6 +7,7 @@ import WaitlistManager from "../../components/Admin/WaitlistManager.jsx";
 import AgentManager from "../../components/Admin/AgentManager.jsx";
 import UserAudit from "../../components/Admin/UserAudit.jsx";
 import ArtistLinkages from "../../components/Admin/ArtistLinkages.jsx";
+import AlbumCommerce from "../../components/Admin/AlbumCommerce.jsx";
 import GlobalSettings from "../../components/Admin/GlobalSettings.jsx";
 import ModerationQueue from "../../components/Admin/ModerationQueue.jsx";
 
@@ -182,6 +183,11 @@ const AdminDashboard = () => {
         <section className={styles.quickActions}>
           <h2>Artist Linkages</h2>
           <ArtistLinkages />
+        </section>
+
+        <section className={styles.quickActions}>
+          <h2>Album Commerce</h2>
+          <AlbumCommerce />
         </section>
 
         <section className={styles.quickActions}>
