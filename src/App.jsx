@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadUserFromToken, loadPendingClaims } from "./redux/actions/authActions";
+import { loadUserFromToken, loadPendingClaims, loadPurchases } from "./redux/actions/authActions";
 import { ToastContainer } from "react-toastify";
 import { setCredentials, logout } from "./store/authSlice";
 // import axiosInstance from "./utils/axiosInstance.js";
@@ -51,6 +51,14 @@ const App = () => {
   useEffect(() => {
     if (token && user && !user.artist_id) {
       dispatch(loadPendingClaims());
+    }
+  }, [dispatch, token, user]);
+
+  // Load album purchases once hydrated. Drives the "Download" state on
+  // artist-page buy buttons and the Library page contents.
+  useEffect(() => {
+    if (token && user) {
+      dispatch(loadPurchases());
     }
   }, [dispatch, token, user]);
 

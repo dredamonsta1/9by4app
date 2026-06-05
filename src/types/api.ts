@@ -6,6 +6,22 @@ export type WaitlistStatus = 'pending' | 'approved' | 'rejected' | 'registered';
 export type AgentStatus = 'active' | 'rate_limited' | 'suspended';
 export type ClaimRequestStatus = 'pending' | 'approved' | 'rejected';
 
+export interface Purchase {
+  id: number;
+  album_id: number;
+  artist_id: number;
+  amount_cents: number;
+  platform_fee_cents: number;
+  artist_share_cents: number;
+  created_at: string;
+  album_name: string;
+  year?: number | null;
+  album_image_url?: string | null;
+  audio_format?: string | null;
+  artist_name: string;
+  artist_image_url?: string | null;
+}
+
 export interface ClaimRequest {
   id: number;
   artist_id: number;
