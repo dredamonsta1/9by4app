@@ -1,7 +1,7 @@
 // src/store/authSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { loadUserFromToken, loadPendingClaims } from "../redux/actions/authActions";
-import type { AuthUser, ClaimRequest } from "../types/api";
+import { loadUserFromToken, loadPendingClaims, loadPurchases } from "../redux/actions/authActions";
+import type { AuthUser, ClaimRequest, Purchase } from "../types/api";
 
 interface AuthState {
   user: AuthUser | null;
@@ -10,6 +10,7 @@ interface AuthState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null | undefined;
   claimRequests: ClaimRequest[];
+  purchases: Purchase[];
 }
 
 const persistedToken = localStorage.getItem("token");
@@ -21,6 +22,7 @@ const initialState: AuthState = {
   status: "idle", // Start at idle. Let the useEffect/Thunk set it to loading.
   error: null,
   claimRequests: [],
+  purchases: [],
 };
 
 const authSlice = createSlice({
@@ -45,6 +47,7 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.status = "idle";
       state.claimRequests = [];
+      state.purchases = [];
       localStorage.removeItem("token");
       // Clean up the "user" corpse from storage if it still exists
       localStorage.removeItem("user");
@@ -82,6 +85,9 @@ const authSlice = createSlice({
       })
       .addCase(loadPendingClaims.fulfilled, (state, action) => {
         state.claimRequests = action.payload as ClaimRequest[];
+      })
+      .addCase(loadPurchases.fulfilled, (state, action) => {
+        state.purchases = action.payload as Purchase[];
       });
   },
 });

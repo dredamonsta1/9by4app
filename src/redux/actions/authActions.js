@@ -74,6 +74,25 @@ export const loadUserFromToken = createAsyncThunk(
   }
 );
 
+// Load the requester's album purchases. Used to flip artist-page buy
+// buttons to "Download" for already-owned albums and to render the
+// Library page.
+export const loadPurchases = createAsyncThunk(
+  "auth/loadPurchases",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return rejectWithValue("No token");
+      const response = await axiosInstance.get("/users/me/purchases");
+      return response.data?.purchases ?? [];
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to load purchases"
+      );
+    }
+  }
+);
+
 // Load the requester's own artist claim requests. Used to render the
 // "Claim pending review" disabled state on artist pages and the
 // pending-status block on the dashboard/settings empty state.
