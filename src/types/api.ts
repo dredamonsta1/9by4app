@@ -4,6 +4,18 @@ export type PostType = 'text' | 'image' | 'video' | 'music';
 export type ModerationStatus = 'clean' | 'flagged';
 export type WaitlistStatus = 'pending' | 'approved' | 'rejected' | 'registered';
 export type AgentStatus = 'active' | 'rate_limited' | 'suspended';
+export type ClaimRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface ClaimRequest {
+  id: number;
+  artist_id: number;
+  status: ClaimRequestStatus;
+  admin_reason?: string | null;
+  created_at: string;
+  reviewed_at?: string | null;
+  artist_name: string;
+  artist_image_url?: string | null;
+}
 
 export interface AuthUser {
   id: number;

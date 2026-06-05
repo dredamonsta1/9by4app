@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loadUserFromToken } from "./redux/actions/authActions";
+import { loadUserFromToken, loadPendingClaims } from "./redux/actions/authActions";
 import { ToastContainer } from "react-toastify";
 import { setCredentials, logout } from "./store/authSlice";
 // import axiosInstance from "./utils/axiosInstance.js";
@@ -43,6 +43,14 @@ const App = () => {
   useEffect(() => {
     if (token && !user) {
       dispatch(loadUserFromToken());
+    }
+  }, [dispatch, token, user]);
+
+  // Load pending claim requests once the user is hydrated. Drives the
+  // "Claim pending review" state on artist pages and the dashboard block.
+  useEffect(() => {
+    if (token && user && !user.artist_id) {
+      dispatch(loadPendingClaims());
     }
   }, [dispatch, token, user]);
 

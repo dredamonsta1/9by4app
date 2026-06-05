@@ -7,6 +7,7 @@ import { setQueue } from "../redux/playerSlice";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
 import AlbumPreviewButton from "./AlbumPreviewButton/AlbumPreviewButton";
+import ClaimArtistModal from "./ClaimArtistModal/ClaimArtistModal";
 
 // ---- Position Selector ----
 const PositionSelector = ({ profileList, artistId, onSelect, onClose }) => {
@@ -47,8 +48,10 @@ const PositionSelector = ({ profileList, artistId, onSelect, onClose }) => {
 export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const claimRequests = useSelector((state) => state.auth.claimRequests);
   const profileList = useSelector((state) => state.profileList.list);
   const allArtists = useSelector((state) => state.artists.artists);
+  const [showClaimModal, setShowClaimModal] = useState(false);
 
   // Navigation stack — supports clicking related artist chips
   const [stack, setStack] = useState([artist]);
@@ -231,6 +234,34 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                   </a>
                 )}
               </div>
+            )}
+            {isLoggedIn && user && !user.artist_id && !data.is_verified && (
+              (() => {
+                const hasPending = claimRequests.some(
+                  (c) => c.status === "pending" && c.artist_id === data.artist_id
+                );
+                if (hasPending) {
+                  return (
+                    <button
+                      type="button"
+                      className="artist-modal-claim-btn artist-modal-claim-btn--pending"
+                      disabled
+                      aria-disabled="true"
+                    >
+                      Claim pending review
+                    </button>
+                  );
+                }
+                return (
+                  <button
+                    type="button"
+                    className="artist-modal-claim-btn"
+                    onClick={() => setShowClaimModal(true)}
+                  >
+                    Is this you? Claim this artist
+                  </button>
+                );
+              })()
             )}
           </div>
         </div>
@@ -593,6 +624,14 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
             artistId={data.artist_id}
             onSelect={inList ? handleChangePosition : handlePositionSelect}
             onClose={() => setShowPositionSelector(false)}
+          />
+        )}
+
+        {/* Artist claim modal */}
+        {showClaimModal && (
+          <ClaimArtistModal
+            artist={data}
+            onClose={() => setShowClaimModal(false)}
           />
         )}
       </div>

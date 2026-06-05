@@ -25,8 +25,9 @@ const tierFor = (position) => {
 };
 
 const ArtistDashboard = () => {
-  const { user, token } = useSelector((state) => state.auth);
+  const { user, token, claimRequests } = useSelector((state) => state.auth);
   const artistId = user?.artist_id ?? null;
+  const pendingClaims = (claimRequests ?? []).filter((c) => c.status === "pending");
 
   const [stans, setStans] = useState([]);
   const [count, setCount] = useState(0);
@@ -67,10 +68,27 @@ const ArtistDashboard = () => {
         <div className={styles.gate}>
           <h1>Artist Dashboard</h1>
           <p>This dashboard is for verified artists on stanbox.</p>
-          <p className={styles.gateSub}>
-            If you're an artist in the catalog and want to claim your page,
-            reach out and an admin can link your account.
-          </p>
+          {pendingClaims.length > 0 ? (
+            <div className={styles.pendingBlock}>
+              <p className={styles.pendingTitle}>Pending review</p>
+              <ul className={styles.pendingList}>
+                {pendingClaims.map((c) => (
+                  <li key={c.id} className={styles.pendingRow}>
+                    <span className={styles.pendingArtist}>{c.artist_name}</span>
+                    <span className={styles.pendingSub}>
+                      Submitted {formatDate(c.created_at)} — we'll email you when it's reviewed.
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p className={styles.gateSub}>
+              If you're an artist in the catalog, find your page and tap{" "}
+              <strong>Is this you?</strong> to submit a claim. We'll email you when it's reviewed.
+            </p>
+          )}
+          <Link to="/" className={styles.gateBtn}>Browse artists</Link>
         </div>
       </div>
     );

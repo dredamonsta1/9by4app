@@ -73,3 +73,23 @@ export const loadUserFromToken = createAsyncThunk(
     }
   }
 );
+
+// Load the requester's own artist claim requests. Used to render the
+// "Claim pending review" disabled state on artist pages and the
+// pending-status block on the dashboard/settings empty state.
+export const loadPendingClaims = createAsyncThunk(
+  "auth/loadPendingClaims",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return rejectWithValue("No token");
+      const response = await axiosInstance.get("/users/me/claim-requests");
+      const requests = response.data?.claim_requests ?? [];
+      return requests;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to load claim requests"
+      );
+    }
+  }
+);

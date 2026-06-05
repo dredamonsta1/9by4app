@@ -1,7 +1,7 @@
 // src/store/authSlice.ts
-import { createSlice } from "@reduxjs/toolkit";
-import { loadUserFromToken } from "../redux/actions/authActions";
-import type { AuthUser } from "../types/api";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { loadUserFromToken, loadPendingClaims } from "../redux/actions/authActions";
+import type { AuthUser, ClaimRequest } from "../types/api";
 
 interface AuthState {
   user: AuthUser | null;
@@ -9,6 +9,7 @@ interface AuthState {
   isLoggedIn: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null | undefined;
+  claimRequests: ClaimRequest[];
 }
 
 const persistedToken = localStorage.getItem("token");
@@ -19,6 +20,7 @@ const initialState: AuthState = {
   isLoggedIn: !!persistedToken,
   status: "idle", // Start at idle. Let the useEffect/Thunk set it to loading.
   error: null,
+  claimRequests: [],
 };
 
 const authSlice = createSlice({
@@ -42,9 +44,19 @@ const authSlice = createSlice({
       state.token = null;
       state.isLoggedIn = false;
       state.status = "idle";
+      state.claimRequests = [];
       localStorage.removeItem("token");
       // Clean up the "user" corpse from storage if it still exists
       localStorage.removeItem("user");
+    },
+    // Optimistic update after submitting a new claim — avoids waiting on a refetch.
+    addClaimRequest: (state, action: PayloadAction<ClaimRequest>) => {
+      // Replace any prior entry for the same artist (e.g., a previously-rejected one)
+      // so the modal flips to "pending" immediately.
+      state.claimRequests = [
+        action.payload,
+        ...state.claimRequests.filter((c) => c.artist_id !== action.payload.artist_id),
+      ];
     },
   },
 
@@ -67,9 +79,12 @@ const authSlice = createSlice({
         state.isLoggedIn = false;
         state.error = action.error.message;
         localStorage.removeItem("token");
+      })
+      .addCase(loadPendingClaims.fulfilled, (state, action) => {
+        state.claimRequests = action.payload as ClaimRequest[];
       });
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, addClaimRequest } = authSlice.actions;
 export default authSlice.reducer;
