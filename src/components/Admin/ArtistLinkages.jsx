@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./ArtistLinkages.module.css";
+import ClaimRequestsQueue from "./ClaimRequestsQueue";
 
 function ArtistLinkages() {
+  const [activeTab, setActiveTab] = useState("linked");
   const [linkages, setLinkages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -119,6 +121,83 @@ function ArtistLinkages() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.tabs}>
+        <button
+          type="button"
+          className={activeTab === "linked" ? styles.tabActive : styles.tab}
+          onClick={() => setActiveTab("linked")}
+        >
+          Linked
+        </button>
+        <button
+          type="button"
+          className={activeTab === "claims" ? styles.tabActive : styles.tab}
+          onClick={() => setActiveTab("claims")}
+        >
+          Claim Requests
+        </button>
+      </div>
+
+      {activeTab === "claims" ? (
+        <ClaimRequestsQueue />
+      ) : (
+        <LinkedTab
+          linkages={linkages}
+          loading={loading}
+          error={error}
+          linkMessage={linkMessage}
+          unlinking={unlinking}
+          fetchLinkages={fetchLinkages}
+          handleUnlink={handleUnlink}
+          handleLink={handleLink}
+          artistQuery={artistQuery}
+          setArtistQuery={setArtistQuery}
+          artistResults={artistResults}
+          artistSearching={artistSearching}
+          selectedArtist={selectedArtist}
+          setSelectedArtist={setSelectedArtist}
+          setArtistResults={setArtistResults}
+          userQuery={userQuery}
+          setUserQuery={setUserQuery}
+          userResults={userResults}
+          userSearching={userSearching}
+          selectedUser={selectedUser}
+          setSelectedUser={setSelectedUser}
+          setUserResults={setUserResults}
+          linking={linking}
+        />
+      )}
+    </div>
+  );
+}
+
+function LinkedTab({
+  linkages,
+  loading,
+  error,
+  linkMessage,
+  unlinking,
+  fetchLinkages,
+  handleUnlink,
+  handleLink,
+  artistQuery,
+  setArtistQuery,
+  artistResults,
+  artistSearching,
+  selectedArtist,
+  setSelectedArtist,
+  setArtistResults,
+  userQuery,
+  setUserQuery,
+  userResults,
+  userSearching,
+  selectedUser,
+  setSelectedUser,
+  setUserResults,
+  linking,
+}) {
+  return (
+    <>
       <div className={styles.header}>
         <h3 className={styles.title}>
           Currently linked <span className={styles.count}>({linkages.length})</span>
@@ -228,7 +307,7 @@ function ArtistLinkages() {
           {linking ? "Linking…" : "Link"}
         </button>
       </form>
-    </div>
+    </>
   );
 }
 
