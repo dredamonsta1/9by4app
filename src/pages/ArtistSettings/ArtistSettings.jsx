@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
+import ClaimSearch from "../../components/ClaimSearch/ClaimSearch";
 import styles from "./ArtistSettings.module.css";
 
 const FIELDS = [
@@ -162,12 +163,13 @@ const ArtistSettings = () => {
   }
 
   if (!artistId) {
+    const hasPending = pendingClaims.length > 0;
     return (
       <div className={styles.page}>
         <div className={styles.gate}>
           <h1>Artist settings</h1>
           <p>This page is for verified artists on stanbox.</p>
-          {pendingClaims.length > 0 ? (
+          {hasPending && (
             <div className={styles.pendingBlock}>
               <p className={styles.pendingTitle}>Pending review</p>
               <ul className={styles.pendingList}>
@@ -181,13 +183,10 @@ const ArtistSettings = () => {
                 ))}
               </ul>
             </div>
-          ) : (
-            <p className={styles.gateSub}>
-              If you're an artist in the catalog, find your page and tap{" "}
-              <strong>Is this you?</strong> to submit a claim. We'll email you when it's reviewed.
-            </p>
           )}
-          <Link to="/" className={styles.gateBtn}>Browse artists</Link>
+          <ClaimSearch
+            heading={hasPending ? "Claim another artist" : "Find your artist page"}
+          />
         </div>
       </div>
     );
