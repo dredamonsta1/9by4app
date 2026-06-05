@@ -39,9 +39,23 @@ const FIELDS = [
 
 const isValidUrl = (v) => v === "" || /^https?:\/\//i.test(v.trim());
 
+const formatDate = (iso) => {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return "";
+  }
+};
+
 const ArtistSettings = () => {
-  const { user, token } = useSelector((state) => state.auth);
+  const { user, token, claimRequests } = useSelector((state) => state.auth);
   const artistId = user?.artist_id ?? null;
+  const pendingClaims = (claimRequests ?? []).filter((c) => c.status === "pending");
   const navigate = useNavigate();
 
   const [initial, setInitial] = useState(null);
@@ -153,10 +167,27 @@ const ArtistSettings = () => {
         <div className={styles.gate}>
           <h1>Artist settings</h1>
           <p>This page is for verified artists on stanbox.</p>
-          <p className={styles.gateSub}>
-            If you're an artist in the catalog and want to claim your page,
-            reach out and an admin can link your account.
-          </p>
+          {pendingClaims.length > 0 ? (
+            <div className={styles.pendingBlock}>
+              <p className={styles.pendingTitle}>Pending review</p>
+              <ul className={styles.pendingList}>
+                {pendingClaims.map((c) => (
+                  <li key={c.id} className={styles.pendingRow}>
+                    <span className={styles.pendingArtist}>{c.artist_name}</span>
+                    <span className={styles.pendingSub}>
+                      Submitted {formatDate(c.created_at)} — we'll email you when it's reviewed.
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p className={styles.gateSub}>
+              If you're an artist in the catalog, find your page and tap{" "}
+              <strong>Is this you?</strong> to submit a claim. We'll email you when it's reviewed.
+            </p>
+          )}
+          <Link to="/" className={styles.gateBtn}>Browse artists</Link>
         </div>
       </div>
     );
