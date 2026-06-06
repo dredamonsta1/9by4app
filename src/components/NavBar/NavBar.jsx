@@ -102,6 +102,11 @@ const NavBar = () => {
                 </li>
               )}
               <li>
+                <Link to="/library" onClick={closeMenu}>
+                  Library
+                </Link>
+              </li>
+              <li>
                 <Link to="/profile" onClick={closeMenu} className={styles.profileLink}>
                   {user.profile_image ? (
                     <img

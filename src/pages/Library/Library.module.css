@@ -1,0 +1,191 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.subtitle {
+  margin: 0;
+  color: #b3b3b3;
+  font-size: 0.95rem;
+}
+
+.gate {
+  text-align: center;
+  padding: 4rem 1.25rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.gate h1 {
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.gate p {
+  color: #b3b3b3;
+  margin: 0 0 1rem;
+}
+
+.gateBtn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.65rem 1.25rem;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.flash {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 12px;
+  color: #b4f0bf;
+  margin-bottom: 1.5rem;
+}
+
+.flashCheck {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74, 222, 128, 0.2);
+  border-radius: 50%;
+  font-weight: 700;
+  color: #4ade80;
+  flex-shrink: 0;
+}
+
+.flashSub {
+  color: #9bce9b;
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.emptyTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+
+.emptySub {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.cover {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #222;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.albumName {
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.98rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artistLink {
+  color: #b3b3b3;
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.15s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.artistLink:hover { color: #fff; }
+
+.muted { color: #777; }
+
+.purchasedAt {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.downloadBtn {
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.downloadBtn:hover:not(:disabled) { opacity: 0.9; }
+.downloadBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 540px) {
+  .row {
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .cover { width: 56px; height: 56px; }
+  .downloadBtn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

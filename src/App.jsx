@@ -30,6 +30,7 @@ import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import StreamersPage from "./pages/Streamers/StreamersPage.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
 import ArtistSettings from "./pages/ArtistSettings/ArtistSettings.jsx";
+import Library from "./pages/Library/Library.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import PlayerBar from "./components/PlayerBar/PlayerBar";
 import "react-toastify/dist/ReactToastify.css";
@@ -90,6 +91,7 @@ const App = () => {
           <Route path="/streamers" element={<StreamersPage />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/artist-settings" element={<ArtistSettings />} />
+          <Route path="/library" element={<Library />} />
 
           <Route
             path="/admin"
