@@ -65,11 +65,13 @@ const AlbumCommerce = () => {
   }, [artistQuery]);
 
   // Fetch full artist + albums when artist is picked.
+  // GET /artists/:id wraps the row as { artist: {...} } — unwrap so that
+  // `artistDetail.albums` and the commerce flags are at the root.
   const loadArtist = useCallback(async (artistId) => {
     setArtistLoading(true);
     try {
       const res = await axiosInstance.get(`/artists/${artistId}`);
-      setArtistDetail(res.data ?? null);
+      setArtistDetail(res.data?.artist ?? null);
     } catch {
       setArtistDetail(null);
     } finally {
