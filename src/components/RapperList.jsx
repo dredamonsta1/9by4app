@@ -53,7 +53,6 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
   const profileList = useSelector((state) => state.profileList.list);
   const allArtists = useSelector((state) => state.artists.artists);
   const [showClaimModal, setShowClaimModal] = useState(false);
-  const [isFollowingArtist, setIsFollowingArtist] = useState(false);
 
   // Navigation stack — supports clicking related artist chips
   const [stack, setStack] = useState([artist]);
@@ -108,17 +107,6 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
     axiosInstance.get(`/live-recordings?artist_id=${current.artist_id}&limit=50`)
       .then((res) => setLiveRecordings(res.data.recordings || []))
       .catch(() => setLiveRecordings([]));
-
-    // Pillar B — fetch the requester's follow-status on this artist so the
-    // per-album Buy buttons can render the follow-gate accurately. Only fires
-    // for logged-in users (anonymous viewers see "Sign in to buy" anyway).
-    if (isLoggedIn) {
-      axiosInstance.get(`/artists/${current.artist_id}/follow-status`)
-        .then((res) => setIsFollowingArtist(!!res.data?.is_following))
-        .catch(() => setIsFollowingArtist(false));
-    } else {
-      setIsFollowingArtist(false);
-    }
   }, [current?.artist_id, isLoggedIn]);
 
   // Escape key to close
@@ -440,10 +428,8 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                     {data.is_verified && data.commerce_enabled && album.download_enabled && album.price_cents ? (
                       <AlbumBuyButton
                         album={album}
-                        artistId={data.artist_id}
-                        artistName={data.artist_name}
-                        isFollowing={isFollowingArtist}
-                        onFollowed={(v) => setIsFollowingArtist(v === false ? false : true)}
+                        artist={data}
+                        onListFull={() => setShowPositionSelector(true)}
                       />
                     ) : data.is_verified ? (
                       <button
