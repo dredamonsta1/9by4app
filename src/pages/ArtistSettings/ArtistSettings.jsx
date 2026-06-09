@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import ClaimSearch from "../../components/ClaimSearch/ClaimSearch";
 import StripeOnboardingSection from "../../components/StripeOnboardingSection/StripeOnboardingSection";
+import YourMusic from "../../components/YourMusic/YourMusic";
 import styles from "./ArtistSettings.module.css";
 
 const FIELDS = [
@@ -203,6 +204,8 @@ const ArtistSettings = () => {
       </header>
 
       <StripeOnboardingSection />
+
+      <YourMusic />
 
       {loading && <p className={styles.muted}>Loading your world…</p>}
       {error && <p className={styles.errorBanner}>{error}</p>}
