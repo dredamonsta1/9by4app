@@ -43,6 +43,10 @@ function loadCloudinaryWidgetScript() {
   return widgetScriptPromise;
 }
 
+const CURRENT_YEAR = new Date().getFullYear();
+const YEAR_MIN = 1900;
+const YEAR_MAX = 2030;
+
 const YourMusic = () => {
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,6 +57,15 @@ const YourMusic = () => {
   const [savingId, setSavingId] = useState(null);
   const [uploadingId, setUploadingId] = useState(null);
   const widgetRef = useRef(null);
+
+  // Create-new-album form state.
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    album_name: "",
+    year: String(CURRENT_YEAR),
+    album_image_url: "",
+  });
+  const [creating, setCreating] = useState(false);
 
   // Preload the Cloudinary widget script in the background once the component
   // mounts. Fire-and-forget — the upload click waits for it explicitly too.
@@ -239,6 +252,69 @@ const YourMusic = () => {
     }
   };
 
+  const resetCreateForm = () => {
+    setCreateForm({
+      album_name: "",
+      year: String(CURRENT_YEAR),
+      album_image_url: "",
+    });
+  };
+
+  const handleCreate = async (e) => {
+    e?.preventDefault?.();
+
+    const name = createForm.album_name.trim();
+    const yearInt = parseInt(createForm.year, 10);
+    const imageRaw = createForm.album_image_url.trim();
+
+    if (!name) {
+      toast.error("Album name is required.");
+      return;
+    }
+    if (!Number.isInteger(yearInt) || yearInt < YEAR_MIN || yearInt > YEAR_MAX) {
+      toast.error(`Year must be between ${YEAR_MIN} and ${YEAR_MAX}.`);
+      return;
+    }
+    if (imageRaw && !/^https?:\/\//i.test(imageRaw)) {
+      toast.error("Album image URL must start with http(s)://, or leave it blank.");
+      return;
+    }
+
+    setCreating(true);
+    try {
+      const res = await axiosInstance.post("/artists/me/albums", {
+        album_name: name,
+        year: yearInt,
+        album_image_url: imageRaw || null,
+      });
+      const created = res.data?.album;
+      if (created) {
+        setAlbums((prev) => [created, ...prev]);
+        setForms((prev) => ({
+          ...prev,
+          [created.album_id]: {
+            price_dollars: "",
+            download_enabled: false,
+            audio_cloudinary_public_id: "",
+            audio_format: "mp3",
+            dirty: false,
+          },
+        }));
+      }
+      resetCreateForm();
+      setCreateOpen(false);
+      toast.success(`"${name}" added. Upload audio + set a price to put it on sale.`);
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Failed to create album."
+      );
+    } finally {
+      setCreating(false);
+    }
+  };
+
   if (loading) {
     return (
       <section className={styles.section}>
@@ -267,6 +343,87 @@ const YourMusic = () => {
         Set a price, upload your audio, and flip <strong>Downloads enabled</strong>{" "}
         to put an album on sale. Fans see the Buy button on your artist page.
       </p>
+
+      <div className={styles.createBlock}>
+        {!createOpen ? (
+          <button
+            type="button"
+            className={styles.createToggleBtn}
+            onClick={() => setCreateOpen(true)}
+          >
+            + Add new album
+          </button>
+        ) : (
+          <form className={styles.createForm} onSubmit={handleCreate}>
+            <div className={styles.createGrid}>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>Album name *</span>
+                <input
+                  type="text"
+                  className={styles.input}
+                  placeholder="My New Drop"
+                  value={createForm.album_name}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, album_name: e.target.value }))
+                  }
+                  autoFocus
+                  maxLength={255}
+                  disabled={creating}
+                />
+              </label>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>Year *</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  className={styles.input}
+                  placeholder={String(CURRENT_YEAR)}
+                  min={YEAR_MIN}
+                  max={YEAR_MAX}
+                  value={createForm.year}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, year: e.target.value }))
+                  }
+                  disabled={creating}
+                />
+              </label>
+              <label className={`${styles.field} ${styles.fieldWide}`}>
+                <span className={styles.fieldLabel}>Cover image URL (optional)</span>
+                <input
+                  type="url"
+                  className={styles.input}
+                  placeholder="https://…"
+                  value={createForm.album_image_url}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, album_image_url: e.target.value }))
+                  }
+                  disabled={creating}
+                />
+              </label>
+            </div>
+            <div className={styles.createActions}>
+              <button
+                type="submit"
+                className={styles.saveBtn}
+                disabled={creating}
+              >
+                {creating ? "Creating…" : "Create album"}
+              </button>
+              <button
+                type="button"
+                className={styles.linkBtn}
+                onClick={() => {
+                  resetCreateForm();
+                  setCreateOpen(false);
+                }}
+                disabled={creating}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
 
       {albums.length === 0 ? (
         <p className={styles.muted}>No albums in your catalog yet.</p>
