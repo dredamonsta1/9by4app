@@ -1,154 +1,208 @@
-// // src/components/login/login.jsx
-// import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { setCredentials } from "../../store/authSlice";
-// import axiosInstance from "../../utils/axiosInstance";
-// import styles from "../../AuthLayout.module.css";
-
-// function Login() {
-//   const [formData, setFormData] = useState({ username: "", password: "" });
-//   const [error, setError] = useState("");
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const response = await axiosInstance.post("/users/login", formData);
-//       const { token, user } = response.data;
-
-//       localStorage.setItem("token", token);
-//       dispatch(setCredentials({ user, token }));
-//       navigate("/dashboard");
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Login failed");
-//     }
-//   };
-
-//   return (
-//     <div className="login-container">
-//       <form onSubmit={handleSubmit}>
-//         <h2>Login</h2>
-//         {error && <p className="text-red-500">{error}</p>}
-//         <input
-//           type="text"
-//           placeholder="Username"
-//           onChange={(e) =>
-//             setFormData({ ...formData, username: e.target.value })
-//           }
-//           required
-//         />
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           onChange={(e) =>
-//             setFormData({ ...formData, password: e.target.value })
-//           }
-//           required
-//         />
-//         <button type="submit">Login</button>
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default Login;
-
-// ***************************************************
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
 import axiosInstance from "../../utils/axiosInstance";
-import styles from "../../AuthLayout.module.css"; // Ensure this path is correct
+import styles from "../../AuthLayout.module.css";
+
+const RESEND_COOLDOWN_SECONDS = 30;
 
 function Login() {
-  const [formData, setFormData] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const [step, setStep] = useState("email"); // 'email' | 'code'
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Tick down the resend cooldown once per second.
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
+
+  const sendCode = async (silent = false) => {
+    setError("");
+    if (!silent) setInfo("");
+    setSending(true);
+    try {
+      await axiosInstance.post("/auth/send-code", { email: email.trim().toLowerCase() });
+      setStep("code");
+      setResendCooldown(RESEND_COOLDOWN_SECONDS);
+      if (!silent) setInfo("We sent a 6-digit code to your email.");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send code.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleSendCode = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      setError("Email is required.");
+      return;
+    }
+    await sendCode(false);
+  };
+
+  const handleResend = async () => {
+    if (resendCooldown > 0 || sending) return;
+    setInfo("");
+    await sendCode(true);
+    setInfo("Code resent. Check your inbox.");
+  };
+
+  const handleVerify = async (e) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
-
+    if (!/^\d{6}$/.test(code.trim())) {
+      setError("Enter the 6-digit code from your email.");
+      return;
+    }
+    setVerifying(true);
     try {
-      const response = await axiosInstance.post("/users/login", formData);
-      const { token, user } = response.data;
-
+      const res = await axiosInstance.post("/auth/verify-code", {
+        email: email.trim().toLowerCase(),
+        code: code.trim(),
+      });
+      const { token, user } = res.data;
       localStorage.setItem("token", token);
       dispatch(setCredentials({ user, token }));
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid username or password");
+      if (err.response?.data?.reason === "signup_required") {
+        setError("No account for that email. Sign up first.");
+      } else {
+        setError(err.response?.data?.message || "Invalid or expired code.");
+      }
     } finally {
-      setIsLoading(false);
+      setVerifying(false);
     }
   };
 
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
-        <h1 className={styles.title}>Welcome Back</h1>
+        <h1 className={styles.title}>Welcome back</h1>
         <p className={styles.subtitle}>
-          Enter your credentials to access stanbox.
+          {step === "email"
+            ? "Enter your email — we'll send you a sign-in code."
+            : `We sent a 6-digit code to ${email}. Enter it below.`}
         </p>
 
         {error && <div className={styles.errorBox}>{error}</div>}
+        {info && !error && <div className={styles.successBox}>{info}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              className={styles.input}
-              type="text"
-              placeholder="Enter your username"
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
-              required
-              disabled={isLoading}
-            />
-          </div>
+        {step === "email" ? (
+          <form onSubmit={handleSendCode}>
+            <div className={styles.formGroup}>
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                className={styles.input}
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoFocus
+                disabled={sending}
+              />
+            </div>
+            <button
+              type="submit"
+              className={styles.submitBtn}
+              disabled={sending || !email.trim()}
+            >
+              {sending ? "Sending…" : "Send code"}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleVerify}>
+            <div className={styles.formGroup}>
+              <label htmlFor="code">Sign-in code</label>
+              <input
+                id="code"
+                className={styles.input}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="123456"
+                value={code}
+                onChange={(e) =>
+                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
+                maxLength={6}
+                required
+                autoFocus
+                disabled={verifying}
+              />
+            </div>
+            <button
+              type="submit"
+              className={styles.submitBtn}
+              disabled={verifying || code.length !== 6}
+            >
+              {verifying ? "Verifying…" : "Sign in"}
+            </button>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              className={styles.input}
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={isLoading}
-          >
-            {isLoading ? "Authenticating..." : "Sign In"}
-          </button>
-        </form>
+            <div style={{ marginTop: "0.85rem", display: "flex", flexDirection: "column", gap: "0.4rem", alignItems: "center" }}>
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resendCooldown > 0 || sending || verifying}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#b3b3b3",
+                  cursor: resendCooldown > 0 ? "default" : "pointer",
+                  fontSize: "0.85rem",
+                  padding: 0,
+                }}
+              >
+                {resendCooldown > 0
+                  ? `Resend in ${resendCooldown}s`
+                  : "Resend code"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep("email");
+                  setCode("");
+                  setError("");
+                  setInfo("");
+                }}
+                disabled={verifying || sending}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#888",
+                  cursor: "pointer",
+                  fontSize: "0.82rem",
+                  padding: 0,
+                }}
+              >
+                Use a different email
+              </button>
+            </div>
+          </form>
+        )}
 
         <div className={styles.authFooter}>
           <p>
             No invite yet? <Link to="/signup">Join the Waitlist</Link>
           </p>
           <p>
-            Received a code? <Link to="/register">Register here</Link>
+            Have an invite code? <Link to="/register">Register here</Link>
           </p>
         </div>
       </div>
