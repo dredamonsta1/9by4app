@@ -9,7 +9,6 @@ import styles from "./YourMusic.module.css";
 // artists; replaces the admin-paste-public_id flow on the artist side.
 
 const CLOUDINARY_WIDGET_SRC = "https://upload-widget.cloudinary.com/global/all.js";
-const PRICE_FLOOR_CENTS = 999;
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
 
 const dollarsToCents = (str) => {
@@ -47,6 +46,20 @@ const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_MIN = 1900;
 const YEAR_MAX = 2030;
 
+// Type-driven price floors mirror the backend. Keep in sync with
+// PRICE_FLOORS_CENTS in nineByFourApi src/routes/artists.js.
+const PRICE_FLOORS_CENTS = {
+  single: 99,
+  ep: 499,
+  album: 999,
+};
+const RELEASE_TYPE_LABEL = {
+  single: "Single",
+  ep: "EP",
+  album: "Album",
+};
+const floorFor = (type) => PRICE_FLOORS_CENTS[type] ?? PRICE_FLOORS_CENTS.album;
+
 const YourMusic = () => {
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,12 +71,13 @@ const YourMusic = () => {
   const [uploadingId, setUploadingId] = useState(null);
   const widgetRef = useRef(null);
 
-  // Create-new-album form state.
+  // Create-new-release form state.
   const [createOpen, setCreateOpen] = useState(false);
   const [createForm, setCreateForm] = useState({
     album_name: "",
     year: String(CURRENT_YEAR),
     album_image_url: "",
+    release_type: "album",
   });
   const [creating, setCreating] = useState(false);
 
@@ -205,11 +219,12 @@ const YourMusic = () => {
     if (!form) return;
 
     // Client-side price validation. Server enforces the same; this is just
-    // for a faster error surface.
+    // for a faster error surface. Floor depends on the album's release_type.
     const priceCents =
       form.price_dollars === "" ? null : dollarsToCents(form.price_dollars);
-    if (priceCents != null && (!Number.isInteger(priceCents) || priceCents < PRICE_FLOOR_CENTS)) {
-      toast.error(`Price must be at least $${(PRICE_FLOOR_CENTS / 100).toFixed(2)} or blank.`);
+    const floor = floorFor(album.release_type);
+    if (priceCents != null && (!Number.isInteger(priceCents) || priceCents < floor)) {
+      toast.error(`Price must be at least $${(floor / 100).toFixed(2)} or blank.`);
       return;
     }
 
@@ -257,6 +272,7 @@ const YourMusic = () => {
       album_name: "",
       year: String(CURRENT_YEAR),
       album_image_url: "",
+      release_type: "album",
     });
   };
 
@@ -286,6 +302,7 @@ const YourMusic = () => {
         album_name: name,
         year: yearInt,
         album_image_url: imageRaw || null,
+        release_type: createForm.release_type,
       });
       const created = res.data?.album;
       if (created) {
@@ -351,13 +368,43 @@ const YourMusic = () => {
             className={styles.createToggleBtn}
             onClick={() => setCreateOpen(true)}
           >
-            + Add new album
+            + Add new release
           </button>
         ) : (
           <form className={styles.createForm} onSubmit={handleCreate}>
             <div className={styles.createGrid}>
+              <label className={`${styles.field} ${styles.fieldWide}`}>
+                <span className={styles.fieldLabel}>Release type *</span>
+                <div className={styles.typeRow}>
+                  {Object.entries(RELEASE_TYPE_LABEL).map(([value, label]) => (
+                    <label
+                      key={value}
+                      className={`${styles.typeOption} ${
+                        createForm.release_type === value ? styles.typeOptionActive : ""
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="release_type"
+                        value={value}
+                        checked={createForm.release_type === value}
+                        onChange={() =>
+                          setCreateForm((f) => ({ ...f, release_type: value }))
+                        }
+                        disabled={creating}
+                      />
+                      <span>{label}</span>
+                      <span className={styles.typeFloor}>
+                        ${(PRICE_FLOORS_CENTS[value] / 100).toFixed(2)}+
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </label>
               <label className={styles.field}>
-                <span className={styles.fieldLabel}>Album name *</span>
+                <span className={styles.fieldLabel}>
+                  {RELEASE_TYPE_LABEL[createForm.release_type]} name *
+                </span>
                 <input
                   type="text"
                   className={styles.input}
@@ -407,7 +454,9 @@ const YourMusic = () => {
                 className={styles.saveBtn}
                 disabled={creating}
               >
-                {creating ? "Creating…" : "Create album"}
+                {creating
+                  ? "Creating…"
+                  : `Create ${RELEASE_TYPE_LABEL[createForm.release_type].toLowerCase()}`}
               </button>
               <button
                 type="button"
@@ -447,6 +496,11 @@ const YourMusic = () => {
                   <div className={styles.rowHeader}>
                     <span className={styles.albumName}>{a.album_name}</span>
                     <span className={styles.year}>{a.year ?? "—"}</span>
+                    {a.release_type && a.release_type !== "album" && (
+                      <span className={styles.badgeType}>
+                        {RELEASE_TYPE_LABEL[a.release_type] ?? a.release_type}
+                      </span>
+                    )}
                     {onSale && <span className={styles.badgeOnSale}>On sale</span>}
                     {!onSale && hasAudio && (
                       <span className={styles.badgeDraft}>Audio uploaded</span>
