@@ -101,6 +101,20 @@ const NavBar = () => {
                   </Link>
                 </li>
               )}
+              {user.artist_id && (
+                <>
+                  <li>
+                    <Link to="/artist-dashboard" onClick={closeMenu}>
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/artist-settings" onClick={closeMenu}>
+                      Settings
+                    </Link>
+                  </li>
+                </>
+              )}
               <li>
                 <Link to="/library" onClick={closeMenu}>
                   Library
