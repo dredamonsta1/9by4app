@@ -149,9 +149,11 @@ const YourMusic = () => {
           apiKey: sig.api_key,
           uploadSignature: sig.signature,
           uploadSignatureTimestamp: sig.timestamp,
+          uploadPreset: sig.upload_preset, // server-defined preset enforces
+                                           // type=authenticated + resource_type=video
+                                           // on Cloudinary's side — can't be
+                                           // tampered with by the client
           folder: sig.folder,
-          resourceType: sig.resource_type, // 'video' covers audio in Cloudinary
-          type: sig.type,                   // 'authenticated'
           sources: ["local"],
           multiple: false,
           maxFileSize: MAX_FILE_SIZE_BYTES,
