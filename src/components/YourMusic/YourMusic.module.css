@@ -302,6 +302,24 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.tracksToggleBtn {
+  align-self: flex-start;
+  background: transparent;
+  color: #c9a8ff;
+  border: 1px solid rgba(155, 119, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.35rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.tracksToggleBtn:hover {
+  background: rgba(155, 119, 255, 0.08);
+  border-color: rgba(155, 119, 255, 0.55);
+}
 .audioSummary code {
   background: rgba(255, 255, 255, 0.06);
   padding: 1px 6px;
