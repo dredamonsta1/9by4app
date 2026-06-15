@@ -2,13 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
+import {
+  loadCloudinaryWidgetScript,
+  STANBOX_WIDGET_PALETTE,
+} from "../../utils/cloudinaryUploadWidget";
+import TrackList from "./TrackList";
 import styles from "./YourMusic.module.css";
 
 // Pillar B self-serve: artists set price + upload audio for their own albums
 // without the admin in the loop. Renders inside ArtistSettings for verified
 // artists; replaces the admin-paste-public_id flow on the artist side.
 
-const CLOUDINARY_WIDGET_SRC = "https://upload-widget.cloudinary.com/global/all.js";
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
 
 const dollarsToCents = (str) => {
@@ -19,28 +23,6 @@ const dollarsToCents = (str) => {
 
 const centsToDollars = (cents) =>
   cents == null ? "" : (cents / 100).toFixed(2);
-
-// Idempotent script loader for the Cloudinary upload widget. Multiple
-// invocations resolve to the same Promise (no duplicate <script> tags).
-let widgetScriptPromise = null;
-function loadCloudinaryWidgetScript() {
-  if (typeof window === "undefined") return Promise.reject(new Error("no window"));
-  if (window.cloudinary?.createUploadWidget) return Promise.resolve();
-  if (widgetScriptPromise) return widgetScriptPromise;
-
-  widgetScriptPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = CLOUDINARY_WIDGET_SRC;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => {
-      widgetScriptPromise = null;
-      reject(new Error("Failed to load Cloudinary upload widget."));
-    };
-    document.body.appendChild(script);
-  });
-  return widgetScriptPromise;
-}
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_MIN = 1900;
@@ -70,6 +52,20 @@ const YourMusic = () => {
   const [savingId, setSavingId] = useState(null);
   const [uploadingId, setUploadingId] = useState(null);
   const widgetRef = useRef(null);
+  // Album IDs whose track editor is currently expanded.
+  const [expandedTracksAlbumIds, setExpandedTracksAlbumIds] = useState(() => new Set());
+
+  const toggleTracks = useCallback((albumId) => {
+    setExpandedTracksAlbumIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(albumId)) {
+        next.delete(albumId);
+      } else {
+        next.add(albumId);
+      }
+      return next;
+    });
+  }, []);
 
   // Create-new-release form state.
   const [createOpen, setCreateOpen] = useState(false);
@@ -160,23 +156,7 @@ const YourMusic = () => {
           clientAllowedFormats: ["mp3", "wav", "flac"],
           showSkipCropButton: false,
           showUploadMoreButton: false,
-          styles: {
-            palette: {
-              window: "#1a1a1a",
-              sourceBg: "#222",
-              windowBorder: "#444",
-              tabIcon: "#fff",
-              menuIcons: "#bbb",
-              textDark: "#fff",
-              textLight: "#bbb",
-              link: "#4ade80",
-              action: "#4ade80",
-              inactiveTabIcon: "#888",
-              error: "#ff7a7a",
-              inProgress: "#4ade80",
-              complete: "#4ade80",
-            },
-          },
+          styles: { palette: STANBOX_WIDGET_PALETTE },
         },
         (err, result) => {
           if (err) {
@@ -565,6 +545,20 @@ const YourMusic = () => {
                       Audio: {form.audio_format?.toUpperCase()} ·{" "}
                       <code>{form.audio_cloudinary_public_id}</code>
                     </span>
+                  )}
+
+                  <button
+                    type="button"
+                    className={styles.tracksToggleBtn}
+                    onClick={() => toggleTracks(a.album_id)}
+                  >
+                    {expandedTracksAlbumIds.has(a.album_id)
+                      ? "Hide tracks ▾"
+                      : "Manage tracks ▸"}
+                  </button>
+
+                  {expandedTracksAlbumIds.has(a.album_id) && (
+                    <TrackList album={a} />
                   )}
                 </div>
               </li>
