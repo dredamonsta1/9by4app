@@ -2,11 +2,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Track {
-  post_id: number;
+  // Identity — at least one must be set so the audio swap effect can key off
+  // a stable identifier. Music posts use post_id (legacy); album tracks use
+  // track_id + album_id; back-compat album-level audio uses album_id only.
+  post_id?: number;
+  track_id?: number;
+  album_id?: number;
+  position?: number | null;
+
   title?: string | null;
   audio_url: string;
-  username: string;
-  artist_name?: string | null;
+  username?: string;           // music post author (optional now)
+  artist_name?: string | null; // album/track artist
   album_image_url?: string | null;
 }
 

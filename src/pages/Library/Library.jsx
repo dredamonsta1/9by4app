@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import { loadPurchases } from "../../redux/actions/authActions";
+import { setQueue } from "../../redux/playerSlice";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import CorsTestPanel from "../../components/CorsTestPanel/CorsTestPanel";
 import styles from "./Library.module.css";
@@ -26,6 +27,7 @@ const Library = () => {
   const { user, token, purchases } = useSelector((state) => state.auth);
   const [searchParams, setSearchParams] = useSearchParams();
   const [downloadingId, setDownloadingId] = useState(null);
+  const [playLoadingId, setPlayLoadingId] = useState(null);
   const [showJustPurchased, setShowJustPurchased] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
 
@@ -69,6 +71,76 @@ const Library = () => {
       );
     } finally {
       setDownloadingId(null);
+    }
+  };
+
+  // Build a PlayerBar queue for the album the user clicked Play on, then
+  // dispatch setQueue. Two paths:
+  //   1. Album has tracks (new system) — list /albums/:id/tracks, parallel-
+  //      fetch a stream URL for each track that has audio attached
+  //   2. No tracks (back-compat single-file release) — fall back to the
+  //      album-level /albums/:id/stream
+  const handlePlay = async (purchase) => {
+    setPlayLoadingId(purchase.album_id);
+    try {
+      const trackListRes = await axiosInstance.get(
+        `/albums/${purchase.album_id}/tracks`
+      );
+      const album = trackListRes.data ?? {};
+      const playableTracks = (album.tracks ?? []).filter((t) => t.has_audio);
+
+      let queueItems = [];
+
+      if (playableTracks.length > 0) {
+        const streams = await Promise.all(
+          playableTracks.map((t) =>
+            axiosInstance
+              .get(`/tracks/${t.track_id}/stream`)
+              .then((r) => ({ track: t, stream: r.data }))
+              .catch(() => null)
+          )
+        );
+        queueItems = streams
+          .filter(Boolean)
+          .map(({ track, stream }) => ({
+            track_id: track.track_id,
+            album_id: purchase.album_id,
+            position: track.position,
+            title: track.title,
+            audio_url: stream.url,
+            artist_name: purchase.artist_name,
+            album_image_url: purchase.album_image_url,
+          }));
+      } else {
+        // Back-compat: one-file-per-release. Use the album-level stream.
+        const streamRes = await axiosInstance.get(
+          `/albums/${purchase.album_id}/stream`
+        );
+        queueItems = [
+          {
+            album_id: purchase.album_id,
+            title: purchase.album_name,
+            audio_url: streamRes.data?.url,
+            artist_name: purchase.artist_name,
+            album_image_url: purchase.album_image_url,
+          },
+        ].filter((t) => t.audio_url);
+      }
+
+      if (queueItems.length === 0) {
+        toast.error("No playable audio on this album yet.");
+        return;
+      }
+
+      dispatch(setQueue({ tracks: queueItems, startIndex: 0 }));
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Failed to start playback."
+      );
+    } finally {
+      setPlayLoadingId(null);
     }
   };
 
@@ -122,6 +194,7 @@ const Library = () => {
         <ul className={styles.list}>
           {purchases.map((p) => {
             const isDownloading = downloadingId === p.album_id;
+            const isPlayLoading = playLoadingId === p.album_id;
             return (
               <li key={p.id} className={styles.row}>
                 <img
@@ -143,14 +216,25 @@ const Library = () => {
                     {p.audio_format ? ` · ${p.audio_format.toUpperCase()}` : ""}
                   </span>
                 </div>
-                <button
-                  type="button"
-                  className={styles.downloadBtn}
-                  onClick={() => handleDownload(p)}
-                  disabled={isDownloading}
-                >
-                  {isDownloading ? "Preparing…" : "Download"}
-                </button>
+                <div className={styles.actions}>
+                  <button
+                    type="button"
+                    className={styles.playBtn}
+                    onClick={() => handlePlay(p)}
+                    disabled={isPlayLoading || isDownloading}
+                    aria-label={`Play ${p.album_name}`}
+                  >
+                    {isPlayLoading ? "…" : "▶"}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.downloadBtn}
+                    onClick={() => handleDownload(p)}
+                    disabled={isDownloading || isPlayLoading}
+                  >
+                    {isDownloading ? "Preparing…" : "Download"}
+                  </button>
+                </div>
               </li>
             );
           })}
