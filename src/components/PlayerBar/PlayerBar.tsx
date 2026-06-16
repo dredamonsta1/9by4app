@@ -23,14 +23,16 @@ const PlayerBar = () => {
   const [duration, setDuration] = useState(0);
   const [seeking,  setSeeking]  = useState(false);
 
-  // Swap src when track changes
+  // Swap src when the active track changes. Depending on `track` (a new
+  // object ref each time queue/currentIndex change) covers music posts,
+  // album tracks, and album-level back-compat audio uniformly.
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !track) return;
     audio.src = track.audio_url;
     audio.load();
     if (isPlaying) audio.play().catch(() => {});
-  }, [track?.post_id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [track]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Sync play/pause state
   useEffect(() => {
@@ -70,6 +72,7 @@ const PlayerBar = () => {
     <div className={styles.bar}>
       <audio
         ref={audioRef}
+        crossOrigin="anonymous"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleEnded}
@@ -88,7 +91,9 @@ const PlayerBar = () => {
         )}
         <div className={styles.meta}>
           <span className={styles.title}>{track.title || "Untitled"}</span>
-          <span className={styles.username}>{track.username}</span>
+          <span className={styles.username}>
+            {track.artist_name ?? (track.username ? `@${track.username}` : "")}
+          </span>
         </div>
       </div>
 
