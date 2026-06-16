@@ -38,6 +38,42 @@ const Library = () => {
     return Number.isInteger(n) ? n : null;
   }, [searchParams]);
 
+  // Group purchases by artist. Each artist becomes a section with their
+  // albums underneath. Artist sections are sorted by the newest purchase
+  // from that artist (so an artist you bought from yesterday surfaces
+  // above one you bought from last month). Albums within each artist
+  // are also DESC by created_at — newest album first.
+  const artistGroups = useMemo(() => {
+    if (!purchases || purchases.length === 0) return [];
+    const byArtist = new Map();
+    for (const p of purchases) {
+      const key = p.artist_id;
+      if (!byArtist.has(key)) {
+        byArtist.set(key, {
+          artist_id: p.artist_id,
+          artist_name: p.artist_name,
+          artist_image_url: p.artist_image_url,
+          albums: [],
+          newestPurchaseTs: 0,
+        });
+      }
+      const group = byArtist.get(key);
+      group.albums.push(p);
+      const ts = new Date(p.created_at).getTime();
+      if (ts > group.newestPurchaseTs) group.newestPurchaseTs = ts;
+    }
+    const groups = Array.from(byArtist.values());
+    // Sort artist sections by newest purchase from that artist DESC.
+    groups.sort((a, b) => b.newestPurchaseTs - a.newestPurchaseTs);
+    // Within each artist, newest album first.
+    for (const g of groups) {
+      g.albums.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
+    return groups;
+  }, [purchases]);
+
   // On mount: if we're returning from Stripe success, refetch purchases
   // because the webhook may have just fired. Show the celebration banner.
   // Clear the URL param so a refresh doesn't keep flashing it.
@@ -191,54 +227,81 @@ const Library = () => {
           <Link to="/" className={styles.gateBtn}>Browse artists</Link>
         </div>
       ) : (
-        <ul className={styles.list}>
-          {purchases.map((p) => {
-            const isDownloading = downloadingId === p.album_id;
-            const isPlayLoading = playLoadingId === p.album_id;
-            return (
-              <li key={p.id} className={styles.row}>
-                <img
-                  src={resolveImageUrl(
-                    p.album_image_url,
-                    "https://via.placeholder.com/80?text=♪"
-                  )}
-                  alt={p.album_name}
-                  className={styles.cover}
-                />
-                <div className={styles.meta}>
-                  <span className={styles.albumName}>{p.album_name}</span>
-                  <Link to={`/artist/${p.artist_id}`} className={styles.artistLink}>
-                    {p.artist_name}
-                    {p.year ? <span className={styles.muted}> · {p.year}</span> : null}
-                  </Link>
-                  <span className={styles.purchasedAt}>
-                    Bought {formatDate(p.created_at)}
-                    {p.audio_format ? ` · ${p.audio_format.toUpperCase()}` : ""}
+        <div className={styles.groupsWrap}>
+          {artistGroups.map((group) => (
+            <section key={group.artist_id} className={styles.artistGroup}>
+              <Link
+                to={`/artist/${group.artist_id}`}
+                className={styles.artistHeader}
+              >
+                {group.artist_image_url ? (
+                  <img
+                    src={resolveImageUrl(group.artist_image_url)}
+                    alt={group.artist_name}
+                    className={styles.artistAvatar}
+                  />
+                ) : (
+                  <span className={styles.artistAvatarFallback}>
+                    {(group.artist_name?.[0] ?? "?").toUpperCase()}
                   </span>
-                </div>
-                <div className={styles.actions}>
-                  <button
-                    type="button"
-                    className={styles.playBtn}
-                    onClick={() => handlePlay(p)}
-                    disabled={isPlayLoading || isDownloading}
-                    aria-label={`Play ${p.album_name}`}
-                  >
-                    {isPlayLoading ? "…" : "▶"}
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.downloadBtn}
-                    onClick={() => handleDownload(p)}
-                    disabled={isDownloading || isPlayLoading}
-                  >
-                    {isDownloading ? "Preparing…" : "Download"}
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                )}
+                <span className={styles.artistName}>{group.artist_name}</span>
+                <span className={styles.artistCount}>
+                  {group.albums.length}{" "}
+                  {group.albums.length === 1 ? "album" : "albums"}
+                </span>
+              </Link>
+
+              <ul className={styles.list}>
+                {group.albums.map((p) => {
+                  const isDownloading = downloadingId === p.album_id;
+                  const isPlayLoading = playLoadingId === p.album_id;
+                  return (
+                    <li key={p.id} className={styles.row}>
+                      <img
+                        src={resolveImageUrl(
+                          p.album_image_url,
+                          "https://via.placeholder.com/80?text=♪"
+                        )}
+                        alt={p.album_name}
+                        className={styles.cover}
+                      />
+                      <div className={styles.meta}>
+                        <span className={styles.albumName}>{p.album_name}</span>
+                        <span className={styles.albumSub}>
+                          {p.year ? <span>{p.year} · </span> : null}
+                          Bought {formatDate(p.created_at)}
+                          {p.audio_format
+                            ? ` · ${p.audio_format.toUpperCase()}`
+                            : ""}
+                        </span>
+                      </div>
+                      <div className={styles.actions}>
+                        <button
+                          type="button"
+                          className={styles.playBtn}
+                          onClick={() => handlePlay(p)}
+                          disabled={isPlayLoading || isDownloading}
+                          aria-label={`Play ${p.album_name}`}
+                        >
+                          {isPlayLoading ? "…" : "▶"}
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.downloadBtn}
+                          onClick={() => handleDownload(p)}
+                          disabled={isDownloading || isPlayLoading}
+                        >
+                          {isDownloading ? "Preparing…" : "Download"}
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))}
+        </div>
       )}
 
       <button
