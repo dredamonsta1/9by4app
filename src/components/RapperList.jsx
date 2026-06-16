@@ -7,6 +7,7 @@ import { setQueue } from "../redux/playerSlice";
 import { resolveImageUrl } from "../utils/imageUrl";
 import axiosInstance from "../utils/axiosInstance";
 import AlbumPreviewButton from "./AlbumPreviewButton/AlbumPreviewButton";
+import StanboxPreviewButton from "./StanboxPreviewButton/StanboxPreviewButton";
 import ClaimArtistModal from "./ClaimArtistModal/ClaimArtistModal";
 import AlbumBuyButton from "./AlbumBuyButton/AlbumBuyButton";
 
@@ -399,6 +400,9 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
                     <span className="artist-modal-album-card-name">{album.album_name}</span>
                     <span className="artist-modal-album-card-year">{album.year}</span>
                     <AlbumPreviewButton artistId={data.artist_id} albumName={album.album_name} />
+                    {data.is_verified && (
+                      <StanboxPreviewButton album={album} artist={data} />
+                    )}
                     {(album.spotify_url || album.apple_music_url) && (
                       <div className="artist-modal-album-streaming">
                         {album.spotify_url && (
