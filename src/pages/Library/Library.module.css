@@ -101,6 +101,72 @@
   line-height: 1.5;
 }
 
+.groupsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.artistGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.artistHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.4rem 0.25rem 0.55rem;
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: opacity 0.15s;
+}
+.artistHeader:hover { opacity: 0.85; }
+
+.artistAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #222;
+}
+
+.artistAvatarFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #c9c9c9;
+  font-size: 0.95rem;
+}
+
+.artistName {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artistCount {
+  font-size: 0.78rem;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+}
+
+.albumSub {
+  font-size: 0.78rem;
+  color: #888;
+}
+
 .list {
   list-style: none;
   margin: 0;
