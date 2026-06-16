@@ -70,6 +70,17 @@
   text-overflow: ellipsis;
 }
 
+/* ── Visualizer ── */
+.visualizer {
+  display: block;
+  width: 140px;
+  height: 36px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+  /* Hide on very narrow viewports so the controls don't get squeezed. */
+}
+
 /* ── Controls ── */
 .controls {
   display: flex;
@@ -197,6 +208,12 @@
   .trackInfo {
     grid-column: 1;
     grid-row: 1;
+  }
+
+  /* On narrow viewports, hide the visualizer to keep controls + seek bar
+     comfortable. The audio graph stays wired — bars resume on wide screen. */
+  .visualizer {
+    display: none;
   }
 
   .controls {
