@@ -6,7 +6,6 @@ import axiosInstance from "../../utils/axiosInstance";
 import { loadPurchases } from "../../redux/actions/authActions";
 import { setQueue } from "../../redux/playerSlice";
 import { resolveImageUrl } from "../../utils/imageUrl";
-import CorsTestPanel from "../../components/CorsTestPanel/CorsTestPanel";
 import styles from "./Library.module.css";
 
 const formatDate = (iso) => {
@@ -29,7 +28,6 @@ const Library = () => {
   const [downloadingId, setDownloadingId] = useState(null);
   const [playLoadingId, setPlayLoadingId] = useState(null);
   const [showJustPurchased, setShowJustPurchased] = useState(false);
-  const [showDebug, setShowDebug] = useState(false);
 
   const justPurchasedAlbumId = useMemo(() => {
     const raw = searchParams.get("purchased");
@@ -303,25 +301,6 @@ const Library = () => {
           ))}
         </div>
       )}
-
-      <button
-        type="button"
-        onClick={() => setShowDebug((s) => !s)}
-        style={{
-          marginTop: "2rem",
-          background: "transparent",
-          border: "1px solid rgba(255,255,255,0.18)",
-          color: "#888",
-          borderRadius: "999px",
-          padding: "0.35rem 0.85rem",
-          fontSize: "0.78rem",
-          cursor: "pointer",
-          alignSelf: "flex-start",
-        }}
-      >
-        {showDebug ? "Hide" : "Show"} Web Audio debug
-      </button>
-      {showDebug && <CorsTestPanel />}
     </div>
   );
 };
