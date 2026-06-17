@@ -185,26 +185,104 @@
     }
 }
 
-/* Live rooms nav link */
-.liveLink {
-  color: #e53e3e !important;
-  font-weight: 600;
-  display: inline-flex;
+/* ---- Artist search ---- */
+
+.searchWrap {
+  position: relative;
+  flex: 1;
+  max-width: 360px;
+  margin: 0 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  background: rgba(20, 32, 48, 0.7);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent-light);
+  background: rgba(20, 32, 48, 0.95);
+}
+
+.searchResults {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+}
+
+.searchHint {
+  padding: 0.85rem 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.searchResult {
+  width: 100%;
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  text-align: left;
+  font-size: 0.92rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.liveLink::before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
+.searchResult:hover {
+  background: rgba(0, 180, 216, 0.08);
+}
+
+.searchResult:last-child {
+  border-bottom: none;
+}
+
+.searchResultImg {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #e53e3e;
-  animation: navPulse 1.5s infinite;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-@keyframes navPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.searchResultName {
+  flex: 1;
+  font-weight: 600;
+}
+
+.searchResultGenre {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .searchWrap {
+    order: 3;
+    width: 100%;
+    margin: 0.75rem 0 0;
+    max-width: none;
+  }
 }

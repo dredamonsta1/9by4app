@@ -80,18 +80,26 @@ const ArtistPanel = () => {
     if (isLoggedIn) dispatch(fetchProfileList());
   }, [isLoggedIn, dispatch]);
 
+  // When no artistId is in the URL, default to the top-ranked artist.
+  // This makes "/" the home view of the highest-ranked artist's surface.
+  const targetId = artistId || allArtists[0]?.artist_id;
+
   useEffect(() => {
-    if (!artistId) return;
+    if (!targetId) return; // wait for allArtists to load
     setLoading(true);
     setArtist(null);
     setActiveTab("music");
 
     axiosInstance
-      .get(`/artists/${artistId}`)
+      .get(`/artists/${targetId}`)
       .then((res) => setArtist(res.data.artist || res.data))
-      .catch(() => navigate("/", { replace: true }))
+      .catch(() => {
+        // Only redirect on hard-fail of an explicit URL — for the "/" default
+        // case, the user hasn't asked for anything specific so we stay put.
+        if (artistId) navigate("/", { replace: true });
+      })
       .finally(() => setLoading(false));
-  }, [artistId, navigate]);
+  }, [targetId, artistId, navigate]);
 
   if (loading) {
     return (
@@ -159,16 +167,13 @@ const ArtistPanel = () => {
 
   return (
     <div className={styles.panel}>
-      <div className={styles.topBar}>
-        <Link to="/" className={styles.backLink}>
-          ← Back to all artists
-        </Link>
-        {user?.artist_id === artist.artist_id && (
+      {user?.artist_id === artist.artist_id && (
+        <div className={styles.topBar}>
           <Link to="/artist-settings" className={styles.editWorldLink}>
             Edit your world
           </Link>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className={styles.split}>
         {/* LEFT — anchor card */}
