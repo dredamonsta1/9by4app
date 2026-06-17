@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./RapperList.css";
 import { addArtistToProfileList, reorderProfileList } from "../redux/actions/profileListActions";
 import { setQueue } from "../redux/playerSlice";
@@ -652,7 +652,7 @@ export const ArtistModal = ({ artist, onClose, upcomingReleases = [] }) => {
 
 const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = false, simplified = false, upcomingReleases = [] }) => {
   const dispatch = useDispatch();
-  const [selectedArtist, setSelectedArtist] = useState(null);
+  const navigate = useNavigate();
 
   if (!artists) {
     return <p>Loading artists...</p>;
@@ -692,7 +692,7 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = 
             >
               <div
                 className="rapperList-item"
-                onClick={() => setSelectedArtist(item)}
+                onClick={() => navigate(`/artist/${item.artist_id}`)}
               >
                 {item.image_url && (
                   <img
@@ -755,14 +755,6 @@ const ClickableList = ({ artists, showAdminActions, showCloutButton, showRank = 
           );
         })}
       </ul>
-
-      {selectedArtist && (
-        <ArtistModal
-          artist={selectedArtist}
-          onClose={() => setSelectedArtist(null)}
-          upcomingReleases={upcomingReleases}
-        />
-      )}
     </div>
   );
 };
