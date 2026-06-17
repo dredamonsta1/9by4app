@@ -9,11 +9,28 @@ import {
   fetchProfileList,
 } from "../../redux/actions/profileListActions";
 import { fetchArtists } from "../../redux/actions/artistActions";
+import { setQueue } from "../../redux/playerSlice";
 import AlbumPreviewButton from "../AlbumPreviewButton/AlbumPreviewButton";
 import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
 import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import styles from "./ArtistPanel.module.css";
+
+const formatRelativeTime = (iso) => {
+  if (!iso) return "";
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diffSec = Math.floor((Date.now() - then) / 1000);
+  if (diffSec < 60) return "just now";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  if (diffSec < 2592000) return `${Math.floor(diffSec / 86400)}d ago`;
+  return new Date(iso).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 const PositionSelector = ({ profileList, onSelect, onClose }) => {
   const slots = Array.from({ length: 20 }, (_, i) => i + 1);
@@ -67,7 +84,8 @@ const ArtistPanel = () => {
 
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("music");
+  const [activeTab, setActiveTab] = useState("feed");
+  const [feedPosts, setFeedPosts] = useState([]);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
 
@@ -88,7 +106,8 @@ const ArtistPanel = () => {
     if (!targetId) return; // wait for allArtists to load
     setLoading(true);
     setArtist(null);
-    setActiveTab("music");
+    setFeedPosts([]);
+    setActiveTab("feed");
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -99,6 +118,11 @@ const ArtistPanel = () => {
         if (artistId) navigate("/", { replace: true });
       })
       .finally(() => setLoading(false));
+
+    axiosInstance
+      .get(`/music/posts/artist/${targetId}`)
+      .then((res) => setFeedPosts(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setFeedPosts([]));
   }, [targetId, artistId, navigate]);
 
   if (loading) {
@@ -255,6 +279,15 @@ const ArtistPanel = () => {
             <button
               type="button"
               className={`${styles.tab} ${
+                activeTab === "feed" ? styles.tabActive : ""
+              }`}
+              onClick={() => setActiveTab("feed")}
+            >
+              Feed
+            </button>
+            <button
+              type="button"
+              className={`${styles.tab} ${
                 activeTab === "music" ? styles.tabActive : ""
               }`}
               onClick={() => setActiveTab("music")}
@@ -273,6 +306,61 @@ const ArtistPanel = () => {
           </div>
 
           <div className={styles.tabContent}>
+            {activeTab === "feed" && (
+              feedPosts.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No posts about {artist.artist_name} yet.</p>
+                </div>
+              ) : (
+                <ul className={styles.feedList}>
+                  {feedPosts.map((post, idx) => (
+                    <li key={post.post_id || idx} className={styles.feedRow}>
+                      {post.audio_url && (
+                        <button
+                          type="button"
+                          className={styles.feedPlayBtn}
+                          onClick={() =>
+                            dispatch(
+                              setQueue({
+                                tracks: feedPosts
+                                  .filter((p) => p.audio_url)
+                                  .map((p) => ({
+                                    post_id: p.post_id,
+                                    title: p.title,
+                                    audio_url: p.audio_url,
+                                    username: p.username,
+                                    artist_name: artist.artist_name,
+                                    album_image_url: artist.image_url,
+                                  })),
+                                startIndex: feedPosts
+                                  .filter((p) => p.audio_url)
+                                  .findIndex(
+                                    (p) => p.post_id === post.post_id,
+                                  ),
+                              }),
+                            )
+                          }
+                          aria-label={`Play ${post.title || "post"}`}
+                        >
+                          ▶
+                        </button>
+                      )}
+                      <div className={styles.feedMeta}>
+                        <span className={styles.feedTitle}>
+                          {post.title || "Untitled"}
+                        </span>
+                        <span className={styles.feedSub}>
+                          {post.username ? `@${post.username}` : ""}
+                          {post.username && post.created_at ? " · " : ""}
+                          {formatRelativeTime(post.created_at)}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )
+            )}
+
             {activeTab === "music" && (
               <>
                 {hasWorldLinks && (
