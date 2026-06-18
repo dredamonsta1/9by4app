@@ -84,7 +84,6 @@ const ArtistPanel = () => {
 
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("feed");
   const [feedPosts, setFeedPosts] = useState([]);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
@@ -107,14 +106,11 @@ const ArtistPanel = () => {
     setLoading(true);
     setArtist(null);
     setFeedPosts([]);
-    setActiveTab("feed");
 
     axiosInstance
       .get(`/artists/${targetId}`)
       .then((res) => setArtist(res.data.artist || res.data))
       .catch(() => {
-        // Only redirect on hard-fail of an explicit URL — for the "/" default
-        // case, the user hasn't asked for anything specific so we stay put.
         if (artistId) navigate("/", { replace: true });
       })
       .finally(() => setLoading(false));
@@ -134,7 +130,6 @@ const ArtistPanel = () => {
   }
   if (!artist) return null;
 
-  // Rank + neighbors (deck-flip navigation).
   const rankIndex = allArtists.findIndex(
     (a) => a.artist_id === artist.artist_id,
   );
@@ -145,7 +140,6 @@ const ArtistPanel = () => {
       ? allArtists[rankIndex + 1]
       : null;
 
-  // Top 20 state.
   const inList = profileList.some((a) => a.artist_id === artist.artist_id);
   const myEntry = profileList.find((a) => a.artist_id === artist.artist_id);
   const listFull = profileList.length >= 20;
@@ -167,6 +161,27 @@ const ArtistPanel = () => {
       .filter((id) => id !== artist.artist_id);
     newOrder.splice(pos - 1, 0, artist.artist_id);
     dispatch(reorderProfileList(newOrder));
+  };
+
+  const playableFeed = feedPosts.filter((p) => p.audio_url);
+  const playFeedPost = (post) => {
+    const startIndex = playableFeed.findIndex(
+      (p) => p.post_id === post.post_id,
+    );
+    if (startIndex < 0) return;
+    dispatch(
+      setQueue({
+        tracks: playableFeed.map((p) => ({
+          post_id: p.post_id,
+          title: p.title,
+          audio_url: p.audio_url,
+          username: p.username,
+          artist_name: artist.artist_name,
+          album_image_url: artist.image_url,
+        })),
+        startIndex,
+      }),
+    );
   };
 
   const hasWorldLinks =
@@ -199,324 +214,273 @@ const ArtistPanel = () => {
         </div>
       )}
 
-      <div className={styles.split}>
-        {/* LEFT — anchor card */}
-        <aside className={styles.anchor}>
+      {/* HERO — centered card with depth-stacked layers behind, flip
+          arrows on either side. The visual anchor of the page. */}
+      <section className={styles.hero}>
+        <div className={styles.deck}>
+          {/* Decorative layers peeking out behind the active card,
+              giving the "deck of cards" depth cue from the Dribbble. */}
+          <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
+          <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
+          <div className={`${styles.deckLayer} ${styles.deckLayer1}`} />
+
           <button
             type="button"
-            className={`${styles.flipBtn} ${styles.flipUp}`}
+            className={`${styles.flipBtn} ${styles.flipLeft}`}
             onClick={() =>
               prevArtist && navigate(`/artist/${prevArtist.artist_id}`)
             }
             disabled={!prevArtist}
             aria-label="Previous ranked artist"
           >
-            ▲
+            ⌃
           </button>
 
-          <div className={styles.card}>
+          <article className={styles.card}>
             <img
               src={resolveImageUrl(
                 artist.image_url,
-                "https://via.placeholder.com/240?text=?",
+                "https://via.placeholder.com/360?text=?",
               )}
               alt={artist.artist_name || "Artist"}
               className={styles.cardImage}
             />
-            <div className={styles.cardBody}>
+            <div className={styles.cardOverlay}>
               <h1 className={styles.cardName}>
                 {artist.artist_name || "N/A"}
               </h1>
               {artist.genre && (
                 <p className={styles.cardGenre}>{artist.genre}</p>
               )}
-              {rank && (
-                <span className={styles.rankBadge}>#{rank} on the list</span>
-              )}
-              <p className={styles.cloutLine}>
-                {(artist.count || 0).toLocaleString()} fans claim them
-              </p>
-              <div className={styles.tagRow}>
-                {artist.state && (
-                  <span className={styles.tag}>{artist.state}</span>
-                )}
-                {artist.region && (
-                  <span className={styles.tag}>{artist.region}</span>
-                )}
-                {artist.label && (
-                  <span className={styles.tag}>{artist.label}</span>
-                )}
-              </div>
-              {artist.spotify_url && (
-                <a
-                  href={artist.spotify_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.spotifyBtn}
-                >
-                  Listen on Spotify
-                </a>
-              )}
             </div>
-          </div>
+          </article>
 
           <button
             type="button"
-            className={`${styles.flipBtn} ${styles.flipDown}`}
+            className={`${styles.flipBtn} ${styles.flipRight}`}
             onClick={() =>
               nextArtist && navigate(`/artist/${nextArtist.artist_id}`)
             }
             disabled={!nextArtist}
             aria-label="Next ranked artist"
           >
-            ▼
+            ⌄
           </button>
-        </aside>
+        </div>
 
-        {/* RIGHT — dynamic content */}
-        <section className={styles.dynamic}>
-          <div className={styles.tabBar}>
-            <button
-              type="button"
-              className={`${styles.tab} ${
-                activeTab === "feed" ? styles.tabActive : ""
-              }`}
-              onClick={() => setActiveTab("feed")}
-            >
-              Feed
-            </button>
-            <button
-              type="button"
-              className={`${styles.tab} ${
-                activeTab === "music" ? styles.tabActive : ""
-              }`}
-              onClick={() => setActiveTab("music")}
-            >
-              Music
-            </button>
-            <button
-              type="button"
-              className={`${styles.tab} ${
-                activeTab === "events" ? styles.tabActive : ""
-              }`}
-              onClick={() => setActiveTab("events")}
-            >
-              Events
-            </button>
+        <div className={styles.cardMeta}>
+          {rank && (
+            <span className={styles.rankBadge}>#{rank} on the list</span>
+          )}
+          <span className={styles.cloutLine}>
+            {(artist.count || 0).toLocaleString()} fans claim them
+          </span>
+          <div className={styles.tagRow}>
+            {artist.state && <span className={styles.tag}>{artist.state}</span>}
+            {artist.region && (
+              <span className={styles.tag}>{artist.region}</span>
+            )}
+            {artist.label && <span className={styles.tag}>{artist.label}</span>}
           </div>
+          {artist.spotify_url && (
+            <a
+              href={artist.spotify_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.spotifyBtn}
+            >
+              Listen on Spotify
+            </a>
+          )}
+        </div>
+      </section>
 
-          <div className={styles.tabContent}>
-            {activeTab === "feed" && (
-              feedPosts.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <p>No posts about {artist.artist_name} yet.</p>
-                </div>
-              ) : (
-                <ul className={styles.feedList}>
-                  {feedPosts.map((post, idx) => (
-                    <li key={post.post_id || idx} className={styles.feedRow}>
-                      {post.audio_url && (
-                        <button
-                          type="button"
-                          className={styles.feedPlayBtn}
-                          onClick={() =>
-                            dispatch(
-                              setQueue({
-                                tracks: feedPosts
-                                  .filter((p) => p.audio_url)
-                                  .map((p) => ({
-                                    post_id: p.post_id,
-                                    title: p.title,
-                                    audio_url: p.audio_url,
-                                    username: p.username,
-                                    artist_name: artist.artist_name,
-                                    album_image_url: artist.image_url,
-                                  })),
-                                startIndex: feedPosts
-                                  .filter((p) => p.audio_url)
-                                  .findIndex(
-                                    (p) => p.post_id === post.post_id,
-                                  ),
-                              }),
-                            )
-                          }
-                          aria-label={`Play ${post.title || "post"}`}
-                        >
-                          ▶
-                        </button>
-                      )}
-                      <div className={styles.feedMeta}>
-                        <span className={styles.feedTitle}>
-                          {post.title || "Untitled"}
-                        </span>
-                        <span className={styles.feedSub}>
-                          {post.username ? `@${post.username}` : ""}
-                          {post.username && post.created_at ? " · " : ""}
-                          {formatRelativeTime(post.created_at)}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )
-            )}
-
-            {activeTab === "music" && (
-              <>
-                {hasWorldLinks && (
-                  <div className={styles.worldLinks}>
-                    {artist.website_url && (
-                      <a
-                        href={artist.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.worldLink}
-                      >
-                        Website
-                      </a>
-                    )}
-                    {artist.merch_url && (
-                      <a
-                        href={artist.merch_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${styles.worldLink} ${styles.worldLinkMerch}`}
-                      >
-                        Shop
-                      </a>
-                    )}
-                    {artist.newsletter_url && (
-                      <a
-                        href={artist.newsletter_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.worldLink}
-                      >
-                        Newsletter
-                      </a>
-                    )}
-                    {artist.apple_music_url && (
-                      <a
-                        href={artist.apple_music_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${styles.worldLink} ${styles.worldLinkApple}`}
-                      >
-                        Apple Music
-                      </a>
-                    )}
+      {/* SECTIONS — Feed / Music / Events all visible, scrolling
+          below the hero. No tabs. */}
+      <div className={styles.sections}>
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Feed</h2>
+          {feedPosts.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>No posts about {artist.artist_name} yet.</p>
+            </div>
+          ) : (
+            <ul className={styles.feedList}>
+              {feedPosts.map((post, idx) => (
+                <li key={post.post_id || idx} className={styles.feedRow}>
+                  {post.audio_url && (
+                    <button
+                      type="button"
+                      className={styles.feedPlayBtn}
+                      onClick={() => playFeedPost(post)}
+                      aria-label={`Play ${post.title || "post"}`}
+                    >
+                      ▶
+                    </button>
+                  )}
+                  <div className={styles.feedMeta}>
+                    <span className={styles.feedTitle}>
+                      {post.title || "Untitled"}
+                    </span>
+                    <span className={styles.feedSub}>
+                      {post.username ? `@${post.username}` : ""}
+                      {post.username && post.created_at ? " · " : ""}
+                      {formatRelativeTime(post.created_at)}
+                    </span>
                   </div>
-                )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
-                {albums.length === 0 ? (
-                  <div className={styles.emptyState}>
-                    <p>No albums catalogued for this artist yet.</p>
-                  </div>
-                ) : (
-                  <div className={styles.albumGrid}>
-                    {albums.map((album) => (
-                      <div key={album.album_id} className={styles.albumCard}>
-                        <img
-                          src={resolveImageUrl(
-                            album.album_image_url,
-                            "https://via.placeholder.com/120?text=Album",
-                          )}
-                          alt={album.album_name}
-                          className={styles.albumImage}
-                        />
-                        <span className={styles.albumName}>
-                          {album.album_name}
-                        </span>
-                        {album.year && (
-                          <span className={styles.albumYear}>{album.year}</span>
-                        )}
-                        <div className={styles.albumActions}>
-                          {artist.is_verified ? (
-                            <StanboxPreviewButton
-                              album={album}
-                              artist={artist}
-                            />
-                          ) : (
-                            <AlbumPreviewButton album={album} artist={artist} />
-                          )}
-                          {album.spotify_url && (
-                            <a
-                              href={album.spotify_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.albumSpotify}
-                            >
-                              Spotify
-                            </a>
-                          )}
-                          <AlbumBuyButton album={album} artist={artist} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-
-            {activeTab === "events" && (
-              <div className={styles.emptyState}>
-                <p>No upcoming tour dates yet.</p>
-                {user?.artist_id === artist.artist_id && (
-                  <Link to="/events" className={styles.eventsCreateLink}>
-                    Add a tour date →
-                  </Link>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Persistent CTA — Top 20 */}
-          <div className={styles.ctaBar}>
-            {!isLoggedIn ? (
-              <Link to="/signup" className={styles.ctaPrimary}>
-                Sign up to build your Top 20
-              </Link>
-            ) : inList ? (
-              <div className={styles.ctaInList}>
-                <span className={styles.ctaInListLabel}>
-                  In your Top 20
-                  {myEntry?.position ? ` — Your #${myEntry.position}` : ""}
-                </span>
-                <button
-                  type="button"
-                  className={styles.ctaSecondary}
-                  onClick={() => setShowPositionSelector(true)}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Music</h2>
+          {hasWorldLinks && (
+            <div className={styles.worldLinks}>
+              {artist.website_url && (
+                <a
+                  href={artist.website_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.worldLink}
                 >
-                  Change position
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                className={styles.ctaPrimary}
-                disabled={listFull}
-                onClick={() => !listFull && setShowPositionSelector(true)}
-              >
-                {listFull ? "Your list is full" : "Add to your Top 20"}
-              </button>
-            )}
+                  Website
+                </a>
+              )}
+              {artist.merch_url && (
+                <a
+                  href={artist.merch_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.worldLink} ${styles.worldLinkMerch}`}
+                >
+                  Shop
+                </a>
+              )}
+              {artist.newsletter_url && (
+                <a
+                  href={artist.newsletter_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.worldLink}
+                >
+                  Newsletter
+                </a>
+              )}
+              {artist.apple_music_url && (
+                <a
+                  href={artist.apple_music_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.worldLink} ${styles.worldLinkApple}`}
+                >
+                  Apple Music
+                </a>
+              )}
+            </div>
+          )}
 
-            {canClaim && (
-              <button
-                type="button"
-                className={styles.claimBtn}
-                onClick={() => setShowClaimModal(true)}
-              >
-                Is this you? Claim this profile
-              </button>
-            )}
-            {claimPending && (
-              <span className={styles.claimPending}>
-                Claim pending review
-              </span>
+          {albums.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>No albums catalogued for this artist yet.</p>
+            </div>
+          ) : (
+            <div className={styles.albumScroll}>
+              {albums.map((album) => (
+                <div key={album.album_id} className={styles.albumCard}>
+                  <img
+                    src={resolveImageUrl(
+                      album.album_image_url,
+                      "https://via.placeholder.com/160?text=Album",
+                    )}
+                    alt={album.album_name}
+                    className={styles.albumImage}
+                  />
+                  <span className={styles.albumName}>{album.album_name}</span>
+                  {album.year && (
+                    <span className={styles.albumYear}>{album.year}</span>
+                  )}
+                  <div className={styles.albumActions}>
+                    {artist.is_verified ? (
+                      <StanboxPreviewButton album={album} artist={artist} />
+                    ) : (
+                      <AlbumPreviewButton album={album} artist={artist} />
+                    )}
+                    {album.spotify_url && (
+                      <a
+                        href={album.spotify_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.albumSpotify}
+                      >
+                        Spotify
+                      </a>
+                    )}
+                    <AlbumBuyButton album={album} artist={artist} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Events</h2>
+          <div className={styles.emptyState}>
+            <p>No upcoming tour dates yet.</p>
+            {user?.artist_id === artist.artist_id && (
+              <Link to="/events" className={styles.eventsCreateLink}>
+                Add a tour date →
+              </Link>
             )}
           </div>
         </section>
+      </div>
+
+      {/* Persistent CTA — Top 20 + claim */}
+      <div className={styles.ctaBar}>
+        {!isLoggedIn ? (
+          <Link to="/signup" className={styles.ctaPrimary}>
+            Sign up to build your Top 20
+          </Link>
+        ) : inList ? (
+          <div className={styles.ctaInList}>
+            <span className={styles.ctaInListLabel}>
+              In your Top 20
+              {myEntry?.position ? ` — Your #${myEntry.position}` : ""}
+            </span>
+            <button
+              type="button"
+              className={styles.ctaSecondary}
+              onClick={() => setShowPositionSelector(true)}
+            >
+              Change position
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className={styles.ctaPrimary}
+            disabled={listFull}
+            onClick={() => !listFull && setShowPositionSelector(true)}
+          >
+            {listFull ? "Your list is full" : "Add to your Top 20"}
+          </button>
+        )}
+
+        {canClaim && (
+          <button
+            type="button"
+            className={styles.claimBtn}
+            onClick={() => setShowClaimModal(true)}
+          >
+            Is this you? Claim this profile
+          </button>
+        )}
+        {claimPending && (
+          <span className={styles.claimPending}>Claim pending review</span>
+        )}
       </div>
 
       {showPositionSelector && (
