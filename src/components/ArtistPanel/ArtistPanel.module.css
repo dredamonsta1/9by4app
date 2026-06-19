@@ -105,11 +105,15 @@
   flex: 1;
 }
 
-/* Right column: Music up top (compact), News/Events below it. Total
-   roughly matches the hero height with a 1rem gap between them. */
+/* Right column: Music up top (scrollable list), News/Events below it.
+   Both boxes get fixed heights so neither stretches indefinitely. */
 
 .rightCol > .box:first-child {
-  flex: 0 0 auto;
+  height: 340px;
+}
+
+.rightCol > .box:first-child .boxScroll {
+  flex: 1;
 }
 
 .rightCol > .box:last-child {
@@ -470,43 +474,44 @@
   text-decoration: underline;
 }
 
-/* ---- Music compact grid ---- */
+/* ---- Music compact scrollable list ---- */
 
-.musicGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.musicList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
-.musicTile {
-  background: #0f1a2a;
-  border-radius: 6px;
-  overflow: hidden;
-  aspect-ratio: 1 / 1;
+.musicRow {
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.5rem;
+  background: rgba(10, 20, 32, 0.5);
+  border: 1px solid #1e3450;
+  border-radius: 8px;
 }
 
-.musicTileImage {
-  width: 100%;
-  height: 100%;
+.musicThumb {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
   object-fit: cover;
-  display: block;
+  border-radius: 6px;
+  background: #0a1420;
 }
 
-.musicMore {
-  color: #8899aa;
-  font-size: 0.75rem;
-  text-align: center;
-}
-
-.musicQuickRow {
+.musicInfo {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #1e3450;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
 }
 
-.musicQuickName {
+.musicName {
   color: #e0e6ed;
   font-size: 0.82rem;
   font-weight: 600;
@@ -515,10 +520,16 @@
   text-overflow: ellipsis;
 }
 
-.musicQuickActions {
+.musicYear {
+  color: #8899aa;
+  font-size: 0.72rem;
+}
+
+.musicActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
 }
 
 /* ---- News / Events ---- */
