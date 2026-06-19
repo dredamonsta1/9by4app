@@ -266,7 +266,62 @@
   border-bottom: 1px solid #1e3450;
 }
 
-/* feed */
+/* feed composer */
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #142030;
+  border: 1px solid #1e3450;
+  border-radius: 10px;
+  padding: 0.6rem;
+}
+
+.composerInput {
+  width: 100%;
+  background: rgba(10, 20, 32, 0.6);
+  border: 1px solid transparent;
+  color: #e0e6ed;
+  font-family: inherit;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  resize: none;
+  outline: none;
+}
+
+.composerInput::placeholder {
+  color: #607589;
+}
+
+.composerInput:focus {
+  border-color: #00b4d8;
+  background: rgba(10, 20, 32, 0.9);
+}
+
+.composerBtn {
+  align-self: flex-end;
+  background: #00b4d8;
+  color: #04111e;
+  border: none;
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.composerBtn:hover:not(:disabled) {
+  background: #34c3e0;
+}
+
+.composerBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* feed posts (multi-type) */
 
 .feedList {
   list-style: none;
@@ -279,22 +334,57 @@
 
 .feedRow {
   display: flex;
-  align-items: center;
-  gap: 0.85rem;
+  flex-direction: column;
+  gap: 0.45rem;
   padding: 0.7rem 0.85rem;
   background: #142030;
   border: 1px solid #1e3450;
   border-radius: 10px;
 }
 
+.feedHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.feedUser {
+  color: #00b4d8;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.feedBadge {
+  background: rgba(0, 180, 216, 0.18);
+  color: #00b4d8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border-radius: 4px;
+}
+
+.feedTime {
+  color: #8899aa;
+  font-size: 0.75rem;
+}
+
+.feedMusicRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
 .feedPlayBtn {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #00b4d8;
   color: #04111e;
   border: none;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
@@ -304,25 +394,43 @@
   background: #34c3e0;
 }
 
-.feedMeta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
-}
-
-.feedTitle {
+.feedMusicTitle {
   color: #e0e6ed;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.feedSub {
-  color: #8899aa;
-  font-size: 0.8rem;
+.feedImage {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.feedBody {
+  margin: 0;
+  color: #c5cfdb;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  /* Two-line clamp keeps the feed scannable. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.feedSource {
+  color: #00b4d8;
+  font-size: 0.78rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.feedSource:hover {
+  text-decoration: underline;
 }
 
 /* music — world link pills + horizontal album scroll */
@@ -457,6 +565,69 @@
 
 .eventsCreateLink:hover {
   text-decoration: underline;
+}
+
+/* News & Events sub-sections */
+
+.subSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.subHeading {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8899aa;
+}
+
+.newsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.newsRow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.85rem;
+  background: #142030;
+  border: 1px solid #1e3450;
+  border-radius: 10px;
+}
+
+.newsBadge {
+  background: rgba(0, 180, 216, 0.18);
+  color: #00b4d8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.newsTitle {
+  flex: 1;
+  color: #e0e6ed;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.newsTime {
+  color: #8899aa;
+  font-size: 0.78rem;
+  flex-shrink: 0;
 }
 
 /* ---- CTA bar (Top 20 + claim) ---- */

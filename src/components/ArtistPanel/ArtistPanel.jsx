@@ -84,7 +84,10 @@ const ArtistPanel = () => {
 
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [feedPosts, setFeedPosts] = useState([]);
+  const [globalFeed, setGlobalFeed] = useState([]);
+  const [artistNews, setArtistNews] = useState([]);
+  const [composerText, setComposerText] = useState("");
+  const [posting, setPosting] = useState(false);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
 
@@ -97,6 +100,20 @@ const ArtistPanel = () => {
     if (isLoggedIn) dispatch(fetchProfileList());
   }, [isLoggedIn, dispatch]);
 
+  // Global feed is decoupled from the active artist — it's the social /
+  // news layer of the platform that stays put as you flip artists. Only
+  // refetch on login state change (different feed for logged-in vs out).
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setGlobalFeed([]);
+      return;
+    }
+    axiosInstance
+      .get("/feed")
+      .then((res) => setGlobalFeed(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setGlobalFeed([]));
+  }, [isLoggedIn]);
+
   // When no artistId is in the URL, default to the top-ranked artist.
   // This makes "/" the home view of the highest-ranked artist's surface.
   const targetId = artistId || allArtists[0]?.artist_id;
@@ -105,7 +122,7 @@ const ArtistPanel = () => {
     if (!targetId) return; // wait for allArtists to load
     setLoading(true);
     setArtist(null);
-    setFeedPosts([]);
+    setArtistNews([]);
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -115,10 +132,18 @@ const ArtistPanel = () => {
       })
       .finally(() => setLoading(false));
 
+    // News & Events news pane — community posts tagged to this artist,
+    // filtered to the 9by4News journalism bot. The backend currently
+    // returns the full community feed (no agent flag), so we filter
+    // client-side by username. A backend PR will follow that adds an
+    // explicit ?agent=news filter and exposes provenance URLs.
     axiosInstance
-      .get(`/music/posts/artist/${targetId}`)
-      .then((res) => setFeedPosts(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setFeedPosts([]));
+      .get(`/communities/artist/${targetId}/feed`)
+      .then((res) => {
+        const rows = Array.isArray(res.data) ? res.data : [];
+        setArtistNews(rows.filter((p) => p.username === "9by4News"));
+      })
+      .catch(() => setArtistNews([]));
   }, [targetId, artistId, navigate]);
 
   if (loading) {
@@ -163,25 +188,57 @@ const ArtistPanel = () => {
     dispatch(reorderProfileList(newOrder));
   };
 
-  const playableFeed = feedPosts.filter((p) => p.audio_url);
+  const playableFeed = globalFeed.filter(
+    (p) => p.post_type === "music" && p.audio_url,
+  );
   const playFeedPost = (post) => {
     const startIndex = playableFeed.findIndex(
-      (p) => p.post_id === post.post_id,
+      (p) => p.post_id === post.post_id || p.id === post.id,
     );
     if (startIndex < 0) return;
     dispatch(
       setQueue({
         tracks: playableFeed.map((p) => ({
-          post_id: p.post_id,
-          title: p.title,
+          post_id: p.post_id || p.id,
+          title: p.music_title || p.title,
           audio_url: p.audio_url,
           username: p.username,
-          artist_name: artist.artist_name,
-          album_image_url: artist.image_url,
+          artist_name: p.username,
+          album_image_url: p.image_url || artist.image_url,
         })),
         startIndex,
       }),
     );
+  };
+
+  const handlePostSubmit = async (e) => {
+    e.preventDefault();
+    const text = composerText.trim();
+    if (!text || posting) return;
+    setPosting(true);
+    try {
+      const res = await axiosInstance.post("/feed/text", { content: text });
+      // Prepend the newly created post so the user sees it immediately.
+      // The backend returns the post row; if it doesn't, refetch the feed.
+      if (res.data && (res.data.post_id || res.data.id)) {
+        setGlobalFeed((prev) => [res.data, ...prev]);
+      } else {
+        const refetched = await axiosInstance.get("/feed");
+        setGlobalFeed(Array.isArray(refetched.data) ? refetched.data : []);
+      }
+      setComposerText("");
+    } catch {
+      // Leave the textarea content so the user can retry.
+    } finally {
+      setPosting(false);
+    }
+  };
+
+  const AGENT_BADGE = {
+    music: "Music",
+    sports: "Sports",
+    entertainment: "Entertainment",
+    news: "News",
   };
 
   const hasWorldLinks =
@@ -218,39 +275,107 @@ const ArtistPanel = () => {
           Music (right). Each side column is a vertical scroll list
           adjacent to the card, not a tab and not a row below. */}
       <div className={styles.threeCol}>
-        {/* LEFT — Feed (vertical) */}
+        {/* LEFT — Feed (global, decoupled from active artist) */}
         <aside className={styles.sideCol}>
           <h2 className={styles.sectionTitle}>Feed</h2>
-          {feedPosts.length === 0 ? (
+
+          {isLoggedIn && (
+            <form className={styles.composer} onSubmit={handlePostSubmit}>
+              <textarea
+                className={styles.composerInput}
+                placeholder="Post something…"
+                value={composerText}
+                onChange={(e) => setComposerText(e.target.value)}
+                rows={2}
+                maxLength={500}
+                disabled={posting}
+              />
+              <button
+                type="submit"
+                className={styles.composerBtn}
+                disabled={!composerText.trim() || posting}
+              >
+                {posting ? "Posting…" : "Post"}
+              </button>
+            </form>
+          )}
+
+          {!isLoggedIn ? (
             <div className={styles.emptyState}>
-              <p>No posts about {artist.artist_name} yet.</p>
+              <p>Log in to see the feed.</p>
+            </div>
+          ) : globalFeed.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>No posts in the feed yet.</p>
             </div>
           ) : (
             <ul className={styles.feedList}>
-              {feedPosts.map((post, idx) => (
-                <li key={post.post_id || idx} className={styles.feedRow}>
-                  {post.audio_url && (
-                    <button
-                      type="button"
-                      className={styles.feedPlayBtn}
-                      onClick={() => playFeedPost(post)}
-                      aria-label={`Play ${post.title || "post"}`}
-                    >
-                      ▶
-                    </button>
-                  )}
-                  <div className={styles.feedMeta}>
-                    <span className={styles.feedTitle}>
-                      {post.title || "Untitled"}
-                    </span>
-                    <span className={styles.feedSub}>
-                      {post.username ? `@${post.username}` : ""}
-                      {post.username && post.created_at ? " · " : ""}
-                      {formatRelativeTime(post.created_at)}
-                    </span>
-                  </div>
-                </li>
-              ))}
+              {globalFeed.map((post, idx) => {
+                const postKey = post.id || post.post_id || idx;
+                const isAgent = post.is_agent_post;
+                const isMusic = post.post_type === "music" && post.audio_url;
+                const isImage = post.post_type === "image" && post.image_url;
+                const badgeLabel =
+                  isAgent && (AGENT_BADGE[post.category] || "News");
+
+                return (
+                  <li key={postKey} className={styles.feedRow}>
+                    <div className={styles.feedHead}>
+                      {isAgent ? (
+                        <span className={styles.feedBadge}>{badgeLabel}</span>
+                      ) : (
+                        <span className={styles.feedUser}>
+                          @{post.username || "user"}
+                        </span>
+                      )}
+                      <span className={styles.feedTime}>
+                        {formatRelativeTime(post.created_at)}
+                      </span>
+                    </div>
+
+                    {isMusic && (
+                      <div className={styles.feedMusicRow}>
+                        <button
+                          type="button"
+                          className={styles.feedPlayBtn}
+                          onClick={() => playFeedPost(post)}
+                          aria-label={`Play ${post.music_title || "post"}`}
+                        >
+                          ▶
+                        </button>
+                        <span className={styles.feedMusicTitle}>
+                          {post.music_title || post.title || "Untitled"}
+                        </span>
+                      </div>
+                    )}
+
+                    {isImage && (
+                      <img
+                        src={resolveImageUrl(post.image_url)}
+                        alt=""
+                        className={styles.feedImage}
+                      />
+                    )}
+
+                    {(post.content || post.caption) && (
+                      <p className={styles.feedBody}>
+                        {post.content || post.caption}
+                      </p>
+                    )}
+
+                    {isAgent && post.source_url && (
+                      <a
+                        href={post.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.feedSource}
+                      >
+                        Read source ↗
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </aside>
@@ -432,16 +557,46 @@ const ArtistPanel = () => {
         </aside>
       </div>
 
-      {/* Events stays full-width below the three-column hero. */}
+      {/* News & Events — artist-scoped journalism + tour dates. The news
+          half waits on the agent-poster backend PR that tags artist-
+          relevant articles to community_posts; until then it's empty for
+          most artists. */}
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Events</h2>
-        <div className={styles.emptyState}>
-          <p>No upcoming tour dates yet.</p>
-          {user?.artist_id === artist.artist_id && (
-            <Link to="/events" className={styles.eventsCreateLink}>
-              Add a tour date →
-            </Link>
+        <h2 className={styles.sectionTitle}>News &amp; Events</h2>
+
+        <div className={styles.subSection}>
+          <h3 className={styles.subHeading}>News</h3>
+          {artistNews.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>No news about {artist.artist_name} yet.</p>
+            </div>
+          ) : (
+            <ul className={styles.newsList}>
+              {artistNews.map((post, idx) => (
+                <li key={post.post_id || idx} className={styles.newsRow}>
+                  <span className={styles.newsBadge}>News</span>
+                  <span className={styles.newsTitle}>
+                    {post.preview || "—"}
+                  </span>
+                  <span className={styles.newsTime}>
+                    {formatRelativeTime(post.tagged_at)}
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
+        </div>
+
+        <div className={styles.subSection}>
+          <h3 className={styles.subHeading}>Events</h3>
+          <div className={styles.emptyState}>
+            <p>No upcoming tour dates yet.</p>
+            {user?.artist_id === artist.artist_id && (
+              <Link to="/events" className={styles.eventsCreateLink}>
+                Add a tour date →
+              </Link>
+            )}
+          </div>
         </div>
       </section>
 
