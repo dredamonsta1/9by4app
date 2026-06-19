@@ -1,9 +1,7 @@
 .panel {
   min-height: 100vh;
-  padding: 1rem 1.5rem 6rem;
+  padding: 1rem 2rem 6rem;
   color: #e0e6ed;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .topBar {
@@ -34,8 +32,14 @@
 
 .threeCol {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) 260px;
-  gap: 1.5rem;
+  /* Side columns grow with the viewport (capped at 26% so they stay
+     visually balanced against the centered card hero), with sensible
+     floors so they don't collapse on narrower desktops. */
+  grid-template-columns:
+    minmax(280px, 26%)
+    minmax(0, 1fr)
+    minmax(280px, 26%);
+  gap: 2rem;
   align-items: start;
   margin-top: 0.5rem;
 }
@@ -791,9 +795,15 @@
 /* ---- Responsive ---- */
 
 @media (max-width: 1100px) {
+  .panel {
+    padding: 1rem 1.25rem 6rem;
+  }
   .threeCol {
-    grid-template-columns: 230px minmax(0, 1fr) 230px;
-    gap: 1rem;
+    grid-template-columns:
+      minmax(240px, 28%)
+      minmax(0, 1fr)
+      minmax(240px, 28%);
+    gap: 1.25rem;
   }
 }
 
