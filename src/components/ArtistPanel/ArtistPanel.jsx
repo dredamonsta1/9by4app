@@ -16,6 +16,8 @@ import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import styles from "./ArtistPanel.module.css";
 
+const MUSIC_PREVIEW_COUNT = 4;
+
 const formatRelativeTime = (iso) => {
   if (!iso) return "";
   const then = new Date(iso).getTime();
@@ -30,6 +32,12 @@ const formatRelativeTime = (iso) => {
     day: "numeric",
     year: "numeric",
   });
+};
+
+const ordinal = (n) => {
+  const s = ["TH", "ST", "ND", "RD"];
+  const v = n % 100;
+  return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
 };
 
 const PositionSelector = ({ profileList, onSelect, onClose }) => {
@@ -102,7 +110,7 @@ const ArtistPanel = () => {
 
   // Global feed is decoupled from the active artist — it's the social /
   // news layer of the platform that stays put as you flip artists. Only
-  // refetch on login state change (different feed for logged-in vs out).
+  // refetch on login state change.
   useEffect(() => {
     if (!isLoggedIn) {
       setGlobalFeed([]);
@@ -115,11 +123,10 @@ const ArtistPanel = () => {
   }, [isLoggedIn]);
 
   // When no artistId is in the URL, default to the top-ranked artist.
-  // This makes "/" the home view of the highest-ranked artist's surface.
   const targetId = artistId || allArtists[0]?.artist_id;
 
   useEffect(() => {
-    if (!targetId) return; // wait for allArtists to load
+    if (!targetId) return;
     setLoading(true);
     setArtist(null);
     setArtistNews([]);
@@ -132,11 +139,6 @@ const ArtistPanel = () => {
       })
       .finally(() => setLoading(false));
 
-    // News & Events news pane — community posts tagged to this artist,
-    // filtered to the 9by4News journalism bot. The backend currently
-    // returns the full community feed (no agent flag), so we filter
-    // client-side by username. A backend PR will follow that adds an
-    // explicit ?agent=news filter and exposes provenance URLs.
     axiosInstance
       .get(`/communities/artist/${targetId}/feed`)
       .then((res) => {
@@ -218,8 +220,6 @@ const ArtistPanel = () => {
     setPosting(true);
     try {
       const res = await axiosInstance.post("/feed/text", { content: text });
-      // Prepend the newly created post so the user sees it immediately.
-      // The backend returns the post row; if it doesn't, refetch the feed.
       if (res.data && (res.data.post_id || res.data.id)) {
         setGlobalFeed((prev) => [res.data, ...prev]);
       } else {
@@ -228,7 +228,7 @@ const ArtistPanel = () => {
       }
       setComposerText("");
     } catch {
-      // Leave the textarea content so the user can retry.
+      // Keep textarea content so the user can retry.
     } finally {
       setPosting(false);
     }
@@ -241,14 +241,9 @@ const ArtistPanel = () => {
     news: "News",
   };
 
-  const hasWorldLinks =
-    artist.website_url ||
-    artist.merch_url ||
-    artist.newsletter_url ||
-    artist.spotify_url ||
-    artist.apple_music_url;
-
   const albums = artist.albums || [];
+  const previewedAlbums = albums.slice(0, MUSIC_PREVIEW_COUNT);
+  const hiddenAlbumCount = Math.max(0, albums.length - MUSIC_PREVIEW_COUNT);
   const canClaim =
     isLoggedIn &&
     user &&
@@ -260,10 +255,11 @@ const ArtistPanel = () => {
   const claimPending = claimRequests?.some(
     (c) => c.status === "pending" && c.artist_id === artist.artist_id,
   );
+  const isOwner = user?.artist_id === artist.artist_id;
 
   return (
     <div className={styles.panel}>
-      {user?.artist_id === artist.artist_id && (
+      {isOwner && (
         <div className={styles.topBar}>
           <Link to="/artist-settings" className={styles.editWorldLink}>
             Edit your world
@@ -271,116 +267,121 @@ const ArtistPanel = () => {
         </div>
       )}
 
-      {/* Three-column hero: Feed (left) | centered card (middle) |
-          Music (right). Each side column is a vertical scroll list
-          adjacent to the card, not a tab and not a row below. */}
       <div className={styles.threeCol}>
-        {/* LEFT — Feed (global, decoupled from active artist) */}
-        <aside className={styles.sideCol}>
-          <h2 className={styles.sectionTitle}>Feed</h2>
+        {/* ---- LEFT: Feed (bounded container) ---- */}
+        <aside className={styles.feedCol}>
+          <div className={styles.box}>
+            <header className={styles.boxHeader}>Feed</header>
 
-          {isLoggedIn && (
-            <form className={styles.composer} onSubmit={handlePostSubmit}>
-              <textarea
-                className={styles.composerInput}
-                placeholder="Post something…"
-                value={composerText}
-                onChange={(e) => setComposerText(e.target.value)}
-                rows={2}
-                maxLength={500}
-                disabled={posting}
-              />
-              <button
-                type="submit"
-                className={styles.composerBtn}
-                disabled={!composerText.trim() || posting}
-              >
-                {posting ? "Posting…" : "Post"}
-              </button>
-            </form>
-          )}
+            {isLoggedIn && (
+              <form className={styles.composer} onSubmit={handlePostSubmit}>
+                <textarea
+                  className={styles.composerInput}
+                  placeholder="Post something…"
+                  value={composerText}
+                  onChange={(e) => setComposerText(e.target.value)}
+                  rows={2}
+                  maxLength={500}
+                  disabled={posting}
+                />
+                <button
+                  type="submit"
+                  className={styles.composerBtn}
+                  disabled={!composerText.trim() || posting}
+                >
+                  {posting ? "Posting…" : "Post"}
+                </button>
+              </form>
+            )}
 
-          {!isLoggedIn ? (
-            <div className={styles.emptyState}>
-              <p>Log in to see the feed.</p>
+            <div className={styles.boxScroll}>
+              {!isLoggedIn ? (
+                <div className={styles.emptyState}>
+                  <p>Log in to see the feed.</p>
+                </div>
+              ) : globalFeed.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No posts in the feed yet.</p>
+                </div>
+              ) : (
+                <ul className={styles.feedList}>
+                  {globalFeed.map((post, idx) => {
+                    const postKey = post.id || post.post_id || idx;
+                    const isAgent = post.is_agent_post;
+                    const isMusic =
+                      post.post_type === "music" && post.audio_url;
+                    const isImage =
+                      post.post_type === "image" && post.image_url;
+                    const badgeLabel =
+                      isAgent && (AGENT_BADGE[post.category] || "News");
+
+                    return (
+                      <li key={postKey} className={styles.feedRow}>
+                        <div className={styles.feedHead}>
+                          {isAgent ? (
+                            <span className={styles.feedBadge}>
+                              {badgeLabel}
+                            </span>
+                          ) : (
+                            <span className={styles.feedUser}>
+                              @{post.username || "user"}
+                            </span>
+                          )}
+                          <span className={styles.feedTime}>
+                            {formatRelativeTime(post.created_at)}
+                          </span>
+                        </div>
+
+                        {isMusic && (
+                          <div className={styles.feedMusicRow}>
+                            <button
+                              type="button"
+                              className={styles.feedPlayBtn}
+                              onClick={() => playFeedPost(post)}
+                              aria-label={`Play ${post.music_title || "post"}`}
+                            >
+                              ▶
+                            </button>
+                            <span className={styles.feedMusicTitle}>
+                              {post.music_title || post.title || "Untitled"}
+                            </span>
+                          </div>
+                        )}
+
+                        {isImage && (
+                          <img
+                            src={resolveImageUrl(post.image_url)}
+                            alt=""
+                            className={styles.feedImage}
+                          />
+                        )}
+
+                        {(post.content || post.caption) && (
+                          <p className={styles.feedBody}>
+                            {post.content || post.caption}
+                          </p>
+                        )}
+
+                        {isAgent && post.source_url && (
+                          <a
+                            href={post.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.feedSource}
+                          >
+                            Read source ↗
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
-          ) : globalFeed.length === 0 ? (
-            <div className={styles.emptyState}>
-              <p>No posts in the feed yet.</p>
-            </div>
-          ) : (
-            <ul className={styles.feedList}>
-              {globalFeed.map((post, idx) => {
-                const postKey = post.id || post.post_id || idx;
-                const isAgent = post.is_agent_post;
-                const isMusic = post.post_type === "music" && post.audio_url;
-                const isImage = post.post_type === "image" && post.image_url;
-                const badgeLabel =
-                  isAgent && (AGENT_BADGE[post.category] || "News");
-
-                return (
-                  <li key={postKey} className={styles.feedRow}>
-                    <div className={styles.feedHead}>
-                      {isAgent ? (
-                        <span className={styles.feedBadge}>{badgeLabel}</span>
-                      ) : (
-                        <span className={styles.feedUser}>
-                          @{post.username || "user"}
-                        </span>
-                      )}
-                      <span className={styles.feedTime}>
-                        {formatRelativeTime(post.created_at)}
-                      </span>
-                    </div>
-
-                    {isMusic && (
-                      <div className={styles.feedMusicRow}>
-                        <button
-                          type="button"
-                          className={styles.feedPlayBtn}
-                          onClick={() => playFeedPost(post)}
-                          aria-label={`Play ${post.music_title || "post"}`}
-                        >
-                          ▶
-                        </button>
-                        <span className={styles.feedMusicTitle}>
-                          {post.music_title || post.title || "Untitled"}
-                        </span>
-                      </div>
-                    )}
-
-                    {isImage && (
-                      <img
-                        src={resolveImageUrl(post.image_url)}
-                        alt=""
-                        className={styles.feedImage}
-                      />
-                    )}
-
-                    {(post.content || post.caption) && (
-                      <p className={styles.feedBody}>
-                        {post.content || post.caption}
-                      </p>
-                    )}
-
-                    {isAgent && post.source_url && (
-                      <a
-                        href={post.source_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.feedSource}
-                      >
-                        Read source ↗
-                      </a>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          </div>
         </aside>
 
-        {/* CENTER — Card hero (deck depth + side arrows + meta) */}
+        {/* ---- CENTER: Card hero ---- */}
         <section className={styles.hero}>
           <div className={styles.deck}>
             <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
@@ -431,10 +432,9 @@ const ArtistPanel = () => {
             </button>
           </div>
 
+          {rank && <div className={styles.rankBig}>{ordinal(rank)}</div>}
+
           <div className={styles.cardMeta}>
-            {rank && (
-              <span className={styles.rankBadge}>#{rank} on the list</span>
-            )}
             <span className={styles.cloutLine}>
               {(artist.count || 0).toLocaleString()} fans claim them
             </span>
@@ -462,143 +462,111 @@ const ArtistPanel = () => {
           </div>
         </section>
 
-        {/* RIGHT — Music (vertical) */}
-        <aside className={styles.sideCol}>
-          <h2 className={styles.sectionTitle}>Music</h2>
-          {hasWorldLinks && (
-            <div className={styles.worldLinks}>
-              {artist.website_url && (
-                <a
-                  href={artist.website_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.worldLink}
-                >
-                  Website
-                </a>
-              )}
-              {artist.merch_url && (
-                <a
-                  href={artist.merch_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${styles.worldLink} ${styles.worldLinkMerch}`}
-                >
-                  Shop
-                </a>
-              )}
-              {artist.newsletter_url && (
-                <a
-                  href={artist.newsletter_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.worldLink}
-                >
-                  Newsletter
-                </a>
-              )}
-              {artist.apple_music_url && (
-                <a
-                  href={artist.apple_music_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${styles.worldLink} ${styles.worldLinkApple}`}
-                >
-                  Apple Music
-                </a>
-              )}
-            </div>
-          )}
-
-          {albums.length === 0 ? (
-            <div className={styles.emptyState}>
-              <p>No albums catalogued for this artist yet.</p>
-            </div>
-          ) : (
-            <ul className={styles.albumList}>
-              {albums.map((album) => (
-                <li key={album.album_id} className={styles.albumRow}>
-                  <img
-                    src={resolveImageUrl(
-                      album.album_image_url,
-                      "https://via.placeholder.com/80?text=Album",
-                    )}
-                    alt={album.album_name}
-                    className={styles.albumThumb}
-                  />
-                  <div className={styles.albumInfo}>
-                    <span className={styles.albumName}>{album.album_name}</span>
-                    {album.year && (
-                      <span className={styles.albumYear}>{album.year}</span>
-                    )}
-                    <div className={styles.albumActions}>
-                      {artist.is_verified ? (
-                        <StanboxPreviewButton album={album} artist={artist} />
-                      ) : (
-                        <AlbumPreviewButton album={album} artist={artist} />
-                      )}
-                      {album.spotify_url && (
-                        <a
-                          href={album.spotify_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.albumSpotify}
-                        >
-                          Spotify
-                        </a>
-                      )}
-                      <AlbumBuyButton album={album} artist={artist} />
-                    </div>
+        {/* ---- RIGHT: Music (top, compact 2x2) + News/Events (below) ---- */}
+        <aside className={styles.rightCol}>
+          <div className={styles.box}>
+            <header className={styles.boxHeader}>Music</header>
+            <div className={styles.boxBody}>
+              {albums.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No albums yet.</p>
+                </div>
+              ) : (
+                <>
+                  <div className={styles.musicGrid}>
+                    {previewedAlbums.map((album) => (
+                      <div
+                        key={album.album_id}
+                        className={styles.musicTile}
+                        title={album.album_name}
+                      >
+                        <img
+                          src={resolveImageUrl(
+                            album.album_image_url,
+                            "https://via.placeholder.com/120?text=Album",
+                          )}
+                          alt={album.album_name}
+                          className={styles.musicTileImage}
+                        />
+                      </div>
+                    ))}
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
+                  {hiddenAlbumCount > 0 && (
+                    <span className={styles.musicMore}>
+                      +{hiddenAlbumCount} more album
+                      {hiddenAlbumCount === 1 ? "" : "s"}
+                    </span>
+                  )}
+                  {/* Per-album actions land here for the first preview album
+                      so Preview / Spotify / Buy stays one click away even
+                      with the compact grid. */}
+                  {previewedAlbums[0] && (
+                    <div className={styles.musicQuickRow}>
+                      <span className={styles.musicQuickName}>
+                        {previewedAlbums[0].album_name}
+                      </span>
+                      <div className={styles.musicQuickActions}>
+                        {artist.is_verified ? (
+                          <StanboxPreviewButton
+                            album={previewedAlbums[0]}
+                            artist={artist}
+                          />
+                        ) : (
+                          <AlbumPreviewButton
+                            album={previewedAlbums[0]}
+                            artist={artist}
+                          />
+                        )}
+                        <AlbumBuyButton
+                          album={previewedAlbums[0]}
+                          artist={artist}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.box}>
+            <header className={styles.boxHeader}>News / Events</header>
+            <div className={styles.boxScroll}>
+              {artistNews.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No news about {artist.artist_name} yet.</p>
+                </div>
+              ) : (
+                <ul className={styles.newsList}>
+                  {artistNews.map((post, idx) => (
+                    <li key={post.post_id || idx} className={styles.newsRow}>
+                      <span className={styles.newsBadge}>News</span>
+                      <span className={styles.newsTitle}>
+                        {post.preview || "—"}
+                      </span>
+                      <span className={styles.newsTime}>
+                        {formatRelativeTime(post.tagged_at)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className={styles.eventsBlock}>
+                <span className={styles.eventsSubHead}>Upcoming events</span>
+                <p className={styles.emptyStateInline}>
+                  No upcoming tour dates yet.
+                </p>
+                {isOwner && (
+                  <Link to="/events" className={styles.eventsCreateLink}>
+                    Add a tour date →
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
-
-      {/* News & Events — artist-scoped journalism + tour dates. The news
-          half waits on the agent-poster backend PR that tags artist-
-          relevant articles to community_posts; until then it's empty for
-          most artists. */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>News &amp; Events</h2>
-
-        <div className={styles.subSection}>
-          <h3 className={styles.subHeading}>News</h3>
-          {artistNews.length === 0 ? (
-            <div className={styles.emptyState}>
-              <p>No news about {artist.artist_name} yet.</p>
-            </div>
-          ) : (
-            <ul className={styles.newsList}>
-              {artistNews.map((post, idx) => (
-                <li key={post.post_id || idx} className={styles.newsRow}>
-                  <span className={styles.newsBadge}>News</span>
-                  <span className={styles.newsTitle}>
-                    {post.preview || "—"}
-                  </span>
-                  <span className={styles.newsTime}>
-                    {formatRelativeTime(post.tagged_at)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className={styles.subSection}>
-          <h3 className={styles.subHeading}>Events</h3>
-          <div className={styles.emptyState}>
-            <p>No upcoming tour dates yet.</p>
-            {user?.artist_id === artist.artist_id && (
-              <Link to="/events" className={styles.eventsCreateLink}>
-                Add a tour date →
-              </Link>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* Persistent CTA — Top 20 + claim */}
       <div className={styles.ctaBar}>
