@@ -2,7 +2,7 @@
   min-height: 100vh;
   padding: 1rem 1.5rem 6rem;
   color: #e0e6ed;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -30,21 +30,90 @@
   color: #8899aa;
 }
 
-/* ---- Three-column hero: Feed | Card | Music ---- */
+/* ---- Three-column layout: Feed | Hero | (Music + News/Events) ---- */
 
 .threeCol {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 1.75rem;
+  grid-template-columns: 260px minmax(0, 1fr) 260px;
+  gap: 1.5rem;
   align-items: start;
   margin-top: 0.5rem;
 }
 
-.sideCol {
+.feedCol,
+.rightCol {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  min-width: 0;
+  gap: 1rem;
+}
+
+/* ---- Bounded container "boxes" ---- */
+
+.box {
+  background: #142030;
+  border: 1px solid #1e3450;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.boxHeader {
+  background: #1e3450;
+  color: #e0e6ed;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.6rem 0.9rem;
+}
+
+.boxBody {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.boxScroll {
+  padding: 0.85rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #1e3450 transparent;
+}
+
+.boxScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.boxScroll::-webkit-scrollbar-thumb {
+  background: #1e3450;
+  border-radius: 3px;
+}
+
+/* Feed column: one box that fills the hero's height. */
+
+.feedCol > .box {
+  height: 520px;
+}
+
+.feedCol > .box .boxScroll {
+  flex: 1;
+}
+
+/* Right column: Music up top (compact), News/Events below it. Total
+   roughly matches the hero height with a 1rem gap between them. */
+
+.rightCol > .box:first-child {
+  flex: 0 0 auto;
+}
+
+.rightCol > .box:last-child {
+  height: 260px;
+}
+
+.rightCol > .box:last-child .boxScroll {
+  flex: 1;
 }
 
 /* ---- HERO: centered card with depth stack + side flip arrows ---- */
@@ -53,8 +122,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
-  padding-top: 2.5rem;
+  gap: 0.85rem;
 }
 
 .deck {
@@ -62,60 +130,57 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.25rem;
-  /* Account for the deck layers peeking above the card so they don't
-     clip against the navbar above. */
-  padding-top: 36px;
+  gap: 1rem;
+  padding: 16px 0 0 36px;
 }
 
-/* Decorative layers behind the active card — the "stack of cards"
-   depth cue from the Dribbble shot. Each is narrower than the one
-   above it (forming the visible peek). */
+/* Full card-shaped layers behind the active card, offset up-and-to-the-
+   left with progressive rotation. Forms the "stack of cards" look from
+   Andre's mockup. */
 .deckLayer {
   position: absolute;
-  left: 50%;
-  border-radius: 18px 18px 0 0;
+  width: 340px;
+  max-width: 70vw;
+  aspect-ratio: 3 / 4;
+  border-radius: 18px;
   pointer-events: none;
-  transform: translateX(-50%);
 }
 
 .deckLayer1 {
-  top: 22px;
-  width: 320px;
-  height: 16px;
-  background: linear-gradient(180deg, #d97a3c 0%, #b86530 100%);
+  top: 6px;
+  left: 12px;
+  background: #1c2f49;
+  transform: rotate(-3deg);
   z-index: 1;
 }
 
 .deckLayer2 {
-  top: 12px;
-  width: 296px;
-  height: 16px;
-  background: linear-gradient(180deg, #2f6fa8 0%, #235789 100%);
+  top: 0;
+  left: 24px;
+  background: #15243a;
+  transform: rotate(-6deg);
   z-index: 0;
 }
 
 .deckLayer3 {
-  top: 2px;
-  width: 272px;
-  height: 16px;
-  background: linear-gradient(180deg, #6f4e3a 0%, #553a2b 100%);
+  top: -6px;
+  left: 36px;
+  background: #0f1a2a;
+  transform: rotate(-9deg);
   z-index: -1;
 }
 
-/* Flip arrows — circular semi-transparent buttons on either side of
-   the card. */
 .flipBtn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(20, 32, 48, 0.6);
+  background: rgba(20, 32, 48, 0.7);
   color: #e0e6ed;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   flex-shrink: 0;
-  z-index: 3;
+  z-index: 4;
   transition: background 0.15s, transform 0.15s, opacity 0.15s;
 }
 
@@ -129,8 +194,6 @@
   cursor: default;
 }
 
-/* The active artist card itself. Portrait-oriented, name + genre
-   overlaid on the image like the Dribbble. */
 .card {
   width: 340px;
   max-width: 70vw;
@@ -139,8 +202,8 @@
   border-radius: 18px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  z-index: 2;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.55);
+  z-index: 3;
 }
 
 .cardImage {
@@ -150,8 +213,6 @@
   display: block;
 }
 
-/* Name + genre overlay on top of the portrait, with a soft gradient
-   scrim so the text is readable against any image. */
 .cardOverlay {
   position: absolute;
   top: 0;
@@ -183,7 +244,20 @@
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 }
 
-/* Metadata block below the card. */
+/* Rank pill that sits right below the card — the "1ST" in Andre's
+   mockup. Bigger and more prominent than the secondary tags row. */
+.rankBig {
+  background: #00b4d8;
+  color: #04111e;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  margin-top: -0.25rem;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+}
+
 .cardMeta {
   display: flex;
   flex-direction: column;
@@ -192,18 +266,9 @@
   text-align: center;
 }
 
-.rankBadge {
-  background: #00b4d8;
-  color: #04111e;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 0.32rem 0.8rem;
-  border-radius: 999px;
-}
-
 .cloutLine {
   color: #00b4d8;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 500;
 }
 
@@ -225,66 +290,37 @@
 .spotifyBtn {
   display: inline-flex;
   justify-content: center;
-  padding: 0.55rem 1.1rem;
+  padding: 0.5rem 1rem;
   background: transparent;
   border: 1px solid #1db954;
   color: #1db954;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   text-decoration: none;
-  margin-top: 0.25rem;
 }
 
 .spotifyBtn:hover {
   background: rgba(29, 185, 84, 0.12);
 }
 
-/* ---- Content sections (Feed / Music / Events) ---- */
-
-.sections {
-  display: flex;
-  flex-direction: column;
-  gap: 2.25rem;
-  margin-top: 3rem;
-}
-
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sectionTitle {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #e0e6ed;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #1e3450;
-}
-
-/* feed composer */
+/* ---- Feed composer + posts ---- */
 
 .composer {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: #142030;
-  border: 1px solid #1e3450;
-  border-radius: 10px;
-  padding: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid #1e3450;
 }
 
 .composerInput {
   width: 100%;
-  background: rgba(10, 20, 32, 0.6);
+  background: rgba(10, 20, 32, 0.7);
   border: 1px solid transparent;
   color: #e0e6ed;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   border-radius: 6px;
   padding: 0.5rem 0.6rem;
   resize: none;
@@ -297,7 +333,7 @@
 
 .composerInput:focus {
   border-color: #00b4d8;
-  background: rgba(10, 20, 32, 0.9);
+  background: rgba(10, 20, 32, 0.95);
 }
 
 .composerBtn {
@@ -305,9 +341,9 @@
   background: #00b4d8;
   color: #04111e;
   border: none;
-  padding: 0.4rem 0.95rem;
+  padding: 0.35rem 0.9rem;
   border-radius: 999px;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -321,8 +357,6 @@
   cursor: default;
 }
 
-/* feed posts (multi-type) */
-
 .feedList {
   list-style: none;
   margin: 0;
@@ -335,11 +369,11 @@
 .feedRow {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding: 0.7rem 0.85rem;
-  background: #142030;
+  gap: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(10, 20, 32, 0.5);
   border: 1px solid #1e3450;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .feedHead {
@@ -352,13 +386,13 @@
 .feedUser {
   color: #00b4d8;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .feedBadge {
   background: rgba(0, 180, 216, 0.18);
   color: #00b4d8;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -368,23 +402,23 @@
 
 .feedTime {
   color: #8899aa;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 }
 
 .feedMusicRow {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .feedPlayBtn {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #00b4d8;
   color: #04111e;
   border: none;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
@@ -397,7 +431,7 @@
 .feedMusicTitle {
   color: #e0e6ed;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -405,7 +439,7 @@
 
 .feedImage {
   width: 100%;
-  max-height: 180px;
+  max-height: 140px;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -413,9 +447,8 @@
 .feedBody {
   margin: 0;
   color: #c5cfdb;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   line-height: 1.35;
-  /* Two-line clamp keeps the feed scannable. */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -424,7 +457,7 @@
 
 .feedSource {
   color: #00b4d8;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   text-decoration: none;
   font-weight: 600;
 }
@@ -433,185 +466,86 @@
   text-decoration: underline;
 }
 
-/* music — world link pills + horizontal album scroll */
+/* ---- Music compact grid ---- */
 
-.worldLinks {
-  display: flex;
-  flex-wrap: wrap;
+.musicGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
 }
 
-.worldLink {
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  background: rgba(30, 52, 80, 0.4);
-  border: 1px solid #1e3450;
+.musicTile {
+  background: #0f1a2a;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.musicTileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.musicMore {
+  color: #8899aa;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.musicQuickRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #1e3450;
+}
+
+.musicQuickName {
   color: #e0e6ed;
   font-size: 0.82rem;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.worldLink:hover {
-  background: rgba(30, 52, 80, 0.7);
-}
-
-.worldLinkMerch {
-  border-color: rgba(255, 200, 100, 0.5);
-  color: #ffc864;
-}
-
-.worldLinkApple {
-  border-color: rgba(250, 36, 60, 0.5);
-  color: #fa243c;
-}
-
-/* Vertical album list inside the Music side column. Each album is a
-   horizontal row: thumbnail on the left, name + year + actions on
-   the right. */
-.albumList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.albumRow {
-  display: flex;
-  gap: 0.7rem;
-  padding: 0.6rem;
-  background: #142030;
-  border: 1px solid #1e3450;
-  border-radius: 10px;
-}
-
-.albumThumb {
-  width: 64px;
-  height: 64px;
-  flex-shrink: 0;
-  object-fit: cover;
-  border-radius: 6px;
-  background: #0a1420;
-}
-
-.albumInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  min-width: 0;
-  flex: 1;
-}
-
-.albumName {
-  font-size: 0.88rem;
-  color: #e0e6ed;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.albumYear {
-  font-size: 0.78rem;
-  color: #8899aa;
-}
-
-.albumActions {
+.musicQuickActions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-top: 0.4rem;
 }
 
-.albumSpotify {
-  padding: 0.3rem 0.6rem;
-  background: transparent;
-  border: 1px solid #1db954;
-  border-radius: 999px;
-  color: #1db954;
-  font-size: 0.74rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.albumSpotify:hover {
-  background: rgba(29, 185, 84, 0.12);
-}
-
-/* empty state */
-
-.emptyState {
-  padding: 2rem 1rem;
-  text-align: center;
-  color: #8899aa;
-  background: rgba(20, 32, 48, 0.4);
-  border-radius: 12px;
-  border: 1px dashed #1e3450;
-}
-
-.emptyState p {
-  margin: 0 0 0.5rem;
-}
-
-.eventsCreateLink {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: #00b4d8;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.eventsCreateLink:hover {
-  text-decoration: underline;
-}
-
-/* News & Events sub-sections */
-
-.subSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 1.5rem;
-}
-
-.subHeading {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #8899aa;
-}
+/* ---- News / Events ---- */
 
 .newsList {
   list-style: none;
-  margin: 0;
+  margin: 0 0 0.85rem;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .newsRow {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.7rem 0.85rem;
-  background: #142030;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  background: rgba(10, 20, 32, 0.5);
   border: 1px solid #1e3450;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .newsBadge {
   background: rgba(0, 180, 216, 0.18);
   color: #00b4d8;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  padding: 0.18rem 0.5rem;
+  padding: 0.16rem 0.45rem;
   border-radius: 4px;
   flex-shrink: 0;
 }
@@ -619,15 +553,66 @@
 .newsTitle {
   flex: 1;
   color: #e0e6ed;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.3;
+  /* Two-line clamp keeps each headline a consistent height. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .newsTime {
   color: #8899aa;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   flex-shrink: 0;
+}
+
+.eventsBlock {
+  padding-top: 0.85rem;
+  border-top: 1px solid #1e3450;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.eventsSubHead {
+  color: #8899aa;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.emptyStateInline {
+  margin: 0;
+  color: #8899aa;
+  font-size: 0.82rem;
+}
+
+.eventsCreateLink {
+  color: #00b4d8;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.eventsCreateLink:hover {
+  text-decoration: underline;
+}
+
+/* ---- Empty state (in boxes) ---- */
+
+.emptyState {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  color: #8899aa;
+  font-size: 0.85rem;
+}
+
+.emptyState p {
+  margin: 0;
 }
 
 /* ---- CTA bar (Top 20 + claim) ---- */
@@ -636,7 +621,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid #1e3450;
 }
@@ -803,63 +788,58 @@
   width: 100%;
 }
 
-/* ---- Tablet: keep 3 columns but tighter gaps ---- */
+/* ---- Responsive ---- */
 
 @media (max-width: 1100px) {
   .threeCol {
+    grid-template-columns: 230px minmax(0, 1fr) 230px;
     gap: 1rem;
   }
 }
 
-/* ---- Mobile: stack into single column. Card first, then Feed,
-        then Music, then Events. ---- */
-
-@media (max-width: 880px) {
+@media (max-width: 920px) {
   .threeCol {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
+    gap: 1.5rem;
   }
 
   .hero {
     order: 1;
   }
 
-  .sideCol:first-of-type {
+  .feedCol {
     order: 2;
   }
 
-  .sideCol:last-of-type {
+  .rightCol {
     order: 3;
+  }
+
+  .feedCol > .box {
+    height: 420px;
+  }
+
+  .rightCol > .box:last-child {
+    height: 320px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 540px) {
   .panel {
     padding: 0.75rem 1rem 6rem;
   }
 
-  .card {
+  .card,
+  .deckLayer {
     width: 280px;
   }
 
-  .deckLayer1 {
-    width: 264px;
-  }
-
-  .deckLayer2 {
-    width: 244px;
-  }
-
-  .deckLayer3 {
-    width: 224px;
-  }
-
   .deck {
-    gap: 0.5rem;
+    padding-left: 26px;
   }
 
   .flipBtn {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
 }
