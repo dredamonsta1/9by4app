@@ -16,8 +16,6 @@ import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import styles from "./ArtistPanel.module.css";
 
-const MUSIC_PREVIEW_COUNT = 4;
-
 const formatRelativeTime = (iso) => {
   if (!iso) return "";
   const then = new Date(iso).getTime();
@@ -242,8 +240,6 @@ const ArtistPanel = () => {
   };
 
   const albums = artist.albums || [];
-  const previewedAlbums = albums.slice(0, MUSIC_PREVIEW_COUNT);
-  const hiddenAlbumCount = Math.max(0, albums.length - MUSIC_PREVIEW_COUNT);
   const canClaim =
     isLoggedIn &&
     user &&
@@ -466,65 +462,42 @@ const ArtistPanel = () => {
         <aside className={styles.rightCol}>
           <div className={styles.box}>
             <header className={styles.boxHeader}>Music</header>
-            <div className={styles.boxBody}>
+            <div className={styles.boxScroll}>
               {albums.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>No albums yet.</p>
                 </div>
               ) : (
-                <>
-                  <div className={styles.musicGrid}>
-                    {previewedAlbums.map((album) => (
-                      <div
-                        key={album.album_id}
-                        className={styles.musicTile}
-                        title={album.album_name}
-                      >
-                        <img
-                          src={resolveImageUrl(
-                            album.album_image_url,
-                            "https://via.placeholder.com/120?text=Album",
-                          )}
-                          alt={album.album_name}
-                          className={styles.musicTileImage}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  {hiddenAlbumCount > 0 && (
-                    <span className={styles.musicMore}>
-                      +{hiddenAlbumCount} more album
-                      {hiddenAlbumCount === 1 ? "" : "s"}
-                    </span>
-                  )}
-                  {/* Per-album actions land here for the first preview album
-                      so Preview / Spotify / Buy stays one click away even
-                      with the compact grid. */}
-                  {previewedAlbums[0] && (
-                    <div className={styles.musicQuickRow}>
-                      <span className={styles.musicQuickName}>
-                        {previewedAlbums[0].album_name}
-                      </span>
-                      <div className={styles.musicQuickActions}>
-                        {artist.is_verified ? (
-                          <StanboxPreviewButton
-                            album={previewedAlbums[0]}
-                            artist={artist}
-                          />
-                        ) : (
-                          <AlbumPreviewButton
-                            album={previewedAlbums[0]}
-                            artist={artist}
-                          />
+                <ul className={styles.musicList}>
+                  {albums.map((album) => (
+                    <li key={album.album_id} className={styles.musicRow}>
+                      <img
+                        src={resolveImageUrl(
+                          album.album_image_url,
+                          "https://via.placeholder.com/80?text=Album",
                         )}
-                        <AlbumBuyButton
-                          album={previewedAlbums[0]}
-                          artist={artist}
-                        />
+                        alt={album.album_name}
+                        className={styles.musicThumb}
+                      />
+                      <div className={styles.musicInfo}>
+                        <span className={styles.musicName}>
+                          {album.album_name}
+                        </span>
+                        {album.year && (
+                          <span className={styles.musicYear}>{album.year}</span>
+                        )}
+                        <div className={styles.musicActions}>
+                          {artist.is_verified ? (
+                            <StanboxPreviewButton album={album} artist={artist} />
+                          ) : (
+                            <AlbumPreviewButton album={album} artist={artist} />
+                          )}
+                          <AlbumBuyButton album={album} artist={artist} />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </>
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
           </div>
