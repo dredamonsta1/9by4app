@@ -214,91 +214,12 @@ const ArtistPanel = () => {
         </div>
       )}
 
-      {/* HERO — centered card with depth-stacked layers behind, flip
-          arrows on either side. The visual anchor of the page. */}
-      <section className={styles.hero}>
-        <div className={styles.deck}>
-          {/* Decorative layers peeking out behind the active card,
-              giving the "deck of cards" depth cue from the Dribbble. */}
-          <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
-          <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
-          <div className={`${styles.deckLayer} ${styles.deckLayer1}`} />
-
-          <button
-            type="button"
-            className={`${styles.flipBtn} ${styles.flipLeft}`}
-            onClick={() =>
-              prevArtist && navigate(`/artist/${prevArtist.artist_id}`)
-            }
-            disabled={!prevArtist}
-            aria-label="Previous ranked artist"
-          >
-            ⌃
-          </button>
-
-          <article className={styles.card}>
-            <img
-              src={resolveImageUrl(
-                artist.image_url,
-                "https://via.placeholder.com/360?text=?",
-              )}
-              alt={artist.artist_name || "Artist"}
-              className={styles.cardImage}
-            />
-            <div className={styles.cardOverlay}>
-              <h1 className={styles.cardName}>
-                {artist.artist_name || "N/A"}
-              </h1>
-              {artist.genre && (
-                <p className={styles.cardGenre}>{artist.genre}</p>
-              )}
-            </div>
-          </article>
-
-          <button
-            type="button"
-            className={`${styles.flipBtn} ${styles.flipRight}`}
-            onClick={() =>
-              nextArtist && navigate(`/artist/${nextArtist.artist_id}`)
-            }
-            disabled={!nextArtist}
-            aria-label="Next ranked artist"
-          >
-            ⌄
-          </button>
-        </div>
-
-        <div className={styles.cardMeta}>
-          {rank && (
-            <span className={styles.rankBadge}>#{rank} on the list</span>
-          )}
-          <span className={styles.cloutLine}>
-            {(artist.count || 0).toLocaleString()} fans claim them
-          </span>
-          <div className={styles.tagRow}>
-            {artist.state && <span className={styles.tag}>{artist.state}</span>}
-            {artist.region && (
-              <span className={styles.tag}>{artist.region}</span>
-            )}
-            {artist.label && <span className={styles.tag}>{artist.label}</span>}
-          </div>
-          {artist.spotify_url && (
-            <a
-              href={artist.spotify_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.spotifyBtn}
-            >
-              Listen on Spotify
-            </a>
-          )}
-        </div>
-      </section>
-
-      {/* SECTIONS — Feed / Music / Events all visible, scrolling
-          below the hero. No tabs. */}
-      <div className={styles.sections}>
-        <section className={styles.section}>
+      {/* Three-column hero: Feed (left) | centered card (middle) |
+          Music (right). Each side column is a vertical scroll list
+          adjacent to the card, not a tab and not a row below. */}
+      <div className={styles.threeCol}>
+        {/* LEFT — Feed (vertical) */}
+        <aside className={styles.sideCol}>
           <h2 className={styles.sectionTitle}>Feed</h2>
           {feedPosts.length === 0 ? (
             <div className={styles.emptyState}>
@@ -332,9 +253,92 @@ const ArtistPanel = () => {
               ))}
             </ul>
           )}
+        </aside>
+
+        {/* CENTER — Card hero (deck depth + side arrows + meta) */}
+        <section className={styles.hero}>
+          <div className={styles.deck}>
+            <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
+            <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
+            <div className={`${styles.deckLayer} ${styles.deckLayer1}`} />
+
+            <button
+              type="button"
+              className={`${styles.flipBtn} ${styles.flipLeft}`}
+              onClick={() =>
+                prevArtist && navigate(`/artist/${prevArtist.artist_id}`)
+              }
+              disabled={!prevArtist}
+              aria-label="Previous ranked artist"
+            >
+              ⌃
+            </button>
+
+            <article className={styles.card}>
+              <img
+                src={resolveImageUrl(
+                  artist.image_url,
+                  "https://via.placeholder.com/360?text=?",
+                )}
+                alt={artist.artist_name || "Artist"}
+                className={styles.cardImage}
+              />
+              <div className={styles.cardOverlay}>
+                <h1 className={styles.cardName}>
+                  {artist.artist_name || "N/A"}
+                </h1>
+                {artist.genre && (
+                  <p className={styles.cardGenre}>{artist.genre}</p>
+                )}
+              </div>
+            </article>
+
+            <button
+              type="button"
+              className={`${styles.flipBtn} ${styles.flipRight}`}
+              onClick={() =>
+                nextArtist && navigate(`/artist/${nextArtist.artist_id}`)
+              }
+              disabled={!nextArtist}
+              aria-label="Next ranked artist"
+            >
+              ⌄
+            </button>
+          </div>
+
+          <div className={styles.cardMeta}>
+            {rank && (
+              <span className={styles.rankBadge}>#{rank} on the list</span>
+            )}
+            <span className={styles.cloutLine}>
+              {(artist.count || 0).toLocaleString()} fans claim them
+            </span>
+            <div className={styles.tagRow}>
+              {artist.state && (
+                <span className={styles.tag}>{artist.state}</span>
+              )}
+              {artist.region && (
+                <span className={styles.tag}>{artist.region}</span>
+              )}
+              {artist.label && (
+                <span className={styles.tag}>{artist.label}</span>
+              )}
+            </div>
+            {artist.spotify_url && (
+              <a
+                href={artist.spotify_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.spotifyBtn}
+              >
+                Listen on Spotify
+              </a>
+            )}
+          </div>
         </section>
 
-        <section className={styles.section}>
+        {/* RIGHT — Music (vertical) */}
+        <aside className={styles.sideCol}>
           <h2 className={styles.sectionTitle}>Music</h2>
           {hasWorldLinks && (
             <div className={styles.worldLinks}>
@@ -386,57 +390,60 @@ const ArtistPanel = () => {
               <p>No albums catalogued for this artist yet.</p>
             </div>
           ) : (
-            <div className={styles.albumScroll}>
+            <ul className={styles.albumList}>
               {albums.map((album) => (
-                <div key={album.album_id} className={styles.albumCard}>
+                <li key={album.album_id} className={styles.albumRow}>
                   <img
                     src={resolveImageUrl(
                       album.album_image_url,
-                      "https://via.placeholder.com/160?text=Album",
+                      "https://via.placeholder.com/80?text=Album",
                     )}
                     alt={album.album_name}
-                    className={styles.albumImage}
+                    className={styles.albumThumb}
                   />
-                  <span className={styles.albumName}>{album.album_name}</span>
-                  {album.year && (
-                    <span className={styles.albumYear}>{album.year}</span>
-                  )}
-                  <div className={styles.albumActions}>
-                    {artist.is_verified ? (
-                      <StanboxPreviewButton album={album} artist={artist} />
-                    ) : (
-                      <AlbumPreviewButton album={album} artist={artist} />
+                  <div className={styles.albumInfo}>
+                    <span className={styles.albumName}>{album.album_name}</span>
+                    {album.year && (
+                      <span className={styles.albumYear}>{album.year}</span>
                     )}
-                    {album.spotify_url && (
-                      <a
-                        href={album.spotify_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.albumSpotify}
-                      >
-                        Spotify
-                      </a>
-                    )}
-                    <AlbumBuyButton album={album} artist={artist} />
+                    <div className={styles.albumActions}>
+                      {artist.is_verified ? (
+                        <StanboxPreviewButton album={album} artist={artist} />
+                      ) : (
+                        <AlbumPreviewButton album={album} artist={artist} />
+                      )}
+                      {album.spotify_url && (
+                        <a
+                          href={album.spotify_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.albumSpotify}
+                        >
+                          Spotify
+                        </a>
+                      )}
+                      <AlbumBuyButton album={album} artist={artist} />
+                    </div>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Events</h2>
-          <div className={styles.emptyState}>
-            <p>No upcoming tour dates yet.</p>
-            {user?.artist_id === artist.artist_id && (
-              <Link to="/events" className={styles.eventsCreateLink}>
-                Add a tour date →
-              </Link>
-            )}
-          </div>
-        </section>
+        </aside>
       </div>
+
+      {/* Events stays full-width below the three-column hero. */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Events</h2>
+        <div className={styles.emptyState}>
+          <p>No upcoming tour dates yet.</p>
+          {user?.artist_id === artist.artist_id && (
+            <Link to="/events" className={styles.eventsCreateLink}>
+              Add a tour date →
+            </Link>
+          )}
+        </div>
+      </section>
 
       {/* Persistent CTA — Top 20 + claim */}
       <div className={styles.ctaBar}>
