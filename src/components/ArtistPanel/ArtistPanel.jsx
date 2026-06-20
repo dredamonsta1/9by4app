@@ -14,6 +14,10 @@ import AlbumPreviewButton from "../AlbumPreviewButton/AlbumPreviewButton";
 import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
 import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
+import FiltersBar from "../FiltersBar/FiltersBar";
+import RankView from "../RankView/RankView";
+import NewMusicSection from "../NewMusicSection/NewMusicSection";
+import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import styles from "./ArtistPanel.module.css";
 
 const formatRelativeTime = (iso) => {
@@ -96,6 +100,19 @@ const ArtistPanel = () => {
   const [posting, setPosting] = useState(false);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
+  const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
+  const [upcomingReleases, setUpcomingReleases] = useState([]);
+
+  // Upcoming releases for the bottom New Music section. Fetched once
+  // per session — doesn't change with the active artist.
+  useEffect(() => {
+    axiosInstance
+      .get("/music/upcoming")
+      .then((res) =>
+        setUpcomingReleases(Array.isArray(res.data) ? res.data : []),
+      )
+      .catch(() => setUpcomingReleases([]));
+  }, []);
 
   // Ensure the global artist list is loaded — rank + prev/next depend on it.
   useEffect(() => {
@@ -239,6 +256,29 @@ const ArtistPanel = () => {
     news: "News",
   };
 
+  // RankView's data is the artist list filtered by the FiltersBar choice.
+  // "my list" scopes to the user's Top 20; genre / region apply substring
+  // filters against the relevant columns; "all" passes through.
+  const profileListIds = new Set(profileList.map((a) => a.artist_id));
+  const filteredArtists =
+    activeFilter.type === "mylist"
+      ? allArtists.filter((a) => profileListIds.has(a.artist_id))
+      : activeFilter.type === "genre"
+      ? allArtists.filter(
+          (a) =>
+            a.genre &&
+            a.genre.toLowerCase().includes(activeFilter.value.toLowerCase()),
+        )
+      : activeFilter.type === "region"
+      ? allArtists.filter(
+          (a) =>
+            (a.region &&
+              a.region.toLowerCase() === activeFilter.value.toLowerCase()) ||
+            (a.state &&
+              a.state.toLowerCase() === activeFilter.value.toLowerCase()),
+        )
+      : allArtists;
+
   const albums = artist.albums || [];
   const canClaim =
     isLoggedIn &&
@@ -254,20 +294,43 @@ const ArtistPanel = () => {
   const isOwner = user?.artist_id === artist.artist_id;
 
   return (
-    <div className={styles.panel}>
-      {isOwner && (
-        <div className={styles.topBar}>
-          <Link to="/artist-settings" className={styles.editWorldLink}>
-            Edit your world
-          </Link>
-        </div>
-      )}
+    <div className={styles.page}>
+      {/* Far-left rail: filter pills. Vertical sidebar, sticky on
+          desktop so it stays in view as the user scrolls. */}
+      <aside className={styles.filterRail}>
+        <header className={styles.railHeader}>Filters</header>
+        <FiltersBar
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          isLoggedIn={isLoggedIn}
+          hasListItems={profileList.length > 0}
+        />
+      </aside>
 
-      <div className={styles.threeCol}>
-        {/* ---- LEFT: Feed (bounded container) ---- */}
-        <aside className={styles.feedCol}>
-          <div className={styles.box}>
-            <header className={styles.boxHeader}>Feed</header>
+      <div className={styles.panel}>
+        {isOwner && (
+          <div className={styles.topBar}>
+            <Link to="/artist-settings" className={styles.editWorldLink}>
+              Edit your world
+            </Link>
+          </div>
+        )}
+
+        <div className={styles.threeCol}>
+          {/* ---- LEFT: Rankings (top) + Feed (below) ---- */}
+          <aside className={styles.feedCol}>
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>Rankings</header>
+              <div className={styles.boxScroll}>
+                <RankView
+                  artists={filteredArtists}
+                  isLoggedIn={isLoggedIn}
+                />
+              </div>
+            </div>
+
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>Feed</header>
 
             {isLoggedIn && (
               <form className={styles.composer} onSubmit={handlePostSubmit}>
@@ -541,6 +604,12 @@ const ArtistPanel = () => {
         </aside>
       </div>
 
+      {/* Full-width: New Music section (upcoming releases + community lane) */}
+      <NewMusicSection
+        isLoggedIn={isLoggedIn}
+        upcomingReleases={upcomingReleases}
+      />
+
       {/* Persistent CTA — Top 20 + claim */}
       <div className={styles.ctaBar}>
         {!isLoggedIn ? (
@@ -586,20 +655,25 @@ const ArtistPanel = () => {
         )}
       </div>
 
-      {showPositionSelector && (
-        <PositionSelector
-          profileList={profileList}
-          onSelect={inList ? handleChangePosition : handlePositionSelect}
-          onClose={() => setShowPositionSelector(false)}
-        />
-      )}
+        {showPositionSelector && (
+          <PositionSelector
+            profileList={profileList}
+            onSelect={inList ? handleChangePosition : handlePositionSelect}
+            onClose={() => setShowPositionSelector(false)}
+          />
+        )}
 
-      {showClaimModal && (
-        <ClaimArtistModal
-          artist={artist}
-          onClose={() => setShowClaimModal(false)}
-        />
-      )}
+        {showClaimModal && (
+          <ClaimArtistModal
+            artist={artist}
+            onClose={() => setShowClaimModal(false)}
+          />
+        )}
+      </div>
+
+      {/* Above the Footer (the Footer itself is rendered by App.jsx
+          after each page). Logged-out users see the upsell. */}
+      {!isLoggedIn && <StickyCtaBar />}
     </div>
   );
 };
