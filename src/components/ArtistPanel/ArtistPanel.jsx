@@ -18,6 +18,7 @@ import FiltersBar from "../FiltersBar/FiltersBar";
 import RankView from "../RankView/RankView";
 import NewMusicSection from "../NewMusicSection/NewMusicSection";
 import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
+import TrendingShelf from "../TrendingShelf/TrendingShelf";
 import styles from "./ArtistPanel.module.css";
 
 const formatRelativeTime = (iso) => {
@@ -256,28 +257,42 @@ const ArtistPanel = () => {
     news: "News",
   };
 
-  // RankView's data is the artist list filtered by the FiltersBar choice.
+  // FiltersBar choice → RankView's data (and hero on filter change).
   // "my list" scopes to the user's Top 20; genre / region apply substring
   // filters against the relevant columns; "all" passes through.
   const profileListIds = new Set(profileList.map((a) => a.artist_id));
-  const filteredArtists =
-    activeFilter.type === "mylist"
-      ? allArtists.filter((a) => profileListIds.has(a.artist_id))
-      : activeFilter.type === "genre"
-      ? allArtists.filter(
-          (a) =>
-            a.genre &&
-            a.genre.toLowerCase().includes(activeFilter.value.toLowerCase()),
-        )
-      : activeFilter.type === "region"
-      ? allArtists.filter(
-          (a) =>
-            (a.region &&
-              a.region.toLowerCase() === activeFilter.value.toLowerCase()) ||
-            (a.state &&
-              a.state.toLowerCase() === activeFilter.value.toLowerCase()),
-        )
-      : allArtists;
+  const applyFilter = (artists, filter) => {
+    if (filter.type === "mylist") {
+      return artists.filter((a) => profileListIds.has(a.artist_id));
+    }
+    if (filter.type === "genre") {
+      const v = filter.value.toLowerCase();
+      return artists.filter(
+        (a) => a.genre && a.genre.toLowerCase().includes(v),
+      );
+    }
+    if (filter.type === "region") {
+      const v = filter.value.toLowerCase();
+      return artists.filter(
+        (a) =>
+          (a.region && a.region.toLowerCase() === v) ||
+          (a.state && a.state.toLowerCase() === v),
+      );
+    }
+    return artists;
+  };
+  const filteredArtists = applyFilter(allArtists, activeFilter);
+
+  // Changing a filter pulls the hero card to the top of the filtered list.
+  // If the filter empties the list (or "all" snaps back to the full ranking),
+  // we still update activeFilter so the Rankings panel reflects the pick.
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
+    const next = applyFilter(allArtists, filter);
+    if (next.length > 0 && next[0].artist_id !== artist.artist_id) {
+      navigate(`/artist/${next[0].artist_id}`);
+    }
+  };
 
   const albums = artist.albums || [];
   const canClaim =
@@ -301,7 +316,7 @@ const ArtistPanel = () => {
         <header className={styles.railHeader}>Filters</header>
         <FiltersBar
           activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
+          onFilterChange={handleFilterChange}
           isLoggedIn={isLoggedIn}
           hasListItems={profileList.length > 0}
         />
@@ -317,8 +332,17 @@ const ArtistPanel = () => {
         )}
 
         <div className={styles.threeCol}>
-          {/* ---- LEFT: Rankings (top) + Feed (below) ---- */}
+          {/* ---- LEFT: Trending (top) + Rankings + Feed ---- */}
           <aside className={styles.feedCol}>
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>Trending</header>
+              <div className={styles.boxScroll}>
+                <TrendingShelf
+                  onArtistClick={(a) => navigate(`/artist/${a.artist_id}`)}
+                />
+              </div>
+            </div>
+
             <div className={styles.box}>
               <header className={styles.boxHeader}>Rankings</header>
               <div className={styles.boxScroll}>
