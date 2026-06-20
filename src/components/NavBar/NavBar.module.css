@@ -112,6 +112,22 @@
     transform: translateY(-2px);
 }
 
+/* Pinned-right variant: sits as the last direct child of the navbar,
+   outside the hamburger-toggled navContent. Tighter padding so it
+   doesn't dominate the bar. */
+.logoutPinned {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+}
+
+@media (max-width: 767px) {
+    .logoutPinned {
+        margin-left: 0.5rem;
+    }
+}
+
 .hamburger {
     display: flex;
     flex-direction: column;
