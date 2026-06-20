@@ -212,15 +212,21 @@ const NavBar = () => {
                   )}
                 </Link>
               </li>
-              <li>
-                <button onClick={handleLogout} className={styles.logoutButton}>
-                  Logout
-                </button>
-              </li>
             </>
           )}
         </ul>
       </div>
+
+      {/* Logout pinned to the far right of the navbar, outside the
+          hamburger-toggled navContent so it's always visible on mobile too. */}
+      {user && (
+        <button
+          onClick={handleLogout}
+          className={`${styles.logoutButton} ${styles.logoutPinned}`}
+        >
+          Logout
+        </button>
+      )}
     </nav>
   );
 };
