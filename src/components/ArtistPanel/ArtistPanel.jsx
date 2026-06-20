@@ -332,27 +332,9 @@ const ArtistPanel = () => {
         )}
 
         <div className={styles.threeCol}>
-          {/* ---- LEFT: Trending (top) + Rankings + Feed ---- */}
+          {/* ---- LEFT: Feed only (Trending + Rankings moved to the
+                bottom row, to the right of Upcoming Releases) ---- */}
           <aside className={styles.feedCol}>
-            <div className={styles.box}>
-              <header className={styles.boxHeader}>Trending</header>
-              <div className={styles.boxScroll}>
-                <TrendingShelf
-                  onArtistClick={(a) => navigate(`/artist/${a.artist_id}`)}
-                />
-              </div>
-            </div>
-
-            <div className={styles.box}>
-              <header className={styles.boxHeader}>Rankings</header>
-              <div className={styles.boxScroll}>
-                <RankView
-                  artists={filteredArtists}
-                  isLoggedIn={isLoggedIn}
-                />
-              </div>
-            </div>
-
             <div className={styles.box}>
               <header className={styles.boxHeader}>Feed</header>
 
@@ -628,11 +610,36 @@ const ArtistPanel = () => {
         </aside>
       </div>
 
-      {/* Full-width: New Music section (upcoming releases + community lane) */}
-      <NewMusicSection
-        isLoggedIn={isLoggedIn}
-        upcomingReleases={upcomingReleases}
-      />
+      {/* Bottom row: Upcoming Releases on the left, with Rankings
+          stacked above Trending on the right. From-the-Community
+          lane retired — feed already covers that surface. */}
+      <div className={styles.bottomRow}>
+        <NewMusicSection
+          isLoggedIn={isLoggedIn}
+          upcomingReleases={upcomingReleases}
+        />
+
+        <aside className={styles.bottomRight}>
+          <div className={styles.box}>
+            <header className={styles.boxHeader}>Rankings</header>
+            <div className={styles.boxScroll}>
+              <RankView
+                artists={filteredArtists}
+                isLoggedIn={isLoggedIn}
+              />
+            </div>
+          </div>
+
+          <div className={styles.box}>
+            <header className={styles.boxHeader}>Trending</header>
+            <div className={styles.boxScroll}>
+              <TrendingShelf
+                onArtistClick={(a) => navigate(`/artist/${a.artist_id}`)}
+              />
+            </div>
+          </div>
+        </aside>
+      </div>
 
       {/* Persistent CTA — Top 20 + claim */}
       <div className={styles.ctaBar}>

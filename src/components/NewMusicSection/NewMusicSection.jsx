@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./NewMusicSection.module.css";
-
-const timeAgo = (ts) => {
-  const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
-};
 
 const formatReleaseDate = (dateStr) => {
   if (!dateStr) return null;
@@ -102,112 +94,21 @@ const ArtistReleasesLane = ({ onArtistNavigate, upcomingReleases }) => {
   );
 };
 
-// Lane 2 — User music posts
-const MusicPostsLane = ({ isLoggedIn }) => {
-  const [posts, setPosts] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const [expanded, setExpanded] = useState({});
-
-  useEffect(() => {
-    axiosInstance.get("/music/posts/feed")
-      .then((res) => setPosts(res.data))
-      .catch(() => {})
-      .finally(() => setLoaded(true));
-  }, []);
-
-  if (loaded && posts.length === 0) {
-    return (
-      <p className={styles.empty}>
-        {isLoggedIn
-          ? "Follow artists and fans to see their music here."
-          : "No music posts yet."}
-      </p>
-    );
-  }
-
-  return (
-    <div className={styles.postsLane}>
-      {posts.map((post) => (
-        <div key={post.post_id} className={styles.musicPost}>
-          <div className={styles.postHeader}>
-            <Link to={`/profile/${post.user_id}`} className={styles.postUser}>
-              {post.profile_image && (
-                <img
-                  src={resolveImageUrl(post.profile_image)}
-                  alt={post.username}
-                  className={styles.postAvatar}
-                />
-              )}
-              <span className={styles.postUsername}>{post.username}</span>
-            </Link>
-            <span className={styles.postTime}>{timeAgo(post.created_at)}</span>
-          </div>
-
-          {post.title && <p className={styles.postTitle}>{post.title}</p>}
-
-          {post.audio_url && (
-            <audio controls className={styles.audioPlayer} preload="none">
-              <source src={post.audio_url} />
-            </audio>
-          )}
-
-          {post.stream_url && !post.audio_url && (
-            <a href={post.stream_url} target="_blank" rel="noopener noreferrer" className={styles.streamLink}>
-              {post.platform ? `Listen on ${post.platform}` : "Stream"}
-            </a>
-          )}
-
-          {post.platform && (
-            <span className={styles.platformBadge}>{post.platform}</span>
-          )}
-
-          {post.caption && (
-            <p className={`${styles.postCaption} ${expanded[post.post_id] ? styles.expanded : ""}`}>
-              {post.caption}
-            </p>
-          )}
-          {post.caption && post.caption.length > 100 && (
-            <button
-              className={styles.expandBtn}
-              onClick={() => setExpanded((e) => ({ ...e, [post.post_id]: !e[post.post_id] }))}
-            >
-              {expanded[post.post_id] ? "Less" : "More"}
-            </button>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// Main component
-const NewMusicSection = ({ isLoggedIn, upcomingReleases = [] }) => {
+// Main component — Upcoming Releases only. From-the-Community lane
+// retired (the Feed column already covers that surface).
+const NewMusicSection = ({ upcomingReleases = [] }) => {
   const navigate = useNavigate();
 
   return (
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>New Music</h2>
+        <h2 className={styles.sectionTitle}>Upcoming Releases</h2>
       </div>
 
-      <div className={styles.lanes}>
-        <div className={styles.lane}>
-          <div className={styles.laneHeader}>
-            <span className={styles.laneLabel}>Upcoming releases</span>
-          </div>
-          <ArtistReleasesLane
-            onArtistNavigate={(id) => navigate(`/artist/${id}`)}
-            upcomingReleases={upcomingReleases}
-          />
-        </div>
-
-        <div className={styles.lane}>
-          <div className={styles.laneHeader}>
-            <span className={styles.laneLabel}>From the community</span>
-          </div>
-          <MusicPostsLane isLoggedIn={isLoggedIn} />
-        </div>
-      </div>
+      <ArtistReleasesLane
+        onArtistNavigate={(id) => navigate(`/artist/${id}`)}
+        upcomingReleases={upcomingReleases}
+      />
     </section>
   );
 };
