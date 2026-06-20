@@ -150,15 +150,19 @@
   border-radius: 3px;
 }
 
-/* Feed column: Rankings box on top + Feed box below. Total height
-   roughly matches the hero card. */
+/* Feed column: Trending (top) + Rankings (middle) + Feed (bottom). The
+   three heights stack to roughly the hero card height. */
 
-.feedCol > .box:first-child {
-  height: 220px;
+.feedCol > .box:nth-child(1) {
+  height: 140px;
 }
 
-.feedCol > .box:last-child {
-  height: 320px;
+.feedCol > .box:nth-child(2) {
+  height: 200px;
+}
+
+.feedCol > .box:nth-child(3) {
+  height: 260px;
 }
 
 .feedCol > .box .boxScroll {
