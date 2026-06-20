@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addArtistToProfileList } from "../../redux/actions/profileListActions";
 import { resolveImageUrl } from "../../utils/imageUrl";
-import { ArtistModal } from "../RapperList";
 import styles from "./RankView.module.css";
 
 const RankView = ({ artists, isLoggedIn }) => {
   const dispatch = useDispatch();
-  const [selectedArtist, setSelectedArtist] = useState(null);
+  const navigate = useNavigate();
   const profileList = useSelector((state) => state.profileList.list);
   const inList = new Set(profileList.map((a) => a.artist_id));
 
@@ -32,7 +32,7 @@ const RankView = ({ artists, isLoggedIn }) => {
             <tr
               key={artist.artist_id}
               className={styles.row}
-              onClick={() => setSelectedArtist(artist)}
+              onClick={() => navigate(`/artist/${artist.artist_id}`)}
             >
               <td className={styles.tdRank}>{index + 1}</td>
               <td className={styles.tdArtist}>
@@ -64,13 +64,6 @@ const RankView = ({ artists, isLoggedIn }) => {
           ))}
         </tbody>
       </table>
-
-      {selectedArtist && (
-        <ArtistModal
-          artist={selectedArtist}
-          onClose={() => setSelectedArtist(null)}
-        />
-      )}
     </div>
   );
 };

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
-import { ArtistModal } from "../RapperList";
 import styles from "./NewMusicSection.module.css";
 
 const timeAgo = (ts) => {
@@ -21,7 +20,7 @@ const formatReleaseDate = (dateStr) => {
 };
 
 // Lane 1 — Upcoming releases (Spotify/MusicBrainz) with DB albums as fallback
-const ArtistReleasesLane = ({ onArtistClick, upcomingReleases }) => {
+const ArtistReleasesLane = ({ onArtistNavigate, upcomingReleases }) => {
   const [albums, setAlbums] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -87,7 +86,7 @@ const ArtistReleasesLane = ({ onArtistClick, upcomingReleases }) => {
           <span className={styles.albumName}>{album.album_name}</span>
           <button
             className={styles.albumArtist}
-            onClick={() => onArtistClick({ artist_id: album.artist_id, artist_name: album.artist_name, image_url: album.artist_image_url })}
+            onClick={() => onArtistNavigate(album.artist_id)}
           >
             {album.artist_name}
           </button>
@@ -183,7 +182,7 @@ const MusicPostsLane = ({ isLoggedIn }) => {
 
 // Main component
 const NewMusicSection = ({ isLoggedIn, upcomingReleases = [] }) => {
-  const [modalArtist, setModalArtist] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <section className={styles.section}>
@@ -196,7 +195,10 @@ const NewMusicSection = ({ isLoggedIn, upcomingReleases = [] }) => {
           <div className={styles.laneHeader}>
             <span className={styles.laneLabel}>Upcoming releases</span>
           </div>
-          <ArtistReleasesLane onArtistClick={setModalArtist} upcomingReleases={upcomingReleases} />
+          <ArtistReleasesLane
+            onArtistNavigate={(id) => navigate(`/artist/${id}`)}
+            upcomingReleases={upcomingReleases}
+          />
         </div>
 
         <div className={styles.lane}>
@@ -206,10 +208,6 @@ const NewMusicSection = ({ isLoggedIn, upcomingReleases = [] }) => {
           <MusicPostsLane isLoggedIn={isLoggedIn} />
         </div>
       </div>
-
-      {modalArtist && (
-        <ArtistModal artist={modalArtist} onClose={() => setModalArtist(null)} />
-      )}
     </section>
   );
 };
