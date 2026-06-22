@@ -43,6 +43,229 @@ const ordinal = (n) => {
   return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
 };
 
+// A single feed post — handles its own comment expand/collapse state,
+// comment list, submit, delete. Also renders Verified / Disputed
+// verdict badges from the fact-checker agent and the source link for
+// agent posts. Ports the feature set the old standalone Feed.jsx had
+// (which got orphaned when the Feed surface moved into ArtistPanel).
+const AGENT_BADGE = {
+  music: "Music",
+  sports: "Sports",
+  entertainment: "Entertainment",
+  news: "News",
+};
+
+const FeedPost = ({ post, currentUserId, onPlayMusic }) => {
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentCount, setCommentCount] = useState(0);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const postId = post.id || post.post_id;
+  const postType = post.post_type || "text";
+  const isAgent = post.is_agent_post;
+  const isMusic = postType === "music" && post.audio_url;
+  const isImage = postType === "image" && post.image_url;
+  const badgeLabel = isAgent && (AGENT_BADGE[post.category] || "News");
+  const verifiedCount = post.verified_count || 0;
+  const disputedCount = post.disputed_count || 0;
+
+  const fetchComments = async () => {
+    setCommentsLoading(true);
+    try {
+      const res = await axiosInstance.get(
+        `/feed/comments/${postType}/${postId}`,
+      );
+      const list = Array.isArray(res.data) ? res.data : [];
+      setComments(list);
+      setCommentCount(list.length);
+    } catch {
+      // Leave the panel empty on failure.
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
+
+  const handleToggleComments = () => {
+    if (!showComments && comments.length === 0) fetchComments();
+    setShowComments((prev) => !prev);
+  };
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    const text = commentText.trim();
+    if (!text || submitting) return;
+    setSubmitting(true);
+    try {
+      const res = await axiosInstance.post(
+        `/feed/comments/${postType}/${postId}`,
+        { content: text },
+      );
+      if (res.data) setComments((prev) => [...prev, res.data]);
+      setCommentCount((prev) => prev + 1);
+      setCommentText("");
+    } catch {
+      // Keep the textarea content for retry.
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await axiosInstance.delete(`/feed/comments/${commentId}`);
+      setComments((prev) => prev.filter((c) => c.comment_id !== commentId));
+      setCommentCount((prev) => Math.max(0, prev - 1));
+    } catch {
+      // No-op; comment stays visible on failure.
+    }
+  };
+
+  return (
+    <li className={styles.feedRow}>
+      <div className={styles.feedHead}>
+        {isAgent ? (
+          <span className={styles.feedBadge}>{badgeLabel}</span>
+        ) : (
+          <span className={styles.feedUser}>@{post.username || "user"}</span>
+        )}
+        <span className={styles.feedTime}>
+          {formatRelativeTime(post.created_at)}
+        </span>
+      </div>
+
+      {isMusic && (
+        <div className={styles.feedMusicRow}>
+          <button
+            type="button"
+            className={styles.feedPlayBtn}
+            onClick={() => onPlayMusic(post)}
+            aria-label={`Play ${post.music_title || "post"}`}
+          >
+            ▶
+          </button>
+          <span className={styles.feedMusicTitle}>
+            {post.music_title || post.title || "Untitled"}
+          </span>
+        </div>
+      )}
+
+      {isImage && (
+        <img
+          src={resolveImageUrl(post.image_url)}
+          alt=""
+          className={styles.feedImage}
+        />
+      )}
+
+      {(post.content || post.caption) && (
+        <p className={styles.feedBody}>{post.content || post.caption}</p>
+      )}
+
+      {isAgent && post.source_url && (
+        <a
+          href={post.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.feedSource}
+        >
+          Read source ↗
+        </a>
+      )}
+
+      {/* Verdict badges from the fact-checker agent. */}
+      {(verifiedCount > 0 || disputedCount > 0) && (
+        <div className={styles.verdictRow}>
+          {verifiedCount > 0 && (
+            <span className={styles.verifiedBadge}>
+              ✓ Verified ({verifiedCount})
+            </span>
+          )}
+          {disputedCount > 0 && (
+            <span className={styles.disputedBadge}>
+              ⚠ Disputed ({disputedCount})
+            </span>
+          )}
+        </div>
+      )}
+
+      <button
+        type="button"
+        className={styles.commentToggle}
+        onClick={handleToggleComments}
+      >
+        💬 {commentCount > 0 ? commentCount : ""}{" "}
+        {commentCount === 1 ? "Comment" : "Comments"}
+      </button>
+
+      {showComments && (
+        <div className={styles.commentsSection}>
+          {commentsLoading ? (
+            <p className={styles.commentsHint}>Loading…</p>
+          ) : comments.length === 0 ? (
+            <p className={styles.commentsHint}>No comments yet.</p>
+          ) : (
+            <ul className={styles.commentsList}>
+              {comments.map((c) => (
+                <li key={c.comment_id} className={styles.commentItem}>
+                  <div className={styles.commentHead}>
+                    <Link
+                      to={`/profile/${c.user_id}`}
+                      className={styles.commentUser}
+                    >
+                      @{c.username}
+                    </Link>
+                    <span className={styles.commentTime}>
+                      {formatRelativeTime(c.created_at)}
+                    </span>
+                    {c.user_id === currentUserId && (
+                      <button
+                        type="button"
+                        className={styles.commentDelete}
+                        onClick={() => handleDeleteComment(c.comment_id)}
+                        aria-label="Delete comment"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                  <p className={styles.commentBody}>{c.content}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {currentUserId && (
+            <form
+              className={styles.commentForm}
+              onSubmit={handleSubmitComment}
+            >
+              <input
+                type="text"
+                className={styles.commentInput}
+                placeholder="Write a comment…"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                maxLength={500}
+                disabled={submitting}
+              />
+              <button
+                type="submit"
+                className={styles.commentSubmit}
+                disabled={!commentText.trim() || submitting}
+              >
+                {submitting ? "…" : "Post"}
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+    </li>
+  );
+};
+
 const PositionSelector = ({ profileList, onSelect, onClose }) => {
   const slots = Array.from({ length: 20 }, (_, i) => i + 1);
   const occupiedMap = {};
@@ -250,13 +473,6 @@ const ArtistPanel = () => {
     }
   };
 
-  const AGENT_BADGE = {
-    music: "Music",
-    sports: "Sports",
-    entertainment: "Entertainment",
-    news: "News",
-  };
-
   // FiltersBar choice → RankView's data (and hero on filter change).
   // "my list" scopes to the user's Top 20; genre / region apply substring
   // filters against the relevant columns; "all" passes through.
@@ -370,76 +586,14 @@ const ArtistPanel = () => {
                 </div>
               ) : (
                 <ul className={styles.feedList}>
-                  {globalFeed.map((post, idx) => {
-                    const postKey = post.id || post.post_id || idx;
-                    const isAgent = post.is_agent_post;
-                    const isMusic =
-                      post.post_type === "music" && post.audio_url;
-                    const isImage =
-                      post.post_type === "image" && post.image_url;
-                    const badgeLabel =
-                      isAgent && (AGENT_BADGE[post.category] || "News");
-
-                    return (
-                      <li key={postKey} className={styles.feedRow}>
-                        <div className={styles.feedHead}>
-                          {isAgent ? (
-                            <span className={styles.feedBadge}>
-                              {badgeLabel}
-                            </span>
-                          ) : (
-                            <span className={styles.feedUser}>
-                              @{post.username || "user"}
-                            </span>
-                          )}
-                          <span className={styles.feedTime}>
-                            {formatRelativeTime(post.created_at)}
-                          </span>
-                        </div>
-
-                        {isMusic && (
-                          <div className={styles.feedMusicRow}>
-                            <button
-                              type="button"
-                              className={styles.feedPlayBtn}
-                              onClick={() => playFeedPost(post)}
-                              aria-label={`Play ${post.music_title || "post"}`}
-                            >
-                              ▶
-                            </button>
-                            <span className={styles.feedMusicTitle}>
-                              {post.music_title || post.title || "Untitled"}
-                            </span>
-                          </div>
-                        )}
-
-                        {isImage && (
-                          <img
-                            src={resolveImageUrl(post.image_url)}
-                            alt=""
-                            className={styles.feedImage}
-                          />
-                        )}
-
-                        {(post.content || post.caption) && (
-                          <p className={styles.feedBody}>
-                            {post.content || post.caption}
-                          </p>
-                        )}
-
-                        {isAgent && post.source_url && (
-                          <a
-                            href={post.source_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.feedSource}
-                          >
-                            Read source ↗
-                          </a>
-                        )}
-                      </li>
-                    );
-                  })}
+                  {globalFeed.map((post, idx) => (
+                    <FeedPost
+                      key={post.id || post.post_id || idx}
+                      post={post}
+                      currentUserId={user?.id}
+                      onPlayMusic={playFeedPost}
+                    />
+                  ))}
                 </ul>
               )}
             </div>
