@@ -376,6 +376,31 @@
 
 /* ---- Feed composer + posts ---- */
 
+/* Single button that opens UploadModal (text / photo / video / music). */
+.composerTrigger {
+  display: block;
+  width: calc(100% - 1.7rem);
+  text-align: left;
+  background: rgba(10, 20, 32, 0.6);
+  border: 1px solid #1e3450;
+  color: #8899aa;
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 0.6rem 0.85rem;
+  margin: 0.7rem 0.85rem 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.composerTrigger:hover {
+  border-color: #00b4d8;
+  color: #e0e6ed;
+}
+
+/* (legacy inline composer styles below — kept for now, safe to delete
+   in a follow-up sweep.) */
+
 .composer {
   display: flex;
   flex-direction: column;
@@ -473,6 +498,28 @@
 .feedTime {
   color: #8899aa;
   font-size: 0.72rem;
+}
+
+.feedDelete {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #607589;
+  font-size: 0.85rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+}
+
+.feedDelete:hover:not(:disabled) {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.feedDelete:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .feedMusicRow {

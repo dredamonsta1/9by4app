@@ -19,6 +19,7 @@ import RankView from "../RankView/RankView";
 import NewMusicSection from "../NewMusicSection/NewMusicSection";
 import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
+import UploadModal from "../UploadModal/UploadModal";
 import styles from "./ArtistPanel.module.css";
 
 const formatRelativeTime = (iso) => {
@@ -55,13 +56,15 @@ const AGENT_BADGE = {
   news: "News",
 };
 
-const FeedPost = ({ post, currentUserId, onPlayMusic }) => {
+const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState(0);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
 
   const postId = post.id || post.post_id;
   const postType = post.post_type || "text";
@@ -71,6 +74,20 @@ const FeedPost = ({ post, currentUserId, onPlayMusic }) => {
   const badgeLabel = isAgent && (AGENT_BADGE[post.category] || "News");
   const verifiedCount = post.verified_count || 0;
   const disputedCount = post.disputed_count || 0;
+  const isOwner = currentUserId && currentUserId === post.user_id;
+
+  const handleDelete = async () => {
+    if (deleting) return;
+    if (!window.confirm("Delete this post?")) return;
+    setDeleting(true);
+    try {
+      await axiosInstance.delete(`/feed/${postType}/${postId}`);
+      onDelete?.(post);
+    } catch {
+      window.alert("Failed to delete post.");
+      setDeleting(false);
+    }
+  };
 
   const fetchComments = async () => {
     setCommentsLoading(true);
@@ -134,6 +151,18 @@ const FeedPost = ({ post, currentUserId, onPlayMusic }) => {
         <span className={styles.feedTime}>
           {formatRelativeTime(post.created_at)}
         </span>
+        {isOwner && !isAgent && (
+          <button
+            type="button"
+            className={styles.feedDelete}
+            onClick={handleDelete}
+            disabled={deleting}
+            aria-label="Delete post"
+            title="Delete this post"
+          >
+            {deleting ? "…" : "🗑"}
+          </button>
+        )}
       </div>
 
       {isMusic && (
@@ -320,8 +349,7 @@ const ArtistPanel = () => {
   const [loading, setLoading] = useState(true);
   const [globalFeed, setGlobalFeed] = useState([]);
   const [artistNews, setArtistNews] = useState([]);
-  const [composerText, setComposerText] = useState("");
-  const [posting, setPosting] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
@@ -452,25 +480,25 @@ const ArtistPanel = () => {
     );
   };
 
-  const handlePostSubmit = async (e) => {
-    e.preventDefault();
-    const text = composerText.trim();
-    if (!text || posting) return;
-    setPosting(true);
+  // After UploadModal posts text/photo/video/music, refresh the global
+  // feed so the new post appears at the top.
+  const handlePostCreated = async () => {
+    setUploadOpen(false);
     try {
-      const res = await axiosInstance.post("/feed/text", { content: text });
-      if (res.data && (res.data.post_id || res.data.id)) {
-        setGlobalFeed((prev) => [res.data, ...prev]);
-      } else {
-        const refetched = await axiosInstance.get("/feed");
-        setGlobalFeed(Array.isArray(refetched.data) ? refetched.data : []);
-      }
-      setComposerText("");
+      const res = await axiosInstance.get("/feed");
+      setGlobalFeed(Array.isArray(res.data) ? res.data : []);
     } catch {
-      // Keep textarea content so the user can retry.
-    } finally {
-      setPosting(false);
+      // Leave the feed as-is on refetch failure.
     }
+  };
+
+  // When a FeedPost deletes itself, drop it from the in-memory list
+  // immediately (no refetch needed).
+  const handlePostDeleted = (post) => {
+    const id = post.id || post.post_id;
+    setGlobalFeed((prev) =>
+      prev.filter((p) => (p.id || p.post_id) !== id),
+    );
   };
 
   // FiltersBar choice → RankView's data (and hero on filter change).
@@ -555,24 +583,13 @@ const ArtistPanel = () => {
               <header className={styles.boxHeader}>Feed</header>
 
             {isLoggedIn && (
-              <form className={styles.composer} onSubmit={handlePostSubmit}>
-                <textarea
-                  className={styles.composerInput}
-                  placeholder="Post something…"
-                  value={composerText}
-                  onChange={(e) => setComposerText(e.target.value)}
-                  rows={2}
-                  maxLength={500}
-                  disabled={posting}
-                />
-                <button
-                  type="submit"
-                  className={styles.composerBtn}
-                  disabled={!composerText.trim() || posting}
-                >
-                  {posting ? "Posting…" : "Post"}
-                </button>
-              </form>
+              <button
+                type="button"
+                className={styles.composerTrigger}
+                onClick={() => setUploadOpen(true)}
+              >
+                Post something…
+              </button>
             )}
 
             <div className={styles.boxScroll}>
@@ -592,6 +609,7 @@ const ArtistPanel = () => {
                       post={post}
                       currentUserId={user?.id}
                       onPlayMusic={playFeedPost}
+                      onDelete={handlePostDeleted}
                     />
                   ))}
                 </ul>
@@ -854,6 +872,16 @@ const ArtistPanel = () => {
             onClose={() => setShowClaimModal(false)}
           />
         )}
+
+        {/* Multi-type post composer — text/photo/video/music in one
+            modal. Reuses the existing UploadModal that the legacy
+            /feed page wired up; orphaned when Feed moved into
+            ArtistPanel. */}
+        <UploadModal
+          isOpen={uploadOpen}
+          onClose={() => setUploadOpen(false)}
+          onPostCreated={handlePostCreated}
+        />
       </div>
 
       {/* Above the Footer (the Footer itself is rendered by App.jsx
