@@ -347,6 +347,9 @@ const ArtistPanel = () => {
 
   const [liveRecordings, setLiveRecordings] = useState([]);
   const [loadingRecording, setLoadingRecording] = useState(null);
+  const [awards, setAwards] = useState([]);
+  const [stanRank, setStanRank] = useState(null);
+  const [artistMusicPosts, setArtistMusicPosts] = useState([]);
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [globalFeed, setGlobalFeed] = useState([]);
@@ -400,6 +403,9 @@ const ArtistPanel = () => {
     setArtist(null);
     setArtistNews([]);
     setLiveRecordings([]);
+    setAwards([]);
+    setStanRank(null);
+    setArtistMusicPosts([]);
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -423,7 +429,32 @@ const ArtistPanel = () => {
       .get(`/live-recordings?artist_id=${targetId}&limit=50`)
       .then((res) => setLiveRecordings(res.data?.recordings || []))
       .catch(() => setLiveRecordings([]));
-  }, [targetId, artistId, navigate]);
+
+    // Awards (Grammys, BETs, etc.) — credibility signal in the hero meta.
+    axiosInstance
+      .get(`/awards/${targetId}`)
+      .then((res) => setAwards(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setAwards([]));
+
+    // User-uploaded music posts ABOUT or BY this specific artist.
+    // Distinct from the global Feed; surfaces fan/artist tracks tied
+    // to the active panel.
+    axiosInstance
+      .get(`/music/posts/artist/${targetId}`)
+      .then((res) =>
+        setArtistMusicPosts(Array.isArray(res.data) ? res.data : []),
+      )
+      .catch(() => setArtistMusicPosts([]));
+
+    // My Stan Rank — only meaningful when logged in. Returns null if
+    // the user has no rank yet for this artist (effect handles that).
+    if (isLoggedIn) {
+      axiosInstance
+        .get(`/communities/artist/${targetId}/my-rank`)
+        .then((res) => setStanRank(res.data || null))
+        .catch(() => setStanRank(null));
+    }
+  }, [targetId, artistId, navigate, isLoggedIn]);
 
   if (loading) {
     return (
@@ -685,6 +716,17 @@ const ArtistPanel = () => {
             <span className={styles.cloutLine}>
               {(artist.count || 0).toLocaleString()} fans claim them
             </span>
+
+            {/* My Stan Rank — only when the user has actually been
+                ranked for this artist's community. */}
+            {stanRank && stanRank.tier && (
+              <span className={styles.stanRankBadge}>
+                Your tier: <strong>{stanRank.tier}</strong>
+                {typeof stanRank.score === "number" &&
+                  ` · ${stanRank.score} pts`}
+              </span>
+            )}
+
             <div className={styles.tagRow}>
               {artist.state && (
                 <span className={styles.tag}>{artist.state}</span>
@@ -696,6 +738,30 @@ const ArtistPanel = () => {
                 <span className={styles.tag}>{artist.label}</span>
               )}
             </div>
+
+            {/* Awards — compact trophy row. Up to 6 visible inline; the
+                rest collapse into a "+N more" pill. */}
+            {awards.length > 0 && (
+              <div className={styles.awardsRow}>
+                {awards.slice(0, 6).map((a) => (
+                  <span
+                    key={a.award_id}
+                    className={styles.awardChip}
+                    title={[a.award_name, a.category, a.year]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  >
+                    🏆 {a.year || ""}
+                  </span>
+                ))}
+                {awards.length > 6 && (
+                  <span className={styles.awardMore}>
+                    +{awards.length - 6} more
+                  </span>
+                )}
+              </div>
+            )}
+
             {artist.spotify_url && (
               <a
                 href={artist.spotify_url}
@@ -818,6 +884,67 @@ const ArtistPanel = () => {
                             🎙 {rec.venue || "Live recording"}
                           </span>
                           <span className={styles.recordingDate}>{date}</span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Per-artist user music posts. Hidden when empty. Each row
+              streams via PlayerBar (audio_url path) or pops out to the
+              streaming platform (stream_url path). */}
+          {artistMusicPosts.length > 0 && (
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>Fan Music</header>
+              <div className={styles.boxScroll}>
+                <ul className={styles.musicList}>
+                  {artistMusicPosts.map((post) => {
+                    const hasAudio = !!post.audio_url;
+                    return (
+                      <li key={post.post_id} className={styles.musicRow}>
+                        <button
+                          type="button"
+                          className={styles.musicPlayBtn}
+                          disabled={!hasAudio && !post.stream_url}
+                          onClick={() => {
+                            if (hasAudio) {
+                              dispatch(
+                                setQueue({
+                                  tracks: [
+                                    {
+                                      post_id: post.post_id,
+                                      title: post.title || "Untitled",
+                                      audio_url: post.audio_url,
+                                      artist_name: artist.artist_name,
+                                      album_image_url: artist.image_url,
+                                    },
+                                  ],
+                                  startIndex: 0,
+                                }),
+                              );
+                            } else if (post.stream_url) {
+                              window.open(
+                                post.stream_url,
+                                "_blank",
+                                "noopener,noreferrer",
+                              );
+                            }
+                          }}
+                          aria-label={`Play ${post.title || "post"}`}
+                        >
+                          {hasAudio ? "▶" : "↗"}
+                        </button>
+                        <div className={styles.musicInfo}>
+                          <span className={styles.musicName}>
+                            {post.title || "Untitled"}
+                          </span>
+                          <span className={styles.musicYear}>
+                            @{post.username || "user"}
+                            {post.platform ? ` · ${post.platform}` : ""}
+                          </span>
                         </div>
                       </li>
                     );

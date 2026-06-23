@@ -810,6 +810,76 @@
   margin-top: 0.2rem;
 }
 
+/* ---- My Stan Rank badge in hero meta ---- */
+
+.stanRankBadge {
+  display: inline-block;
+  background: rgba(0, 180, 216, 0.12);
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  color: #00b4d8;
+  font-size: 0.78rem;
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+}
+
+.stanRankBadge strong {
+  color: #e0e6ed;
+  font-weight: 700;
+}
+
+/* ---- Awards row in hero meta ---- */
+
+.awardsRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.1rem;
+}
+
+.awardChip {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  color: #ffd700;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  cursor: help;
+}
+
+.awardMore {
+  background: rgba(30, 52, 80, 0.6);
+  color: #b3c2d3;
+  font-size: 0.72rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+}
+
+/* ---- Fan Music posts (per-artist) ---- */
+
+.musicPlayBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #00b4d8;
+  color: #04111e;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.musicPlayBtn:hover:not(:disabled) {
+  background: #34c3e0;
+}
+
+.musicPlayBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 /* ---- Live Recordings (Internet Archive bootlegs) ---- */
 
 .recordingsList {
