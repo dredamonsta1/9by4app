@@ -731,7 +731,10 @@ const ArtistPanel = () => {
                           {artist.is_verified ? (
                             <StanboxPreviewButton album={album} artist={artist} />
                           ) : (
-                            <AlbumPreviewButton album={album} artist={artist} />
+                            <AlbumPreviewButton
+                              artistId={artist.artist_id}
+                              albumName={album.album_name}
+                            />
                           )}
                           <AlbumBuyButton album={album} artist={artist} />
                         </div>
