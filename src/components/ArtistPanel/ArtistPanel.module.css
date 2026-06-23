@@ -810,6 +810,71 @@
   margin-top: 0.2rem;
 }
 
+/* ---- Live Recordings (Internet Archive bootlegs) ---- */
+
+.recordingsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.recordingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  background: rgba(10, 20, 32, 0.5);
+  border: 1px solid #1e3450;
+  border-radius: 8px;
+}
+
+.recordingPlayBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #00b4d8;
+  color: #04111e;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.recordingPlayBtn:hover:not(:disabled) {
+  background: #34c3e0;
+}
+
+.recordingPlayBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.recordingMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.recordingVenue {
+  color: #e0e6ed;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recordingDate {
+  color: #8899aa;
+  font-size: 0.7rem;
+}
+
 /* ---- News / Events ---- */
 
 .newsList {

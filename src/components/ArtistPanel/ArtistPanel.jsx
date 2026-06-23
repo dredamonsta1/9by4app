@@ -345,6 +345,8 @@ const ArtistPanel = () => {
   const profileList = useSelector((state) => state.profileList.list);
   const allArtists = useSelector((state) => state.artists.artists);
 
+  const [liveRecordings, setLiveRecordings] = useState([]);
+  const [loadingRecording, setLoadingRecording] = useState(null);
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [globalFeed, setGlobalFeed] = useState([]);
@@ -397,6 +399,7 @@ const ArtistPanel = () => {
     setLoading(true);
     setArtist(null);
     setArtistNews([]);
+    setLiveRecordings([]);
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -413,6 +416,13 @@ const ArtistPanel = () => {
         setArtistNews(rows.filter((p) => p.username === "9by4News"));
       })
       .catch(() => setArtistNews([]));
+
+    // Internet Archive live-recordings (bootleg concerts). 200+ rows in
+    // prod across 118 artists — older acts like Nirvana, Tracy Chapman.
+    axiosInstance
+      .get(`/live-recordings?artist_id=${targetId}&limit=50`)
+      .then((res) => setLiveRecordings(res.data?.recordings || []))
+      .catch(() => setLiveRecordings([]));
   }, [targetId, artistId, navigate]);
 
   if (loading) {
@@ -745,6 +755,77 @@ const ArtistPanel = () => {
               )}
             </div>
           </div>
+
+          {/* Internet Archive bootleg concerts. Renders only when the
+              artist has at least one recording — most catalog artists
+              don't (200/96k coverage). Each card plays the full
+              concert through PlayerBar via setQueue. */}
+          {liveRecordings.length > 0 && (
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>Live Recordings</header>
+              <div className={styles.boxScroll}>
+                <ul className={styles.recordingsList}>
+                  {liveRecordings.map((rec) => {
+                    const date = rec.recorded_date
+                      ? new Date(rec.recorded_date).toLocaleDateString(
+                          "en-US",
+                          { year: "numeric", month: "short", day: "numeric" },
+                        )
+                      : "Unknown date";
+                    const isLoading = loadingRecording === rec.recording_id;
+                    return (
+                      <li
+                        key={rec.recording_id}
+                        className={styles.recordingRow}
+                      >
+                        <button
+                          type="button"
+                          className={styles.recordingPlayBtn}
+                          disabled={isLoading}
+                          onClick={async () => {
+                            setLoadingRecording(rec.recording_id);
+                            try {
+                              const res = await axiosInstance.get(
+                                `/live-recordings/${rec.recording_id}/tracks`,
+                              );
+                              const { tracks, artist_name } = res.data || {};
+                              if (!tracks || tracks.length === 0) return;
+                              dispatch(
+                                setQueue({
+                                  tracks: tracks.map((t, i) => ({
+                                    post_id: rec.recording_id * 1000 + i,
+                                    title: t.title,
+                                    audio_url: t.stream_url,
+                                    artist_name:
+                                      artist_name || artist.artist_name,
+                                    album_image_url: artist.image_url,
+                                  })),
+                                  startIndex: 0,
+                                }),
+                              );
+                            } catch {
+                              // No-op; the button just resets.
+                            } finally {
+                              setLoadingRecording(null);
+                            }
+                          }}
+                          aria-label={`Play ${rec.venue || "live recording"}`}
+                        >
+                          {isLoading ? "…" : "▶"}
+                        </button>
+                        <div className={styles.recordingMeta}>
+                          <span className={styles.recordingVenue}>
+                            🎙 {rec.venue || "Live recording"}
+                          </span>
+                          <span className={styles.recordingDate}>{date}</span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          )}
 
           <div className={styles.box}>
             <header className={styles.boxHeader}>News / Events</header>
