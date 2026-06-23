@@ -350,6 +350,8 @@ const ArtistPanel = () => {
   const [awards, setAwards] = useState([]);
   const [stanRank, setStanRank] = useState(null);
   const [artistMusicPosts, setArtistMusicPosts] = useState([]);
+  const [relatedArtists, setRelatedArtists] = useState([]);
+  const [verifications, setVerifications] = useState([]);
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [globalFeed, setGlobalFeed] = useState([]);
@@ -406,6 +408,8 @@ const ArtistPanel = () => {
     setAwards([]);
     setStanRank(null);
     setArtistMusicPosts([]);
+    setRelatedArtists([]);
+    setVerifications([]);
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -454,6 +458,23 @@ const ArtistPanel = () => {
         .then((res) => setStanRank(res.data || null))
         .catch(() => setStanRank(null));
     }
+
+    // "Fans of X also love Y" — co-list overlap from user_profile_artists.
+    // Sparse at low scale; the empty-state guard in the render hides
+    // the section entirely when there's nothing to show.
+    axiosInstance
+      .get(`/artists/${targetId}/related?limit=8`)
+      .then((res) => setRelatedArtists(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setRelatedArtists([]));
+
+    // Fact-checker verdict counts rolled up at the artist level.
+    // Returns [{ verdict, count }] — dormant for most artists right
+    // now (factchecker has 7 verdicts total in prod, none tagged to
+    // artist communities yet).
+    axiosInstance
+      .get(`/artists/${targetId}/verifications`)
+      .then((res) => setVerifications(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setVerifications([]));
   }, [targetId, artistId, navigate, isLoggedIn]);
 
   if (loading) {
@@ -727,6 +748,28 @@ const ArtistPanel = () => {
               </span>
             )}
 
+            {/* Fact-checker verdict counts rolled up at the artist
+                level. Hidden when both counts are zero. */}
+            {(() => {
+              const v = verifications.find((x) => x.verdict === "verified")?.count || 0;
+              const d = verifications.find((x) => x.verdict === "disputed")?.count || 0;
+              if (v === 0 && d === 0) return null;
+              return (
+                <div className={styles.verdictRow}>
+                  {v > 0 && (
+                    <span className={styles.verifiedBadge}>
+                      ✓ Verified ({v})
+                    </span>
+                  )}
+                  {d > 0 && (
+                    <span className={styles.disputedBadge}>
+                      ⚠ Disputed ({d})
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
+
             <div className={styles.tagRow}>
               {artist.state && (
                 <span className={styles.tag}>{artist.state}</span>
@@ -949,6 +992,46 @@ const ArtistPanel = () => {
                       </li>
                     );
                   })}
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Related Artists — "Fans of X also love Y" co-list chips.
+              Hidden when empty (sparse signal at current Top-20 scale). */}
+          {relatedArtists.length > 0 && (
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>Fans Also Love</header>
+              <div className={styles.boxScroll}>
+                <ul className={styles.relatedList}>
+                  {relatedArtists.map((rel) => (
+                    <li key={rel.artist_id} className={styles.relatedRow}>
+                      <button
+                        type="button"
+                        className={styles.relatedBtn}
+                        onClick={() => navigate(`/artist/${rel.artist_id}`)}
+                      >
+                        <img
+                          src={resolveImageUrl(
+                            rel.image_url,
+                            "https://via.placeholder.com/40?text=?",
+                          )}
+                          alt=""
+                          className={styles.relatedAvatar}
+                        />
+                        <div className={styles.relatedMeta}>
+                          <span className={styles.relatedName}>
+                            {rel.artist_name}
+                          </span>
+                          {rel.genre && (
+                            <span className={styles.relatedGenre}>
+                              {rel.genre}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
