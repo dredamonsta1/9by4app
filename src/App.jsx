@@ -9,13 +9,10 @@ import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
-import DashBoard from "./components/Dashboard/Dashboard.jsx";
 import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed.jsx";
 import Signup from "./components/Signup/Signup.jsx";
 import Login from "./components/login/Login.jsx";
 import Waitlist from "./components/Waitlist/Waitlist.jsx";
-import ImageFeed from "./components/ImageFeed/ImageFeed";
-import Feed from "./components/Feed/Feed";
 import Events from "./components/Events/Events";
 import Rooms from "./components/Rooms/Rooms";
 import Room from "./components/Rooms/Room";
@@ -23,9 +20,6 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard.jsx";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdminRoute.jsx";
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
-import Pricing from "./pages/Pricing/Pricing.jsx";
-import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess.jsx";
-import PaymentCancel from "./pages/PaymentCancel/PaymentCancel.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import StreamersPage from "./pages/Streamers/StreamersPage.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
@@ -73,20 +67,14 @@ const App = () => {
           <Route path="/artist/:artistId" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
-          <Route path="/dashBoard" element={<DashBoard />} />
           <Route path="/art-video" element={<ArtVideoFeed />} />
           <Route path="/signup" element={<Waitlist />} />
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/images" element={<ImageFeed />} />
-          <Route path="/feed" element={<Feed />} />
           <Route path="/events" element={<Events />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<Room />} />
           <Route path="/agents/register" element={<AgentRegister />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/payment/success" element={<PaymentSuccess />} />
-          <Route path="/payment/cancel" element={<PaymentCancel />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/streamers" element={<StreamersPage />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
