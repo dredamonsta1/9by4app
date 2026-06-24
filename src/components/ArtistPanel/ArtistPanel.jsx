@@ -20,6 +20,7 @@ import NewMusicSection from "../NewMusicSection/NewMusicSection";
 import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
 import UploadModal from "../UploadModal/UploadModal";
+import EventCreator from "../EventCreator/EventCreator";
 import styles from "./ArtistPanel.module.css";
 
 const formatRelativeTime = (iso) => {
@@ -636,6 +637,27 @@ const ArtistPanel = () => {
           isLoggedIn={isLoggedIn}
           hasListItems={profileList.length > 0}
         />
+
+        {/* Owner-only artist tools — sits below the filters. New event
+            forms post via the EventCreator's own /events submit; the
+            onEventCreated callback refetches per-artist events so the
+            new tour date pops into the News & Events box. */}
+        {isOwner && (
+          <>
+            <header className={styles.railHeader}>Artist Tools</header>
+            <EventCreator
+              compact
+              onEventCreated={() => {
+                axiosInstance
+                  .get(`/events?artist_id=${targetId}`)
+                  .then((res) =>
+                    setArtistEvents(Array.isArray(res.data) ? res.data : []),
+                  )
+                  .catch(() => {});
+              }}
+            />
+          </>
+        )}
       </aside>
 
       <div className={styles.panel}>

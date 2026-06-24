@@ -1,0 +1,145 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toggle {
+  background: #00b4d8;
+  color: #04111e;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background: #34c3e0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  background: rgba(10, 20, 32, 0.45);
+  border: 1px solid #1e3450;
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+.error {
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  color: #ff6b6b;
+  font-size: 0.72rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  background: rgba(10, 20, 32, 0.7);
+  border: 1px solid transparent;
+  color: #e0e6ed;
+  font-size: 0.78rem;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #607589;
+}
+
+.input:focus {
+  border-color: #00b4d8;
+  background: rgba(10, 20, 32, 0.95);
+}
+
+.input[type="date"],
+.input[type="time"] {
+  /* Date/time controls need a tiny bit more height to fit native UI */
+  padding: 0.35rem 0.4rem;
+  /* Match overall input look in dark mode */
+  color-scheme: dark;
+}
+
+.row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 20, 32, 0.45);
+  border: 1px dashed #1e3450;
+  border-radius: 4px;
+  padding: 0.6rem;
+  cursor: pointer;
+  font-size: 0.72rem;
+  color: #8899aa;
+}
+
+.fileLabel:hover {
+  border-color: #00b4d8;
+  color: #00b4d8;
+}
+
+.fileInput {
+  display: none;
+}
+
+.flyerPreview {
+  position: relative;
+}
+
+.flyerPreview img {
+  width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+.clearBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #e0e6ed;
+  border: none;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  cursor: pointer;
+}
+
+.submit {
+  background: #00b4d8;
+  color: #04111e;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.submit:hover:not(:disabled) {
+  background: #34c3e0;
+}
+
+.submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
