@@ -647,6 +647,68 @@
   text-decoration: underline;
 }
 
+/* Community "Top Albums on stanbox" board — sits under the Feed box
+   in the left column. Each row: rank, cover, name, pick tally. */
+.topAlbumsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.topAlbumRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.topAlbumRank {
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 1.6rem;
+  text-align: center;
+}
+
+.topAlbumThumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.topAlbumMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.topAlbumName {
+  color: #e0e6ed;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topAlbumYear {
+  color: #607589;
+  font-size: 0.7rem;
+}
+
+.topAlbumTally {
+  color: #b3c2d3;
+  font-size: 0.7rem;
+}
+
 /* Album-cover card embedded in feed posts created by the favorites
    auto-poster. Clickable; routes back to the artist panel. */
 .favoriteEmbed {
