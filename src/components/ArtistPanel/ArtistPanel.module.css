@@ -131,6 +131,27 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 0.6rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+/* Small action affordance docked to the right of a boxHeader (e.g.
+   the rooms icon in the Feed header). */
+.feedHeaderIcon {
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+  color: #b3c2d3;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.feedHeaderIcon:hover {
+  background: rgba(0, 180, 216, 0.18);
+  color: #00b4d8;
 }
 
 .boxBody {
@@ -1085,6 +1106,62 @@
   margin: 0;
   color: #8899aa;
   font-size: 0.82rem;
+}
+
+.eventsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.eventRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  background: rgba(10, 20, 32, 0.5);
+  border: 1px solid #1e3450;
+  border-radius: 8px;
+}
+
+.eventDate {
+  background: rgba(0, 180, 216, 0.18);
+  color: #00b4d8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.22rem 0.45rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.eventMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.eventTitle {
+  color: #e0e6ed;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eventVenue {
+  color: #8899aa;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .eventsCreateLink {
