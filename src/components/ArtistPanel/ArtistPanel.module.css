@@ -647,6 +647,63 @@
   text-decoration: underline;
 }
 
+/* Album-cover card embedded in feed posts created by the favorites
+   auto-poster. Clickable; routes back to the artist panel. */
+.favoriteEmbed {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(255, 215, 0, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.22);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.favoriteEmbed:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.45);
+}
+
+.favoriteEmbedThumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.favoriteEmbedMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.favoriteEmbedSong {
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favoriteEmbedAlbum {
+  color: #e0e6ed;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favoriteEmbedYear {
+  color: #607589;
+  font-size: 0.7rem;
+}
+
 /* Verdict badges from the fact-checker agent */
 
 .verdictRow {
