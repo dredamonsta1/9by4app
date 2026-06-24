@@ -1,0 +1,126 @@
+/* Star button — sits adjacent to the album thumbnail/title on each
+   row in the Music section. */
+.star {
+  background: transparent;
+  border: none;
+  color: #607589;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.star:hover:not(:disabled) {
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.starOn {
+  color: #ffd700;
+}
+
+.star:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Song picker — expands under a favorited album row */
+
+.songPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.songList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.songItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.4rem;
+  background: rgba(255, 215, 0, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  border-radius: 4px;
+}
+
+.songTitle {
+  flex: 1;
+  color: #e0e6ed;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.songRemove {
+  background: transparent;
+  border: none;
+  color: #607589;
+  font-size: 0.95rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.2rem;
+}
+
+.songRemove:hover {
+  color: #ff6b6b;
+}
+
+.songForm {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.songInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.3rem 0.5rem;
+  background: rgba(10, 20, 32, 0.7);
+  border: 1px solid transparent;
+  color: #e0e6ed;
+  font-size: 0.78rem;
+  border-radius: 4px;
+  outline: none;
+}
+
+.songInput::placeholder {
+  color: #607589;
+}
+
+.songInput:focus {
+  border-color: #ffd700;
+  background: rgba(10, 20, 32, 0.95);
+}
+
+.songAdd {
+  background: #ffd700;
+  color: #04111e;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.songAdd:hover:not(:disabled) {
+  background: #ffea4a;
+}
+
+.songAdd:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

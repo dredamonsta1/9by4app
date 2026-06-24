@@ -21,6 +21,10 @@ import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
 import UploadModal from "../UploadModal/UploadModal";
 import EventCreator from "../EventCreator/EventCreator";
+import {
+  FavoriteAlbumStar,
+  AlbumSongPicker,
+} from "../FavoritesPicker/FavoritesPicker";
 import styles from "./ArtistPanel.module.css";
 
 const formatRelativeTime = (iso) => {
@@ -364,6 +368,10 @@ const ArtistPanel = () => {
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
   const [upcomingReleases, setUpcomingReleases] = useState([]);
+  // Per-artist favorites — current user's picks (max 5 albums / 3 songs
+  // per album). Reset on artist switch + refetched in the same effect
+  // that loads the rest of the panel data.
+  const [myFavorites, setMyFavorites] = useState({ albums: [], songs: [] });
 
   // Upcoming releases for the bottom New Music section. Fetched once
   // per session — doesn't change with the active artist.
@@ -415,6 +423,7 @@ const ArtistPanel = () => {
     setFeaturedVideoId(null);
     setArtistEvents([]);
     setVerifications([]);
+    setMyFavorites({ albums: [], songs: [] });
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -489,6 +498,20 @@ const ArtistPanel = () => {
       .then((res) => setVerifications(Array.isArray(res.data) ? res.data : []))
       .catch(() => setVerifications([]));
 
+    // My favorites for this artist (5 albums × 3 songs cap). Anonymous
+    // users get an empty object; the endpoint is auth-gated.
+    if (isLoggedIn) {
+      axiosInstance
+        .get(`/favorites/artist/${targetId}/me`)
+        .then((res) =>
+          setMyFavorites({
+            albums: Array.isArray(res.data?.albums) ? res.data.albums : [],
+            songs: Array.isArray(res.data?.songs) ? res.data.songs : [],
+          }),
+        )
+        .catch(() => setMyFavorites({ albums: [], songs: [] }));
+    }
+
     // Featured YouTube video for the blurred/muted hero background.
     // Backend lazy-fetches from YouTube search on cache miss; a 204
     // response means "no usable video for this artist," handled by
@@ -517,6 +540,29 @@ const ArtistPanel = () => {
     rankIndex >= 0 && rankIndex < allArtists.length - 1
       ? allArtists[rankIndex + 1]
       : null;
+
+  // Re-pull favorites after add/remove. Cheap (rows are small) and
+  // avoids needing optimistic state in two places.
+  const refreshFavorites = () => {
+    if (!isLoggedIn) return;
+    axiosInstance
+      .get(`/favorites/artist/${artist.artist_id}/me`)
+      .then((res) =>
+        setMyFavorites({
+          albums: Array.isArray(res.data?.albums) ? res.data.albums : [],
+          songs: Array.isArray(res.data?.songs) ? res.data.songs : [],
+        }),
+      )
+      .catch(() => {});
+  };
+
+  const favoritedAlbumIds = new Set(
+    myFavorites.albums.map((a) => a.album_id),
+  );
+  const songsByAlbum = myFavorites.songs.reduce((acc, s) => {
+    (acc[s.album_id] ||= []).push(s);
+    return acc;
+  }, {});
 
   const inList = profileList.some((a) => a.artist_id === artist.artist_id);
   const myEntry = profileList.find((a) => a.artist_id === artist.artist_id);
@@ -900,7 +946,14 @@ const ArtistPanel = () => {
         {/* ---- RIGHT: Music (top, compact 2x2) + News/Events (below) ---- */}
         <aside className={styles.rightCol}>
           <div className={styles.box}>
-            <header className={styles.boxHeader}>Music</header>
+            <header className={styles.boxHeader}>
+              <span>Music</span>
+              {isLoggedIn && albums.length > 0 && (
+                <span className={styles.favoritesCount}>
+                  {myFavorites.albums.length}/5 picks
+                </span>
+              )}
+            </header>
             <div className={styles.boxScroll}>
               {albums.length === 0 ? (
                 <div className={styles.emptyState}>
@@ -908,37 +961,58 @@ const ArtistPanel = () => {
                 </div>
               ) : (
                 <ul className={styles.musicList}>
-                  {albums.map((album) => (
-                    <li key={album.album_id} className={styles.musicRow}>
-                      <img
-                        src={resolveImageUrl(
-                          album.album_image_url,
-                          "https://via.placeholder.com/80?text=Album",
-                        )}
-                        alt={album.album_name}
-                        className={styles.musicThumb}
-                      />
-                      <div className={styles.musicInfo}>
-                        <span className={styles.musicName}>
-                          {album.album_name}
-                        </span>
-                        {album.year && (
-                          <span className={styles.musicYear}>{album.year}</span>
-                        )}
-                        <div className={styles.musicActions}>
-                          {artist.is_verified ? (
-                            <StanboxPreviewButton album={album} artist={artist} />
-                          ) : (
-                            <AlbumPreviewButton
+                  {albums.map((album) => {
+                    const isFav = favoritedAlbumIds.has(album.album_id);
+                    const songs = songsByAlbum[album.album_id] || [];
+                    return (
+                      <li key={album.album_id} className={styles.musicRow}>
+                        <img
+                          src={resolveImageUrl(
+                            album.album_image_url,
+                            "https://via.placeholder.com/80?text=Album",
+                          )}
+                          alt={album.album_name}
+                          className={styles.musicThumb}
+                        />
+                        <div className={styles.musicInfo}>
+                          <span className={styles.musicName}>
+                            {album.album_name}
+                          </span>
+                          {album.year && (
+                            <span className={styles.musicYear}>{album.year}</span>
+                          )}
+                          <div className={styles.musicActions}>
+                            {artist.is_verified ? (
+                              <StanboxPreviewButton album={album} artist={artist} />
+                            ) : (
+                              <AlbumPreviewButton
+                                artistId={artist.artist_id}
+                                albumName={album.album_name}
+                              />
+                            )}
+                            <AlbumBuyButton album={album} artist={artist} />
+                            {isLoggedIn && (
+                              <FavoriteAlbumStar
+                                artistId={artist.artist_id}
+                                album={album}
+                                isFavorited={isFav}
+                                albumCount={myFavorites.albums.length}
+                                onChange={refreshFavorites}
+                              />
+                            )}
+                          </div>
+                          {isLoggedIn && isFav && (
+                            <AlbumSongPicker
                               artistId={artist.artist_id}
-                              albumName={album.album_name}
+                              album={album}
+                              songs={songs}
+                              onChange={refreshFavorites}
                             />
                           )}
-                          <AlbumBuyButton album={album} artist={artist} />
                         </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>

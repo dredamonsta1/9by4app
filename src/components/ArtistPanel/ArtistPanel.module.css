@@ -137,6 +137,20 @@
   gap: 0.5rem;
 }
 
+/* Tiny counter chip on the Music box header — shows N/5 favorite
+   picks for the active artist. */
+.favoritesCount {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  text-transform: none;
+}
+
 /* Small action affordance docked to the right of a boxHeader (e.g.
    the rooms icon in the Feed header). */
 .feedHeaderIcon {
