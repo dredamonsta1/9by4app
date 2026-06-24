@@ -198,6 +198,44 @@ const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
         <p className={styles.feedBody}>{post.content || post.caption}</p>
       )}
 
+      {/* Favorite-album embed: rendered when the auto-poster
+          attached an album to this post. Clickable card opens the
+          artist panel — the conversation lives in the comments. */}
+      {post.favorite_album_id && (
+        <Link
+          to={
+            post.favorite_album_artist_id
+              ? `/artist/${post.favorite_album_artist_id}`
+              : "#"
+          }
+          className={styles.favoriteEmbed}
+        >
+          <img
+            src={resolveImageUrl(
+              post.favorite_album_image_url,
+              "https://via.placeholder.com/96?text=Album",
+            )}
+            alt={post.favorite_album_name || "Album"}
+            className={styles.favoriteEmbedThumb}
+          />
+          <div className={styles.favoriteEmbedMeta}>
+            {post.favorite_song_title && (
+              <span className={styles.favoriteEmbedSong}>
+                ♪ {post.favorite_song_title}
+              </span>
+            )}
+            <span className={styles.favoriteEmbedAlbum}>
+              {post.favorite_album_name || "Album"}
+            </span>
+            {post.favorite_album_year && (
+              <span className={styles.favoriteEmbedYear}>
+                {post.favorite_album_year}
+              </span>
+            )}
+          </div>
+        </Link>
+      )}
+
       {isAgent && post.source_url && (
         <a
           href={post.source_url}
