@@ -347,6 +347,7 @@ const ArtistPanel = () => {
   const allArtists = useSelector((state) => state.artists.artists);
 
   const [liveRecordings, setLiveRecordings] = useState([]);
+  const [featuredVideoId, setFeaturedVideoId] = useState(null);
   const [loadingRecording, setLoadingRecording] = useState(null);
   const [awards, setAwards] = useState([]);
   const [stanRank, setStanRank] = useState(null);
@@ -411,6 +412,7 @@ const ArtistPanel = () => {
     setStanRank(null);
     setArtistMusicPosts([]);
     setRelatedArtists([]);
+    setFeaturedVideoId(null);
     setArtistEvents([]);
     setVerifications([]);
 
@@ -486,6 +488,15 @@ const ArtistPanel = () => {
       .get(`/artists/${targetId}/verifications`)
       .then((res) => setVerifications(Array.isArray(res.data) ? res.data : []))
       .catch(() => setVerifications([]));
+
+    // Featured YouTube video for the blurred/muted hero background.
+    // Backend lazy-fetches from YouTube search on cache miss; a 204
+    // response means "no usable video for this artist," handled by
+    // the empty-string guard in the render.
+    axiosInstance
+      .get(`/artists/${targetId}/featured-video`)
+      .then((res) => setFeaturedVideoId(res.data?.video_id || null))
+      .catch(() => setFeaturedVideoId(null));
   }, [targetId, artistId, navigate, isLoggedIn]);
 
   if (loading) {
@@ -724,6 +735,30 @@ const ArtistPanel = () => {
 
         {/* ---- CENTER: Card hero ---- */}
         <section className={styles.hero}>
+          {/* Muted, looping, blurred YouTube iframe pinned behind the
+              hero. key={featuredVideoId} forces a tear-down + re-mount
+              when the artist switches, so the old iframe stops loading.
+              pointer-events:none + low opacity so it never steals
+              clicks or attention from the card. */}
+          {featuredVideoId && (
+            <div className={styles.bgVideoLayer} aria-hidden="true">
+              <iframe
+                key={featuredVideoId}
+                className={styles.bgVideoFrame}
+                src={
+                  `https://www.youtube.com/embed/${featuredVideoId}` +
+                  `?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1` +
+                  `&playsinline=1&disablekb=1&iv_load_policy=3` +
+                  `&playlist=${featuredVideoId}`
+                }
+                title="Artist background video"
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                tabIndex={-1}
+              />
+            </div>
+          )}
+
           <div className={styles.deck}>
             <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
             <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
