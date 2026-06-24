@@ -1,12 +1,12 @@
-// src/components/AddStreamerModal/AddStreamerModal.jsx
+// src/components/AddContentCreatorModal/AddContentCreatorModal.jsx
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import styles from "./AddStreamerModal.module.css";
+import styles from "./AddContentCreatorModal.module.css";
 
 const PLATFORMS  = ["twitch", "youtube", "kick", "tiktok", "cratesfyi"];
 const CATEGORIES = ["Gaming", "Music", "IRL", "Sports", "Podcasts"];
 
-const AddStreamerModal = ({ onClose, onAdded }) => {
+const AddContentCreatorModal = ({ onClose, onAdded }) => {
   const [form, setForm] = useState({
     name:       "",
     platform:   "",
@@ -35,7 +35,7 @@ const AddStreamerModal = ({ onClose, onAdded }) => {
       });
       onAdded(res.data.streamer);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add streamer.");
+      setError(err.response?.data?.message || "Failed to add creator.");
     } finally {
       setLoading(false);
     }
@@ -47,18 +47,18 @@ const AddStreamerModal = ({ onClose, onAdded }) => {
     <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Add a Streamer</h2>
+          <h2 className={styles.title}>Add a Creator</h2>
           <button className={styles.closeBtn} onClick={onClose}>×</button>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {/* Name */}
           <div className={styles.field}>
-            <label className={styles.label}>Streamer Name <span className={styles.req}>*</span></label>
+            <label className={styles.label}>Creator Name <span className={styles.req}>*</span></label>
             <input
               className={styles.input}
               type="text"
-              placeholder="e.g. Ninja, MrBeast, Pokimane"
+              placeholder="e.g. Ninja, MrBeast, Joe Budden"
               value={form.name}
               onChange={set("name")}
               maxLength={255}
@@ -84,7 +84,7 @@ const AddStreamerModal = ({ onClose, onAdded }) => {
 
           {/* Stream URL */}
           <div className={styles.field}>
-            <label className={styles.label}>Stream URL <span className={styles.req}>*</span></label>
+            <label className={styles.label}>Channel URL <span className={styles.req}>*</span></label>
             <input
               className={styles.input}
               type="url"
@@ -143,7 +143,7 @@ const AddStreamerModal = ({ onClose, onAdded }) => {
             className={styles.submitBtn}
             disabled={!canSubmit || loading}
           >
-            {loading ? "Adding..." : "Add Streamer"}
+            {loading ? "Adding…" : "Add Creator"}
           </button>
         </form>
       </div>
@@ -151,4 +151,4 @@ const AddStreamerModal = ({ onClose, onAdded }) => {
   );
 };
 
-export default AddStreamerModal;
+export default AddContentCreatorModal;

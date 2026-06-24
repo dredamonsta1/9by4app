@@ -21,7 +21,7 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdmin
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
-import StreamersPage from "./pages/Streamers/StreamersPage.jsx";
+import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
 import ArtistSettings from "./pages/ArtistSettings/ArtistSettings.jsx";
 import Library from "./pages/Library/Library.jsx";
@@ -76,7 +76,7 @@ const App = () => {
           <Route path="/rooms/:id" element={<Room />} />
           <Route path="/agents/register" element={<AgentRegister />} />
           <Route path="/terms" element={<TermsOfUse />} />
-          <Route path="/streamers" element={<StreamersPage />} />
+          <Route path="/content-creators" element={<ContentCreators />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/artist-settings" element={<ArtistSettings />} />
           <Route path="/library" element={<Library />} />

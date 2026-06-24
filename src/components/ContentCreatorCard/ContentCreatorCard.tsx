@@ -1,6 +1,11 @@
-// src/components/StreamerCard/StreamerCard.tsx
+// src/components/ContentCreatorCard/ContentCreatorCard.tsx
+//
+// Renamed from StreamerCard as part of the broader "Content Creators"
+// positioning. The `Streamer` API type stays as-is since it's the
+// backend contract — this component just aliases it as `creator` for
+// surface text.
 import React from "react";
-import styles from "./StreamerCard.module.css";
+import styles from "./ContentCreatorCard.module.css";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import type { Streamer } from "../../types/api";
 
@@ -21,7 +26,7 @@ const PLATFORM_COLORS: Record<string, string> = {
 };
 
 interface Props {
-  streamer: Streamer;
+  creator: Streamer;
   onVote?: (id: number) => void;
   onAddToList?: (id: number) => void;
   onRemoveFromList?: (id: number) => void;
@@ -30,8 +35,8 @@ interface Props {
   rank?: number;
 }
 
-const StreamerCard = ({
-  streamer,
+const ContentCreatorCard = ({
+  creator,
   onVote,
   onAddToList,
   onRemoveFromList,
@@ -40,12 +45,12 @@ const StreamerCard = ({
   rank,
 }: Props) => {
   const image = resolveImageUrl(
-    streamer.image_url,
-    `https://via.placeholder.com/120?text=${encodeURIComponent(streamer.name[0] ?? "?")}`
+    creator.image_url,
+    `https://via.placeholder.com/120?text=${encodeURIComponent(creator.name[0] ?? "?")}`
   );
 
-  const platformColor = PLATFORM_COLORS[streamer.platform] ?? "var(--color-accent)";
-  const platformLabel = PLATFORM_LABELS[streamer.platform] ?? streamer.platform;
+  const platformColor = PLATFORM_COLORS[creator.platform] ?? "var(--color-accent)";
+  const platformLabel = PLATFORM_LABELS[creator.platform] ?? creator.platform;
 
   return (
     <div className={styles.card}>
@@ -55,7 +60,7 @@ const StreamerCard = ({
       )}
 
       {/* Live indicator */}
-      {streamer.is_live && (
+      {creator.is_live && (
         <div className={styles.liveBadge}>
           <span className={styles.liveDot} />
           LIVE
@@ -64,10 +69,10 @@ const StreamerCard = ({
 
       {/* Avatar */}
       <div className={styles.avatarWrap}>
-        <img className={styles.avatar} src={image} alt={streamer.name} />
+        <img className={styles.avatar} src={image} alt={creator.name} />
         <span
           className={styles.platformBadge}
-          style={{ background: platformColor, color: streamer.platform === "kick" ? "#000" : "#fff" }}
+          style={{ background: platformColor, color: creator.platform === "kick" ? "#000" : "#fff" }}
         >
           {platformLabel}
         </span>
@@ -75,23 +80,23 @@ const StreamerCard = ({
 
       {/* Info */}
       <div className={styles.info}>
-        <h3 className={styles.name}>{streamer.name}</h3>
-        {streamer.category && (
-          <span className={styles.category}>{streamer.category}</span>
+        <h3 className={styles.name}>{creator.name}</h3>
+        {creator.category && (
+          <span className={styles.category}>{creator.category}</span>
         )}
-        {streamer.bio && (
-          <p className={styles.bio}>{streamer.bio}</p>
+        {creator.bio && (
+          <p className={styles.bio}>{creator.bio}</p>
         )}
       </div>
 
       {/* Footer */}
       <div className={styles.footer}>
-        <span className={styles.voteCount}>{streamer.count} votes</span>
+        <span className={styles.voteCount}>{creator.count} votes</span>
 
         <div className={styles.actions}>
           <button
             className={`${styles.voteBtn} ${hasVoted ? styles.votedBtn : ""}`}
-            onClick={() => onVote?.(streamer.streamer_id)}
+            onClick={() => onVote?.(creator.streamer_id)}
             disabled={hasVoted}
             title={hasVoted ? "Already voted" : "Vote"}
           >
@@ -102,8 +107,8 @@ const StreamerCard = ({
             className={`${styles.listBtn} ${inMyList ? styles.inListBtn : ""}`}
             onClick={() =>
               inMyList
-                ? onRemoveFromList?.(streamer.streamer_id)
-                : onAddToList?.(streamer.streamer_id)
+                ? onRemoveFromList?.(creator.streamer_id)
+                : onAddToList?.(creator.streamer_id)
             }
             title={inMyList ? "Remove from My List" : "Add to My List"}
           >
@@ -112,7 +117,7 @@ const StreamerCard = ({
 
           <a
             className={styles.watchBtn}
-            href={streamer.stream_url}
+            href={creator.stream_url}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -124,4 +129,4 @@ const StreamerCard = ({
   );
 };
 
-export default StreamerCard;
+export default ContentCreatorCard;
