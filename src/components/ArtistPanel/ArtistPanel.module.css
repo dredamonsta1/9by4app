@@ -214,6 +214,37 @@
   flex-direction: column;
   align-items: center;
   gap: 0.85rem;
+  position: relative;
+  /* Hide the bg video iframe overflow outside the hero footprint. */
+  isolation: isolate;
+}
+
+/* Muted blurred YouTube iframe pinned behind the entire hero. Sized
+   to fully cover the area; the inner iframe is scaled up + blurred so
+   the YouTube branding/overlays sit outside the visible window. */
+.bgVideoLayer {
+  position: absolute;
+  inset: -40px;
+  overflow: hidden;
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.35;
+  filter: blur(18px) saturate(1.2);
+}
+
+.bgVideoFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* 1.6x scale pushes the YouTube native UI (titlecard, end screen,
+     branding watermark) outside the viewport so the blurred result
+     looks like ambient video, not an embed. */
+  width: 160%;
+  height: 160%;
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none;
 }
 
 .deck {
