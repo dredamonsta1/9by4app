@@ -638,6 +638,32 @@ const ArtistPanel = () => {
 
   return (
     <div className={styles.page}>
+      {/* Muted blurred YouTube background, fixed to the viewport so it
+          covers the entire ArtistPanel layout (not just the hero).
+          Boxes + filter rail have solid backgrounds so the video shows
+          through the negative space between them. key={featuredVideoId}
+          forces a clean tear-down + re-mount when the artist switches.
+          pointer-events:none + z-index:-1 so it never steals clicks
+          or focus. */}
+      {featuredVideoId && (
+        <div className={styles.bgVideoLayer} aria-hidden="true">
+          <iframe
+            key={featuredVideoId}
+            className={styles.bgVideoFrame}
+            src={
+              `https://www.youtube.com/embed/${featuredVideoId}` +
+              `?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1` +
+              `&playsinline=1&disablekb=1&iv_load_policy=3` +
+              `&playlist=${featuredVideoId}`
+            }
+            title="Artist background video"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            tabIndex={-1}
+          />
+        </div>
+      )}
+
       {/* Far-left rail: filter pills. Vertical sidebar, sticky on
           desktop so it stays in view as the user scrolls. */}
       <aside className={styles.filterRail}>
@@ -735,30 +761,6 @@ const ArtistPanel = () => {
 
         {/* ---- CENTER: Card hero ---- */}
         <section className={styles.hero}>
-          {/* Muted, looping, blurred YouTube iframe pinned behind the
-              hero. key={featuredVideoId} forces a tear-down + re-mount
-              when the artist switches, so the old iframe stops loading.
-              pointer-events:none + low opacity so it never steals
-              clicks or attention from the card. */}
-          {featuredVideoId && (
-            <div className={styles.bgVideoLayer} aria-hidden="true">
-              <iframe
-                key={featuredVideoId}
-                className={styles.bgVideoFrame}
-                src={
-                  `https://www.youtube.com/embed/${featuredVideoId}` +
-                  `?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1` +
-                  `&playsinline=1&disablekb=1&iv_load_policy=3` +
-                  `&playlist=${featuredVideoId}`
-                }
-                title="Artist background video"
-                frameBorder="0"
-                allow="autoplay; encrypted-media"
-                tabIndex={-1}
-              />
-            </div>
-          )}
-
           <div className={styles.deck}>
             <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
             <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
