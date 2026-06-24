@@ -351,6 +351,7 @@ const ArtistPanel = () => {
   const [stanRank, setStanRank] = useState(null);
   const [artistMusicPosts, setArtistMusicPosts] = useState([]);
   const [relatedArtists, setRelatedArtists] = useState([]);
+  const [artistEvents, setArtistEvents] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -409,6 +410,7 @@ const ArtistPanel = () => {
     setStanRank(null);
     setArtistMusicPosts([]);
     setRelatedArtists([]);
+    setArtistEvents([]);
     setVerifications([]);
 
     axiosInstance
@@ -433,6 +435,14 @@ const ArtistPanel = () => {
       .get(`/live-recordings?artist_id=${targetId}&limit=50`)
       .then((res) => setLiveRecordings(res.data?.recordings || []))
       .catch(() => setLiveRecordings([]));
+
+    // Tour dates / events posted by the verified-artist owner. Backend
+    // filters via users.artist_id join (events table has no direct
+    // artist_id column).
+    axiosInstance
+      .get(`/events?artist_id=${targetId}`)
+      .then((res) => setArtistEvents(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setArtistEvents([]));
 
     // Awards (Grammys, BETs, etc.) — credibility signal in the hero meta.
     axiosInstance
@@ -642,7 +652,17 @@ const ArtistPanel = () => {
                 bottom row, to the right of Upcoming Releases) ---- */}
           <aside className={styles.feedCol}>
             <div className={styles.box}>
-              <header className={styles.boxHeader}>Feed</header>
+              <header className={styles.boxHeader}>
+                <span>Feed</span>
+                <Link
+                  to="/rooms"
+                  className={styles.feedHeaderIcon}
+                  title="Live rooms"
+                  aria-label="Live rooms"
+                >
+                  🎙
+                </Link>
+              </header>
 
             {isLoggedIn && (
               <button
@@ -1062,9 +1082,37 @@ const ArtistPanel = () => {
 
               <div className={styles.eventsBlock}>
                 <span className={styles.eventsSubHead}>Upcoming events</span>
-                <p className={styles.emptyStateInline}>
-                  No upcoming tour dates yet.
-                </p>
+                {artistEvents.length === 0 ? (
+                  <p className={styles.emptyStateInline}>
+                    No upcoming tour dates yet.
+                  </p>
+                ) : (
+                  <ul className={styles.eventsList}>
+                    {artistEvents.map((ev) => {
+                      const when = ev.event_date
+                        ? new Date(ev.event_date).toLocaleDateString(
+                            "en-US",
+                            { month: "short", day: "numeric", year: "numeric" },
+                          )
+                        : "TBA";
+                      return (
+                        <li key={ev.event_id} className={styles.eventRow}>
+                          <span className={styles.eventDate}>{when}</span>
+                          <div className={styles.eventMeta}>
+                            <span className={styles.eventTitle}>
+                              {ev.title}
+                            </span>
+                            {(ev.venue || ev.city) && (
+                              <span className={styles.eventVenue}>
+                                {[ev.venue, ev.city].filter(Boolean).join(" · ")}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
                 {isOwner && (
                   <Link to="/events" className={styles.eventsCreateLink}>
                     Add a tour date →
