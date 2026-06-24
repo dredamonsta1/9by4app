@@ -410,6 +410,10 @@ const ArtistPanel = () => {
   // per album). Reset on artist switch + refetched in the same effect
   // that loads the rest of the panel data.
   const [myFavorites, setMyFavorites] = useState({ albums: [], songs: [] });
+  // Community aggregate — "Top albums on stanbox" for the active
+  // artist. Rendered below the Feed box. Backend returns rows with
+  // pick_count + picker_user_ids[]. Anonymous-readable.
+  const [topAlbums, setTopAlbums] = useState([]);
 
   // Upcoming releases for the bottom New Music section. Fetched once
   // per session — doesn't change with the active artist.
@@ -462,6 +466,7 @@ const ArtistPanel = () => {
     setArtistEvents([]);
     setVerifications([]);
     setMyFavorites({ albums: [], songs: [] });
+    setTopAlbums([]);
 
     axiosInstance
       .get(`/artists/${targetId}`)
@@ -550,6 +555,13 @@ const ArtistPanel = () => {
         .catch(() => setMyFavorites({ albums: [], songs: [] }));
     }
 
+    // Community aggregate of favorite picks across all stans. Public
+    // endpoint — no auth gate. Updates as users add/remove picks.
+    axiosInstance
+      .get(`/favorites/artist/${targetId}/top-albums?limit=10`)
+      .then((res) => setTopAlbums(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setTopAlbums([]));
+
     // Featured YouTube video for the blurred/muted hero background.
     // Backend lazy-fetches from YouTube search on cache miss; a 204
     // response means "no usable video for this artist," handled by
@@ -580,7 +592,8 @@ const ArtistPanel = () => {
       : null;
 
   // Re-pull favorites after add/remove. Cheap (rows are small) and
-  // avoids needing optimistic state in two places.
+  // avoids needing optimistic state in two places. Also refreshes the
+  // community aggregate since the user's pick changes the totals.
   const refreshFavorites = () => {
     if (!isLoggedIn) return;
     axiosInstance
@@ -591,6 +604,10 @@ const ArtistPanel = () => {
           songs: Array.isArray(res.data?.songs) ? res.data.songs : [],
         }),
       )
+      .catch(() => {});
+    axiosInstance
+      .get(`/favorites/artist/${artist.artist_id}/top-albums?limit=10`)
+      .then((res) => setTopAlbums(Array.isArray(res.data) ? res.data : []))
       .catch(() => {});
   };
 
@@ -841,6 +858,47 @@ const ArtistPanel = () => {
               )}
             </div>
           </div>
+
+          {/* Community aggregate of favorite picks for this artist.
+              Hidden until at least one stan has picked something. */}
+          {topAlbums.length > 0 && (
+            <div className={styles.box}>
+              <header className={styles.boxHeader}>
+                <span>Top Albums on stanbox</span>
+              </header>
+              <div className={styles.boxScroll}>
+                <ol className={styles.topAlbumsList}>
+                  {topAlbums.map((album, idx) => (
+                    <li key={album.album_id} className={styles.topAlbumRow}>
+                      <span className={styles.topAlbumRank}>#{idx + 1}</span>
+                      <img
+                        src={resolveImageUrl(
+                          album.album_image_url,
+                          "https://via.placeholder.com/80?text=Album",
+                        )}
+                        alt={album.album_name}
+                        className={styles.topAlbumThumb}
+                      />
+                      <div className={styles.topAlbumMeta}>
+                        <span className={styles.topAlbumName}>
+                          {album.album_name}
+                        </span>
+                        {album.year && (
+                          <span className={styles.topAlbumYear}>
+                            {album.year}
+                          </span>
+                        )}
+                        <span className={styles.topAlbumTally}>
+                          Picked by {album.pick_count}{" "}
+                          {album.pick_count === 1 ? "stan" : "stans"}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* ---- CENTER: Card hero ---- */}
