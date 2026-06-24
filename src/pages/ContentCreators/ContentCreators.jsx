@@ -1,18 +1,24 @@
-// src/pages/Streamers/StreamersPage.jsx
+// src/pages/ContentCreators/ContentCreators.jsx
+//
+// Originally "Streamers" — broadened to "Content Creators" to set up
+// for non-streaming creators (podcasters, journalists, video essayists,
+// etc.) and bring more user types onto the list. The backend API + DB
+// table stay named `streamers` for backward compat; this is a UI
+// rename only.
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
-import StreamerCard from "../../components/StreamerCard/StreamerCard";
-import AddStreamerModal from "../../components/AddStreamerModal/AddStreamerModal";
-import styles from "./StreamersPage.module.css";
+import ContentCreatorCard from "../../components/ContentCreatorCard/ContentCreatorCard";
+import AddContentCreatorModal from "../../components/AddContentCreatorModal/AddContentCreatorModal";
+import styles from "./ContentCreators.module.css";
 
 const PLATFORMS  = ["All", "Twitch", "YouTube", "Kick", "TikTok", "stanbox"];
 const CATEGORIES = ["All", "Gaming", "Music", "IRL", "Sports", "Podcasts"];
 
-const StreamersPage = () => {
+const ContentCreators = () => {
   const { user } = useSelector((s) => s.auth);
 
-  const [streamers,    setStreamers]    = useState([]);
+  const [creators,     setCreators]     = useState([]);
   const [myList,       setMyList]       = useState(new Set());
   const [votedSet,     setVotedSet]     = useState(new Set());
   const [loading,      setLoading]      = useState(true);
@@ -26,7 +32,8 @@ const StreamersPage = () => {
 
   const debounceRef = useRef(null);
 
-  const fetchStreamers = useCallback(async (reset = false) => {
+  // Backend endpoint paths still say /streamers — see file-header note.
+  const fetchCreators = useCallback(async (reset = false) => {
     setLoading(true);
     setError(null);
     try {
@@ -39,11 +46,11 @@ const StreamersPage = () => {
         ...(category !== "All" && { category }),
       };
       const res = await axiosInstance.get("/streamers", { params });
-      setStreamers(prev => reset ? res.data.streamers : [...prev, ...res.data.streamers]);
+      setCreators(prev => reset ? res.data.streamers : [...prev, ...res.data.streamers]);
       setHasMore(res.data.hasMore);
       if (reset) setPage(2); else setPage(p => p + 1);
     } catch {
-      setError("Failed to load streamers.");
+      setError("Failed to load content creators.");
     } finally {
       setLoading(false);
     }
@@ -54,7 +61,7 @@ const StreamersPage = () => {
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setPage(1);
-      fetchStreamers(true);
+      fetchCreators(true);
     }, 300);
     return () => clearTimeout(debounceRef.current);
   }, [search, platform, category]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -72,7 +79,7 @@ const StreamersPage = () => {
     try {
       const res = await axiosInstance.put(`/streamers/${id}/vote`);
       setVotedSet(prev => new Set([...prev, id]));
-      setStreamers(prev => prev.map(s =>
+      setCreators(prev => prev.map(s =>
         s.streamer_id === id ? { ...s, count: res.data.count } : s
       ));
     } catch { /* already voted or error */ }
@@ -90,8 +97,8 @@ const StreamersPage = () => {
     setMyList(prev => { const s = new Set(prev); s.delete(id); return s; });
   };
 
-  const handleAdded = (streamer) => {
-    setStreamers(prev => [streamer, ...prev]);
+  const handleAdded = (creator) => {
+    setCreators(prev => [creator, ...prev]);
     setShowAdd(false);
   };
 
@@ -100,12 +107,12 @@ const StreamersPage = () => {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerText}>
-          <h1 className={styles.title}>Streamers</h1>
-          <p className={styles.subtitle}>Discover and follow your favorite streamers</p>
+          <h1 className={styles.title}>Content Creators</h1>
+          <p className={styles.subtitle}>Discover and follow your favorite content creators</p>
         </div>
         {user && (
           <button className={styles.addBtn} onClick={() => setShowAdd(true)}>
-            + Add Streamer
+            + Add Creator
           </button>
         )}
       </div>
@@ -115,7 +122,7 @@ const StreamersPage = () => {
         <input
           className={styles.searchInput}
           type="text"
-          placeholder="Search streamers..."
+          placeholder="Search creators…"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -156,9 +163,9 @@ const StreamersPage = () => {
       {/* Grid */}
       {error && <p className={styles.error}>{error}</p>}
 
-      {!loading && streamers.length === 0 && !error && (
+      {!loading && creators.length === 0 && !error && (
         <div className={styles.empty}>
-          <p>No streamers found.</p>
+          <p>No creators found.</p>
           {user && (
             <button className={styles.addBtn} onClick={() => setShowAdd(true)}>
               Be the first to add one
@@ -168,10 +175,10 @@ const StreamersPage = () => {
       )}
 
       <div className={styles.grid}>
-        {streamers.map((s, i) => (
-          <StreamerCard
+        {creators.map((s, i) => (
+          <ContentCreatorCard
             key={s.streamer_id}
-            streamer={s}
+            creator={s}
             rank={i + 1}
             onVote={handleVote}
             onAddToList={handleAddToList}
@@ -182,19 +189,19 @@ const StreamersPage = () => {
         ))}
       </div>
 
-      {loading && <p className={styles.loadingText}>Loading...</p>}
+      {loading && <p className={styles.loadingText}>Loading…</p>}
 
       {hasMore && !loading && (
-        <button className={styles.loadMoreBtn} onClick={() => fetchStreamers(false)}>
+        <button className={styles.loadMoreBtn} onClick={() => fetchCreators(false)}>
           Load more
         </button>
       )}
 
       {showAdd && (
-        <AddStreamerModal onClose={() => setShowAdd(false)} onAdded={handleAdded} />
+        <AddContentCreatorModal onClose={() => setShowAdd(false)} onAdded={handleAdded} />
       )}
     </div>
   );
 };
 
-export default StreamersPage;
+export default ContentCreators;
