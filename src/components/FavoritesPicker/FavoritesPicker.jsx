@@ -14,7 +14,7 @@
 //
 // Auto-post on add is handled server-side — no extra frontend work
 // needed for the feed embed.
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./FavoritesPicker.module.css";
@@ -78,6 +78,24 @@ export const FavoriteAlbumStar = ({
 export const AlbumSongPicker = ({ artistId, album, songs, onChange }) => {
   const [draft, setDraft] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  // Canonical tracklist from MB-backfilled `tracks` table. Empty array
+  // is normal for ~12% of albums; the input then acts as plain text.
+  const [tracks, setTracks] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    axiosInstance
+      .get(`/tracks/album/${album.album_id}`)
+      .then((res) => {
+        if (active) setTracks(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch(() => {
+        if (active) setTracks([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [album.album_id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,11 +105,18 @@ export const AlbumSongPicker = ({ artistId, album, songs, onChange }) => {
       toast.info(`Max ${MAX_SONGS_PER_ALBUM} songs per album.`);
       return;
     }
+    // Case-insensitive exact match against the canonical tracklist —
+    // sends track_id when the user picked from the suggestions, omits
+    // it for free-text. Backend accepts either.
+    const matched = tracks.find(
+      (t) => t.title.toLowerCase() === title.toLowerCase(),
+    );
     setSubmitting(true);
     try {
       await axiosInstance.post(`/favorites/artist/${artistId}/songs`, {
         album_id: album.album_id,
-        song_title: title,
+        song_title: matched ? matched.title : title,
+        track_id: matched ? matched.track_id : undefined,
       });
       setDraft("");
       onChange?.();
@@ -137,12 +162,23 @@ export const AlbumSongPicker = ({ artistId, album, songs, onChange }) => {
           <input
             className={styles.songInput}
             type="text"
-            placeholder="Pick a song…"
+            list={tracks.length > 0 ? `tracks-${album.album_id}` : undefined}
+            placeholder={
+              tracks.length > 0 ? "Pick a song…" : "Pick a song…"
+            }
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             maxLength={255}
             disabled={submitting}
+            autoComplete="off"
           />
+          {tracks.length > 0 && (
+            <datalist id={`tracks-${album.album_id}`}>
+              {tracks.map((t) => (
+                <option key={t.track_id} value={t.title} />
+              ))}
+            </datalist>
+          )}
           <button
             type="submit"
             className={styles.songAdd}
