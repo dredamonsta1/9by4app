@@ -237,6 +237,15 @@
   outline-offset: 2px;
 }
 
+html,
+body {
+  /* Prevent any overflowing descendant from creating a horizontal
+     scrollbar on mobile. Works universally including iOS Safari
+     where overflow-x: clip is unreliable. */
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   background-color: var(--color-bg-base);
   color: var(--color-text-primary);
