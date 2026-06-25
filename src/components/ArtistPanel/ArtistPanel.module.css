@@ -1578,14 +1578,6 @@
 @media (max-width: 880px) {
   .page {
     grid-template-columns: 1fr;
-    /* Sticky rail is no longer in play below this breakpoint, so
-       clipping is safe. Prevents the hero deck + any wide child
-       from creating a horizontal scrollbar on mobile. */
-    overflow-x: clip;
-  }
-  .panel {
-    /* Belt-and-suspenders against any descendant that overflows. */
-    overflow-x: clip;
   }
   .filterRail {
     position: static;
@@ -1633,21 +1625,33 @@
   }
 }
 
-@media (max-width: 540px) {
+/* Phone + small-tablet hero treatment. Applied earlier (720px) so
+   iPhone-landscape and large Android phones also get the smaller
+   card + deck instead of the desktop 340px stack. */
+@media (max-width: 720px) {
   .panel {
     padding: 0.75rem 0.75rem 6rem;
   }
 
-  /* Cap card width so card + decks + flip arrows fit inside the
-     viewport without horizontal scroll. 100vw - 24px padding on
-     each side - 80px for the two flip buttons + gaps. */
-  .card,
-  .deckLayer {
-    width: min(260px, calc(100vw - 128px));
+  /* Clip any descendant that's still wider than the panel — backstop
+     so a stray fixed-width child can't push the viewport sideways. */
+  .panel,
+  .hero,
+  .deck {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
-  /* Shrink the absolute-positioned deck offsets so the rotated
-     stack doesn't poke past the card on narrow screens. */
+  /* Cap card so card + decks + flip arrows fit on a 360px viewport.
+     100vw - 24px panel padding - ~96px for the two flip buttons +
+     gaps + deck inset. */
+  .card,
+  .deckLayer {
+    width: min(240px, calc(100vw - 120px));
+  }
+
+  /* Shrink absolute deck offsets proportionally so the rotated
+     stack stops poking past the card edge. */
   .deck {
     padding-left: 14px;
     gap: 0.5rem;
@@ -1675,8 +1679,12 @@
   }
 
   /* Card name shrinks so a long artist name doesn't blow up the
-     overlay on a 260px card. */
+     overlay on a narrow card. */
   .cardName {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
+  }
+
+  .cardGenre {
+    font-size: 0.82rem;
   }
 }
