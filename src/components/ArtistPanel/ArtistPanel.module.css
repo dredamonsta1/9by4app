@@ -1578,6 +1578,14 @@
 @media (max-width: 880px) {
   .page {
     grid-template-columns: 1fr;
+    /* Sticky rail is no longer in play below this breakpoint, so
+       clipping is safe. Prevents the hero deck + any wide child
+       from creating a horizontal scrollbar on mobile. */
+    overflow-x: clip;
+  }
+  .panel {
+    /* Belt-and-suspenders against any descendant that overflows. */
+    overflow-x: clip;
   }
   .filterRail {
     position: static;
@@ -1627,20 +1635,48 @@
 
 @media (max-width: 540px) {
   .panel {
-    padding: 0.75rem 1rem 6rem;
+    padding: 0.75rem 0.75rem 6rem;
   }
 
+  /* Cap card width so card + decks + flip arrows fit inside the
+     viewport without horizontal scroll. 100vw - 24px padding on
+     each side - 80px for the two flip buttons + gaps. */
   .card,
   .deckLayer {
-    width: 280px;
+    width: min(260px, calc(100vw - 128px));
   }
 
+  /* Shrink the absolute-positioned deck offsets so the rotated
+     stack doesn't poke past the card on narrow screens. */
   .deck {
-    padding-left: 26px;
+    padding-left: 14px;
+    gap: 0.5rem;
+  }
+
+  .deckLayer1 {
+    left: 4px;
+  }
+  .deckLayer2 {
+    left: 8px;
+  }
+  .deckLayer3 {
+    left: 12px;
   }
 
   .flipBtn {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  /* Tighten box internal padding so list rows aren't cramped. */
+  .boxScroll {
+    padding: 0.6rem;
+  }
+
+  /* Card name shrinks so a long artist name doesn't blow up the
+     overlay on a 260px card. */
+  .cardName {
+    font-size: 1.35rem;
   }
 }
