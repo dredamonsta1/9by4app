@@ -954,6 +954,75 @@ const ArtistPanel = () => {
 
           {rank && <div className={styles.rankBig}>{ordinal(rank)}</div>}
 
+          {/* Group <-> member relationships from the group_members
+              table. The artist GET payload embeds both arrays — empty
+              for most artists, so the strips render conditionally. */}
+          {Array.isArray(artist.members) && artist.members.length > 0 && (
+            <div className={styles.memberStrip}>
+              <span className={styles.memberStripLabel}>Members</span>
+              <ul className={styles.memberAvatarRow}>
+                {artist.members.slice(0, 8).map((m) => (
+                  <li key={m.artist_id}>
+                    <button
+                      type="button"
+                      className={styles.memberAvatarBtn}
+                      onClick={() => navigate(`/artist/${m.artist_id}`)}
+                      title={m.artist_name}
+                      aria-label={m.artist_name}
+                    >
+                      <img
+                        src={resolveImageUrl(
+                          m.image_url,
+                          "https://via.placeholder.com/40?text=?",
+                        )}
+                        alt=""
+                        className={styles.memberAvatar}
+                      />
+                    </button>
+                  </li>
+                ))}
+                {artist.members.length > 8 && (
+                  <li className={styles.memberAvatarMore}>
+                    +{artist.members.length - 8}
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+
+          {Array.isArray(artist.groups) && artist.groups.length > 0 && (
+            <div className={styles.memberStrip}>
+              <span className={styles.memberStripLabel}>Member of</span>
+              <ul className={styles.memberAvatarRow}>
+                {artist.groups.slice(0, 8).map((g) => (
+                  <li key={g.artist_id}>
+                    <button
+                      type="button"
+                      className={styles.memberAvatarBtn}
+                      onClick={() => navigate(`/artist/${g.artist_id}`)}
+                      title={g.artist_name}
+                      aria-label={g.artist_name}
+                    >
+                      <img
+                        src={resolveImageUrl(
+                          g.image_url,
+                          "https://via.placeholder.com/40?text=?",
+                        )}
+                        alt=""
+                        className={styles.memberAvatar}
+                      />
+                    </button>
+                  </li>
+                ))}
+                {artist.groups.length > 8 && (
+                  <li className={styles.memberAvatarMore}>
+                    +{artist.groups.length - 8}
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+
           <div className={styles.cardMeta}>
             <span className={styles.cloutLine}>
               {(artist.count || 0).toLocaleString()} fans claim them
