@@ -246,7 +246,7 @@ const TrackList = ({ album }) => {
       const sig = sigRes.data;
 
       if (widgetRef.current) {
-        try { widgetRef.current.destroy(); } catch {}
+        try { widgetRef.current.destroy(); } catch { /* widget may already be torn down */ }
         widgetRef.current = null;
       }
 
