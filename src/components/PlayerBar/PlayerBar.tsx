@@ -45,7 +45,12 @@ const PlayerBar = () => {
   const [markers, setMarkers] = useState<
     Array<{ id: number; timestamp_seconds: number; content: string; username: string }>
   >([]);
+  // Two-state separation: hovered = ephemeral tooltip on desktop;
+  // pinned = persistent tooltip after a click/tap (the only mode that
+  // works on touch). Pin survives until the user pins another marker,
+  // clicks the Jump button inside the tooltip, or switches tracks.
   const [hoveredMarker, setHoveredMarker] = useState<number | null>(null);
+  const [pinnedMarker, setPinnedMarker] = useState<number | null>(null);
 
   // Any stable id qualifies as a comment anchor. Backend resolves
   // context via track_id -> album_id -> post_id, so preview clips
@@ -53,10 +58,11 @@ const PlayerBar = () => {
   const canComment = !!(track?.post_id || track?.track_id || track?.album_id);
 
   // Close the input on track change so a comment can't get pinned to
-  // the wrong song after a skip.
+  // the wrong song after a skip. Also clear any pinned marker.
   useEffect(() => {
     setCommentOpen(false);
     setCommentText("");
+    setPinnedMarker(null);
   }, [track?.post_id, track?.track_id, track?.album_id]);
 
   // Pull existing comments for the current track so the seek bar can
@@ -98,12 +104,31 @@ const PlayerBar = () => {
       .catch(() => {});
   };
 
-  const handleMarkerClick = (timestamp: number) => {
+  const handleMarkerToggle = (id: number) => {
+    setPinnedMarker((prev) => (prev === id ? null : id));
+  };
+
+  const handleJumpToMarker = (timestamp: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = timestamp;
       setCurrent(timestamp);
     }
+    setPinnedMarker(null);
   };
+
+  // Outside-click dismisses the pinned tooltip so the user can keep
+  // listening without an open card cluttering the bar. Range-input
+  // mousedown also closes the pin since the user is starting a seek.
+  useEffect(() => {
+    if (pinnedMarker === null) return;
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest(`.${styles.markerLayer}`)) return;
+      setPinnedMarker(null);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [pinnedMarker]);
 
   const openComment = () => {
     if (!canComment) return;
@@ -388,14 +413,21 @@ const PlayerBar = () => {
                   100,
                   Math.max(0, (m.timestamp_seconds / duration) * 100),
                 );
+                const isPinned = pinnedMarker === m.id;
                 const isHovered = hoveredMarker === m.id;
+                const showTooltip = isPinned || (isHovered && pinnedMarker === null);
                 return (
                   <button
                     key={m.id}
                     type="button"
-                    className={`${styles.marker} ${isHovered ? styles.markerActive : ""}`}
+                    className={`${styles.marker} ${showTooltip ? styles.markerActive : ""}`}
                     style={{ left: `${pct}%` }}
-                    onClick={() => handleMarkerClick(m.timestamp_seconds)}
+                    onClick={(e) => {
+                      // Stop the click from bubbling into the range
+                      // input (which would jump the playhead).
+                      e.stopPropagation();
+                      handleMarkerToggle(m.id);
+                    }}
                     onMouseEnter={() => setHoveredMarker(m.id)}
                     onMouseLeave={() => setHoveredMarker(null)}
                     onFocus={() => setHoveredMarker(m.id)}
@@ -403,14 +435,29 @@ const PlayerBar = () => {
                     aria-label={`Comment at ${fmt(m.timestamp_seconds)} from ${m.username}`}
                     title={`@${m.username} · ${fmt(m.timestamp_seconds)}`}
                   >
-                    {isHovered && (
-                      <span className={styles.markerTooltip}>
+                    {showTooltip && (
+                      <span
+                        className={`${styles.markerTooltip} ${isPinned ? styles.markerTooltipPinned : ""}`}
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
                         <span className={styles.markerTooltipUser}>
-                          @{m.username}
+                          @{m.username} · {fmt(m.timestamp_seconds)}
                         </span>
                         <span className={styles.markerTooltipBody}>
                           {m.content}
                         </span>
+                        {isPinned && (
+                          <button
+                            type="button"
+                            className={styles.markerJumpBtn}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleJumpToMarker(m.timestamp_seconds);
+                            }}
+                          >
+                            ▶ Jump to {fmt(m.timestamp_seconds)}
+                          </button>
+                        )}
                       </span>
                     )}
                   </button>
