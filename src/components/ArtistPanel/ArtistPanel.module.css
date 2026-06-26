@@ -114,9 +114,15 @@
 
 /* ---- Bounded container "boxes" ---- */
 
+/* Subtle glassmorphism — semi-transparent panel + backdrop-blur so
+   the artist's ambient bg video shows through faintly. Saturation
+   bump keeps colors from going washed-out through the blur. Both
+   prefixed and unprefixed backdrop-filter for Safari. */
 .box {
-  background: #142030;
-  border: 1px solid #1e3450;
+  background: rgba(20, 32, 48, 0.78);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  backdrop-filter: blur(8px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   overflow: hidden;
   display: flex;
@@ -124,7 +130,7 @@
 }
 
 .boxHeader {
-  background: #1e3450;
+  background: rgba(30, 52, 80, 0.7);
   color: #e0e6ed;
   font-size: 0.85rem;
   font-weight: 700;
@@ -135,6 +141,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 /* Tiny counter chip on the Music box header — shows N/5 favorite
