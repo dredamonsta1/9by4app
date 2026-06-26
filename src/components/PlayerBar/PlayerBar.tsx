@@ -1,8 +1,10 @@
 // src/components/PlayerBar/PlayerBar.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import { RootState } from "../../redux/store";
 import { nextTrack, prevTrack, togglePlay, setPlaying, clearPlayer } from "../../redux/playerSlice";
+import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./PlayerBar.module.css";
 
@@ -28,6 +30,55 @@ const PlayerBar = () => {
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
   const [seeking,  setSeeking]  = useState(false);
+
+  // Timestamped-comment state. `frozenAt` snapshots the playback
+  // position at the moment the user opens the input so the comment's
+  // timestamp doesn't drift forward while they type. Submitting POSTs
+  // to /api/song-comments which writes an auto-post on the feed —
+  // replies thread on top of that post.
+  const [commentOpen, setCommentOpen] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [commentSending, setCommentSending] = useState(false);
+  const [frozenAt, setFrozenAt] = useState(0);
+
+  // Only entities with a stable ID can be commented on. Album-level
+  // back-compat audio has only album_id and can't yet attach.
+  const canComment = !!(track?.post_id || track?.track_id);
+
+  // Close the input on track change so a comment can't get pinned to
+  // the wrong song after a skip.
+  useEffect(() => {
+    setCommentOpen(false);
+    setCommentText("");
+  }, [track?.post_id, track?.track_id]);
+
+  const openComment = () => {
+    if (!canComment) return;
+    setFrozenAt(audioRef.current?.currentTime ?? 0);
+    setCommentOpen(true);
+  };
+
+  const submitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const content = commentText.trim();
+    if (!content || commentSending || !canComment) return;
+    setCommentSending(true);
+    try {
+      await axiosInstance.post("/song-comments", {
+        post_id:           track?.post_id ?? undefined,
+        track_id:          track?.track_id ?? undefined,
+        timestamp_seconds: Math.floor(frozenAt),
+        content,
+      });
+      toast.success(`Comment posted at ${fmt(frozenAt)}.`);
+      setCommentText("");
+      setCommentOpen(false);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Couldn't post comment.");
+    } finally {
+      setCommentSending(false);
+    }
+  };
 
   // --- Web Audio API visualizer wiring ---
   // AudioContext + the chain (source → analyser → destination) are created
@@ -275,6 +326,24 @@ const PlayerBar = () => {
         <span className={styles.time}>{fmt(duration)}</span>
       </div>
 
+      {/* Timestamped comment toggle. Hidden when the active track has
+          neither a post_id nor a track_id (nothing to attach to). */}
+      {canComment && (
+        <button
+          type="button"
+          className={`${styles.btn} ${styles.commentBtn}`}
+          onClick={() => (commentOpen ? setCommentOpen(false) : openComment())}
+          aria-label={commentOpen ? "Close comment" : "Comment on this moment"}
+          title={
+            commentOpen
+              ? "Close"
+              : `Comment at ${fmt(audioRef.current?.currentTime ?? 0)}`
+          }
+        >
+          💬
+        </button>
+      )}
+
       {/* Close */}
       <button
         className={styles.closeBtn}
@@ -283,6 +352,32 @@ const PlayerBar = () => {
       >
         ✕
       </button>
+
+      {/* Expanded comment row — sits below the rest of the bar. The
+          timestamp is frozen at the moment the input opened so it
+          doesn't drift while the user types. */}
+      {commentOpen && canComment && (
+        <form className={styles.commentRow} onSubmit={submitComment}>
+          <span className={styles.commentStamp}>@ {fmt(frozenAt)}</span>
+          <input
+            type="text"
+            className={styles.commentInput}
+            placeholder="Say something about this part…"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            maxLength={1000}
+            autoFocus
+            disabled={commentSending}
+          />
+          <button
+            type="submit"
+            className={styles.commentSubmit}
+            disabled={!commentText.trim() || commentSending}
+          >
+            {commentSending ? "…" : "Post"}
+          </button>
+        </form>
+      )}
     </div>
   );
 };
