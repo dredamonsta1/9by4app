@@ -807,9 +807,19 @@ const ArtistPanel = () => {
           </div>
         )}
 
+        {/* TrendingShelf hoisted from the bottom row so the FOMO
+            signal (who's getting added) sits in the user's eye-line
+            from the moment they land. Self-renders nothing when
+            there's no trending data. */}
+        <div className={styles.trendingTop}>
+          <TrendingShelf
+            onArtistClick={(a) => navigate(`/artist/${a.artist_id}`)}
+          />
+        </div>
+
         <div className={styles.threeCol}>
-          {/* ---- LEFT: Feed only (Trending + Rankings moved to the
-                bottom row, to the right of Upcoming Releases) ---- */}
+          {/* ---- LEFT: Feed (Rankings stays in bottom row;
+                Trending hoisted to top strip) ---- */}
           <aside className={styles.feedCol}>
             <div className={styles.box}>
               <header className={styles.boxHeader}>
@@ -1422,9 +1432,10 @@ const ArtistPanel = () => {
         </aside>
       </div>
 
-      {/* Bottom row: Upcoming Releases on the left, with Rankings
-          stacked above Trending on the right. From-the-Community
-          lane retired — feed already covers that surface. */}
+      {/* Bottom row: Upcoming Releases on the left, Rankings on the
+          right. Trending moved to a top-of-panel strip so it's
+          always in view. From-the-Community lane retired — feed
+          already covers that surface. */}
       <div className={styles.bottomRow}>
         <NewMusicSection
           isLoggedIn={isLoggedIn}
@@ -1438,15 +1449,6 @@ const ArtistPanel = () => {
               <RankView
                 artists={filteredArtists}
                 isLoggedIn={isLoggedIn}
-              />
-            </div>
-          </div>
-
-          <div className={styles.box}>
-            <header className={styles.boxHeader}>Trending</header>
-            <div className={styles.boxScroll}>
-              <TrendingShelf
-                onArtistClick={(a) => navigate(`/artist/${a.artist_id}`)}
               />
             </div>
           </div>
