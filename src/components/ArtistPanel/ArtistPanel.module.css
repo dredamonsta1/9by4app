@@ -834,6 +834,89 @@
   font-size: 0.7rem;
 }
 
+/* Timestamped song-comment embed — rendered when the PlayerBar
+   auto-poster attached one. Differentiated from the favorite-album
+   embed by an accent stripe + the timestamp pill, so the two read
+   as distinct feed surfaces. */
+.songCommentEmbed {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.55rem;
+  background: rgba(0, 180, 216, 0.06);
+  border: 1px solid rgba(0, 180, 216, 0.22);
+  border-left: 3px solid #00b4d8;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.songCommentEmbed:hover {
+  background: rgba(0, 180, 216, 0.1);
+  border-color: rgba(0, 180, 216, 0.45);
+}
+
+.songCommentThumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.songCommentMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.songCommentHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.songCommentStamp {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #00b4d8;
+  background: rgba(0, 180, 216, 0.15);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.songCommentTrack {
+  color: #e0e6ed;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.songCommentContent {
+  margin: 0;
+  color: #c5cfdb;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.songCommentAlbumLine {
+  color: #607589;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Verdict badges from the fact-checker agent */
 
 .verdictRow {

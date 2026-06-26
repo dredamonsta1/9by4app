@@ -49,6 +49,12 @@ const ordinal = (n) => {
   return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
 };
 
+const formatMSS = (sec) => {
+  if (typeof sec !== "number" || !isFinite(sec) || sec < 0) return "0:00";
+  const s = Math.floor(sec);
+  return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
+};
+
 // A single feed post — handles its own comment expand/collapse state,
 // comment list, submit, delete. Also renders Verified / Disputed
 // verdict badges from the fact-checker agent and the source link for
@@ -232,6 +238,52 @@ const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
                 {post.favorite_album_year}
               </span>
             )}
+          </div>
+        </Link>
+      )}
+
+      {/* Timestamped song-comment embed: rendered when the
+          PlayerBar auto-poster attached one. Card shows the album
+          cover + a timestamp pill + the comment content. Clickable
+          back to the artist panel; replies use the post's own
+          comments thread (toggle below). */}
+      {post.song_comment_id && (
+        <Link
+          to={
+            post.song_comment_artist_id
+              ? `/artist/${post.song_comment_artist_id}`
+              : "#"
+          }
+          className={styles.songCommentEmbed}
+        >
+          <img
+            src={resolveImageUrl(
+              post.song_comment_album_image_url,
+              "https://via.placeholder.com/96?text=Album",
+            )}
+            alt={post.song_comment_album_name || "Album"}
+            className={styles.songCommentThumb}
+          />
+          <div className={styles.songCommentMeta}>
+            <div className={styles.songCommentHeader}>
+              <span className={styles.songCommentStamp}>
+                ♪ {formatMSS(post.song_comment_timestamp)}
+              </span>
+              {post.song_comment_track_title && (
+                <span className={styles.songCommentTrack}>
+                  {post.song_comment_track_title}
+                </span>
+              )}
+            </div>
+            <p className={styles.songCommentContent}>
+              {post.song_comment_content}
+            </p>
+            <span className={styles.songCommentAlbumLine}>
+              {post.song_comment_album_name}
+              {post.song_comment_artist_name
+                ? ` · ${post.song_comment_artist_name}`
+                : ""}
+            </span>
           </div>
         </Link>
       )}
