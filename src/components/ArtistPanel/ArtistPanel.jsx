@@ -911,7 +911,7 @@ const ArtistPanel = () => {
                     <FeedPost
                       key={post.id || post.post_id || idx}
                       post={post}
-                      currentUserId={user?.id}
+                      currentUserId={user?.id ?? user?.user_id}
                       onPlayMusic={playFeedPost}
                       onDelete={handlePostDeleted}
                     />
