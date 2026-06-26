@@ -196,6 +196,78 @@
 
 .closeBtn:hover { color: var(--color-text-bright); }
 
+/* ── Seek-bar comment markers ── */
+
+/* Wraps the range input so we can absolutely-position the marker
+   overlay on top of it without affecting the input's own width. */
+.seekStack {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.markerLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent-light);
+  border: 2px solid var(--color-bg-card);
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s, background 0.12s;
+  z-index: 2;
+}
+
+.marker:hover,
+.markerActive {
+  transform: translate(-50%, -50%) scale(1.4);
+  background: #ffffff;
+}
+
+.markerTooltip {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.45rem 0.6rem;
+  background: var(--color-bg-card-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  white-space: normal;
+  min-width: 180px;
+  max-width: 240px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.markerTooltipUser {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-accent-light);
+}
+
+.markerTooltipBody {
+  font-size: 0.78rem;
+  color: var(--color-text-primary);
+  line-height: 1.35;
+}
+
 /* ── Timestamped comment input ── */
 .commentBtn {
   font-size: 1rem;
