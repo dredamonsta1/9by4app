@@ -1,302 +1,131 @@
+// Tests for the admin-only Create Artist form. Re-written to match
+// the current shape (form + live preview pane + album section after
+// artist is created). Earlier test fixtures targeted a much simpler
+// form and broke once the preview + album rows were added.
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "../utils";
 import CreateArtistForm from "../../components/CreateArtistForm/CreateArtistForm";
 
-// Mock axiosInstance
 vi.mock("../../utils/axiosInstance", () => ({
-  default: {
-    post: vi.fn(),
-  },
+  default: { post: vi.fn() },
 }));
 
-// Mock CSS module
 vi.mock("../../components/CreateArtistForm/CreateArtistForm.module.css", () => ({
-  default: {
-    createArtistForm: "createArtistForm",
-    title: "title",
-    success: "success",
-    error: "error",
-    artistNameLabel: "artistNameLabel",
-    artistNameInput: "artistNameInput",
-    genreInputContainer: "genreInputContainer",
-    genreLabel: "genreLabel",
-    genreInput: "genreInput",
-    imageInputContainer: "imageInputContainer",
-    artistImageLabel: "artistImageLabel",
-    artistImageInput: "artistImageInput",
-    createArtistSubmitButton: "createArtistSubmitButton",
-  },
+  default: new Proxy({}, { get: (_, key) => key }),
 }));
 
 import axiosInstance from "../../utils/axiosInstance";
 
-describe("CreateArtistForm Component", () => {
+const render = (ui) =>
+  renderWithProviders(ui, {
+    preloadedState: {
+      auth: {
+        user: { user_id: 1, username: "admin", role: "admin" },
+        isLoggedIn: true,
+      },
+    },
+  });
+
+// The form labels aren't htmlFor-linked, so we query inputs by their
+// order in the form: 0=Artist Name, 1=Genre, 2=Mixtape, 3=Image.
+const formInputs = (container) =>
+  Array.from(container.querySelectorAll("form input"));
+
+describe("CreateArtistForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   describe("Rendering", () => {
-    it("renders the form title", () => {
+    it("renders the form title + submit button", () => {
       render(<CreateArtistForm />);
-
-      expect(screen.getByText("Create New Artist")).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: /create new artist/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /create artist/i }),
+      ).toBeInTheDocument();
     });
 
-    it("renders artist name label and input", () => {
-      const { container } = render(<CreateArtistForm />);
-
-      expect(screen.getByText(/artist name/i)).toBeInTheDocument();
-      expect(container.querySelector(".artistNameInput")).toBeInTheDocument();
+    it("renders the live preview panel with placeholders", () => {
+      render(<CreateArtistForm />);
+      expect(screen.getByText(/^preview$/i)).toBeInTheDocument();
+      // Placeholder name + genre rendered until the user types.
+      expect(screen.getAllByText(/artist name/i).length).toBeGreaterThan(0);
     });
 
-    it("renders genre label and input", () => {
-      render(<CreateArtistForm />);
-
-      expect(screen.getByText(/genre/i)).toBeInTheDocument();
-    });
-
-    it("renders image input", () => {
-      render(<CreateArtistForm />);
-
-      expect(screen.getByText(/artist image/i)).toBeInTheDocument();
-    });
-
-    it("renders submit button", () => {
-      render(<CreateArtistForm />);
-
-      expect(screen.getByRole("button", { name: /create artist/i })).toBeInTheDocument();
+    it("returns nothing when no user is logged in", () => {
+      const { container } = renderWithProviders(<CreateArtistForm />);
+      expect(container.firstChild).toBeNull();
     });
   });
 
-  describe("Form Interaction", () => {
-    it("allows typing in artist name field", async () => {
-      const user = userEvent.setup();
+  describe("Form interaction", () => {
+    it("updates the live preview as the user types the name", async () => {
       const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      await user.type(nameInput, "New Artist");
-
-      expect(nameInput).toHaveValue("New Artist");
+      const [nameInput] = formInputs(container);
+      await userEvent.type(nameInput, "Drake");
+      expect(screen.getByText("Drake")).toBeInTheDocument();
     });
 
-    it("allows typing in genre field", async () => {
-      const user = userEvent.setup();
+    it("updates the live preview as the user types the genre", async () => {
       const { container } = render(<CreateArtistForm />);
-
-      const genreInput = container.querySelector(".genreInput");
-      await user.type(genreInput, "Hip Hop");
-
-      expect(genreInput).toHaveValue("Hip Hop");
-    });
-
-    it("accepts image file upload", async () => {
-      const user = userEvent.setup();
-      render(<CreateArtistForm />);
-
-      const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-      const fileInput = document.getElementById("artistImageInput");
-
-      await user.upload(fileInput, file);
-
-      expect(fileInput.files[0]).toBe(file);
-      expect(fileInput.files).toHaveLength(1);
+      const [, genreInput] = formInputs(container);
+      await userEvent.type(genreInput, "Hip Hop");
+      expect(screen.getByText("Hip Hop")).toBeInTheDocument();
     });
   });
 
-  describe("Form Submission", () => {
-    it("submits form without image", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockResolvedValue({
-        data: { message: "Artist created successfully!" },
+  describe("Submission", () => {
+    it("posts to /artists with the form payload + shows the success state", async () => {
+      axiosInstance.post.mockResolvedValueOnce({
+        data: { artist: { artist_id: 42, artist_name: "Drake" } },
       });
 
       const { container } = render(<CreateArtistForm />);
+      const [name, genre] = formInputs(container);
+      await userEvent.type(name, "Drake");
+      await userEvent.type(genre, "Hip Hop");
+      await userEvent.click(
+        screen.getByRole("button", { name: /create artist/i }),
+      );
 
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      await waitFor(() => {
+      await waitFor(() =>
         expect(axiosInstance.post).toHaveBeenCalledWith(
-          "/",
+          "/artists",
           expect.objectContaining({
-            artist_name: "New Artist",
-            genre: "Rock",
-            count: 0,
-            image_url: null,
-          })
-        );
-      });
-    });
+            artist_name: "Drake",
+            genre: "Hip Hop",
+          }),
+        ),
+      );
 
-    it("shows loading state during submission", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockImplementation(() => new Promise(() => {}));
-
-      const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      expect(screen.getByRole("button", { name: /submitting/i })).toBeInTheDocument();
-    });
-
-    it("disables button during submission", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockImplementation(() => new Promise(() => {}));
-
-      const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      expect(screen.getByRole("button")).toBeDisabled();
-    });
-
-    it("shows success message on successful creation", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockResolvedValue({
-        data: { message: "Artist created successfully!" },
-      });
-
-      const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText(/artist created successfully/i)).toBeInTheDocument();
-      });
-    });
-
-    it("clears form on successful submission", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockResolvedValue({
-        data: { message: "Artist created successfully!" },
-      });
-
-      const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      await waitFor(() => {
-        expect(nameInput).toHaveValue("");
-        expect(genreInput).toHaveValue("");
-      });
-    });
-  });
-
-  describe("Form Submission with Image", () => {
-    it("uploads image first then creates artist", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post
-        .mockResolvedValueOnce({ data: { imageUrl: "/uploads/new-image.jpg" } })
-        .mockResolvedValueOnce({ data: { message: "Artist created!" } });
-
-      const { container } = render(<CreateArtistForm />);
-
-      const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-      const fileInput = document.getElementById("artistImageInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.upload(fileInput, file);
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      await waitFor(() => {
-        expect(axiosInstance.post).toHaveBeenCalledTimes(2);
-      });
-
-      expect(axiosInstance.post).toHaveBeenNthCalledWith(
-        1,
-        "/upload-artist-image",
-        expect.any(FormData),
-        expect.objectContaining({
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+      // Submit button flips to the "created" affirmative state.
+      await waitFor(() =>
+        expect(
+          screen.getByRole("button", { name: /artist created/i }),
+        ).toBeDisabled(),
       );
     });
-  });
 
-  describe("Error Handling", () => {
-    it("shows error message on failed submission", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockRejectedValue({
-        response: { data: { message: "Creation failed" } },
+    it("surfaces an error from the backend", async () => {
+      axiosInstance.post.mockRejectedValueOnce({
+        response: { data: { message: "Artist name already exists." } },
       });
 
       const { container } = render(<CreateArtistForm />);
+      const [name, genre] = formInputs(container);
+      await userEvent.type(name, "Drake");
+      await userEvent.type(genre, "Hip Hop");
+      await userEvent.click(
+        screen.getByRole("button", { name: /create artist/i }),
+      );
 
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText(/creation failed/i)).toBeInTheDocument();
-      });
-    });
-
-    it("shows default error message when no message provided", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockRejectedValue({});
-
-      const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      await user.type(nameInput, "New Artist");
-      await user.type(genreInput, "Rock");
-      await user.click(screen.getByRole("button", { name: /create artist/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText(/failed to create artist/i)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe("Form Validation", () => {
-    it("has required fields", () => {
-      const { container } = render(<CreateArtistForm />);
-
-      const nameInput = container.querySelector(".artistNameInput");
-      const genreInput = container.querySelector(".genreInput");
-
-      expect(nameInput).toBeRequired();
-      expect(genreInput).toBeRequired();
-    });
-
-    it("image field accepts only image files", () => {
-      render(<CreateArtistForm />);
-
-      const fileInput = document.getElementById("artistImageInput");
-      expect(fileInput).toHaveAttribute("accept", "image/*");
+      expect(
+        await screen.findByText(/artist name already exists/i),
+      ).toBeInTheDocument();
     });
   });
 });

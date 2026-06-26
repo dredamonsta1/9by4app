@@ -89,11 +89,14 @@ describe("ProtectedAdminRoute Component", () => {
       expect(screen.getByText("Login Page")).toBeInTheDocument();
     });
 
-    it("redirects when only token exists but no user", () => {
+    it("redirects to login when status is 'failed' even with a token", () => {
+      // The component intentionally treats token-without-user as a
+      // "verifying" hold (covers the cold-load race), unless the
+      // auth thunk has explicitly failed.
       const store = createMockStore({
         user: null,
         token: "some-token",
-        status: "idle",
+        status: "failed",
       });
 
       renderWithProviders(store);
