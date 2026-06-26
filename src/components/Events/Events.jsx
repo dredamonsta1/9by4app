@@ -115,7 +115,7 @@ function Events() {
               <EventCard
                 key={ev.event_id}
                 event={ev}
-                currentUserId={user?.id}
+                currentUserId={user?.id ?? user?.user_id}
                 currentUserRole={user?.role}
                 onDelete={fetchEvents}
               />
