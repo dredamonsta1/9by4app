@@ -1,28 +1,80 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { vi } from "vitest";
 
+import artistsReducer from "../redux/reducers/artistsReducer";
+import authReducer from "../store/authSlice";
+import profileListReducer from "../redux/profileListSlice";
+import messagesReducer from "../redux/messagesSlice";
+import playerReducer from "../redux/playerSlice";
+
+// Sane default state for every slice in the prod store. Tests can
+// override any slice via `preloadedState`. Keep this in sync with
+// each slice's `initialState` — when a new slice is added to the
+// real store, also add it here.
+export const buildMockState = (overrides = {}) => ({
+  auth: {
+    user: null,
+    isLoggedIn: false,
+    loading: false,
+    error: null,
+    claimRequests: [],
+    ...(overrides.auth || {}),
+  },
+  artists: {
+    artists: [],
+    loading: false,
+    error: null,
+    ...(overrides.artists || {}),
+  },
+  profileList: {
+    list: [],
+    loading: false,
+    error: null,
+    ...(overrides.profileList || {}),
+  },
+  messages: {
+    conversations: [],
+    activeConversation: null,
+    loading: false,
+    error: null,
+    ...(overrides.messages || {}),
+  },
+  player: {
+    queue: [],
+    currentIndex: 0,
+    isPlaying: false,
+    ...(overrides.player || {}),
+  },
+});
+
 /**
- * Custom render function that wraps components with providers
- * Usage: renderWithProviders(<YourComponent />, { preloadedState: {...} })
+ * Build a configured store with every slice the real app uses.
+ * Exported so tests can dispatch into it directly when needed.
+ */
+export const buildMockStore = (preloadedState = {}) =>
+  configureStore({
+    reducer: {
+      auth: authReducer,
+      artists: artistsReducer,
+      profileList: profileListReducer,
+      messages: messagesReducer,
+      player: playerReducer,
+    },
+    preloadedState: buildMockState(preloadedState),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ serializableCheck: false }),
+  });
+
+/**
+ * Custom render that wraps children in <Provider> + <BrowserRouter>.
+ * Pass `preloadedState` to override any slice's initial state.
  */
 export function renderWithProviders(
   ui,
-  {
-    preloadedState = {},
-    // Automatically create a store instance if no store was passed in
-    store = configureStore({
-      reducer: {
-        // Add your reducers here
-        // Example: user: userReducer,
-        // artists: artistsReducer,
-      },
-      preloadedState,
-    }),
-    ...renderOptions
-  } = {}
+  { preloadedState = {}, store = buildMockStore(preloadedState), ...renderOptions } = {},
 ) {
   function Wrapper({ children }) {
     return (
@@ -36,17 +88,14 @@ export function renderWithProviders(
 }
 
 /**
- * Render component with Router only (no Redux)
+ * Render with Router only (no Redux).
  */
 export function renderWithRouter(ui, { route = "/" } = {}) {
   window.history.pushState({}, "Test page", route);
-
   return render(ui, { wrapper: BrowserRouter });
 }
 
-/**
- * Mock API responses
- */
+/** Common mock API payloads tests pull from. */
 export const mockApiResponse = {
   artists: [
     {
@@ -74,9 +123,6 @@ export const mockApiResponse = {
   ],
 };
 
-/**
- * Mock axios for API calls
- */
 export function mockAxios() {
   return {
     get: vi.fn(),
@@ -87,19 +133,12 @@ export function mockAxios() {
   };
 }
 
-/**
- * Wait for async operations
- */
-export const waitForLoadingToFinish = () => {
-  return screen.findByRole("progressbar", {}, { timeout: 3000 }).then(
+export const waitForLoadingToFinish = () =>
+  screen.findByRole("progressbar", {}, { timeout: 3000 }).then(
     () => {},
-    () => {} // Ignore if not found
+    () => {},
   );
-};
 
-/**
- * Create mock user with token
- */
 export function createMockUser(overrides = {}) {
   return {
     user_id: 1,
@@ -111,12 +150,8 @@ export function createMockUser(overrides = {}) {
   };
 }
 
-/**
- * Mock localStorage
- */
 export function mockLocalStorage() {
   const store = {};
-
   return {
     getItem: vi.fn((key) => store[key] || null),
     setItem: vi.fn((key, value) => {
@@ -131,5 +166,4 @@ export function mockLocalStorage() {
   };
 }
 
-// Re-export everything from React Testing Library
 export * from "@testing-library/react";

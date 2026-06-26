@@ -1,218 +1,137 @@
+// Tests for the passwordless Login flow (email -> 6-digit code).
+// Original Login was username + password; the rewrite to passwordless
+// OTP shipped 2026-06-10 and replaced the entire surface.
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { configureStore } from "@reduxjs/toolkit";
+import { buildMockStore } from "../utils";
 import Login from "../../components/login/Login";
 
-// Mock axiosInstance
 vi.mock("../../utils/axiosInstance", () => ({
-  default: {
-    post: vi.fn(),
-  },
+  default: { post: vi.fn() },
 }));
 
-// Mock CSS module
 vi.mock("../../AuthLayout.module.css", () => ({
-  default: {
-    authPage: "authPage",
-    authCard: "authCard",
-    title: "title",
-    subtitle: "subtitle",
-    errorBox: "errorBox",
-    formGroup: "formGroup",
-    input: "input",
-    submitBtn: "submitBtn",
-    authFooter: "authFooter",
-  },
+  default: new Proxy({}, { get: (_, key) => key }),
 }));
 
-// Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
+  return { ...actual, useNavigate: () => mockNavigate };
 });
 
 import axiosInstance from "../../utils/axiosInstance";
 
-const createMockStore = () => {
-  return configureStore({
-    reducer: {
-      auth: (state = { user: null, token: null }) => state,
-    },
-  });
-};
-
 const renderLogin = () => {
-  const store = createMockStore();
   return render(
-    <Provider store={store}>
+    <Provider store={buildMockStore()}>
       <BrowserRouter>
         <Login />
       </BrowserRouter>
-    </Provider>
+    </Provider>,
   );
 };
 
-describe("Login Component", () => {
+describe("Login (passwordless)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
   });
 
-  describe("Rendering", () => {
-    it("renders the login form", () => {
+  describe("Step 1 — email", () => {
+    it("renders the email form by default", () => {
       renderLogin();
-
-      expect(screen.getByText("Welcome Back")).toBeInTheDocument();
-      expect(screen.getByLabelText("Username")).toBeInTheDocument();
-      expect(screen.getByLabelText("Password")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /sign in/i })).toBeInTheDocument();
+      expect(screen.getByText(/welcome back/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /send code/i }),
+      ).toBeInTheDocument();
     });
 
-    it("renders subtitle text", () => {
+    it("disables the submit button when email is empty", () => {
       renderLogin();
-
-      expect(screen.getByText(/enter your credentials/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /send code/i }),
+      ).toBeDisabled();
     });
 
-    it("renders links to waitlist and register", () => {
+    it("posts to /auth/send-code with lowercased email", async () => {
+      axiosInstance.post.mockResolvedValueOnce({ data: {} });
       renderLogin();
-
-      expect(screen.getByText(/join the waitlist/i)).toBeInTheDocument();
-      expect(screen.getByText(/register here/i)).toBeInTheDocument();
-    });
-  });
-
-  describe("Form Interaction", () => {
-    it("allows typing in username field", async () => {
-      const user = userEvent.setup();
-      renderLogin();
-
-      const usernameInput = screen.getByLabelText("Username");
-      await user.type(usernameInput, "testuser");
-
-      expect(usernameInput).toHaveValue("testuser");
+      await userEvent.type(screen.getByLabelText(/email/i), "Foo@Bar.com");
+      await userEvent.click(screen.getByRole("button", { name: /send code/i }));
+      await waitFor(() =>
+        expect(axiosInstance.post).toHaveBeenCalledWith("/auth/send-code", {
+          email: "foo@bar.com",
+        }),
+      );
     });
 
-    it("allows typing in password field", async () => {
-      const user = userEvent.setup();
-      renderLogin();
-
-      const passwordInput = screen.getByLabelText("Password");
-      await user.type(passwordInput, "password123");
-
-      expect(passwordInput).toHaveValue("password123");
-    });
-  });
-
-  describe("Form Submission", () => {
-    it("submits form with correct credentials", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockResolvedValue({
-        data: {
-          token: "mock-token",
-          user: { id: 1, username: "testuser", role: "user" },
-        },
+    it("shows an error when send-code fails", async () => {
+      axiosInstance.post.mockRejectedValueOnce({
+        response: { data: { message: "Email not on waitlist." } },
       });
-
       renderLogin();
+      await userEvent.type(screen.getByLabelText(/email/i), "x@y.com");
+      await userEvent.click(screen.getByRole("button", { name: /send code/i }));
+      expect(
+        await screen.findByText(/email not on waitlist/i),
+      ).toBeInTheDocument();
+    });
+  });
 
-      await user.type(screen.getByLabelText("Username"), "testuser");
-      await user.type(screen.getByLabelText("Password"), "password123");
-      await user.click(screen.getByRole("button", { name: /sign in/i }));
+  describe("Step 2 — code verification", () => {
+    const advanceToCodeStep = async () => {
+      axiosInstance.post.mockResolvedValueOnce({ data: {} });
+      renderLogin();
+      await userEvent.type(screen.getByLabelText(/email/i), "x@y.com");
+      await userEvent.click(screen.getByRole("button", { name: /send code/i }));
+      await screen.findByLabelText(/sign-in code/i);
+    };
 
+    it("shows the code input after a successful send", async () => {
+      await advanceToCodeStep();
+      expect(screen.getByLabelText(/sign-in code/i)).toBeInTheDocument();
+    });
+
+    it("rejects partial codes (button disabled until 6 digits)", async () => {
+      await advanceToCodeStep();
+      const input = screen.getByLabelText(/sign-in code/i);
+      const btn = screen.getByRole("button", { name: /sign in/i });
+      await userEvent.type(input, "123");
+      expect(btn).toBeDisabled();
+    });
+
+    it("posts to /auth/verify-code, stores token, navigates home on success", async () => {
+      await advanceToCodeStep();
+      axiosInstance.post.mockResolvedValueOnce({
+        data: { token: "jwt-abc", user: { user_id: 1, email: "x@y.com" } },
+      });
+      await userEvent.type(screen.getByLabelText(/sign-in code/i), "123456");
+      await userEvent.click(screen.getByRole("button", { name: /sign in/i }));
       await waitFor(() => {
-        expect(axiosInstance.post).toHaveBeenCalledWith("/users/login", {
-          username: "testuser",
-          password: "password123",
-        });
-      });
-    });
-
-    it("shows loading state during submission", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockImplementation(() => new Promise(() => {}));
-
-      renderLogin();
-
-      await user.type(screen.getByLabelText("Username"), "testuser");
-      await user.type(screen.getByLabelText("Password"), "password123");
-      await user.click(screen.getByRole("button", { name: /sign in/i }));
-
-      expect(screen.getByRole("button", { name: /authenticating/i })).toBeInTheDocument();
-    });
-
-    it("disables inputs during loading", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockImplementation(() => new Promise(() => {}));
-
-      renderLogin();
-
-      await user.type(screen.getByLabelText("Username"), "testuser");
-      await user.type(screen.getByLabelText("Password"), "password123");
-      await user.click(screen.getByRole("button", { name: /sign in/i }));
-
-      expect(screen.getByLabelText("Username")).toBeDisabled();
-      expect(screen.getByLabelText("Password")).toBeDisabled();
-    });
-
-    it("navigates to homepage on successful login", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockResolvedValue({
-        data: {
-          token: "mock-token",
-          user: { id: 1, username: "testuser", role: "user" },
-        },
-      });
-
-      renderLogin();
-
-      await user.type(screen.getByLabelText("Username"), "testuser");
-      await user.type(screen.getByLabelText("Password"), "password123");
-      await user.click(screen.getByRole("button", { name: /sign in/i }));
-
-      await waitFor(() => {
+        expect(axiosInstance.post).toHaveBeenLastCalledWith(
+          "/auth/verify-code",
+          { email: "x@y.com", code: "123456" },
+        );
+        expect(localStorage.getItem("token")).toBe("jwt-abc");
         expect(mockNavigate).toHaveBeenCalledWith("/");
       });
     });
-  });
 
-  describe("Error Handling", () => {
-    it("displays error message on login failure", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockRejectedValue({
-        response: { data: { message: "Invalid credentials" } },
+    it("shows the signup_required hint when backend says so", async () => {
+      await advanceToCodeStep();
+      axiosInstance.post.mockRejectedValueOnce({
+        response: { data: { reason: "signup_required" } },
       });
-
-      renderLogin();
-
-      await user.type(screen.getByLabelText("Username"), "wronguser");
-      await user.type(screen.getByLabelText("Password"), "wrongpassword");
-      await user.click(screen.getByRole("button", { name: /sign in/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
-      });
-    });
-
-    it("displays default error message when no message provided", async () => {
-      const user = userEvent.setup();
-      axiosInstance.post.mockRejectedValue({});
-
-      renderLogin();
-
-      await user.type(screen.getByLabelText("Username"), "wronguser");
-      await user.type(screen.getByLabelText("Password"), "wrongpassword");
-      await user.click(screen.getByRole("button", { name: /sign in/i }));
-
-      await waitFor(() => {
-        expect(screen.getByText("Invalid username or password")).toBeInTheDocument();
-      });
+      await userEvent.type(screen.getByLabelText(/sign-in code/i), "123456");
+      await userEvent.click(screen.getByRole("button", { name: /sign in/i }));
+      expect(
+        await screen.findByText(/no account for that email/i),
+      ).toBeInTheDocument();
     });
   });
 });
