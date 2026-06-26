@@ -41,16 +41,17 @@ const PlayerBar = () => {
   const [commentSending, setCommentSending] = useState(false);
   const [frozenAt, setFrozenAt] = useState(0);
 
-  // Only entities with a stable ID can be commented on. Album-level
-  // back-compat audio has only album_id and can't yet attach.
-  const canComment = !!(track?.post_id || track?.track_id);
+  // Any stable id qualifies as a comment anchor. Backend resolves
+  // context via track_id -> album_id -> post_id, so preview clips
+  // (which only carry album_id) still get a meaningful embed.
+  const canComment = !!(track?.post_id || track?.track_id || track?.album_id);
 
   // Close the input on track change so a comment can't get pinned to
   // the wrong song after a skip.
   useEffect(() => {
     setCommentOpen(false);
     setCommentText("");
-  }, [track?.post_id, track?.track_id]);
+  }, [track?.post_id, track?.track_id, track?.album_id]);
 
   const openComment = () => {
     if (!canComment) return;
@@ -67,6 +68,7 @@ const PlayerBar = () => {
       await axiosInstance.post("/song-comments", {
         post_id:           track?.post_id ?? undefined,
         track_id:          track?.track_id ?? undefined,
+        album_id:          track?.album_id ?? undefined,
         timestamp_seconds: Math.floor(frozenAt),
         content,
       });
