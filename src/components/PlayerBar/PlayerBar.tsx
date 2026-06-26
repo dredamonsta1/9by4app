@@ -40,6 +40,12 @@ const PlayerBar = () => {
   const [commentText, setCommentText] = useState("");
   const [commentSending, setCommentSending] = useState(false);
   const [frozenAt, setFrozenAt] = useState(0);
+  // Existing comments on the current track, used to render markers
+  // along the seek bar.
+  const [markers, setMarkers] = useState<
+    Array<{ id: number; timestamp_seconds: number; content: string; username: string }>
+  >([]);
+  const [hoveredMarker, setHoveredMarker] = useState<number | null>(null);
 
   // Any stable id qualifies as a comment anchor. Backend resolves
   // context via track_id -> album_id -> post_id, so preview clips
@@ -52,6 +58,52 @@ const PlayerBar = () => {
     setCommentOpen(false);
     setCommentText("");
   }, [track?.post_id, track?.track_id, track?.album_id]);
+
+  // Pull existing comments for the current track so the seek bar can
+  // render markers at their timestamps. Prefer track_id when set (most
+  // precise) then album_id (covers previews), then post_id. Album-id
+  // also catches per-track comments via the backend's JOIN.
+  useEffect(() => {
+    let active = true;
+    setMarkers([]);
+    if (!track) return;
+    let url: string | null = null;
+    if (track.track_id) url = `/song-comments/track/${track.track_id}`;
+    else if (track.album_id) url = `/song-comments/album/${track.album_id}`;
+    else if (track.post_id) url = `/song-comments/post/${track.post_id}`;
+    if (!url) return;
+    axiosInstance
+      .get(url)
+      .then((res) => {
+        if (active) setMarkers(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [track?.post_id, track?.track_id, track?.album_id]);
+
+  // Re-pull markers after the user posts a new comment so their own
+  // marker appears without a track switch.
+  const refreshMarkers = () => {
+    if (!track) return;
+    let url: string | null = null;
+    if (track.track_id) url = `/song-comments/track/${track.track_id}`;
+    else if (track.album_id) url = `/song-comments/album/${track.album_id}`;
+    else if (track.post_id) url = `/song-comments/post/${track.post_id}`;
+    if (!url) return;
+    axiosInstance
+      .get(url)
+      .then((res) => setMarkers(Array.isArray(res.data) ? res.data : []))
+      .catch(() => {});
+  };
+
+  const handleMarkerClick = (timestamp: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = timestamp;
+      setCurrent(timestamp);
+    }
+  };
 
   const openComment = () => {
     if (!canComment) return;
@@ -75,6 +127,7 @@ const PlayerBar = () => {
       toast.success(`Comment posted at ${fmt(frozenAt)}.`);
       setCommentText("");
       setCommentOpen(false);
+      refreshMarkers();
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Couldn't post comment.");
     } finally {
@@ -308,23 +361,64 @@ const PlayerBar = () => {
         </button>
       </div>
 
-      {/* Seek bar */}
+      {/* Seek bar. Markers overlay on top of the range track at the
+          fractional position of each comment's timestamp. Hover a
+          marker to see the comment; click to seek to that moment. */}
       <div className={styles.seekWrap}>
         <span className={styles.time}>{fmt(current)}</span>
-        <input
-          type="range"
-          className={styles.seek}
-          min={0}
-          max={duration || 100}
-          step={0.1}
-          value={current}
-          onChange={handleSeekChange}
-          onMouseDown={() => setSeeking(true)}
-          onMouseUp={handleSeekCommit}
-          onTouchStart={() => setSeeking(true)}
-          onTouchEnd={handleSeekCommit}
-          style={{ "--progress": `${progress}%` } as React.CSSProperties}
-        />
+        <div className={styles.seekStack}>
+          <input
+            type="range"
+            className={styles.seek}
+            min={0}
+            max={duration || 100}
+            step={0.1}
+            value={current}
+            onChange={handleSeekChange}
+            onMouseDown={() => setSeeking(true)}
+            onMouseUp={handleSeekCommit}
+            onTouchStart={() => setSeeking(true)}
+            onTouchEnd={handleSeekCommit}
+            style={{ "--progress": `${progress}%` } as React.CSSProperties}
+          />
+          {duration > 0 && markers.length > 0 && (
+            <div className={styles.markerLayer} aria-hidden={false}>
+              {markers.map((m) => {
+                const pct = Math.min(
+                  100,
+                  Math.max(0, (m.timestamp_seconds / duration) * 100),
+                );
+                const isHovered = hoveredMarker === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    className={`${styles.marker} ${isHovered ? styles.markerActive : ""}`}
+                    style={{ left: `${pct}%` }}
+                    onClick={() => handleMarkerClick(m.timestamp_seconds)}
+                    onMouseEnter={() => setHoveredMarker(m.id)}
+                    onMouseLeave={() => setHoveredMarker(null)}
+                    onFocus={() => setHoveredMarker(m.id)}
+                    onBlur={() => setHoveredMarker(null)}
+                    aria-label={`Comment at ${fmt(m.timestamp_seconds)} from ${m.username}`}
+                    title={`@${m.username} · ${fmt(m.timestamp_seconds)}`}
+                  >
+                    {isHovered && (
+                      <span className={styles.markerTooltip}>
+                        <span className={styles.markerTooltipUser}>
+                          @{m.username}
+                        </span>
+                        <span className={styles.markerTooltipBody}>
+                          {m.content}
+                        </span>
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
         <span className={styles.time}>{fmt(duration)}</span>
       </div>
 
