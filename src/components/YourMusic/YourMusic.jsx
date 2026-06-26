@@ -135,7 +135,7 @@ const YourMusic = () => {
 
       // Close any previously opened widget before re-creating.
       if (widgetRef.current) {
-        try { widgetRef.current.destroy(); } catch {}
+        try { widgetRef.current.destroy(); } catch { /* widget may already be torn down */ }
         widgetRef.current = null;
       }
 
