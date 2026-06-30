@@ -71,9 +71,9 @@ describe("NavBar Component", () => {
       expect(screen.getByRole("navigation")).toBeInTheDocument();
     });
 
-    it("renders the logo (image with alt=stanbox)", () => {
+    it("renders the StanBox wordmark", () => {
       renderWithProviders(<NavBar />);
-      expect(screen.getByAltText("stanbox")).toBeInTheDocument();
+      expect(screen.getByText("StanBox")).toBeInTheDocument();
     });
 
     it("renders guest navigation links when not logged in", () => {
@@ -266,8 +266,8 @@ describe("NavBar Component", () => {
       const { container } = renderWithProviders(<NavBar />);
       const logo = container.querySelector(".logo");
       expect(logo).toBeInTheDocument();
-      // Logo is an <img alt="stanbox">, not a text node.
-      expect(logo.querySelector("img")).toHaveAttribute("alt", "stanbox");
+      // Logo is the StanBox wordmark (text), not an image.
+      expect(logo).toHaveTextContent("StanBox");
     });
 
     it("renders navigation links list", () => {
