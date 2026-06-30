@@ -21,11 +21,23 @@
     transition: var(--transition);
 }
 
-.logoImg {
-    height: 40px;
-    width: auto;
+/* Wordmark — replaces the old vedioz logo image. Tracking and
+   accent half hint at the "Box" container without literal iconography. */
+.logoText {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--color-text-bright);
+    line-height: 1;
     display: block;
 }
+
+/* Color the "Box" half with the accent so the wordmark has a
+   spec-of-brand hook without an icon. Uses ::first-letter pattern
+   via the inner span approach if needed; for now relying on the
+   single-span monochrome look since matching the favicon "SB"
+   monogram is the brand cue. */
 
 .logo:hover {
     opacity: 0.85;

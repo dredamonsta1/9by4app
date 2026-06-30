@@ -8,7 +8,6 @@ import {
 } from "../../redux/actions/artistActions";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./NavBar.module.css";
-import vediozLogo from "../../assets/vedioz-logo.png";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,7 +74,7 @@ const NavBar = () => {
   return (
     <nav className={styles.navBar}>
       <Link to="/" className={styles.logo} onClick={closeMenu}>
-        <img src={vediozLogo} alt="stanbox" className={styles.logoImg} />
+        <span className={styles.logoText}>StanBox</span>
       </Link>
 
       {/* Artist search — primary discovery affordance. Only shows when
