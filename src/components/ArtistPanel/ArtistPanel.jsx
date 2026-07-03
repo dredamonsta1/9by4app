@@ -765,15 +765,13 @@ const ArtistPanel = () => {
   };
   const filteredArtists = applyFilter(allArtists, activeFilter);
 
-  // Changing a filter pulls the hero card to the top of the filtered list.
-  // If the filter empties the list (or "all" snaps back to the full ranking),
-  // we still update activeFilter so the Rankings panel reflects the pick.
+  // Passive filter — updates activeFilter, which flows to the
+  // Rankings box directly below the pill strip. RankView rows
+  // navigate on click, so users who want to jump to someone in
+  // the filter still can. The previous auto-navigate on filter
+  // change caused an unwanted whole-panel re-mount.
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
-    const next = applyFilter(allArtists, filter);
-    if (next.length > 0 && next[0].artist_id !== artist.artist_id) {
-      navigate(`/artist/${next[0].artist_id}`);
-    }
   };
 
   const albums = artist.albums || [];
