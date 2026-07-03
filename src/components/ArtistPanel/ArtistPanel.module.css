@@ -354,6 +354,48 @@
   display: block;
 }
 
+/* Inline add-to-Top-20 button pinned to the top-right of the
+   hero card. Restores the affordance the retired ArtistModal
+   used to carry. Circular glass chip so it reads as an action
+   without covering the artist image. */
+.cardAddBtn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(10, 20, 32, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  transition: background 0.15s, transform 0.15s, border-color 0.15s;
+}
+
+.cardAddBtn:hover:not(:disabled) {
+  background: #00b4d8;
+  border-color: #00b4d8;
+  transform: scale(1.08);
+}
+
+.cardAddBtn:disabled {
+  cursor: default;
+}
+
+.cardAddBtnAdded {
+  background: rgba(74, 222, 128, 0.25);
+  border-color: rgba(74, 222, 128, 0.6);
+  color: #4ade80;
+}
+
 .cardOverlay {
   position: absolute;
   top: 0;

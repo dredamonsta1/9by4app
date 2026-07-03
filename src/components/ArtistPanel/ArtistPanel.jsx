@@ -999,6 +999,38 @@ const ArtistPanel = () => {
                   <p className={styles.cardGenre}>{artist.genre}</p>
                 )}
               </div>
+              {/* Inline add-to-Top-20 button on the card. Restores
+                  the affordance the retired ArtistModal used to
+                  carry. Shares the position-selector modal with
+                  the sticky CTA bar so behavior stays consistent. */}
+              {isLoggedIn && (
+                <button
+                  type="button"
+                  className={`${styles.cardAddBtn} ${inList ? styles.cardAddBtnAdded : ""}`}
+                  onClick={() => {
+                    if (inList) return;
+                    if (listFull) return;
+                    setShowPositionSelector(true);
+                  }}
+                  disabled={inList || listFull}
+                  aria-label={
+                    inList
+                      ? "In your Top 20"
+                      : listFull
+                        ? "Your Top 20 is full"
+                        : "Add to your Top 20"
+                  }
+                  title={
+                    inList
+                      ? `In your Top 20${myEntry?.position ? ` — #${myEntry.position}` : ""}`
+                      : listFull
+                        ? "Your Top 20 is full — remove someone to add"
+                        : "Add to your Top 20"
+                  }
+                >
+                  {inList ? "✓" : listFull ? "•" : "+"}
+                </button>
+              )}
             </article>
 
             <button
