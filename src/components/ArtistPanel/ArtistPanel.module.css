@@ -1554,7 +1554,7 @@
    other feed-column heights so the column reads as one stacked
    surface rather than a jumble. */
 .rankingsBox {
-  height: 400px;
+  height: 200px;
 }
 
 .rankingsBox .boxScroll {
