@@ -1553,11 +1553,15 @@
    stanbox community aggregate inside .feedCol. Height matches the
    other feed-column heights so the column reads as one stacked
    surface rather than a jumble. */
-.rankingsBox {
+/* Specificity matches the .feedCol > .box rule above (0,2,0) so
+   this override actually wins. Without the .feedCol prefix, the
+   540px on generic feedCol boxes takes precedence and Rankings
+   stays tall. */
+.feedCol > .rankingsBox {
   height: 200px;
 }
 
-.rankingsBox .boxScroll {
+.feedCol > .rankingsBox .boxScroll {
   flex: 1;
 }
 
