@@ -928,6 +928,15 @@ const ArtistPanel = () => {
             </div>
           </div>
 
+          {/* Rankings — moved out of the bottom row so it sits under
+              the Feed as part of the "discovery + content" stack. */}
+          <div className={`${styles.box} ${styles.rankingsBox}`}>
+            <header className={styles.boxHeader}>Rankings</header>
+            <div className={styles.boxScroll}>
+              <RankView artists={filteredArtists} isLoggedIn={isLoggedIn} />
+            </div>
+          </div>
+
           {/* Community aggregate of favorite picks for this artist.
               Hidden until at least one stan has picked something. */}
           {topAlbums.length > 0 && (
@@ -1523,27 +1532,13 @@ const ArtistPanel = () => {
         </aside>
       </div>
 
-      {/* Bottom row: Upcoming Releases on the left, Rankings on the
-          right. Trending moved to a top-of-panel strip so it's
-          always in view. From-the-Community lane retired — feed
-          already covers that surface. */}
+      {/* Bottom row: just NewMusicSection now that Rankings moved
+          under Feed. Trending is a top-of-panel strip. */}
       <div className={styles.bottomRow}>
         <NewMusicSection
           isLoggedIn={isLoggedIn}
           upcomingReleases={upcomingReleases}
         />
-
-        <aside className={styles.bottomRight}>
-          <div className={styles.box}>
-            <header className={styles.boxHeader}>Rankings</header>
-            <div className={styles.boxScroll}>
-              <RankView
-                artists={filteredArtists}
-                isLoggedIn={isLoggedIn}
-              />
-            </div>
-          </div>
-        </aside>
       </div>
 
       {/* Persistent CTA — Top 20 + claim */}
