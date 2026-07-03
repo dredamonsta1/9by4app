@@ -75,6 +75,7 @@ const NavBar = () => {
     <nav className={styles.navBar}>
       <Link to="/" className={styles.logo} onClick={closeMenu}>
         <span className={styles.logoText}>StanBox</span>
+        <span className={styles.logoTag}>the culture&rsquo;s ranking system</span>
       </Link>
 
       {/* Artist search — primary discovery affordance. Only shows when

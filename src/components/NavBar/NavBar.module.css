@@ -16,8 +16,11 @@
 /* Logo styling */
 .logo {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.05rem;
     text-decoration: none;
+    line-height: 1;
     transition: var(--transition);
 }
 
@@ -31,6 +34,25 @@
     color: var(--color-text-bright);
     line-height: 1;
     display: block;
+}
+
+/* Static tagline / brand descriptor pinned under the wordmark. */
+.logoTag {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-text-secondary);
+    line-height: 1;
+    display: block;
+    text-transform: lowercase;
+}
+
+/* Hide the tagline on narrow phones so the navbar stays compact. */
+@media (max-width: 480px) {
+    .logoTag {
+        display: none;
+    }
 }
 
 /* Color the "Box" half with the accent so the wordmark has a
