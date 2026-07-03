@@ -1533,46 +1533,27 @@
   overflow: hidden;
 }
 
-/* Mirror .threeCol's 3-column template so the vertical anchor lines
-   between the two rows actually connect: left edge of NewMusicSection
-   aligns with left edge of Feed, right edge of Rankings aligns with
-   right edge of Music. NewMusicSection spans the first two tracks
-   (feed + hero), Rankings takes the third (rightCol). */
+/* Bottom row now holds just NewMusicSection (Rankings moved under
+   Feed). Keep as a plain block wrapper so its top-margin still
+   separates it from the columns above. */
 .bottomRow {
-  display: grid;
-  grid-template-columns:
-    minmax(280px, 26%)
-    minmax(0, 1fr)
-    minmax(280px, 26%);
-  gap: 2rem;
   margin-top: 2.5rem;
-  align-items: start;
 }
 
-.bottomRow > :first-child {
-  grid-column: 1 / span 2;
+/* Rankings box sits between the Feed box and the Top-Albums-on-
+   stanbox community aggregate inside .feedCol. Height matches the
+   other feed-column heights so the column reads as one stacked
+   surface rather than a jumble. */
+.rankingsBox {
+  height: 400px;
 }
 
-.bottomRight {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  grid-column: 3;
-}
-
-.bottomRight > .box {
-  height: 540px;
-}
-
-.bottomRight > .box .boxScroll {
+.rankingsBox .boxScroll {
   flex: 1;
 }
 
-@media (max-width: 920px) {
-  .bottomRow {
-    grid-template-columns: 1fr;
-  }
-}
+/* 920px stack rule for .bottomRow is dead — it's a plain block
+   wrapper now. Keeping the file tidy. */
 
 /* ---- CTA bar (Top 20 + claim) ---- */
 
@@ -1753,8 +1734,7 @@
   .panel {
     padding: 1rem 1.25rem 6rem;
   }
-  .threeCol,
-  .bottomRow {
+  .threeCol {
     grid-template-columns:
       minmax(240px, 28%)
       minmax(0, 1fr)
