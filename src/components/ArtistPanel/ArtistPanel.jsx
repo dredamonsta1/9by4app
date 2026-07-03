@@ -457,6 +457,7 @@ const ArtistPanel = () => {
   const [showPositionSelector, setShowPositionSelector] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
+  const [showEventCreator, setShowEventCreator] = useState(false);
   const [upcomingReleases, setUpcomingReleases] = useState([]);
   // Per-artist favorites — current user's picks (max 5 albums / 3 songs
   // per album). Reset on artist switch + refetched in the same effect
@@ -817,24 +818,39 @@ const ArtistPanel = () => {
         </div>
       )}
 
-      {/* Far-left rail: filter pills. Vertical sidebar, sticky on
-          desktop so it stays in view as the user scrolls. */}
-      <aside className={styles.filterRail}>
-        <header className={styles.railHeader}>Filters</header>
-        <FiltersBar
-          activeFilter={activeFilter}
-          onFilterChange={handleFilterChange}
-          isLoggedIn={isLoggedIn}
-          hasListItems={profileList.length > 0}
-        />
+      <div className={styles.panel}>
+        {/* Horizontal filter strip pinned to the top of the panel.
+            Replaces the old left rail — puts the pills right where
+            the eye lands so the effect on Rankings below is immediately
+            visible when a filter changes. */}
+        <div className={styles.filterStrip}>
+          <FiltersBar
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+            isLoggedIn={isLoggedIn}
+            hasListItems={profileList.length > 0}
+          />
+        </div>
 
-        {/* Owner-only artist tools — sits below the filters. New event
-            forms post via the EventCreator's own /events submit; the
-            onEventCreated callback refetches per-artist events so the
-            new tour date pops into the News & Events box. */}
         {isOwner && (
-          <>
-            <header className={styles.railHeader}>Artist Tools</header>
+          <div className={styles.topBar}>
+            <button
+              type="button"
+              className={styles.editWorldLink}
+              onClick={() => setShowEventCreator((v) => !v)}
+            >
+              {showEventCreator ? "Close event form" : "+ Add event"}
+            </button>
+            <Link to="/artist-settings" className={styles.editWorldLink}>
+              Edit your world
+            </Link>
+          </div>
+        )}
+
+        {/* Owner-only event creation, popped from the topBar so it
+            only takes vertical space when the artist opens it. */}
+        {isOwner && showEventCreator && (
+          <div className={styles.eventCreatorDrawer}>
             <EventCreator
               compact
               onEventCreated={() => {
@@ -844,18 +860,9 @@ const ArtistPanel = () => {
                     setArtistEvents(Array.isArray(res.data) ? res.data : []),
                   )
                   .catch(() => {});
+                setShowEventCreator(false);
               }}
             />
-          </>
-        )}
-      </aside>
-
-      <div className={styles.panel}>
-        {isOwner && (
-          <div className={styles.topBar}>
-            <Link to="/artist-settings" className={styles.editWorldLink}>
-              Edit your world
-            </Link>
           </div>
         )}
 
