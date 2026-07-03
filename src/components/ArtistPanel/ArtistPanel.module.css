@@ -1558,7 +1558,7 @@
    540px on generic feedCol boxes takes precedence and Rankings
    stays tall. */
 .feedCol > .rankingsBox {
-  height: 200px;
+  height: 300px;
 }
 
 .feedCol > .rankingsBox .boxScroll {
