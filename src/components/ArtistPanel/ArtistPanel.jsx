@@ -875,9 +875,19 @@ const ArtistPanel = () => {
         </div>
 
         <div className={styles.threeCol}>
-          {/* ---- LEFT: Feed (Rankings stays in bottom row;
-                Trending hoisted to top strip) ---- */}
+          {/* ---- LEFT: Rankings (top, so filter-pill effect is in
+                the same eye-line) → Feed → Top Albums on stanbox ---- */}
           <aside className={styles.feedCol}>
+            {/* Rankings pinned to the top of feedCol so a filter-pill
+                click updates the visible surface directly below the
+                pill strip. */}
+            <div className={`${styles.box} ${styles.rankingsBox}`}>
+              <header className={styles.boxHeader}>Rankings</header>
+              <div className={styles.boxScroll}>
+                <RankView artists={filteredArtists} isLoggedIn={isLoggedIn} />
+              </div>
+            </div>
+
             <div className={styles.box}>
               <header className={styles.boxHeader}>
                 <span>Feed</span>
@@ -923,15 +933,6 @@ const ArtistPanel = () => {
                   ))}
                 </ul>
               )}
-            </div>
-          </div>
-
-          {/* Rankings — moved out of the bottom row so it sits under
-              the Feed as part of the "discovery + content" stack. */}
-          <div className={`${styles.box} ${styles.rankingsBox}`}>
-            <header className={styles.boxHeader}>Rankings</header>
-            <div className={styles.boxScroll}>
-              <RankView artists={filteredArtists} isLoggedIn={isLoggedIn} />
             </div>
           </div>
 
