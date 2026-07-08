@@ -25,6 +25,7 @@ import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
 import ArtistSettings from "./pages/ArtistSettings/ArtistSettings.jsx";
 import Library from "./pages/Library/Library.jsx";
+import CheckoutReturn from "./pages/CheckoutReturn/CheckoutReturn.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import PlayerBar from "./components/PlayerBar/PlayerBar";
 import "react-toastify/dist/ReactToastify.css";
@@ -80,6 +81,7 @@ const App = () => {
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/artist-settings" element={<ArtistSettings />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/checkout/return" element={<CheckoutReturn />} />
 
           <Route
             path="/admin"
