@@ -1,0 +1,62 @@
+.wrap {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.card {
+    max-width: 460px;
+    width: 100%;
+    padding: 2rem;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-bright);
+    margin-bottom: 0.5rem;
+}
+
+.body {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.fallback {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border-default);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.fallbackHint {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.appLink {
+    background: var(--color-accent-gradient);
+    color: var(--color-text-bright);
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.webLink {
+    color: var(--color-accent-light);
+    font-size: 0.9rem;
+    text-decoration: underline;
+}
