@@ -105,6 +105,13 @@
   color: var(--color-text-secondary);
 }
 
+.rankFirst {
+  color: var(--color-contrast);
+  font-size: 0.95rem;
+  font-weight: 900;
+  text-shadow: 0 0 8px var(--color-contrast-glow);
+}
+
 .rankUp {
   font-size: 0.65rem;
   font-weight: 700;

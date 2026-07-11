@@ -36,12 +36,14 @@
 }
 
 .buy {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  border-color: var(--color-contrast);
 }
 .buy:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--color-contrast-hover);
+  border-color: var(--color-contrast-hover);
+  box-shadow: 0 0 0 3px var(--color-contrast-glow);
 }
 
 .owned {

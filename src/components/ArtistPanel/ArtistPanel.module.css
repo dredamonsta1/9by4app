@@ -486,6 +486,14 @@
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
 }
 
+.rankBigFirst {
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  font-size: 1.2rem;
+  font-weight: 900;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4), 0 0 0 3px var(--color-contrast-glow);
+}
+
 .cardMeta {
   display: flex;
   flex-direction: column;

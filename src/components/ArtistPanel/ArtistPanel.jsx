@@ -1061,7 +1061,7 @@ const ArtistPanel = () => {
             </button>
           </div>
 
-          {rank && <div className={styles.rankBig}>{ordinal(rank)}</div>}
+          {rank && <div className={`${styles.rankBig} ${rank === 1 ? styles.rankBigFirst : ""}`}>{ordinal(rank)}</div>}
 
           {/* Group <-> member relationships from the group_members
               table. The artist GET payload embeds both arrays — empty

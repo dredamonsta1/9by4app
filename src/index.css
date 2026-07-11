@@ -30,6 +30,13 @@
   --color-accent-glow:      rgba(0, 119, 182, 0.3);
   --color-accent-gradient:  linear-gradient(135deg, #0077B6, #00B4D8);
 
+  /* COLORS: BRAND CONTRAST (Electric Chartreuse — pairs with primary accent) */
+  --color-contrast:         #D6FF3D;
+  --color-contrast-hover:   #C4EA26;
+  --color-contrast-subtle:  rgba(214, 255, 61, 0.15);
+  --color-contrast-glow:    rgba(214, 255, 61, 0.35);
+  --color-contrast-ink:     #0A1420;
+
   /* COLORS: SECONDARY ACCENTS */
   --color-violet:           #7C5CFC;
   --color-violet-hover:     #6A4AE0;
