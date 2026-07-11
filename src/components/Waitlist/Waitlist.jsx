@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
+import stanboxLogo from "../../assets/stanbox-logo.png";
 
 const Waitlist = () => {
   const [email, setEmail] = useState("");
@@ -26,6 +27,7 @@ const Waitlist = () => {
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
+        <img src={stanboxLogo} alt="StanBox" className={styles.authLogo} />
         <h1 className={styles.title}>Join the Waitlist</h1>
 
         {status === "success" ? (

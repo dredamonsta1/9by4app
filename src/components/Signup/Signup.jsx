@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "../../store/authSlice";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
+import stanboxLogo from "../../assets/stanbox-logo.png";
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
@@ -111,6 +112,7 @@ function Signup() {
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
+        <img src={stanboxLogo} alt="StanBox" className={styles.authLogo} />
         <h1 className={styles.title}>
           {step === "details" ? "Creator Registration" : "Confirm your email"}
         </h1>

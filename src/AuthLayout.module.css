@@ -17,6 +17,13 @@
   box-shadow: var(--shadow-lg);
 }
 
+.authLogo {
+  display: block;
+  width: 140px;
+  height: auto;
+  margin: 0 auto 16px;
+}
+
 .title {
   font-size: 24px;
   font-weight: 700;
