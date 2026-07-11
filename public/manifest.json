@@ -1,11 +1,18 @@
 {
-  "short_name": "9by4",
-  "name": "9by4 — Music Discovery",
+  "short_name": "StanBox",
+  "name": "StanBox — the culture's ranking system",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "favicon-vinyl.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "start_url": ".",
