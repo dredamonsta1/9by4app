@@ -8,6 +8,7 @@ import {
 } from "../../redux/actions/artistActions";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./NavBar.module.css";
+import vinylMark from "../../assets/vinyl-mark.png";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,8 +75,11 @@ const NavBar = () => {
   return (
     <nav className={styles.navBar}>
       <Link to="/" className={styles.logo} onClick={closeMenu}>
-        <span className={styles.logoText}>StanBox</span>
-        <span className={styles.logoTag}>the culture&rsquo;s ranking system</span>
+        <img src={vinylMark} alt="" aria-hidden="true" className={styles.logoMark} />
+        <span className={styles.logoTextGroup}>
+          <span className={styles.logoText}>StanBox</span>
+          <span className={styles.logoTag}>the culture&rsquo;s ranking system</span>
+        </span>
       </Link>
 
       {/* Artist search — primary discovery affordance. Only shows when
