@@ -16,12 +16,30 @@
 /* Logo styling */
 .logo {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.05rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.55rem;
     text-decoration: none;
     line-height: 1;
     transition: var(--transition);
+}
+
+/* Vinyl mark — sits left of the wordmark. Small enough not to
+   compete with the text, big enough that the chartreuse label pops. */
+.logoMark {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: block;
+}
+
+/* Column that stacks the wordmark + tagline to the right of the mark. */
+.logoTextGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.05rem;
+    line-height: 1;
 }
 
 /* Wordmark — replaces the old vedioz logo image. Tracking and
