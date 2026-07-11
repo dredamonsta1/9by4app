@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
+import stanboxLogo from "../../assets/stanbox-logo.png";
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
@@ -90,6 +91,7 @@ function Login() {
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
+        <img src={stanboxLogo} alt="StanBox" className={styles.authLogo} />
         <h1 className={styles.title}>Welcome back</h1>
         <p className={styles.subtitle}>
           {step === "email"
