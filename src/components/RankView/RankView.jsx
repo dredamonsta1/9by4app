@@ -34,7 +34,7 @@ const RankView = ({ artists, isLoggedIn }) => {
               className={styles.row}
               onClick={() => navigate(`/artist/${artist.artist_id}`)}
             >
-              <td className={styles.tdRank}>{index + 1}</td>
+              <td className={`${styles.tdRank} ${index === 0 ? styles.tdRankFirst : ""}`}>{index + 1}</td>
               <td className={styles.tdArtist}>
                 <img
                   src={resolveImageUrl(artist.image_url, "https://via.placeholder.com/32?text=?")}

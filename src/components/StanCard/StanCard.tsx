@@ -26,6 +26,10 @@ interface StanCardProps {
   compact?: boolean;
 }
 
+// TODO(refactor — Andre to review): chartreuse .slotRankFirst treatment was
+// added for the i === 0 slot during the brand rollout, but visibility hasn't
+// been verified in the running app (no ProfilePage screenshot yet).
+// See REFACTOR-NOTES.md section 1.
 export default function StanCard({ userId, compact = false }: StanCardProps) {
   const [ranks, setRanks] = useState<StanRank[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +64,7 @@ export default function StanCard({ userId, compact = false }: StanCardProps) {
       <div className={styles.slots}>
         {ranks.map((r, i) => (
           <div key={r.artist_id} className={styles.slot}>
-            <div className={styles.slotRank}>#{i + 1}</div>
+            <div className={`${styles.slotRank} ${i === 0 ? styles.slotRankFirst : ""}`}>#{i + 1}</div>
             <div className={styles.slotAvatar}>
               {r.image_url ? (
                 <img src={r.image_url} alt={r.artist_name} />

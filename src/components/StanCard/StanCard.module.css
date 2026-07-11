@@ -43,6 +43,13 @@
   left: 8px;
 }
 
+.slotRankFirst {
+  color: var(--color-contrast);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-shadow: 0 0 8px var(--color-contrast-glow);
+}
+
 .slotAvatar {
   width: 44px;
   height: 44px;

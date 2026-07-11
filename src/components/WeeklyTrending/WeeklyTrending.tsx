@@ -39,11 +39,14 @@ function MomentumBar({ score }: { score: number }) {
   );
 }
 
+// TODO(refactor — Andre to review): chartreuse .rankFirst treatment was added
+// for rank === 1 during the brand rollout, but WeeklyTrending is not currently
+// mounted in any parent JSX (dormant). See REFACTOR-NOTES.md section 1.
 function ArtistCard({ artist }: { artist: TrendingArtist }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardRank}>
-        <span className={styles.rankNumber}>#{artist.rank}</span>
+        <span className={`${styles.rankNumber} ${artist.rank === 1 ? styles.rankFirst : ""}`}>#{artist.rank}</span>
         <RankDelta delta={artist.rank_delta} />
       </div>
       <div className={styles.cardAvatar}>
@@ -76,7 +79,7 @@ function CreatorCard({ creator }: { creator: TrendingCreator }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardRank}>
-        <span className={styles.rankNumber}>#{creator.rank}</span>
+        <span className={`${styles.rankNumber} ${creator.rank === 1 ? styles.rankFirst : ""}`}>#{creator.rank}</span>
         <RankDelta delta={creator.rank_delta} />
       </div>
       <div className={styles.cardAvatar}>

@@ -11,7 +11,7 @@ const Footer = () => {
 
         {/* Brand */}
         <div className={styles.brand}>
-          <Link to="/" className={styles.logo}>stanbox</Link>
+          <Link to="/" className={styles.logo}>StanBox</Link>
           <p className={styles.tagline}>The culture's ranking system.</p>
         </div>
 
@@ -34,7 +34,7 @@ const Footer = () => {
       </div>
 
       <div className={styles.bottom}>
-        <span>© {year} stanbox. All rights reserved.</span>
+        <span>© {year} StanBox. All rights reserved.</span>
         <Link to="/terms" className={styles.termsLink}>Terms of Use</Link>
       </div>
     </footer>

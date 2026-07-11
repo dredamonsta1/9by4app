@@ -40,6 +40,13 @@
   white-space: nowrap;
 }
 
+.tdRankFirst {
+  color: var(--color-contrast);
+  font-size: 1rem;
+  font-weight: 900;
+  text-shadow: 0 0 8px var(--color-contrast-glow);
+}
+
 .tdArtist {
   padding: 0.7rem 0.75rem;
   display: flex;
