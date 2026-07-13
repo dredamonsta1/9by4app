@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
-import stanboxLogo from "../../assets/stanbox-logo.png";
+import stanboxLogo from "../../assets/stanbox-logo.svg";
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
