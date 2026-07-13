@@ -82,56 +82,54 @@ const NavBar = () => {
         </span>
       </Link>
 
-      {/* Artist search — primary discovery affordance. Only shows when
-          logged in (logged-out users still need the auth CTAs first). */}
-      {user && (
-        <div className={styles.searchWrap} ref={searchWrapRef}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search artists…"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onFocus={() => searchTerm.trim() && setShowResults(true)}
-          />
-          {showResults && (
-            <div className={styles.searchResults}>
-              {searchLoading && (
-                <div className={styles.searchHint}>Searching…</div>
-              )}
-              {!searchLoading && searchResults.length === 0 && (
-                <div className={styles.searchHint}>No artists found.</div>
-              )}
-              {!searchLoading &&
-                searchResults.slice(0, 8).map((a) => (
-                  <button
-                    key={a.artist_id}
-                    type="button"
-                    className={styles.searchResult}
-                    onMouseDown={() => handleResultClick(a.artist_id)}
-                  >
-                    <img
-                      src={resolveImageUrl(
-                        a.image_url,
-                        "https://via.placeholder.com/32?text=?",
-                      )}
-                      alt=""
-                      className={styles.searchResultImg}
-                    />
-                    <span className={styles.searchResultName}>
-                      {a.artist_name || a.name}
-                    </span>
-                    {a.genre && (
-                      <span className={styles.searchResultGenre}>
-                        {a.genre}
-                      </span>
+      {/* Artist search — top-of-funnel discovery. Visible to guests too
+          so first-time visitors can browse artists before the auth wall. */}
+      <div className={styles.searchWrap} ref={searchWrapRef}>
+        <input
+          type="text"
+          className={styles.searchInput}
+          placeholder="Search artists…"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          onFocus={() => searchTerm.trim() && setShowResults(true)}
+        />
+        {showResults && (
+          <div className={styles.searchResults}>
+            {searchLoading && (
+              <div className={styles.searchHint}>Searching…</div>
+            )}
+            {!searchLoading && searchResults.length === 0 && (
+              <div className={styles.searchHint}>No artists found.</div>
+            )}
+            {!searchLoading &&
+              searchResults.slice(0, 8).map((a) => (
+                <button
+                  key={a.artist_id}
+                  type="button"
+                  className={styles.searchResult}
+                  onMouseDown={() => handleResultClick(a.artist_id)}
+                >
+                  <img
+                    src={resolveImageUrl(
+                      a.image_url,
+                      "https://via.placeholder.com/32?text=?",
                     )}
-                  </button>
-                ))}
-            </div>
-          )}
-        </div>
-      )}
+                    alt=""
+                    className={styles.searchResultImg}
+                  />
+                  <span className={styles.searchResultName}>
+                    {a.artist_name || a.name}
+                  </span>
+                  {a.genre && (
+                    <span className={styles.searchResultGenre}>
+                      {a.genre}
+                    </span>
+                  )}
+                </button>
+              ))}
+          </div>
+        )}
+      </div>
 
       <button
         className={styles.hamburger}
