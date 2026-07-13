@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
-import stanboxLogo from "../../assets/stanbox-logo.png";
+import stanboxLogo from "../../assets/stanbox-logo.svg";
 
 const Waitlist = () => {
   const [email, setEmail] = useState("");
