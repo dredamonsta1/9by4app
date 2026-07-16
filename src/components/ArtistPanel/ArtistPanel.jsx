@@ -21,10 +21,12 @@ import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
 import UploadModal from "../UploadModal/UploadModal";
 import EventCreator from "../EventCreator/EventCreator";
+import GuestAddPrompt from "../GuestAddPrompt/GuestAddPrompt";
 import {
   FavoriteAlbumStar,
   AlbumSongPicker,
 } from "../FavoritesPicker/FavoritesPicker";
+import { toast } from "react-toastify";
 import styles from "./ArtistPanel.module.css";
 
 const formatRelativeTime = (iso) => {
@@ -455,6 +457,7 @@ const ArtistPanel = () => {
   const [artistNews, setArtistNews] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all", value: "" });
   const [showEventCreator, setShowEventCreator] = useState(false);
@@ -997,7 +1000,44 @@ const ArtistPanel = () => {
               ⌃
             </button>
 
-            <article className={styles.card}>
+            {/* The whole featured card is the primary "stan this artist"
+                affordance. No visible chip/button — clicking the image
+                opens the position picker (logged-in) or the guest signup
+                prompt (guest). The old top-right `+` chip is retired
+                since the whole card is now the click target. */}
+            <article
+              className={styles.card}
+              role="button"
+              tabIndex={0}
+              aria-label={
+                !isLoggedIn
+                  ? `Sign up to stan ${artist.artist_name || "this artist"}`
+                  : inList
+                    ? `${artist.artist_name} is in your Top 20`
+                    : listFull
+                      ? "Your Top 20 is full — tap to manage"
+                      : `Add ${artist.artist_name} to your Top 20`
+              }
+              onClick={() => {
+                if (!isLoggedIn) {
+                  setShowGuestPrompt(true);
+                  return;
+                }
+                if (inList) {
+                  toast.info(
+                    `Already in your Top 20${myEntry?.position ? ` — #${myEntry.position}` : ""}`,
+                  );
+                  return;
+                }
+                setShowPositionSelector(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.currentTarget.click();
+                }
+              }}
+            >
               <img
                 src={resolveImageUrl(
                   artist.image_url,
@@ -1014,38 +1054,6 @@ const ArtistPanel = () => {
                   <p className={styles.cardGenre}>{artist.genre}</p>
                 )}
               </div>
-              {/* Inline add-to-Top-20 button on the card. Restores
-                  the affordance the retired ArtistModal used to
-                  carry. Shares the position-selector modal with
-                  the sticky CTA bar so behavior stays consistent. */}
-              {isLoggedIn && (
-                <button
-                  type="button"
-                  className={`${styles.cardAddBtn} ${inList ? styles.cardAddBtnAdded : ""}`}
-                  onClick={() => {
-                    if (inList) return;
-                    if (listFull) return;
-                    setShowPositionSelector(true);
-                  }}
-                  disabled={inList || listFull}
-                  aria-label={
-                    inList
-                      ? "In your Top 20"
-                      : listFull
-                        ? "Your Top 20 is full"
-                        : "Add to your Top 20"
-                  }
-                  title={
-                    inList
-                      ? `In your Top 20${myEntry?.position ? ` — #${myEntry.position}` : ""}`
-                      : listFull
-                        ? "Your Top 20 is full — remove someone to add"
-                        : "Add to your Top 20"
-                  }
-                >
-                  {inList ? "✓" : listFull ? "•" : "+"}
-                </button>
-              )}
             </article>
 
             <button
@@ -1597,6 +1605,13 @@ const ArtistPanel = () => {
           <ClaimArtistModal
             artist={artist}
             onClose={() => setShowClaimModal(false)}
+          />
+        )}
+
+        {showGuestPrompt && (
+          <GuestAddPrompt
+            artistName={artist.artist_name}
+            onClose={() => setShowGuestPrompt(false)}
           />
         )}
 
