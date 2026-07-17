@@ -1222,6 +1222,7 @@ const ArtistPanel = () => {
                 Listen on Spotify
               </a>
             )}
+
           </div>
         </section>
 
@@ -1626,8 +1627,9 @@ const ArtistPanel = () => {
         />
       </div>
 
-      {/* Above the Footer (the Footer itself is rendered by App.jsx
-          after each page). Logged-out users see the upsell. */}
+      {/* Guest-only conversion nudge. Bar spans full viewport width;
+          "Join StanBox" button sits in the horizontal center so it
+          reads as the visual anchor. */}
       {!isLoggedIn && <StickyCtaBar />}
     </div>
   );
