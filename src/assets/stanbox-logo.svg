@@ -1,4 +1,4 @@
-<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StanBox logo mockup — box with chartreuse floating discs">
+<svg viewBox="100 148 200 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StanBox">
   <defs>
     <filter id="discShadow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
