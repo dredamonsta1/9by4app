@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
@@ -18,6 +18,8 @@ const formatDate = (iso) => {
   }
 };
 
+const centsToDollars = (cents) => `$${((cents ?? 0) / 100).toFixed(2)}`;
+
 const tierFor = (position) => {
   if (position == null) return "unranked";
   if (position <= 5) return "top5";
@@ -25,38 +27,93 @@ const tierFor = (position) => {
   return "top20";
 };
 
+const RANK_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "top5", label: "Top 5" },
+  { id: "mid", label: "6–10" },
+  { id: "low", label: "11–20" },
+];
+
+const BUY_FILTERS = [
+  { id: "all", label: "Everyone" },
+  { id: "bought", label: "Bought" },
+  { id: "not", label: "Haven't" },
+];
+
+const matchesRank = (row, filter) => {
+  if (filter === "all") return true;
+  const p = row.position;
+  if (p == null) return false; // churned buyers have no rank to filter on
+  if (filter === "top5") return p <= 5;
+  if (filter === "mid") return p >= 6 && p <= 10;
+  return p >= 11;
+};
+
+const matchesBuy = (row, filter) => {
+  if (filter === "all") return true;
+  const bought = (row.purchase_count ?? 0) > 0;
+  return filter === "bought" ? bought : !bought;
+};
+
 const ArtistDashboard = () => {
   const { user, token, claimRequests } = useSelector((state) => state.auth);
   const artistId = user?.artist_id ?? null;
   const pendingClaims = (claimRequests ?? []).filter((c) => c.status === "pending");
 
-  const [stans, setStans] = useState([]);
-  const [count, setCount] = useState(0);
+  const [rows, setRows] = useState([]);
+  const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [commerce, setCommerce] = useState(null);
+  const [rankFilter, setRankFilter] = useState("all");
+  const [buyFilter, setBuyFilter] = useState("all");
+  const [copiedId, setCopiedId] = useState(null);
 
   useEffect(() => {
     if (!artistId) return;
     setLoading(true);
     setError(null);
-    axiosInstance
-      .get(`/artists/${artistId}/stans`)
-      .then((res) => {
-        setStans(res.data.stans ?? []);
-        setCount(res.data.count ?? 0);
+
+    // Commerce status is supplementary — if it fails we still render the
+    // audience, we just can't say whether $0.00 means "no sales" or
+    // "payments aren't switched on".
+    Promise.all([
+      axiosInstance.get(`/artists/${artistId}/stans`),
+      axiosInstance.get("/artists/me/stripe/status").catch(() => null),
+    ])
+      .then(([audienceRes, statusRes]) => {
+        setRows(audienceRes.data.stans ?? []);
+        setSummary(audienceRes.data.summary ?? null);
+        setCommerce(statusRes?.data ?? null);
       })
       .catch((err) => {
-        setError(err.response?.data?.message || "Failed to load your stans.");
+        setError(err.response?.data?.message || "Failed to load your audience.");
       })
       .finally(() => setLoading(false));
   }, [artistId]);
+
+  const visibleRows = useMemo(
+    () => rows.filter((r) => matchesRank(r, rankFilter) && matchesBuy(r, buyFilter)),
+    [rows, rankFilter, buyFilter]
+  );
+
+  const handleCopyEmail = async (row) => {
+    try {
+      await navigator.clipboard.writeText(row.email);
+      setCopiedId(row.user_id);
+      setTimeout(() => setCopiedId((id) => (id === row.user_id ? null : id)), 1600);
+    } catch {
+      // Clipboard is unavailable (insecure context, denied permission) —
+      // the mailto affordance next to it still works.
+    }
+  };
 
   if (!token) {
     return (
       <div className={styles.page}>
         <div className={styles.gate}>
           <h1>Artist Dashboard</h1>
-          <p>Log in to see your stans.</p>
+          <p>Log in to see your audience.</p>
           <Link to="/login" className={styles.gateBtn}>Log in</Link>
         </div>
       </div>
@@ -93,20 +150,25 @@ const ArtistDashboard = () => {
     );
   }
 
-  const tierCounts = stans.reduce(
-    (acc, s) => {
-      acc[tierFor(s.position)] = (acc[tierFor(s.position)] ?? 0) + 1;
-      return acc;
-    },
-    { top5: 0, top10: 0, top20: 0, unranked: 0 }
-  );
+  // "Payments are live" requires Stripe verified AND the artist's own kill
+  // switch on. Null commerce (status call failed) is treated as live so a
+  // transient error never hides real revenue.
+  const commerceLive =
+    commerce == null ||
+    !!(commerce.charges_enabled && commerce.payouts_enabled && commerce.commerce_enabled);
+
+  const totalStans = summary?.total_stans ?? 0;
+  const buyers = summary?.buyers ?? 0;
+  const nonBuyers = summary?.non_buyers ?? 0;
+  const earned = summary?.artist_earned_cents ?? 0;
+  const churned = summary?.churned_buyers ?? 0;
 
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Your Stans</h1>
+        <h1 className={styles.title}>Your audience</h1>
         <p className={styles.subtitle}>
-          People who have you in their Top 20 on stanbox.
+          Everyone who has you in their Top 20 on stanbox — and what they've bought.
         </p>
         <Link to="/artist-settings" className={styles.editWorldLink}>
           Edit your world →
@@ -115,57 +177,185 @@ const ArtistDashboard = () => {
 
       <section className={styles.statsRow}>
         <div className={styles.statCard}>
-          <span className={styles.statNum}>{count}</span>
+          <span className={styles.statNum}>{totalStans}</span>
           <span className={styles.statLabel}>Total stans</span>
         </div>
         <div className={styles.statCard}>
-          <span className={styles.statNum}>{tierCounts.top5}</span>
-          <span className={styles.statLabel}>Ranked top 5</span>
+          <span className={styles.statNum}>{buyers}</span>
+          <span className={styles.statLabel}>Buyers</span>
+        </div>
+        {/* The headline number: people who declared you a favourite and
+            haven't been sold to yet. No streaming dashboard can produce it. */}
+        <div className={`${styles.statCard} ${styles.statCardLead}`}>
+          <span className={styles.statNum}>{nonBuyers}</span>
+          <span className={styles.statLabel}>Haven't bought</span>
         </div>
         <div className={styles.statCard}>
-          <span className={styles.statNum}>{tierCounts.top5 + tierCounts.top10}</span>
-          <span className={styles.statLabel}>Ranked top 10</span>
+          {commerceLive ? (
+            <>
+              <span className={styles.statNum}>{centsToDollars(earned)}</span>
+              <span className={styles.statLabel}>You've earned</span>
+            </>
+          ) : (
+            <>
+              <span className={styles.statOff}>Off</span>
+              <span className={styles.statLabel}>Payments</span>
+              <Link to="/artist-settings" className={styles.statLink}>
+                Set up →
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
       <section className={styles.listSection}>
-        <h2 className={styles.listTitle}>Stan list</h2>
+        <div className={styles.listHead}>
+          <h2 className={styles.listTitle}>Your people</h2>
+          <div className={styles.filters}>
+            <div className={styles.filterGroup} role="group" aria-label="Filter by rank">
+              {RANK_FILTERS.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className={`${styles.pill} ${rankFilter === f.id ? styles.pillOn : ""}`}
+                  aria-pressed={rankFilter === f.id}
+                  onClick={() => setRankFilter(f.id)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+            <div className={styles.filterGroup} role="group" aria-label="Filter by purchase">
+              {BUY_FILTERS.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className={`${styles.pill} ${buyFilter === f.id ? styles.pillOn : ""}`}
+                  aria-pressed={buyFilter === f.id}
+                  onClick={() => setBuyFilter(f.id)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
-        {loading && <p className={styles.muted}>Loading your stans…</p>}
+        {loading && <p className={styles.muted}>Loading your audience…</p>}
         {error && <p className={styles.error}>{error}</p>}
 
-        {!loading && !error && stans.length === 0 && (
+        {!loading && !error && rows.length === 0 && (
           <p className={styles.muted}>
             No one has you in their Top 20 yet. That changes once fans start
             ranking you.
           </p>
         )}
 
-        {!loading && !error && stans.length > 0 && (
+        {/* Stans but no sales — turn the zero into the actionable number
+            rather than reporting an empty revenue column. */}
+        {!loading && !error && rows.length > 0 && buyers === 0 && (
+          <p className={styles.noSales}>
+            No sales yet. <strong>{totalStans}</strong>{" "}
+            {totalStans === 1 ? "person has" : "people have"} you in their Top 20
+            — they're who to release for.
+          </p>
+        )}
+
+        {!loading && !error && rows.length > 0 && visibleRows.length === 0 && (
+          <p className={styles.muted}>No one matches this filter.</p>
+        )}
+
+        {!loading && !error && visibleRows.length > 0 && (
           <ul className={styles.list}>
-            {stans.map((s) => (
-              <li key={s.user_id} className={styles.row}>
-                <span className={`${styles.rank} ${styles[tierFor(s.position)]}`}>
-                  {s.position ?? "—"}
-                </span>
-                <Link to={`/profile/${s.user_id}`} className={styles.userLink}>
-                  {s.profile_image ? (
-                    <img
-                      src={s.profile_image}
-                      alt={s.username}
-                      className={styles.avatar}
-                    />
-                  ) : (
-                    <span className={styles.avatarFallback}>
-                      {(s.username?.[0] ?? "?").toUpperCase()}
+            {visibleRows.map((s) => {
+              const bought = (s.purchase_count ?? 0) > 0;
+              const albums = s.purchased_albums ?? [];
+              return (
+                <li key={s.user_id} className={styles.row}>
+                  <span className={`${styles.rank} ${styles[tierFor(s.position)]}`}>
+                    {s.position ?? "—"}
+                  </span>
+
+                  <Link to={`/profile/${s.user_id}`} className={styles.userLink}>
+                    {s.profile_image ? (
+                      <img
+                        src={s.profile_image}
+                        alt={s.username}
+                        className={styles.avatar}
+                      />
+                    ) : (
+                      <span className={styles.avatarFallback}>
+                        {(s.username?.[0] ?? "?").toUpperCase()}
+                      </span>
+                    )}
+                    <span className={styles.userMeta}>
+                      <span className={styles.username}>@{s.username}</span>
+                      {s.is_stan === false && (
+                        <span className={styles.churnTag}>No longer ranked</span>
+                      )}
                     </span>
-                  )}
-                  <span className={styles.username}>@{s.username}</span>
-                </Link>
-                <span className={styles.added}>Added {formatDate(s.added_at)}</span>
-              </li>
-            ))}
+                  </Link>
+
+                  {/* Email exists only on rows with a completed purchase —
+                      the backend nulls it otherwise. The empty cell is the
+                      point: buying is what turns a fan into a contact. */}
+                  <span className={styles.emailCell}>
+                    {s.email ? (
+                      <>
+                        <button
+                          type="button"
+                          className={styles.emailBtn}
+                          onClick={() => handleCopyEmail(s)}
+                          title="Copy email address"
+                        >
+                          {copiedId === s.user_id ? "Copied" : s.email}
+                        </button>
+                        <a
+                          href={`mailto:${s.email}`}
+                          className={styles.mailLink}
+                          aria-label={`Email ${s.username}`}
+                        >
+                          ✉
+                        </a>
+                      </>
+                    ) : (
+                      <span className={styles.dash} aria-hidden="true">—</span>
+                    )}
+                  </span>
+
+                  <span className={styles.spendCell}>
+                    {bought ? (
+                      <>
+                        <span className={styles.spendAmount}>
+                          {centsToDollars(s.total_spent_cents)}
+                        </span>
+                        <span className={styles.spendSub}>
+                          {albums.length > 1
+                            ? `${albums.length} releases`
+                            : albums[0]?.album_name ?? "1 release"}
+                        </span>
+                      </>
+                    ) : (
+                      <span className={styles.dash} aria-hidden="true">—</span>
+                    )}
+                  </span>
+
+                  <span className={styles.added}>
+                    {bought
+                      ? `Bought ${formatDate(s.last_purchase_at)}`
+                      : `Added ${formatDate(s.added_at)}`}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
+        )}
+
+        {!loading && !error && churned > 0 && (
+          <p className={styles.churnNote}>
+            {churned} {churned === 1 ? "buyer has" : "buyers have"} since dropped
+            you from their Top 20. Their purchases still count.
+          </p>
         )}
       </section>
     </div>
