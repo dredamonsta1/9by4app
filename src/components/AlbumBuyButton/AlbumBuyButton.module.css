@@ -60,3 +60,24 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Pre-purchase email disclosure. Takes its own full-width line inside the
+   wrapping .musicActions flex row so the Buy button keeps its inline slot. */
+.disclosure {
+  flex: 0 0 100%;
+  margin: 0.35rem 0 0;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: #8a8a8a;
+  max-width: 34rem;
+}
+
+.disclosure a {
+  color: #b3b3b3;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disclosure a:hover {
+  color: #fff;
+}

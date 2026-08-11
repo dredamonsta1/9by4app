@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./TermsOfUse.module.css";
 
-const LAST_UPDATED = "April 7, 2026";
+const LAST_UPDATED = "August 10, 2026";
 
 const sections = [
   {
@@ -41,27 +41,31 @@ const sections = [
     body: `Certain features of the Platform require a paid Creator subscription. All fees are stated at the time of purchase and are non-refundable except where required by law. We use third-party payment processors and do not store your payment information. By subscribing, you authorize recurring charges at the applicable rate until you cancel.\n\nWe reserve the right to change pricing with reasonable advance notice. Continued use of a paid feature after a price change constitutes acceptance of the new price.`,
   },
   {
-    title: "10. Termination",
-    body: `You may stop using the Platform at any time. We may suspend or terminate your access at any time, with or without notice, for conduct that we determine violates these Terms or is harmful to other users, the Platform, or third parties. Upon termination, your right to use the Platform ceases immediately. Sections that by their nature should survive termination will do so, including Sections 4, 8, 11, 12, and 13.`,
+    title: "10. Purchases and Artist Data Sharing",
+    body: `When you buy music from an artist on stanbox, we share your email address and the details of that purchase — the release you bought, the amount paid, and the date — with the artist who sold it. This allows artists to contact you directly about their work, as they would with a direct sale from any independent store.\n\nYour email address is shared only when a purchase completes. Browsing an artist's page, adding an artist to your Top 20, playing a preview, or following activity on the Platform does not share your email address with any artist.\n\nThis sharing cannot be undone after a sale. Once an artist has received your email address through a completed purchase, that disclosure is permanent, and later changes — including removing the artist from your Top 20 or deleting the purchase from your library view — do not retract it. Artists are responsible for honoring your requests to stop contacting you.\n\nYou can see which artists have received your email address at any time on your library page.`,
   },
   {
-    title: "11. Disclaimers",
+    title: "11. Termination",
+    body: `You may stop using the Platform at any time. We may suspend or terminate your access at any time, with or without notice, for conduct that we determine violates these Terms or is harmful to other users, the Platform, or third parties. Upon termination, your right to use the Platform ceases immediately. Sections that by their nature should survive termination will do so, including Sections 4, 8, 10, 12, 13, and 14.`,
+  },
+  {
+    title: "12. Disclaimers",
     body: `THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.`,
   },
   {
-    title: "12. Limitation of Liability",
-    body: `TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, CRATES.FYI AND ITS OFFICERS, EMPLOYEES, AND AFFILIATES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE PLATFORM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR TOTAL LIABILITY TO YOU FOR ANY CLAIM SHALL NOT EXCEED THE AMOUNT YOU PAID TO US IN THE TWELVE MONTHS PRECEDING THE CLAIM, OR $100, WHICHEVER IS GREATER.`,
+    title: "13. Limitation of Liability",
+    body: `TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, STANBOX AND ITS OFFICERS, EMPLOYEES, AND AFFILIATES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE PLATFORM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR TOTAL LIABILITY TO YOU FOR ANY CLAIM SHALL NOT EXCEED THE AMOUNT YOU PAID TO US IN THE TWELVE MONTHS PRECEDING THE CLAIM, OR $100, WHICHEVER IS GREATER.`,
   },
   {
-    title: "13. Governing Law",
+    title: "14. Governing Law",
     body: `These Terms are governed by the laws of the United States, without regard to conflict of law principles. Any disputes arising under these Terms shall be resolved through binding arbitration on an individual basis. You waive any right to participate in a class action lawsuit or class-wide arbitration against stanbox.`,
   },
   {
-    title: "14. Changes to These Terms",
+    title: "15. Changes to These Terms",
     body: `We may update these Terms from time to time. When we do, we will revise the "Last Updated" date at the top of this page. If changes are material, we will notify you via the Platform or by email. Continued use of the Platform after changes take effect constitutes your acceptance of the revised Terms.`,
   },
   {
-    title: "15. Contact",
+    title: "16. Contact",
     body: `If you have questions about these Terms or wish to report a violation, please contact us through the Platform or reach out to the stanbox team directly.`,
   },
 ];
