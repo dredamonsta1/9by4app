@@ -119,15 +119,26 @@ const AlbumBuyButton = ({ album, artist, onListFull }) => {
     }
   };
 
+  // The disclosure is a sibling rather than a child wrapper so it takes its
+  // own line inside ArtistPanel's wrapping .musicActions flex row (see
+  // .disclosure { flex: 0 0 100% }) without shifting the button itself.
+  // It renders only in this state — the last screen before payment.
   return (
-    <button
-      type="button"
-      className={`${styles.btn} ${styles.buy}`}
-      onClick={handleCheckout}
-      disabled={checkingOut}
-    >
-      {checkingOut ? "Opening Stripe…" : `Buy ${price}`}
-    </button>
+    <>
+      <button
+        type="button"
+        className={`${styles.btn} ${styles.buy}`}
+        onClick={handleCheckout}
+        disabled={checkingOut}
+      >
+        {checkingOut ? "Opening Stripe…" : `Buy ${price}`}
+      </button>
+      <p className={styles.disclosure}>
+        Your email address is shared with{" "}
+        {artist?.artist_name ?? "the artist"} when you buy, so they can contact
+        you about this release. <Link to="/terms">Learn more</Link>
+      </p>
+    </>
   );
 };
 

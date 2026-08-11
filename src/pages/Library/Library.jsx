@@ -250,6 +250,18 @@ const Library = () => {
                 </span>
               </Link>
 
+              {/* Transparency line for the buyer-email disclosure (ToS §10).
+                  Sits at the artist level, not per album, because the artist
+                  receives one email address regardless of how much you buy. */}
+              <p className={styles.emailNotice}>
+                <span aria-hidden="true">✉</span> {group.artist_name} has your
+                email address from{" "}
+                {group.albums.length === 1
+                  ? "this purchase"
+                  : "these purchases"}
+                . <Link to="/terms">Why</Link>
+              </p>
+
               <ul className={styles.list}>
                 {group.albums.map((p) => {
                   const isDownloading = downloadingId === p.album_id;
