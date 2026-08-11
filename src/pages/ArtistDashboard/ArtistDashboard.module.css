@@ -39,7 +39,7 @@
 
 .statsRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
   margin-bottom: 2.5rem;
 }
@@ -68,6 +68,35 @@
   letter-spacing: 0.05em;
 }
 
+/* "Haven't bought" — the warm-lead count, and the one number here that no
+   streaming dashboard can produce. Carries the brand contrast colour. */
+.statCardLead {
+  border-color: var(--color-contrast);
+}
+
+.statCardLead .statNum {
+  color: var(--color-contrast);
+}
+
+.statOff {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #6a6a6a;
+  letter-spacing: -0.02em;
+}
+
+.statLink {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: #b3b3b3;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.statLink:hover {
+  color: #fff;
+}
+
 .listSection {
   background: #111;
   border: 1px solid #222;
@@ -75,9 +104,55 @@
   padding: 1.5rem;
 }
 
+.listHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
 .listTitle {
-  margin: 0 0 1rem;
+  margin: 0;
   font-size: 1.25rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filterGroup {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  background: #161616;
+  border: 1px solid #262626;
+  border-radius: 999px;
+}
+
+.pill {
+  border: none;
+  background: transparent;
+  color: #9a9a9a;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pill:hover {
+  color: #fff;
+}
+
+.pillOn {
+  background: #2f2f2f;
+  color: #fff;
 }
 
 .list {
@@ -91,7 +166,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 3rem 1fr auto;
+  grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 0.8fr) auto;
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 0.5rem;
@@ -165,13 +240,116 @@
   color: #c9c9c9;
 }
 
+.userMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .username {
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.churnTag {
+  font-size: 0.68rem;
+  color: #8a8a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.emailCell {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.emailBtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: #c9c9c9;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px dashed #3a3a3a;
+}
+
+.emailBtn:hover {
+  color: #fff;
+  border-bottom-color: #6a6a6a;
+}
+
+.mailLink {
+  color: #7a7a7a;
+  text-decoration: none;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.mailLink:hover {
+  color: #fff;
+}
+
+.dash {
+  color: #444;
+}
+
+.spendCell {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.spendAmount {
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.spendSub {
+  font-size: 0.72rem;
+  color: #8a8a8a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .added {
   color: #777;
   font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.noSales {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #262626;
+  border-radius: 10px;
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.noSales strong {
+  color: var(--color-contrast);
+}
+
+.churnNote {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  color: #7a7a7a;
+  line-height: 1.4;
 }
 
 .muted {
@@ -261,16 +439,38 @@
   color: #888;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 860px) {
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Five columns don't survive a phone. Collapse to rank + a stacked
+     block, so each person still reads as one unit. */
+  .row {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.5rem 0.85rem;
+    padding: 0.85rem 0.5rem;
+  }
+  .emailCell,
+  .spendCell,
+  .added {
+    grid-column: 2 / 3;
+  }
+  .spendCell {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .added {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 420px) {
   .statsRow {
     grid-template-columns: 1fr;
   }
-  .row {
-    grid-template-columns: 2.5rem 1fr;
-  }
-  .added {
-    grid-column: 2 / 3;
-    text-align: left;
-    font-size: 0.8rem;
+  .listHead {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
