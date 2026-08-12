@@ -1611,7 +1611,7 @@ const ArtistPanel = () => {
 
         {showGuestPrompt && (
           <GuestAddPrompt
-            artistName={artist.artist_name}
+            artist={artist}
             onClose={() => setShowGuestPrompt(false)}
           />
         )}

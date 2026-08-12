@@ -9,6 +9,7 @@ import {
   reorderList,
 } from "../profileListSlice";
 import { incrementClout, decrementClout } from "./artistActions";
+import { takePendingStan } from "../../utils/pendingStan";
 
 // Action to fetch the user's curated list from the backend
 export const fetchProfileList = () => async (dispatch) => {
@@ -41,6 +42,30 @@ export const addArtistToProfileList = (artist) => async (dispatch, getState) => 
     dispatch(incrementClout(artist.artist_id));
   } catch (error) {
     console.error("Error adding artist to profile list:", error);
+  }
+};
+
+/**
+ * Redeem the artist a guest was trying to stan when they hit the auth wall.
+ *
+ * Called right after a successful verify-code, from both login and signup —
+ * an existing user can hit GuestAddPrompt while logged out just as easily as
+ * a new one.
+ *
+ * Deliberately never throws: this is a bonus on top of a successful auth, and
+ * a failure here must not surface as a login error. takePendingStan clears
+ * the stored intent whether or not the add lands, and addArtistToProfileList
+ * already no-ops on a duplicate or a full list.
+ */
+export const redeemPendingStan = () => async (dispatch) => {
+  const pending = takePendingStan();
+  if (!pending) return null;
+  try {
+    await dispatch(addArtistToProfileList(pending));
+    return pending;
+  } catch (error) {
+    console.error("Could not credit the pending artist:", error);
+    return null;
   }
 };
 
