@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import ClaimSearch from "../../components/ClaimSearch/ClaimSearch";
 import styles from "./ArtistDashboard.module.css";
@@ -25,6 +26,46 @@ const tierFor = (position) => {
   if (position <= 5) return "top5";
   if (position <= 10) return "top10";
   return "top20";
+};
+
+// The CSV endpoint is authenticated, so a plain <a href> can't fetch it —
+// the browser wouldn't attach the bearer token. Pull it as a blob through
+// axios and hand it to a synthetic anchor instead.
+const FALLBACK_EXPORT_NAME = "stanbox-audience.csv";
+
+const filenameFromDisposition = (disposition) => {
+  if (!disposition) return null;
+  const match = /filename="?([^";]+)"?/i.exec(disposition);
+  return match?.[1] ?? null;
+};
+
+// Blob.prototype.text() is missing in Safari < 14 (and in jsdom), so fall
+// back to FileReader rather than losing the server's message there.
+const blobToText = (blob) =>
+  typeof blob.text === "function"
+    ? blob.text()
+    : new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(blob);
+      });
+
+// With responseType "blob", an error body is a Blob too — err.response.data
+// .message is undefined, so the real message has to be read back out.
+// Without this the rate-limit copy ("Export limit reached…") would be
+// replaced by a generic failure and the artist wouldn't know to wait.
+const readErrorMessage = async (err, fallback) => {
+  const data = err?.response?.data;
+  try {
+    if (data instanceof Blob) {
+      const parsed = JSON.parse(await blobToText(data));
+      return parsed.message || parsed.error || fallback;
+    }
+    return data?.message || data?.error || fallback;
+  } catch {
+    return fallback;
+  }
 };
 
 const RANK_FILTERS = [
@@ -68,6 +109,7 @@ const ArtistDashboard = () => {
   const [rankFilter, setRankFilter] = useState("all");
   const [buyFilter, setBuyFilter] = useState("all");
   const [copiedId, setCopiedId] = useState(null);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (!artistId) return;
@@ -96,6 +138,29 @@ const ArtistDashboard = () => {
     () => rows.filter((r) => matchesRank(r, rankFilter) && matchesBuy(r, buyFilter)),
     [rows, rankFilter, buyFilter]
   );
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const res = await axiosInstance.get(`/artists/${artistId}/stans.csv`, {
+        responseType: "blob",
+      });
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download =
+        filenameFromDisposition(res.headers?.["content-disposition"]) ??
+        FALLBACK_EXPORT_NAME;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      toast.error(await readErrorMessage(err, "Failed to export your audience."));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const handleCopyEmail = async (row) => {
     try {
@@ -238,6 +303,20 @@ const ArtistDashboard = () => {
                 </button>
               ))}
             </div>
+
+            {/* Export always covers the whole audience, not the current
+                filter — the file is the artist's copy of their people, and
+                a filtered download would quietly omit rows they paid for. */}
+            {rows.length > 0 && (
+              <button
+                type="button"
+                className={styles.exportBtn}
+                onClick={handleExport}
+                disabled={exporting}
+              >
+                {exporting ? "Preparing…" : "Export CSV"}
+              </button>
+            )}
           </div>
         </div>
 

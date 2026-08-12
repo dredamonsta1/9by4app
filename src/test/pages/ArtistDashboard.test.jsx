@@ -12,6 +12,12 @@ vi.mock("../../components/ClaimSearch/ClaimSearch", () => ({
   default: () => <div data-testid="claim-search" />,
 }));
 
+vi.mock("react-toastify", () => ({
+  toast: { error: vi.fn(), info: vi.fn(), success: vi.fn() },
+}));
+
+import { toast } from "react-toastify";
+
 import axiosInstance from "../../utils/axiosInstance";
 
 const ARTIST_ID = 130427;
@@ -256,6 +262,115 @@ describe("ArtistDashboard", () => {
       expect(
         screen.getByText(/since dropped you from their top 20/i)
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("CSV export", () => {
+    // jsdom implements neither of these; the component needs both to hand
+    // a blob to a synthetic anchor.
+    const stubBlobUrls = () => {
+      const createObjectURL = vi.fn(() => "blob:fake");
+      const revokeObjectURL = vi.fn();
+      Object.assign(URL, { createObjectURL, revokeObjectURL });
+      return { createObjectURL, revokeObjectURL };
+    };
+
+    const mockExportOk = () => {
+      axiosInstance.get.mockImplementation((url) => {
+        if (url.includes("/stripe/status")) {
+          return Promise.resolve({
+            data: { charges_enabled: true, payouts_enabled: true, commerce_enabled: true },
+          });
+        }
+        if (url.includes(".csv")) {
+          return Promise.resolve({
+            data: new Blob(["rank,username\r\n"], { type: "text/csv" }),
+            headers: {
+              "content-disposition":
+                'attachment; filename="stanbox-audience-130427-2026-08-11.csv"',
+            },
+          });
+        }
+        const rows = [buyer()];
+        return Promise.resolve({
+          data: { stans: rows, count: 1, summary: summaryFor(rows) },
+        });
+      });
+    };
+
+    it("downloads the file under the name the server chose", async () => {
+      const { createObjectURL, revokeObjectURL } = stubBlobUrls();
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, "click")
+        .mockImplementation(() => {});
+      mockExportOk();
+      renderDashboard();
+
+      await userEvent.click(await screen.findByRole("button", { name: /export csv/i }));
+
+      await waitFor(() => expect(clickSpy).toHaveBeenCalled());
+      expect(createObjectURL).toHaveBeenCalled();
+      expect(revokeObjectURL).toHaveBeenCalledWith("blob:fake");
+      clickSpy.mockRestore();
+    });
+
+    it("requests the whole audience, not the active filter", async () => {
+      stubBlobUrls();
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      mockExportOk();
+      renderDashboard();
+
+      await screen.findByRole("button", { name: /export csv/i });
+      await userEvent.click(screen.getByRole("button", { name: "Top 5" }));
+      await userEvent.click(screen.getByRole("button", { name: /export csv/i }));
+
+      await waitFor(() =>
+        expect(axiosInstance.get).toHaveBeenCalledWith(
+          "/artists/130427/stans.csv",
+          { responseType: "blob" }
+        )
+      );
+    });
+
+    it("surfaces the rate-limit message out of a blob error body", async () => {
+      stubBlobUrls();
+      axiosInstance.get.mockImplementation((url) => {
+        if (url.includes("/stripe/status")) return Promise.resolve({ data: {} });
+        if (url.includes(".csv")) {
+          return Promise.reject({
+            response: {
+              status: 429,
+              data: new Blob([
+                JSON.stringify({
+                  message: "Export limit reached (10 per 60 minutes). Try again later.",
+                  reason: "export_rate_limited",
+                }),
+              ]),
+            },
+          });
+        }
+        const rows = [buyer()];
+        return Promise.resolve({
+          data: { stans: rows, count: 1, summary: summaryFor(rows) },
+        });
+      });
+      renderDashboard();
+
+      await userEvent.click(await screen.findByRole("button", { name: /export csv/i }));
+
+      await waitFor(() =>
+        expect(toast.error).toHaveBeenCalledWith(
+          expect.stringContaining("Export limit reached")
+        )
+      );
+    });
+
+    it("offers no export when there is nobody to export", async () => {
+      mockApi([]);
+      renderDashboard();
+
+      await screen.findByText(/no one has you in their top 20 yet/i);
+      expect(screen.queryByRole("button", { name: /export csv/i })).not.toBeInTheDocument();
     });
   });
 

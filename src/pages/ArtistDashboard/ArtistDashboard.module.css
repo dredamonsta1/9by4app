@@ -155,6 +155,30 @@
   color: #fff;
 }
 
+.exportBtn {
+  border: 1px solid #2f2f2f;
+  background: #161616;
+  color: #c9c9c9;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.exportBtn:hover:not(:disabled) {
+  color: #fff;
+  border-color: #5a5a5a;
+}
+
+.exportBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .list {
   list-style: none;
   margin: 0;
