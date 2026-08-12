@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
+import { redeemPendingStan } from "../../redux/actions/profileListActions";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
 import stanboxLogo from "../../assets/stanbox-logo.svg";
@@ -76,6 +77,9 @@ function Login() {
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       dispatch(setCredentials({ user, token }));
+      // Credit the artist this user was trying to stan before the auth wall
+      // stopped them, if any. Never blocks or fails the login.
+      await dispatch(redeemPendingStan());
       navigate("/");
     } catch (err) {
       if (err.response?.data?.reason === "signup_required") {
