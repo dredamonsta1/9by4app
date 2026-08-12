@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./TermsOfUse.module.css";
 
-const LAST_UPDATED = "August 10, 2026";
+const LAST_UPDATED = "August 11, 2026";
 
 const sections = [
   {
@@ -37,8 +37,8 @@ const sections = [
     body: `The stanbox name, logo, design, and platform software are the exclusive property of stanbox and are protected by applicable intellectual property laws. Nothing in these Terms grants you any right to use stanbox's trademarks, logos, or proprietary content without our prior written consent.\n\nIf you believe content on the Platform infringes your copyright, please submit a notice to us with sufficient detail to identify the allegedly infringing material and your contact information.`,
   },
   {
-    title: "9. Creator Subscriptions and Payments",
-    body: `Certain features of the Platform require a paid Creator subscription. All fees are stated at the time of purchase and are non-refundable except where required by law. We use third-party payment processors and do not store your payment information. By subscribing, you authorize recurring charges at the applicable rate until you cancel.\n\nWe reserve the right to change pricing with reasonable advance notice. Continued use of a paid feature after a price change constitutes acceptance of the new price.`,
+    title: "9. Buying Music and Payments",
+    body: `stanbox does not sell subscriptions and does not bill you on a recurring basis. Every payment on the Platform is a one-time purchase of a specific release from a specific artist. Creating an account, browsing, ranking artists, and posting are free.\n\nArtists set their own prices. The price is shown before you pay, and that is the amount you are charged. Payments are processed by our payment provider, Stripe — we never receive or store your card details.\n\nOn each sale, stanbox retains a 10% platform fee and the remaining 90% goes to the artist. Payouts are made to the artist through Stripe, and artists are responsible for any taxes arising from their sales.\n\nWhen a purchase completes, the release stays available for download in your library. We will make reasonable efforts to keep it available, but we cannot guarantee indefinite access — an artist may remove a release, or an artist's account may close. We recommend downloading and keeping your own copy of anything you buy.\n\nAll sales are final. We do not offer refunds except where required by law. If a purchase fails, is charged twice, or a file will not download, contact us and we will put it right.\n\nWe may change the platform fee or introduce new paid features with reasonable advance notice. Any change applies only to purchases made after it takes effect and never to purchases you have already completed.`,
   },
   {
     title: "10. Purchases and Artist Data Sharing",
@@ -46,7 +46,7 @@ const sections = [
   },
   {
     title: "11. Termination",
-    body: `You may stop using the Platform at any time. We may suspend or terminate your access at any time, with or without notice, for conduct that we determine violates these Terms or is harmful to other users, the Platform, or third parties. Upon termination, your right to use the Platform ceases immediately. Sections that by their nature should survive termination will do so, including Sections 4, 8, 10, 12, 13, and 14.`,
+    body: `You may stop using the Platform at any time. We may suspend or terminate your access at any time, with or without notice, for conduct that we determine violates these Terms or is harmful to other users, the Platform, or third parties. Upon termination, your right to use the Platform ceases immediately. Sections that by their nature should survive termination will do so, including Sections 4, 8, 9, 10, 12, 13, and 14.`,
   },
   {
     title: "12. Disclaimers",
