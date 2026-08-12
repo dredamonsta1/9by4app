@@ -21,6 +21,10 @@ import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
 import StanCard from "../../components/StanCard/StanCard";
+import OnboardingChecklist, {
+  ONBOARDING_TARGET,
+  ONBOARDING_DISMISSED_KEY,
+} from "../../components/OnboardingChecklist/OnboardingChecklist";
 import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
 import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
@@ -68,6 +72,16 @@ const ProfilePage = () => {
   const [personality, setPersonality] = useState(null);
   const [personalityLoading, setPersonalityLoading] = useState(false);
   const [personalityPublic, setPersonalityPublic] = useState(false);
+
+  // First-run onboarding
+  const [onboardingDismissed, setOnboardingDismissed] = useState(
+    () => localStorage.getItem(ONBOARDING_DISMISSED_KEY) === "1"
+  );
+  const [justRevealed, setJustRevealed] = useState(false);
+  // Tracks the previous list length so the reveal fires on the *transition*
+  // to the target, not on every render where the list happens to be big
+  // enough. Starts null so the first render after load can't count as one.
+  const prevListCountRef = useRef(null);
 
   // Posts / feed
   const [userPosts, setUserPosts] = useState([]);
@@ -155,6 +169,30 @@ const ProfilePage = () => {
     localStorage.removeItem(LEGACY_PROFILE_MODE_KEY);
   }, []);
 
+  // Auto-reveal: crossing the third artist fires the personality analysis
+  // without the user asking for it, so the payoff lands at the moment the
+  // work is done rather than behind a button they have to find.
+  //
+  // Guarded three ways:
+  //   - fires on the transition only (prev < target && next >= target), so a
+  //     reload with 3+ artists already saved doesn't re-trigger
+  //   - skipped entirely if a personality already exists, so dropping to 2
+  //     and coming back doesn't silently overwrite it
+  //   - failure is swallowed by handleAnalyzeTaste; the artist add has
+  //     already committed independently and the manual button remains
+  useEffect(() => {
+    if (!isOwnProfile) return;
+    const prev = prevListCountRef.current;
+    const next = profileList.length;
+    prevListCountRef.current = next;
+    if (prev === null) return;
+    if (prev >= ONBOARDING_TARGET || next < ONBOARDING_TARGET) return;
+    if (personality || personalityLoading) return;
+    setJustRevealed(true);
+    handleAnalyzeTaste();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileList.length, isOwnProfile]);
+
   // Artist search debounce
   useEffect(() => {
     if (searchTerm.length < 2) { dispatch(clearSearchResults()); return; }
@@ -211,6 +249,11 @@ const ProfilePage = () => {
     }
   };
 
+  const handleDismissOnboarding = () => {
+    localStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+    setOnboardingDismissed(true);
+  };
+
   const handlePersonalityVisibility = async (isPublic) => {
     setPersonalityPublic(isPublic);
     try {
@@ -255,6 +298,13 @@ const ProfilePage = () => {
 
   const displayedUser = isOwnProfile ? currentUser : viewedUser;
   const displayedList = isOwnProfile ? hydratedProfileList : viewedUserArtists;
+
+  // Show while short of the target, or while the reveal is playing out — the
+  // reveal has to survive the list crossing the target, which is exactly the
+  // moment the progress view stops qualifying.
+  const showOnboarding =
+    !onboardingDismissed &&
+    (profileList.length < ONBOARDING_TARGET || justRevealed);
 
   const creatorTierLabel =
     displayedUser?.creator_tier && displayedUser.creator_tier !== "free"
@@ -390,6 +440,22 @@ const ProfilePage = () => {
           <span className={styles.statLabel}>Followers</span>
         </div>
       </section>
+
+      {/* ── First-run onboarding ──
+          Sits directly above the rail it's asking the user to fill. Only
+          for your own profile, only while you're short of the target, and
+          only until you skip it. The reveal takes the same slot so the
+          payoff appears where the ask was. */}
+      {isOwnProfile && showOnboarding && (
+        <OnboardingChecklist
+          count={profileList.length}
+          target={ONBOARDING_TARGET}
+          analyzing={justRevealed && personalityLoading}
+          reveal={justRevealed && !personalityLoading ? personality : null}
+          onAddArtist={() => setShowAddArtistModal(true)}
+          onDismiss={handleDismissOnboarding}
+        />
+      )}
 
       {/* ── Section 4: Top 20 List ── */}
       <section className={styles.section}>

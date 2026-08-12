@@ -1,0 +1,185 @@
+.card {
+  background: #141414;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.5rem;
+  color: #ededed;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.skip {
+  border: none;
+  background: transparent;
+  color: #8a8a8a;
+  font-family: inherit;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.35rem;
+  cursor: pointer;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.skip:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Progress dots joined by a connecting rule — reads as a path with an end,
+   which a bar of unknown length does not. */
+.track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 1rem 0 0.5rem;
+}
+
+.dot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: #2a2a2a;
+  border: 2px solid #3a3a3a;
+  flex-shrink: 0;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.dot + .dot {
+  margin-left: 0;
+}
+
+.dot:not(:last-child)::after {
+  content: "";
+  display: block;
+  position: relative;
+  top: 50%;
+  left: 100%;
+  width: 3.5rem;
+  height: 2px;
+  background: #2a2a2a;
+  transform: translateY(-50%);
+}
+
+.dotOn {
+  background: var(--color-contrast);
+  border-color: var(--color-contrast);
+}
+
+.count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b3b3b3;
+  font-variant-numeric: tabular-nums;
+}
+
+.foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.85rem;
+}
+
+.prompt {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #9a9a9a;
+  max-width: 34rem;
+}
+
+.addBtn {
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  border: 1px solid var(--color-contrast);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.addBtn:hover {
+  background: var(--color-contrast-hover);
+  box-shadow: 0 0 0 3px var(--color-contrast-glow);
+}
+
+/* ── Reveal ── */
+
+.revealCard {
+  border-color: var(--color-contrast);
+  background: linear-gradient(
+    180deg,
+    rgba(214, 255, 61, 0.07) 0%,
+    rgba(20, 20, 20, 1) 60%
+  );
+}
+
+.revealKicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-contrast);
+}
+
+.revealTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.revealDesc {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #c9c9c9;
+  max-width: 42rem;
+}
+
+.revealFoot {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #7a7a7a;
+}
+
+@media (max-width: 560px) {
+  .foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .addBtn {
+    width: 100%;
+  }
+  .dot:not(:last-child)::after {
+    width: 2.25rem;
+  }
+}
