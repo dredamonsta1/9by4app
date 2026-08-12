@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
-import { renderWithProviders } from "../utils";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { renderWithProviders, buildMockStore } from "../utils";
 import ProfilePage from "../../pages/profile/ProfilePage";
 
 vi.mock("../../utils/axiosInstance", () => ({
@@ -34,13 +37,20 @@ import axiosInstance from "../../utils/axiosInstance";
 
 const LEGACY_KEY = "cratesfyi_profile_mode";
 
-const renderOwnProfile = (profileList = []) =>
-  renderWithProviders(<ProfilePage />, {
+// ProfilePage dispatches fetchProfileList() on mount, which overwrites the
+// preloaded slice with whatever /profile/list returns. renderOwnProfile keeps
+// the two in agreement — otherwise every assertion races a reset to [].
+let listFixture = [];
+
+const renderOwnProfile = (profileList = []) => {
+  listFixture = profileList;
+  return renderWithProviders(<ProfilePage />, {
     preloadedState: {
       auth: { user: { id: 1, user_id: 1, username: "testuser" }, token: "t" },
       profileList: { list: profileList, loading: false, error: null },
     },
   });
+};
 
 // The Fan/Artist toggle was retired: the profile is a fan-side identity
 // artifact, and artists reach their business surface via /artist-dashboard.
@@ -48,12 +58,13 @@ describe("ProfilePage — fan-side only", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    listFixture = [];
     // Shape matters: fetchProfileList feeds its payload straight into the
     // reducer, so a bare {} leaves state.profileList.list undefined and the
     // page crashes on profileList.filter(Boolean).
     axiosInstance.get.mockImplementation((url) => {
       if (url.startsWith("/profile/list")) {
-        return Promise.resolve({ data: { list: [] } });
+        return Promise.resolve({ data: { list: listFixture } });
       }
       if (url.startsWith("/profile/suggestions")) {
         return Promise.resolve({ data: [] });
@@ -129,5 +140,170 @@ describe("ProfilePage — fan-side only", () => {
         screen.getByRole("heading", { name: /top 20/i })
       ).toBeInTheDocument()
     );
+  });
+});
+
+const artist = (id) => ({
+  artist_id: id,
+  artist_name: `Artist ${id}`,
+  genre: "Hip Hop",
+});
+
+describe("ProfilePage — first-run onboarding", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    listFixture = [];
+    axiosInstance.get.mockImplementation((url) => {
+      if (url.startsWith("/profile/list"))
+        return Promise.resolve({ data: { list: listFixture } });
+      if (url.startsWith("/profile/suggestions")) return Promise.resolve({ data: [] });
+      if (url.includes("/followers") || url.includes("/following"))
+        return Promise.resolve({ data: [] });
+      if (url.startsWith("/feed/user/")) return Promise.resolve({ data: [] });
+      return Promise.resolve({ data: {} });
+    });
+    axiosInstance.post.mockResolvedValue({
+      data: { title: "Dusty Fingers", description: "You dig for the loop." },
+    });
+  });
+
+  it("shows progress to a user short of three artists", async () => {
+    renderOwnProfile([artist(1)]);
+
+    expect(await screen.findByText("1 of 3 artists picked")).toBeInTheDocument();
+  });
+
+  it("does not show on someone else's profile", async () => {
+    // renderWithProviders wraps in a bare BrowserRouter, so useParams() has
+    // nothing to read and every profile looks like your own. Needs a real
+    // matched route to exercise the isOwnProfile branch.
+    render(
+      <Provider
+        store={buildMockStore({
+          auth: { user: { id: 1, user_id: 1, username: "me" }, token: "t" },
+          profileList: { list: [artist(1)], loading: false, error: null },
+        })}
+      >
+        <MemoryRouter initialEntries={["/profile/2"]}>
+          <Routes>
+            <Route path="/profile/:userId" element={<ProfilePage />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await waitFor(() => expect(axiosInstance.get).toHaveBeenCalled());
+    expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument();
+  });
+
+  it("stays hidden once skipped", async () => {
+    localStorage.setItem("stanbox_onboarding_dismissed", "1");
+
+    renderOwnProfile([artist(1)]);
+
+    await waitFor(() => expect(axiosInstance.get).toHaveBeenCalled());
+    expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument();
+  });
+
+  it("remembers a skip for next time", async () => {
+    renderOwnProfile([artist(1)]);
+    await screen.findByText("1 of 3 artists picked");
+
+    await userEvent.click(screen.getByRole("button", { name: /skip/i }));
+
+    expect(localStorage.getItem("stanbox_onboarding_dismissed")).toBe("1");
+    expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument();
+  });
+
+  it("is absent for a user already past the target", async () => {
+    renderOwnProfile([artist(1), artist(2), artist(3)]);
+
+    await waitFor(() => expect(axiosInstance.get).toHaveBeenCalled());
+    expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument();
+  });
+
+  describe("auto-reveal", () => {
+    it("fires the analysis when the third artist lands", async () => {
+      const { store } = renderOwnProfile([artist(1), artist(2)]);
+      await screen.findByText("2 of 3 artists picked");
+
+      store.dispatch({
+        type: "profileList/setProfileListSuccess",
+        payload: [artist(1), artist(2), artist(3)],
+      });
+
+      await waitFor(() =>
+        expect(axiosInstance.post).toHaveBeenCalledWith(
+          "/users/me/music-personality",
+          expect.anything()
+        )
+      );
+
+      // The reveal card is identified by its kicker. The title also appears
+      // in Section 5's permanent card below — that duplication is intended,
+      // since Section 5 carries the public/private toggle and the reveal
+      // copy points down at it.
+      const reveal = await screen.findByText(/your music personality/i);
+      expect(
+        within(reveal.closest("section")).getByText("Dusty Fingers")
+      ).toBeInTheDocument();
+    });
+
+    it("does not fire on mount for someone already at three", async () => {
+      renderOwnProfile([artist(1), artist(2), artist(3)]);
+
+      await waitFor(() => expect(axiosInstance.get).toHaveBeenCalled());
+      expect(axiosInstance.post).not.toHaveBeenCalled();
+    });
+
+    it("does not overwrite a personality the user already has", async () => {
+      // /users/me reports an existing personality, so crossing the target
+      // again (e.g. after dropping to 2) must not silently regenerate it.
+      axiosInstance.get.mockImplementation((url) => {
+        if (url === "/users/me") {
+          return Promise.resolve({
+            data: {
+              music_personality_title: "Crate Digger",
+              music_personality_desc: "Existing.",
+            },
+          });
+        }
+        if (url.startsWith("/profile/list"))
+          return Promise.resolve({ data: { list: listFixture } });
+        return Promise.resolve({ data: [] });
+      });
+
+      const { store } = renderOwnProfile([artist(1), artist(2)]);
+      await screen.findByText("2 of 3 artists picked");
+
+      store.dispatch({
+        type: "profileList/setProfileListSuccess",
+        payload: [artist(1), artist(2), artist(3)],
+      });
+
+      await waitFor(() =>
+        expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument()
+      );
+      expect(axiosInstance.post).not.toHaveBeenCalled();
+    });
+
+    it("leaves the artist added even when the analysis fails", async () => {
+      axiosInstance.post.mockRejectedValue(new Error("AI down"));
+      const { store } = renderOwnProfile([artist(1), artist(2)]);
+      await screen.findByText("2 of 3 artists picked");
+
+      store.dispatch({
+        type: "profileList/setProfileListSuccess",
+        payload: [artist(1), artist(2), artist(3)],
+      });
+
+      await waitFor(() => expect(axiosInstance.post).toHaveBeenCalled());
+      // No reveal, no crash — the manual button in Section 5 remains.
+      expect(screen.queryByText("Dusty Fingers")).not.toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: /top 20/i })
+      ).toBeInTheDocument();
+    });
   });
 });
