@@ -24,7 +24,9 @@ import StanCard from "../../components/StanCard/StanCard";
 import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
 import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
-const PROFILE_MODE_KEY = "cratesfyi_profile_mode";
+// Retired with the Fan/Artist toggle. Kept only to clear the value out of
+// users' browsers on next visit — see the cleanup effect below.
+const LEGACY_PROFILE_MODE_KEY = "cratesfyi_profile_mode";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -47,10 +49,6 @@ const ProfilePage = () => {
   const listFull = profileList.length >= MAX_FAVORITE_ARTISTS;
 
   // ─── State ───────────────────────────────────────────────────────────────
-  const [profileMode, setProfileMode] = useState(
-    () => localStorage.getItem(PROFILE_MODE_KEY) || "fan"
-  );
-
   // Other-user data
   const [viewedUser, setViewedUser] = useState(null);
   const [viewedUserLoading, setViewedUserLoading] = useState(false);
@@ -74,10 +72,6 @@ const ProfilePage = () => {
   // Posts / feed
   const [userPosts, setUserPosts] = useState([]);
   const [userPostsLoading, setUserPostsLoading] = useState(false);
-
-  // Events (artist view)
-  const [userEvents, setUserEvents] = useState([]);
-  const [userEventsLoading, setUserEventsLoading] = useState(false);
 
   // User search (community)
   const [userSearchTerm, setUserSearchTerm] = useState("");
@@ -153,19 +147,13 @@ const ProfilePage = () => {
       .finally(() => setUserPostsLoading(false));
   }, [targetUserId]);
 
-  // Events (artist view only)
+  // One-time cleanup of the retired Fan/Artist toggle's stored mode, so the
+  // value doesn't sit in users' browsers indefinitely after the feature is
+  // gone. Safe to delete this effect once it's been live long enough that
+  // returning users have all been through it.
   useEffect(() => {
-    if (profileMode !== "artist" || !targetUserId) return;
-    setUserEventsLoading(true);
-    axiosInstance.get(`/events?user_id=${targetUserId}`)
-      .then((res) => {
-        const all = Array.isArray(res.data) ? res.data : [];
-        // Client-side filter fallback in case backend doesn't support user_id param
-        setUserEvents(all.filter((e) => !e.user_id || String(e.user_id) === String(targetUserId)));
-      })
-      .catch(() => setUserEvents([]))
-      .finally(() => setUserEventsLoading(false));
-  }, [profileMode, targetUserId]);
+    localStorage.removeItem(LEGACY_PROFILE_MODE_KEY);
+  }, []);
 
   // Artist search debounce
   useEffect(() => {
@@ -188,11 +176,6 @@ const ProfilePage = () => {
   }, [userSearchTerm]);
 
   // ─── Handlers ────────────────────────────────────────────────────────────
-
-  const handleSetMode = (mode) => {
-    setProfileMode(mode);
-    localStorage.setItem(PROFILE_MODE_KEY, mode);
-  };
 
   const handleProfileImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -272,7 +255,6 @@ const ProfilePage = () => {
 
   const displayedUser = isOwnProfile ? currentUser : viewedUser;
   const displayedList = isOwnProfile ? hydratedProfileList : viewedUserArtists;
-  const musicPosts = userPosts.filter((p) => p.post_type === "music");
 
   const creatorTierLabel =
     displayedUser?.creator_tier && displayedUser.creator_tier !== "free"
@@ -386,25 +368,10 @@ const ProfilePage = () => {
         <div className={styles.toast}>Profile link copied!</div>
       )}
 
-      {/* ── Section 2: View Toggle (own profile only) ── */}
-      {isOwnProfile && (
-        <section className={styles.viewToggleSection}>
-          <div className={styles.viewToggle}>
-            <button
-              className={`${styles.toggleBtn} ${profileMode === "fan" ? styles.toggleActive : ""}`}
-              onClick={() => handleSetMode("fan")}
-            >
-              Fan
-            </button>
-            <button
-              className={`${styles.toggleBtn} ${profileMode === "artist" ? styles.toggleActive : ""}`}
-              onClick={() => handleSetMode("artist")}
-            >
-              Artist
-            </button>
-          </div>
-        </section>
-      )}
+      {/* Section 2 was the Fan/Artist view toggle. Retired — the profile is
+          a fan-side identity artifact, and artists reach their business
+          surface via /artist-dashboard and /artist-settings, both already
+          linked from the NavBar when user.artist_id is set. */}
 
       {/* ── Section 3: Stats Bar ── */}
       <section className={styles.statsBar}>
@@ -422,15 +389,6 @@ const ProfilePage = () => {
           <span className={styles.statNumber}>{followersList.length}</span>
           <span className={styles.statLabel}>Followers</span>
         </div>
-        {profileMode === "artist" && (
-          <>
-            <div className={styles.statDivider} />
-            <div className={styles.statCell}>
-              <span className={styles.statNumber}>—</span>
-              <span className={styles.statLabel}>List Rank</span>
-            </div>
-          </>
-        )}
       </section>
 
       {/* ── Section 4: Top 20 List ── */}
@@ -741,131 +699,11 @@ const ProfilePage = () => {
         )}
       </section>
 
-      {/* ── Section 7: Music Posts (artist view only) ── */}
-      {profileMode === "artist" && (
-        <section className={styles.section}>
-          <div className={styles.sectionTitleRow}>
-            <h2 className={styles.sectionTitle}>Music</h2>
-            {isOwnProfile && (
-              <span className={styles.sectionNote}>via your music posts</span>
-            )}
-          </div>
-
-          {musicPosts.length === 0 ? (
-            <p className={styles.emptyState}>
-              {isOwnProfile
-                ? "No music posts yet. Share music from the feed."
-                : "No music posts yet."}
-            </p>
-          ) : (
-            <div className={styles.musicPostList}>
-              {musicPosts.slice(0, 10).map((post) => (
-                <div key={post.id} className={styles.musicPostCard}>
-                  <div className={styles.musicPostInfo}>
-                    <p className={styles.musicPostTitle}>
-                      {post.music_title || post.caption || "Untitled"}
-                    </p>
-                    {post.platform && (
-                      <span className={styles.platformBadge}>{post.platform}</span>
-                    )}
-                    {post.caption && post.music_title && (
-                      <p className={styles.musicPostCaption}>{post.caption}</p>
-                    )}
-                    <span className={styles.feedTimestamp}>
-                      {formatRelativeTime(post.created_at)}
-                    </span>
-                  </div>
-                  <div className={styles.musicPostControls}>
-                    {post.audio_url && (
-                      <audio
-                        controls
-                        src={post.audio_url}
-                        className={styles.audioPlayer}
-                      />
-                    )}
-                    {post.stream_url && (
-                      <a
-                        href={post.stream_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.streamLink}
-                      >
-                        Stream
-                      </a>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {musicPosts.length > 10 && (
-                <p className={styles.seeAll}>
-                  + {musicPosts.length - 10} more in your activity feed
-                </p>
-              )}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* ── Section 8: Events (artist view only) ── */}
-      {profileMode === "artist" && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Events</h2>
-
-          {userEventsLoading ? (
-            <p className={styles.loadingText}>Loading events...</p>
-          ) : userEvents.length === 0 ? (
-            <p className={styles.emptyState}>
-              {isOwnProfile
-                ? "No upcoming events."
-                : "No upcoming events."}
-            </p>
-          ) : (
-            <div className={styles.eventList}>
-              {userEvents.map((event) => (
-                <div
-                  key={event.id || event.event_id}
-                  className={styles.eventCard}
-                >
-                  {event.flyer_url && (
-                    <img
-                      src={event.flyer_url}
-                      alt={event.title}
-                      className={styles.eventFlyer}
-                    />
-                  )}
-                  <div className={styles.eventInfo}>
-                    <p className={styles.eventTitle}>{event.title}</p>
-                    <p className={styles.eventDate}>
-                      {new Date(event.event_date).toLocaleDateString("en-US", {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </p>
-                    {event.venue && (
-                      <p className={styles.eventVenue}>{event.venue}</p>
-                    )}
-                    {event.city && (
-                      <p className={styles.eventCity}>{event.city}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* ── Section 9: List Rank Stats (artist view only, if artist_id linked) ── */}
-      {profileMode === "artist" && displayedUser?.artist_id && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>List Rank Stats</h2>
-          <p className={styles.emptyState}>
-            Rank stats coming soon.
-          </p>
-        </section>
-      )}
+      {/* Sections 7-9 were artist-view-only: music posts, events, and a
+          "Rank stats coming soon" placeholder. Retired with the Fan/Artist
+          toggle. Music lives in ArtistSettings via <YourMusic>, events at
+          /events and via EventCreator on the artist world page, so nothing
+          here was the only home for a feature. */}
 
       {/* ── Community Section (own profile only) ── */}
       {isOwnProfile && (

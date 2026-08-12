@@ -274,39 +274,6 @@
 
 /* ── Section 2: View Toggle ────────────────────────────────────────────── */
 
-.viewToggleSection {
-  display: flex;
-  justify-content: center;
-  padding: 0.25rem 0;
-}
-
-.viewToggle {
-  display: inline-flex;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-pill);
-  padding: 3px;
-  gap: 2px;
-}
-
-.toggleBtn {
-  padding: 7px 22px;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-pill);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.toggleActive {
-  background: var(--color-accent-gradient);
-  color: var(--color-text-bright);
-  font-weight: 700;
-}
-
 /* ── Section 3: Stats Bar ──────────────────────────────────────────────── */
 
 .statsBar {
@@ -643,53 +610,6 @@
 
 /* ── Section 7: Music Posts ────────────────────────────────────────────── */
 
-.musicPostList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.musicPostCard {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem 1.25rem;
-  background: var(--color-bg-base);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-sm);
-  transition: border-color 0.15s;
-}
-
-.musicPostCard:hover {
-  border-color: var(--color-accent);
-}
-
-.musicPostInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.musicPostTitle {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text-bright);
-  margin: 0;
-}
-
-.musicPostCaption {
-  font-size: 0.78rem;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.musicPostControls {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
 .audioPlayer {
   width: 100%;
   max-width: 400px;
@@ -697,85 +617,7 @@
   accent-color: var(--color-accent);
 }
 
-.streamLink {
-  display: inline-block;
-  padding: 5px 14px;
-  background: var(--color-accent-gradient);
-  color: var(--color-text-bright);
-  border-radius: var(--radius-pill);
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: box-shadow 0.2s ease;
-}
-
-.streamLink:hover {
-  box-shadow: var(--shadow-glow);
-}
-
-.seeAll {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-  text-align: center;
-  padding: 0.5rem 0;
-}
-
 /* ── Section 8: Events ─────────────────────────────────────────────────── */
-
-.eventList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.eventCard {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--color-bg-base);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-sm);
-  align-items: flex-start;
-}
-
-.eventFlyer {
-  width: 72px;
-  height: 72px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  flex-shrink: 0;
-}
-
-.eventInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.eventTitle {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text-bright);
-  margin: 0;
-}
-
-.eventDate {
-  font-size: 0.78rem;
-  color: var(--color-accent-light);
-  margin: 0;
-}
-
-.eventVenue {
-  font-size: 0.78rem;
-  color: var(--color-text-primary);
-  margin: 0;
-}
-
-.eventCity {
-  font-size: 0.72rem;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
 
 /* ── Shared Badges ─────────────────────────────────────────────────────── */
 
