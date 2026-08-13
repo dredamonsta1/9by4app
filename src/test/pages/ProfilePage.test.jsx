@@ -223,6 +223,50 @@ describe("ProfilePage — first-run onboarding", () => {
     expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument();
   });
 
+  describe("taste comps", () => {
+    it("stays locked until the user hits the target", async () => {
+      renderOwnProfile([artist(1), artist(2)]);
+
+      await screen.findByText("2 of 3 artists picked");
+      const urls = axiosInstance.get.mock.calls.map(([u]) => u);
+      expect(urls.some((u) => u.includes("related-artists"))).toBe(false);
+    });
+
+    it("unlocks at the same threshold as the personality", async () => {
+      renderOwnProfile([artist(1), artist(2), artist(3)]);
+
+      await waitFor(() => {
+        const urls = axiosInstance.get.mock.calls.map(([u]) => u);
+        expect(urls.some((u) => u.includes("related-artists"))).toBe(true);
+      });
+    });
+
+    it("is not fetched on someone else's profile", async () => {
+      render(
+        <Provider
+          store={buildMockStore({
+            auth: { user: { id: 1, user_id: 1, username: "me" }, token: "t" },
+            profileList: {
+              list: [artist(1), artist(2), artist(3)],
+              loading: false,
+              error: null,
+            },
+          })}
+        >
+          <MemoryRouter initialEntries={["/profile/2"]}>
+            <Routes>
+              <Route path="/profile/:userId" element={<ProfilePage />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      );
+
+      await waitFor(() => expect(axiosInstance.get).toHaveBeenCalled());
+      const urls = axiosInstance.get.mock.calls.map(([u]) => u);
+      expect(urls.some((u) => u.includes("related-artists"))).toBe(false);
+    });
+  });
+
   describe("auto-reveal", () => {
     it("fires the analysis when the third artist lands", async () => {
       const { store } = renderOwnProfile([artist(1), artist(2)]);
