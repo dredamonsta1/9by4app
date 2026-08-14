@@ -25,6 +25,7 @@ import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
 } from "../../components/OnboardingChecklist/OnboardingChecklist";
+import TasteComps from "../../components/TasteComps/TasteComps";
 import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
 import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
@@ -607,6 +608,15 @@ const ProfilePage = () => {
           </div>
         )}
       </section>
+
+      {/* ── Taste comps ──
+          Sits directly under the Top 20 it's derived from. Unlocks at the
+          same threshold as the personality, so hitting three artists opens
+          both rewards at once rather than dribbling them out. Own profile
+          only — these are recommendations, not public identity. */}
+      {isOwnProfile && (
+        <TasteComps enabled={profileList.length >= ONBOARDING_TARGET} />
+      )}
 
       {/* ── Section 5: Music Personality Card ── */}
       {(personality || isOwnProfile) && (
