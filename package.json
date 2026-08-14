@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@chenglou/pretext": "^0.0.3",
+    "@chenglou/pretext": "^0.0.8",
     "@livekit/components-react": "^2.9.20",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.19.0",
