@@ -58,37 +58,4 @@ describe("OnboardingChecklist", () => {
     });
   });
 
-  describe("analyzing", () => {
-    it("replaces the progress view while the analysis runs", () => {
-      render(<OnboardingChecklist count={3} analyzing />);
-
-      expect(screen.getByText(/reading your taste/i)).toBeInTheDocument();
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: /skip/i })).not.toBeInTheDocument();
-    });
-  });
-
-  describe("reveal", () => {
-    const personality = {
-      title: "Dusty Fingers",
-      description: "You dig for the loop before the song.",
-    };
-
-    it("shows the personality, and takes precedence over analyzing", () => {
-      render(<OnboardingChecklist count={3} analyzing reveal={personality} />);
-
-      expect(screen.getByText("Dusty Fingers")).toBeInTheDocument();
-      expect(
-        screen.getByText(/you dig for the loop before the song/i)
-      ).toBeInTheDocument();
-      expect(screen.queryByText(/reading your taste/i)).not.toBeInTheDocument();
-    });
-
-    it("offers no skip once it has become the reward", () => {
-      render(<OnboardingChecklist count={3} reveal={personality} />);
-
-      expect(screen.queryByRole("button", { name: /skip/i })).not.toBeInTheDocument();
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
-    });
-  });
 });

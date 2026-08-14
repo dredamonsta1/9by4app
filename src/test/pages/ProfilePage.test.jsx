@@ -284,13 +284,16 @@ describe("ProfilePage — first-run onboarding", () => {
         )
       );
 
-      // The reveal card is identified by its kicker. The title also appears
-      // in Section 5's permanent card below — that duplication is intended,
-      // since Section 5 carries the public/private toggle and the reveal
-      // copy points down at it.
-      const reveal = await screen.findByText(/your music personality/i);
+      // Exactly one personality on the page. It used to render twice — a
+      // celebratory reveal at the top and a permanent card lower down —
+      // which read as a rendering bug. One card now owns both jobs.
+      const card = await screen.findByText(/your music personality/i);
       expect(
-        within(reveal.closest("section")).getByText("Dusty Fingers")
+        within(card.closest("section")).getByText("Dusty Fingers")
+      ).toBeInTheDocument();
+      expect(screen.getAllByText("Dusty Fingers")).toHaveLength(1);
+      expect(
+        within(card.closest("section")).getByRole("button", { name: /regenerate/i })
       ).toBeInTheDocument();
     });
 

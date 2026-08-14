@@ -1,0 +1,152 @@
+.card {
+  background: #141414;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.75rem;
+  color: #ededed;
+}
+
+/* Just-revealed state. Same card, louder — the chartreuse edge marks the
+   moment without introducing a second component. */
+.celebratory {
+  border-color: var(--color-contrast);
+  background: linear-gradient(
+    180deg,
+    rgba(214, 255, 61, 0.07) 0%,
+    rgba(20, 20, 20, 1) 60%
+  );
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.celebratory .kicker {
+  color: var(--color-contrast);
+}
+
+.privateBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+  border: 1px solid #333;
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  flex-shrink: 0;
+}
+
+.name {
+  margin: 0 0 0.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.title {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.desc {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #c9c9c9;
+  max-width: 42rem;
+}
+
+.sub {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #9a9a9a;
+  max-width: 38rem;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-top: 1px solid #232323;
+  padding-top: 0.85rem;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #b3b3b3;
+  cursor: pointer;
+}
+
+.toggle input {
+  accent-color: var(--color-contrast);
+  cursor: pointer;
+}
+
+.primaryBtn {
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  border: 1px solid var(--color-contrast);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.primaryBtn:hover {
+  background: var(--color-contrast-hover);
+  box-shadow: 0 0 0 3px var(--color-contrast-glow);
+}
+
+.ghostBtn {
+  background: transparent;
+  color: #c9c9c9;
+  border: 1px solid #333;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ghostBtn:hover {
+  color: #fff;
+  border-color: #5a5a5a;
+}
+
+@media (max-width: 520px) {
+  .foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .name {
+    font-size: 1.35rem;
+  }
+}
