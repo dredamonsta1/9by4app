@@ -53,9 +53,30 @@ const PlayerBar = () => {
   const [pinnedMarker, setPinnedMarker] = useState<number | null>(null);
 
   // Any stable id qualifies as a comment anchor. Backend resolves
-  // context via track_id -> album_id -> post_id, so preview clips
-  // (which only carry album_id) still get a meaningful embed.
-  const canComment = !!(track?.post_id || track?.track_id || track?.album_id);
+  // context via live_recording_id -> track_id -> album_id -> post_id, so
+  // preview clips (album_id only) and Archive.org bootlegs (which have no
+  // row of their own anywhere) both still get a meaningful embed.
+  const canComment = !!(
+    track?.post_id ||
+    track?.track_id ||
+    track?.album_id ||
+    track?.live_recording_id
+  );
+
+  // Where this track's existing comments live. Most precise anchor wins.
+  // Was duplicated in two places and drifted; keep it in one.
+  const markersUrl = (t: typeof track): string | null => {
+    if (!t) return null;
+    if (t.live_recording_id) {
+      const idx = t.live_track_index;
+      const q = idx === undefined || idx === null ? "" : `?track_index=${idx}`;
+      return `/song-comments/live/${t.live_recording_id}${q}`;
+    }
+    if (t.track_id) return `/song-comments/track/${t.track_id}`;
+    if (t.album_id) return `/song-comments/album/${t.album_id}`;
+    if (t.post_id) return `/song-comments/post/${t.post_id}`;
+    return null;
+  };
 
   // Close the input on track change so a comment can't get pinned to
   // the wrong song after a skip. Also clear any pinned marker.
@@ -63,7 +84,7 @@ const PlayerBar = () => {
     setCommentOpen(false);
     setCommentText("");
     setPinnedMarker(null);
-  }, [track?.post_id, track?.track_id, track?.album_id]);
+  }, [track?.post_id, track?.track_id, track?.album_id, track?.live_recording_id, track?.live_track_index]);
 
   // Pull existing comments for the current track so the seek bar can
   // render markers at their timestamps. Prefer track_id when set (most
@@ -73,10 +94,7 @@ const PlayerBar = () => {
     let active = true;
     setMarkers([]);
     if (!track) return;
-    let url: string | null = null;
-    if (track.track_id) url = `/song-comments/track/${track.track_id}`;
-    else if (track.album_id) url = `/song-comments/album/${track.album_id}`;
-    else if (track.post_id) url = `/song-comments/post/${track.post_id}`;
+    const url = markersUrl(track);
     if (!url) return;
     axiosInstance
       .get(url)
@@ -87,16 +105,13 @@ const PlayerBar = () => {
     return () => {
       active = false;
     };
-  }, [track?.post_id, track?.track_id, track?.album_id]);
+  }, [track?.post_id, track?.track_id, track?.album_id, track?.live_recording_id, track?.live_track_index]);
 
   // Re-pull markers after the user posts a new comment so their own
   // marker appears without a track switch.
   const refreshMarkers = () => {
     if (!track) return;
-    let url: string | null = null;
-    if (track.track_id) url = `/song-comments/track/${track.track_id}`;
-    else if (track.album_id) url = `/song-comments/album/${track.album_id}`;
-    else if (track.post_id) url = `/song-comments/post/${track.post_id}`;
+    const url = markersUrl(track);
     if (!url) return;
     axiosInstance
       .get(url)
@@ -146,6 +161,8 @@ const PlayerBar = () => {
         post_id:           track?.post_id ?? undefined,
         track_id:          track?.track_id ?? undefined,
         album_id:          track?.album_id ?? undefined,
+        live_recording_id: track?.live_recording_id ?? undefined,
+        live_track_index:  track?.live_track_index ?? undefined,
         timestamp_seconds: Math.floor(frozenAt),
         content,
       });
