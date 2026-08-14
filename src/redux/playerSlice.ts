@@ -5,9 +5,14 @@ export interface Track {
   // Identity — at least one must be set so the audio swap effect can key off
   // a stable identifier. Music posts use post_id (legacy); album tracks use
   // track_id + album_id; back-compat album-level audio uses album_id only.
+  // Archive.org bootlegs use live_recording_id + live_track_index: their
+  // tracks exist only in Archive metadata and have no row in our database,
+  // so there is nothing else to point at.
   post_id?: number;
   track_id?: number;
   album_id?: number;
+  live_recording_id?: number;
+  live_track_index?: number;
   position?: number | null;
 
   title?: string | null;

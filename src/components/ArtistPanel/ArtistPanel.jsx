@@ -1337,8 +1337,17 @@ const ArtistPanel = () => {
                               if (!tracks || tracks.length === 0) return;
                               dispatch(
                                 setQueue({
+                                  // Anchor on (recording, index-within-set).
+                                  // These tracks live only in Archive.org
+                                  // metadata — no row of their own here — so
+                                  // there is no post_id or track_id to use.
+                                  // A synthetic post_id used to stand in, and
+                                  // it broke commenting: PlayerBar sent it to
+                                  // /song-comments where it failed the posts
+                                  // foreign key.
                                   tracks: tracks.map((t, i) => ({
-                                    post_id: rec.recording_id * 1000 + i,
+                                    live_recording_id: rec.recording_id,
+                                    live_track_index: t.track_index ?? i,
                                     title: t.title,
                                     audio_url: t.stream_url,
                                     artist_name:
