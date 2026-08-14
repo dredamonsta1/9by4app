@@ -26,6 +26,7 @@ import OnboardingChecklist, {
   ONBOARDING_DISMISSED_KEY,
 } from "../../components/OnboardingChecklist/OnboardingChecklist";
 import TasteComps from "../../components/TasteComps/TasteComps";
+import MusicPersonalityCard from "../../components/MusicPersonalityCard/MusicPersonalityCard";
 import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
 import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
@@ -300,12 +301,11 @@ const ProfilePage = () => {
   const displayedUser = isOwnProfile ? currentUser : viewedUser;
   const displayedList = isOwnProfile ? hydratedProfileList : viewedUserArtists;
 
-  // Show while short of the target, or while the reveal is playing out — the
-  // reveal has to survive the list crossing the target, which is exactly the
-  // moment the progress view stops qualifying.
+  // Progress only. At the target this unmounts and MusicPersonalityCard
+  // takes the same slot.
   const showOnboarding =
-    !onboardingDismissed &&
-    (profileList.length < ONBOARDING_TARGET || justRevealed);
+    !onboardingDismissed && profileList.length < ONBOARDING_TARGET;
+  const personalityEligible = profileList.length >= ONBOARDING_TARGET;
 
   const creatorTierLabel =
     displayedUser?.creator_tier && displayedUser.creator_tier !== "free"
@@ -451,10 +451,44 @@ const ProfilePage = () => {
         <OnboardingChecklist
           count={profileList.length}
           target={ONBOARDING_TARGET}
-          analyzing={justRevealed && personalityLoading}
-          reveal={justRevealed && !personalityLoading ? personality : null}
           onAddArtist={() => setShowAddArtistModal(true)}
           onDismiss={handleDismissOnboarding}
+        />
+      )}
+
+      {/* ── Music Personality ──
+          One card, where the reveal used to be. Was two surfaces — a
+          celebratory reveal here and a permanent card lower down — which
+          rendered the same title and description, so the page said the same
+          thing twice right after onboarding. justRevealed now only picks the
+          celebratory styling. */}
+      {isOwnProfile ? (
+        <MusicPersonalityCard
+          personality={personality}
+          loading={personalityLoading}
+          isPublic={personalityPublic}
+          celebratory={justRevealed}
+          eligible={personalityEligible}
+          onAnalyze={handleAnalyzeTaste}
+          onVisibilityChange={handlePersonalityVisibility}
+        />
+      ) : (
+        // Someone else's public personality. /users/:id/profile only
+        // includes these fields when the owner has made them public, so
+        // their presence is the permission check. Until now nothing read
+        // them, which meant "Show on my public profile" wrote a flag that
+        // changed nothing anywhere.
+        <MusicPersonalityCard
+          readOnly
+          ownerName={displayedUser?.username}
+          personality={
+            viewedUser?.music_personality_title
+              ? {
+                  title: viewedUser.music_personality_title,
+                  description: viewedUser.music_personality_desc,
+                }
+              : null
+          }
         />
       )}
 
@@ -616,57 +650,6 @@ const ProfilePage = () => {
           only — these are recommendations, not public identity. */}
       {isOwnProfile && (
         <TasteComps enabled={profileList.length >= ONBOARDING_TARGET} />
-      )}
-
-      {/* ── Section 5: Music Personality Card ── */}
-      {(personality || isOwnProfile) && (
-        <section className={styles.section}>
-          <div className={styles.sectionTitleRow}>
-            <h2 className={styles.sectionTitle}>Music Personality</h2>
-            {isOwnProfile && (
-              <button
-                className={styles.actionBtnSecondary}
-                onClick={handleAnalyzeTaste}
-                disabled={profileList.length < 3 || personalityLoading}
-                title={profileList.length < 3 ? "Add at least 3 artists first" : ""}
-              >
-                {personalityLoading
-                  ? "Analyzing..."
-                  : personality
-                  ? "Regenerate"
-                  : "Analyze My Taste"}
-              </button>
-            )}
-          </div>
-
-          {personality ? (
-            <div className={styles.personalityCard}>
-              <div className={styles.personalityHeader}>
-                <span className={styles.personalityBadge}>{personality.title}</span>
-                {isOwnProfile && !personalityPublic && (
-                  <span className={styles.privateBadge}>Private</span>
-                )}
-              </div>
-              <p className={styles.personalityDesc}>{personality.description}</p>
-              {isOwnProfile && (
-                <label className={styles.personalityToggle}>
-                  <input
-                    type="checkbox"
-                    checked={personalityPublic}
-                    onChange={(e) => handlePersonalityVisibility(e.target.checked)}
-                  />
-                  Show on my public profile
-                </label>
-              )}
-            </div>
-          ) : isOwnProfile ? (
-            <p className={styles.emptyState}>
-              {profileList.length < 3
-                ? "Add at least 3 artists to your Top 20 to analyze your taste."
-                : "Generate your music personality identity."}
-            </p>
-          ) : null}
-        </section>
       )}
 
       {/* ── Section 6: Activity Feed ── */}

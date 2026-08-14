@@ -21,15 +21,6 @@
   letter-spacing: -0.01em;
 }
 
-.kicker {
-  margin: 0 0 0.2rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #8a8a8a;
-}
-
 .skip {
   border: none;
   background: transparent;
@@ -128,47 +119,6 @@
 .addBtn:hover {
   background: var(--color-contrast-hover);
   box-shadow: 0 0 0 3px var(--color-contrast-glow);
-}
-
-/* ── Reveal ── */
-
-.revealCard {
-  border-color: var(--color-contrast);
-  background: linear-gradient(
-    180deg,
-    rgba(214, 255, 61, 0.07) 0%,
-    rgba(20, 20, 20, 1) 60%
-  );
-}
-
-.revealKicker {
-  margin: 0 0 0.35rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-contrast);
-}
-
-.revealTitle {
-  margin: 0 0 0.5rem;
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.revealDesc {
-  margin: 0 0 0.75rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #c9c9c9;
-  max-width: 42rem;
-}
-
-.revealFoot {
-  margin: 0;
-  font-size: 0.78rem;
-  color: #7a7a7a;
 }
 
 @media (max-width: 560px) {

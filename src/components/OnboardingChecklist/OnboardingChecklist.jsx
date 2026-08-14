@@ -24,45 +24,19 @@ const promptFor = (remaining) => {
  * disabled button several sections down the page. This makes the goal and
  * the distance to it visible on arrival.
  *
- * Three display states: progress, analyzing, and the reveal. The parent
- * owns when to mount this at all (own profile, under target, not dismissed)
- * and owns the personality data; this component owns presentation.
+ * Progress only. Once the target is reached this unmounts and
+ * MusicPersonalityCard takes the same slot, carrying the analyzing state,
+ * the reveal, and the controls. The reveal used to live here too, which is
+ * how the page ended up rendering the personality twice.
  */
 const OnboardingChecklist = ({
   count = 0,
   target = ONBOARDING_TARGET,
   onAddArtist,
   onDismiss,
-  analyzing = false,
-  reveal = null,
 }) => {
   const picked = Math.min(count, target);
   const remaining = Math.max(target - count, 0);
-
-  if (reveal) {
-    return (
-      <section className={`${styles.card} ${styles.revealCard}`} aria-live="polite">
-        <p className={styles.revealKicker}>Your Music Personality</p>
-        <h2 className={styles.revealTitle}>{reveal.title}</h2>
-        <p className={styles.revealDesc}>{reveal.description}</p>
-        <p className={styles.revealFoot}>
-          Built from your Top 20. Regenerate it any time below.
-        </p>
-      </section>
-    );
-  }
-
-  if (analyzing) {
-    return (
-      <section className={styles.card} aria-live="polite">
-        <p className={styles.kicker}>Three artists in</p>
-        <h2 className={styles.title}>Reading your taste…</h2>
-        <p className={styles.prompt}>
-          Working out what your Top 20 says about you.
-        </p>
-      </section>
-    );
-  }
 
   return (
     <section className={styles.card} aria-labelledby="onboarding-title">
