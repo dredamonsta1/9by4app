@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
@@ -352,16 +352,18 @@ describe("ProfilePage — first-run onboarding", () => {
         )
       );
 
+      // Wait on the title, not the kicker: the loading card shows the same
+      // "Your Music Personality" kicker, so matching that resolves before
+      // the analysis finishes and leaves a node that React then orphans
+      // mid-assertion. Cost a CI failure the first time round.
+      expect(await screen.findByText("Dusty Fingers")).toBeInTheDocument();
+
       // Exactly one personality on the page. It used to render twice — a
       // celebratory reveal at the top and a permanent card lower down —
       // which read as a rendering bug. One card now owns both jobs.
-      const card = await screen.findByText(/your music personality/i);
-      expect(
-        within(card.closest("section")).getByText("Dusty Fingers")
-      ).toBeInTheDocument();
       expect(screen.getAllByText("Dusty Fingers")).toHaveLength(1);
       expect(
-        within(card.closest("section")).getByRole("button", { name: /regenerate/i })
+        screen.getByRole("button", { name: /regenerate/i })
       ).toBeInTheDocument();
     });
 
