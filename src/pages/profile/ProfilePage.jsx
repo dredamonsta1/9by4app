@@ -462,7 +462,7 @@ const ProfilePage = () => {
           rendered the same title and description, so the page said the same
           thing twice right after onboarding. justRevealed now only picks the
           celebratory styling. */}
-      {isOwnProfile && (
+      {isOwnProfile ? (
         <MusicPersonalityCard
           personality={personality}
           loading={personalityLoading}
@@ -471,6 +471,24 @@ const ProfilePage = () => {
           eligible={personalityEligible}
           onAnalyze={handleAnalyzeTaste}
           onVisibilityChange={handlePersonalityVisibility}
+        />
+      ) : (
+        // Someone else's public personality. /users/:id/profile only
+        // includes these fields when the owner has made them public, so
+        // their presence is the permission check. Until now nothing read
+        // them, which meant "Show on my public profile" wrote a flag that
+        // changed nothing anywhere.
+        <MusicPersonalityCard
+          readOnly
+          ownerName={displayedUser?.username}
+          personality={
+            viewedUser?.music_personality_title
+              ? {
+                  title: viewedUser.music_personality_title,
+                  description: viewedUser.music_personality_desc,
+                }
+              : null
+          }
         />
       )}
 

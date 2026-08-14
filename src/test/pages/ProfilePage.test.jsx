@@ -223,6 +223,74 @@ describe("ProfilePage — first-run onboarding", () => {
     expect(screen.queryByText(/artists picked/i)).not.toBeInTheDocument();
   });
 
+  describe("another user's public personality", () => {
+    const renderOtherProfile = (viewedUser) => {
+      axiosInstance.get.mockImplementation((url) => {
+        if (url === "/users/2/profile") return Promise.resolve({ data: viewedUser });
+        if (url.startsWith("/profile/user/")) return Promise.resolve({ data: { list: [] } });
+        if (url.includes("/followers") || url.includes("/following"))
+          return Promise.resolve({ data: [] });
+        if (url.startsWith("/feed/user/")) return Promise.resolve({ data: [] });
+        return Promise.resolve({ data: {} });
+      });
+      return render(
+        <Provider
+          store={buildMockStore({
+            auth: { user: { id: 1, user_id: 1, username: "me" }, token: "t" },
+            profileList: { list: [], loading: false, error: null },
+          })}
+        >
+          <MemoryRouter initialEntries={["/profile/2"]}>
+            <Routes>
+              <Route path="/profile/:userId" element={<ProfilePage />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      );
+    };
+
+    it("renders it when they've made it public", async () => {
+      // Regression: the toggle wrote music_personality_public and nothing
+      // anywhere read it, so making it public changed nothing visible.
+      renderOtherProfile({
+        user_id: 2,
+        username: "marcus",
+        music_personality_title: "Dusty Fingers",
+        music_personality_desc: "Digs for the loop.",
+        music_personality_public: true,
+      });
+
+      expect(await screen.findByText("Dusty Fingers")).toBeInTheDocument();
+      expect(screen.getByText(/marcus's music personality/i)).toBeInTheDocument();
+    });
+
+    it("offers no controls over someone else's personality", async () => {
+      renderOtherProfile({
+        user_id: 2,
+        username: "marcus",
+        music_personality_title: "Dusty Fingers",
+        music_personality_desc: "Digs for the loop.",
+        music_personality_public: true,
+      });
+
+      await screen.findByText("Dusty Fingers");
+      expect(
+        screen.queryByRole("button", { name: /regenerate/i })
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("checkbox", { name: /show on my public profile/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it("shows nothing when they've kept it private", async () => {
+      // The backend omits the fields entirely in that case.
+      renderOtherProfile({ user_id: 2, username: "marcus" });
+
+      await waitFor(() => expect(axiosInstance.get).toHaveBeenCalled());
+      expect(screen.queryByText(/music personality/i)).not.toBeInTheDocument();
+    });
+  });
+
   describe("taste comps", () => {
     it("stays locked until the user hits the target", async () => {
       renderOwnProfile([artist(1), artist(2)]);

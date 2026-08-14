@@ -72,6 +72,12 @@
   max-width: 42rem;
 }
 
+/* Read-only has no controls under it, so the description doesn't need to
+   clear a footer. */
+.descLast {
+  margin-bottom: 0;
+}
+
 .sub {
   margin: 0 0 0.85rem;
   font-size: 0.9rem;

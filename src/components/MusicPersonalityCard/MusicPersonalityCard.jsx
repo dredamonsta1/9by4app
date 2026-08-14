@@ -23,9 +23,31 @@ const MusicPersonalityCard = ({
   isPublic = false,
   celebratory = false,
   eligible = true,
+  readOnly = false,
+  ownerName,
   onAnalyze,
   onVisibilityChange,
 }) => {
+  // Someone else's profile. The backend only sends the personality fields
+  // when the owner has made them public, so having them here *is* the
+  // permission check — there's nothing further to gate on. No controls, no
+  // private badge, no eligibility question (their artist count isn't ours
+  // to reason about).
+  if (readOnly) {
+    if (!personality) return null;
+    return (
+      <section className={styles.card}>
+        <p className={styles.kicker}>
+          {ownerName ? `${ownerName}'s Music Personality` : "Music Personality"}
+        </p>
+        <h2 className={styles.name}>{personality.title}</h2>
+        <p className={`${styles.desc} ${styles.descLast}`}>
+          {personality.description}
+        </p>
+      </section>
+    );
+  }
+
   if (!eligible) return null;
 
   if (loading) {

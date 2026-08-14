@@ -114,6 +114,65 @@ describe("MusicPersonalityCard", () => {
     });
   });
 
+  describe("on someone else's profile", () => {
+    it("shows their personality with no controls", () => {
+      render(
+        <MusicPersonalityCard readOnly ownerName="marcus" personality={personality} />
+      );
+
+      expect(screen.getByText("Dusty Fingers")).toBeInTheDocument();
+      expect(screen.getByText(/marcus's music personality/i)).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /regenerate/i })
+      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    });
+
+    it("never leaks the private badge onto a public view", () => {
+      // A visitor only ever receives a personality the owner made public,
+      // so labelling it "Private" would be actively wrong.
+      render(
+        <MusicPersonalityCard
+          readOnly
+          ownerName="marcus"
+          personality={personality}
+          isPublic={false}
+        />
+      );
+
+      expect(screen.queryByText(/^private$/i)).not.toBeInTheDocument();
+    });
+
+    it("renders nothing when they have none, or keep it private", () => {
+      // The backend omits the fields entirely unless they're public, so the
+      // two cases are indistinguishable here — and should look identical.
+      const { container } = render(
+        <MusicPersonalityCard readOnly ownerName="marcus" personality={null} />
+      );
+
+      expect(container).toBeEmptyDOMElement();
+    });
+
+    it("ignores eligibility, which isn't ours to reason about", () => {
+      render(
+        <MusicPersonalityCard
+          readOnly
+          ownerName="marcus"
+          personality={personality}
+          eligible={false}
+        />
+      );
+
+      expect(screen.getByText("Dusty Fingers")).toBeInTheDocument();
+    });
+
+    it("falls back to a generic label with no name", () => {
+      render(<MusicPersonalityCard readOnly personality={personality} />);
+
+      expect(screen.getByText(/^music personality$/i)).toBeInTheDocument();
+    });
+  });
+
   describe("loading", () => {
     it("shows progress while the analysis runs", () => {
       render(<MusicPersonalityCard personality={null} loading eligible />);
