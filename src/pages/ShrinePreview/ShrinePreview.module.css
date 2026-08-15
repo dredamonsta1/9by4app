@@ -1,0 +1,147 @@
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+  color: #ededed;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.kicker {
+  margin: 0 0 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-contrast);
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 2.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  margin: 0 0 1.25rem;
+  color: #9a9a9a;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 46rem;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.group {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  background: #161616;
+  border: 1px solid #262626;
+  border-radius: 999px;
+}
+
+.pill {
+  border: none;
+  background: transparent;
+  color: #9a9a9a;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.32rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.pill:hover {
+  color: #fff;
+}
+
+.on {
+  background: #2f2f2f;
+  color: #fff;
+}
+
+.select {
+  background: #161616;
+  color: #ededed;
+  border: 1px solid #262626;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.back {
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: #9a9a9a;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.warn {
+  margin: 0.9rem 0 0;
+  padding: 0.6rem 0.85rem;
+  background: rgba(214, 255, 61, 0.06);
+  border: 1px solid rgba(214, 255, 61, 0.25);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #c3d97a;
+  line-height: 1.5;
+  max-width: 46rem;
+}
+
+.directions {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.blockHead {
+  margin-bottom: 0.9rem;
+}
+
+.blockTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.3rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.blockNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: #262626;
+  color: #b3b3b3;
+  font-size: 0.78rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #8a8a8a;
+  max-width: 52rem;
+}

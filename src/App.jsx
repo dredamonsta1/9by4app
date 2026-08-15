@@ -21,6 +21,7 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdmin
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
+import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
 import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
 import ArtistSettings from "./pages/ArtistSettings/ArtistSettings.jsx";
@@ -82,6 +83,9 @@ const App = () => {
           <Route path="/artist-settings" element={<ArtistSettings />} />
           <Route path="/library" element={<Library />} />
           <Route path="/checkout/return" element={<CheckoutReturn />} />
+          {/* Story 6 mockup harness — unlinked on purpose. Delete with the
+              losing directions once a shrine direction is picked. */}
+          <Route path="/shrine-preview" element={<ShrinePreview />} />
 
           <Route
             path="/admin"
