@@ -75,18 +75,29 @@
 
 /* ---- Three-column layout: Feed | Hero | (Music + News/Events) ---- */
 
-.threeCol {
+/* Rankings-first hierarchy (Story 5). Was three columns at 26% / 1fr / 26%
+   with the featured card in the middle and Rankings boxed into a 300px
+   scroller on the left — the leaderboard was the smallest thing on a page
+   whose whole pitch is being the leaderboard.
+   Now two: platform content dominant on the left, and the selected artist
+   plus everything about them as the companion on the right. */
+.twoCol {
   display: grid;
-  /* Side columns grow with the viewport (capped at 26% so they stay
-     visually balanced against the centered card hero), with sensible
-     floors so they don't collapse on narrower desktops. */
-  grid-template-columns:
-    minmax(280px, 26%)
-    minmax(0, 1fr)
-    minmax(280px, 26%);
+  grid-template-columns: minmax(0, 1.85fr) minmax(320px, 1fr);
   gap: 2rem;
   align-items: start;
   margin-top: 0.5rem;
+}
+
+/* Featured card and its detail boxes read as one column. The boxes were
+   already all about the featured artist — Music, Live Recordings, Fan
+   Music, Fans Also Love, News/Events — so they belong with it rather than
+   opposite it. */
+.companionCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
 }
 
 .feedCol,
@@ -212,7 +223,9 @@
   flex: 1;
 }
 
-/* ---- HERO: centered card with depth stack + side flip arrows ---- */
+/* ---- HERO: the featured artist card, now the companion column's
+   header rather than the page's centrepiece. Flip arrows removed with
+   the rankings-first pivot — the rank list is the browse mechanism. ---- */
 
 .hero {
   display: flex;
@@ -293,30 +306,6 @@
   background: #0f1a2a;
   transform: rotate(-9deg);
   z-index: -1;
-}
-
-.flipBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(20, 32, 48, 0.7);
-  color: #e0e6ed;
-  font-size: 1rem;
-  cursor: pointer;
-  flex-shrink: 0;
-  z-index: 4;
-  transition: background 0.15s, transform 0.15s, opacity 0.15s;
-}
-
-.flipBtn:hover:not(:disabled) {
-  background: rgba(0, 119, 182, 0.7);
-  transform: scale(1.08);
-}
-
-.flipBtn:disabled {
-  opacity: 0.25;
-  cursor: default;
 }
 
 .card {
@@ -1536,7 +1525,8 @@
    540px on generic feedCol boxes takes precedence and Rankings
    stays tall. */
 .feedCol > .rankingsBox {
-  height: 300px;
+  height: auto;
+  max-height: none;
 }
 
 .feedCol > .rankingsBox .boxScroll {
@@ -1725,31 +1715,24 @@
   .panel {
     padding: 1rem 1.25rem 6rem;
   }
-  .threeCol {
-    grid-template-columns:
-      minmax(240px, 28%)
-      minmax(0, 1fr)
-      minmax(240px, 28%);
+  .twoCol {
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
     gap: 1.25rem;
   }
 }
 
 @media (max-width: 920px) {
-  .threeCol {
+  .twoCol {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
-  .hero {
+  .feedCol {
     order: 1;
   }
 
-  .feedCol {
+  .companionCol {
     order: 2;
-  }
-
-  .rightCol {
-    order: 3;
   }
 
   .feedCol > .box {
@@ -1778,8 +1761,9 @@
     overflow-x: hidden;
   }
 
-  /* Cap card so card + decks + flip arrows fit on a 360px viewport.
-     100vw - 24px panel padding - ~96px for the two flip buttons +
+  /* Cap card so card + decks fit on a 360px viewport.
+     100vw - 24px panel padding - ~96px formerly reserved for the flip
+     buttons +
      gaps + deck inset. */
   .card,
   .deckLayer {
@@ -1801,12 +1785,6 @@
   }
   .deckLayer3 {
     left: 12px;
-  }
-
-  .flipBtn {
-    width: 32px;
-    height: 32px;
-    font-size: 0.85rem;
   }
 
   /* Tighten box internal padding so list rows aren't cramped. */

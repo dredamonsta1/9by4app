@@ -1,14 +1,21 @@
 import React from "react";
 import ArtistPanel from "../components/ArtistPanel/ArtistPanel";
 
-// HomePage is now a thin wrapper around ArtistPanel. With no artistId in
-// the URL, ArtistPanel defaults to the top-ranked artist — so "/" IS the
-// home view of the #1 artist's surface. The old browse-mode content
-// (FiltersBar / TrendingShelf / ClickableList grid / NewMusicSection /
-// RankView / StickyCtaBar) is intentionally retired here as part of the
-// IA pivot; discovery happens via ▲/▼ rank flip + the navbar artist
-// search. Those components remain in the codebase as orphans pending
-// the cleanup PR that deletes them.
+// HomePage is a thin wrapper around ArtistPanel, which IS the landing
+// page — filter strip, rankings, featured artist and its detail boxes all
+// render inside it.
+//
+// A previous version of this comment claimed FiltersBar / TrendingShelf /
+// RankView / NewMusicSection were "intentionally retired here" and left as
+// orphans pending a cleanup PR. That was wrong: all of them render inside
+// ArtistPanel, and anyone trusting it would go looking for landing-page
+// work in the wrong file.
+//
+// As of the rankings-first pivot (Story 5) the layout is two columns —
+// platform content dominant on the left with the rankings list at the top,
+// and the selected artist plus everything about them as the companion on
+// the right. RankView (the old table) is the one thing genuinely orphaned
+// now, replaced by RankCardList.
 const HomePage = () => <ArtistPanel />;
 
 export default HomePage;
