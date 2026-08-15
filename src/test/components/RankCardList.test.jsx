@@ -23,6 +23,59 @@ describe("RankCardList", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
   });
 
+  describe("paging", () => {
+    it("shows five at a time so the section keeps a fixed height", () => {
+      render(<RankCardList artists={roster(25)} />);
+
+      expect(screen.getAllByRole("listitem")).toHaveLength(5);
+      expect(screen.getByText("1\u20135 of 25")).toBeInTheDocument();
+    });
+
+    it("keeps ranks true to position on later pages", async () => {
+      render(<RankCardList artists={roster(25)} />);
+
+      await userEvent.click(screen.getByRole("button", { name: /next ranks/i }));
+
+      // Page two is 6-10, not 1-5 again.
+      expect(screen.getByText("6")).toBeInTheDocument();
+      expect(screen.getByText("Artist 10")).toBeInTheDocument();
+      expect(screen.queryByText("Artist 1")).not.toBeInTheDocument();
+      expect(screen.getByText("6\u201310 of 25")).toBeInTheDocument();
+    });
+
+    it("stops at both ends", async () => {
+      render(<RankCardList artists={roster(7)} />);
+
+      expect(screen.getByRole("button", { name: /previous ranks/i })).toBeDisabled();
+
+      await userEvent.click(screen.getByRole("button", { name: /next ranks/i }));
+
+      expect(screen.getByRole("button", { name: /next ranks/i })).toBeDisabled();
+      expect(screen.getByText("6\u20137 of 7")).toBeInTheDocument();
+    });
+
+    it("offers no pager when everything fits", () => {
+      render(<RankCardList artists={roster(4)} />);
+
+      expect(screen.queryByRole("button", { name: /next ranks/i })).not.toBeInTheDocument();
+    });
+
+    it("snaps back to page one when the filter changes", async () => {
+      // The whole reason rankings sits up top is the filter feedback loop —
+      // clicking a pill has to visibly change what's on screen, which it
+      // wouldn't if you were left stranded on page four.
+      const { rerender } = render(
+        <RankCardList artists={roster(25)} resetKey="all" />
+      );
+      await userEvent.click(screen.getByRole("button", { name: /next ranks/i }));
+      expect(screen.getByText("6\u201310 of 25")).toBeInTheDocument();
+
+      rerender(<RankCardList artists={roster(25)} resetKey="hip-hop" />);
+
+      expect(screen.getByText("1\u20135 of 25")).toBeInTheDocument();
+    });
+  });
+
   it("shows fans and genre per row", () => {
     render(<RankCardList artists={[artist(2)]} />);
 

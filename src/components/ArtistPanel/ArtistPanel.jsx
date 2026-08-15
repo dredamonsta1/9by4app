@@ -899,6 +899,7 @@ const ArtistPanel = () => {
                   onSelect={(a) => navigate(`/artist/${a.artist_id}`)}
                   onAdd={handleRankAdd}
                   inList={rankInList}
+                  resetKey={activeFilter}
                 />
               </div>
             </div>
