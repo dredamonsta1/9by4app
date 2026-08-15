@@ -1,0 +1,153 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  background: #17171a;
+  border: 1px solid #2a2a30;
+}
+
+/* Current treatment: full-bleed image with the name overlaid on it. */
+.classic {
+  border-radius: 14px;
+}
+
+/* Card-deck treatment from the Story 6 mockups: rank pill, art as a
+   distinct block, name and meta in a body below rather than over the
+   image. Reads as a physical card rather than a poster. */
+.deck {
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+}
+
+.rankPill {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.8rem;
+  z-index: 2;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--color-contrast-ink);
+  background: var(--color-contrast);
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.imageWrap {
+  position: relative;
+  cursor: pointer;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #222;
+}
+
+.deck .image {
+  aspect-ratio: 4 / 3;
+}
+
+/* Classic only — name burned over the art. */
+.overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.85));
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.overlayName {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overlayRank {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-contrast);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.body {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.fans {
+  font-size: 0.8rem;
+  color: #9a9aa2;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip {
+  font-size: 0.68rem;
+  color: #b3b3b3;
+  border: 1px solid #33333a;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+}
+
+.cta {
+  width: 100%;
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  border: 1px solid var(--color-contrast);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.cta:hover:not(:disabled) {
+  background: var(--color-contrast-hover);
+  box-shadow: 0 0 0 3px var(--color-contrast-glow);
+}
+
+.ctaAdded {
+  background: transparent;
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.45);
+  cursor: default;
+}
+
+.placeholder {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: #7a7a82;
+  font-size: 0.9rem;
+  border: 1px dashed #2a2a30;
+  border-radius: 14px;
+}
