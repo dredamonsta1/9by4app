@@ -20,7 +20,7 @@ import MessagesPanel from "../../components/Messages/MessagesPanel";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
-import StanCard from "../../components/StanCard/StanCard";
+import Top20Shrine from "../../components/Top20Shrine/Top20Shrine";
 import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
@@ -96,6 +96,11 @@ const ProfilePage = () => {
 
   // Taste suggestions
   const [tasteSuggestions, setTasteSuggestions] = useState([]);
+
+  // Tier + tenure per artist, keyed on artist_id. Fetched for whichever
+  // profile is being viewed, not just your own — the old StanCard only ever
+  // asked for the logged-in user, so other people's shrines were bare.
+  const [stanRanks, setStanRanks] = useState([]);
 
   // UI state
   const [showFollowersModal, setShowFollowersModal] = useState(false);
@@ -194,6 +199,20 @@ const ProfilePage = () => {
     handleAnalyzeTaste();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileList.length, isOwnProfile]);
+
+  useEffect(() => {
+    if (!targetUserId) return;
+    let active = true;
+    axiosInstance
+      .get(`/communities/user/${targetUserId}/stan-card`)
+      .then((res) => {
+        if (active) setStanRanks(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [targetUserId]);
 
   // Artist search debounce
   useEffect(() => {
@@ -300,6 +319,18 @@ const ProfilePage = () => {
 
   const displayedUser = isOwnProfile ? currentUser : viewedUser;
   const displayedList = isOwnProfile ? hydratedProfileList : viewedUserArtists;
+
+  // The shrine wants rank, tier and tenure on one row; they arrive from two
+  // endpoints keyed on artist_id.
+  const shrineEntries = displayedList.map((a, i) => {
+    const rank = stanRanks.find((r) => r.artist_id === a.artist_id);
+    return {
+      ...a,
+      position: a.position ?? i + 1,
+      tier: rank?.tier ?? null,
+      days_as_member: rank?.days_as_member ?? null,
+    };
+  });
 
   // Progress only. At the target this unmounts and MusicPersonalityCard
   // takes the same slot.
@@ -539,58 +570,22 @@ const ProfilePage = () => {
 
         {profileListLoading ? (
           <p className={styles.loadingText}>Loading your list...</p>
-        ) : displayedList.length === 0 ? (
-          <p className={styles.emptyState}>
-            {isOwnProfile
-              ? "Build your Top 20 — add your favorite artists."
-              : "This user hasn't built their Top 20 yet."}
-          </p>
         ) : (
-          <div className={styles.top20Rail}>
-            {displayedList.map((artist, index) => (
-              <div
-                key={artist.artist_id}
-                className={`${styles.top20Card} ${editModeTop20 ? styles.top20CardEdit : ""}`}
-                draggable={editModeTop20 && isOwnProfile}
-                onDragStart={editModeTop20 ? () => handleDragStart(index) : undefined}
-                onDragOver={editModeTop20 ? (e) => handleDragOver(e, index) : undefined}
-                onDragEnd={editModeTop20 ? handleDragEnd : undefined}
-                onClick={!editModeTop20 ? () => setActiveCommunityArtistId(artist.artist_id) : undefined}
-                title={artist.artist_name || artist.name}
-              >
-                <div className={styles.top20CardImageWrap}>
-                  <img
-                    src={resolveImageUrl(
-                      artist.image_url,
-                      `https://via.placeholder.com/100?text=${encodeURIComponent(
-                        (artist.artist_name || artist.name || "?")[0]
-                      )}`
-                    )}
-                    alt={artist.artist_name || artist.name}
-                    className={styles.top20CardImage}
-                  />
-                  <span className={styles.top20Rank}>
-                    #{artist.position ?? index + 1}
-                  </span>
-                  {editModeTop20 && isOwnProfile && (
-                    <button
-                      className={styles.top20RemoveBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveArtist(artist.artist_id);
-                      }}
-                      title="Remove from list"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-                <p className={styles.top20CardName}>
-                  {artist.artist_name || artist.name}
-                </p>
-              </div>
-            ))}
-          </div>
+          <Top20Shrine
+            entries={shrineEntries}
+            editable={isOwnProfile}
+            editMode={editModeTop20}
+            onSelect={(id) => setActiveCommunityArtistId(id)}
+            onRemove={handleRemoveArtist}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDragEnd={handleDragEnd}
+            emptyMessage={
+              isOwnProfile
+                ? "Build your Top 20 — add your favorite artists."
+                : "This user hasn't built their Top 20 yet."
+            }
+          />
         )}
 
         {/* Add Artist Panel */}
@@ -838,7 +833,10 @@ const ProfilePage = () => {
             </>
           )}
 
-          <StanCard userId={myId} />
+          {/* StanCard retired — the Top 20 shrine above carries tier and
+              tenure per artist now, so a second card describing the same
+              relationships was the duplication we just undid for the
+              personality. */}
           <BeefAllianceMap />
         </section>
       )}
