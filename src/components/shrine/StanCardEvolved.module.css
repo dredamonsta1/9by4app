@@ -1,0 +1,164 @@
+.card {
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* The #1 slot gets real estate rather than just a colour. */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem;
+  background: linear-gradient(
+    100deg,
+    rgba(214, 255, 61, 0.09) 0%,
+    rgba(20, 20, 20, 1) 62%
+  );
+  border-bottom: 1px solid #262626;
+}
+
+.heroRank {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-contrast);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.heroArt {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #222;
+  flex-shrink: 0;
+}
+
+.heroBody {
+  min-width: 0;
+}
+
+.heroName {
+  margin: 0 0 0.3rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tier {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #0b0b0b;
+  background: var(--color-contrast);
+  border-radius: 999px;
+  padding: 0.14rem 0.5rem;
+}
+
+.since {
+  font-size: 0.78rem;
+  color: #9a9a9a;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.8rem 34px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 1.2rem;
+  border-bottom: 1px solid #1d1d1d;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+/* Slots 2–5 still count toward communities, so they stay marked. */
+.core {
+  background: rgba(214, 255, 61, 0.035);
+}
+
+.rank {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #8a8a8a;
+  font-variant-numeric: tabular-nums;
+}
+
+.core .rank {
+  color: #c3d97a;
+}
+
+.thumb {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  object-fit: cover;
+  background: #222;
+}
+
+.name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ededed;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tierSm {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a8a8a8;
+  border: 1px solid #333;
+  border-radius: 999px;
+  padding: 0.1rem 0.4rem;
+  white-space: nowrap;
+}
+
+.tenure {
+  font-size: 0.72rem;
+  color: #7a7a7a;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 3.5rem;
+  text-align: right;
+}
+
+.empty {
+  margin: 0;
+  color: #7a7a7a;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 520px) {
+  .row {
+    grid-template-columns: 1.6rem 30px minmax(0, 1fr) auto;
+  }
+  .tierSm {
+    display: none;
+  }
+}

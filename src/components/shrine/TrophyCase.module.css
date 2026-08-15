@@ -1,0 +1,142 @@
+.case {
+  background: linear-gradient(180deg, #141414 0%, #0f0f0f 100%);
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.band {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bandLabel {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.bandNote {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #6a6a6a;
+}
+
+.innerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 0.7rem;
+}
+
+.outerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 0.6rem;
+}
+
+.slot {
+  position: relative;
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  border-radius: 10px;
+  padding: 0.5rem 0.45rem 0.45rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: border-color 0.16s ease, transform 0.16s ease;
+  cursor: pointer;
+}
+
+.slot:hover {
+  transform: translateY(-2px);
+  border-color: #4a4a4a;
+}
+
+.big {
+  background: linear-gradient(180deg, #1f2119 0%, #171717 100%);
+  border-color: #39402a;
+}
+
+.first {
+  border-color: var(--color-contrast);
+}
+
+.num {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.4rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #8a8a8a;
+  font-variant-numeric: tabular-nums;
+}
+
+.first .num {
+  color: var(--color-contrast);
+}
+
+.art {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #222;
+  display: block;
+}
+
+.name {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #ededed;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  font-size: 0.58rem;
+  color: #7a7a7a;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 0.75rem;
+}
+
+/* Unfilled slots are the whole point of this direction — an incomplete
+   case is an invitation rather than an absence. */
+.locked {
+  border-style: dashed;
+  border-color: #262626;
+  background: transparent;
+  min-height: 84px;
+  justify-content: center;
+  cursor: default;
+}
+
+.locked:hover {
+  transform: none;
+  border-color: #333;
+}
+
+.lockNum {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2f2f2f;
+  font-variant-numeric: tabular-nums;
+}
