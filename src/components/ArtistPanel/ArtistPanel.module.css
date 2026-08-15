@@ -316,7 +316,8 @@
 .card {
   width: 340px;
   max-width: 70vw;
-  aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
   background: #142030;
   border-radius: 18px;
   overflow: hidden;
@@ -339,40 +340,67 @@
 
 .cardImage {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   object-fit: cover;
   display: block;
+  flex-shrink: 0;
 }
 
-.cardOverlay {
+/* Rank as a corner pill — the trading-card tell, and it frees the art
+   from carrying text over it. */
+.cardRank {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 1.5rem 1.4rem 2rem;
-  text-align: center;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.55) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  top: 0.7rem;
+  left: 0.8rem;
+  z-index: 2;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--color-contrast-ink);
+  background: var(--color-contrast);
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cardBody {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
 }
 
 .cardName {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.01em;
-  line-height: 1.1;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.cardGenre {
-  margin: 0.3rem 0 0;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.92rem;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.cardFans {
+  font-size: 0.8rem;
+  color: #8899aa;
+  font-variant-numeric: tabular-nums;
+}
+
+.cardChip {
+  font-size: 0.68rem;
+  color: #b3c2d3;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
 }
 
 /* Members / Member-of strip sits between the rank pill and the
@@ -1797,14 +1825,10 @@
     padding: 0.6rem;
   }
 
-  /* Card name shrinks so a long artist name doesn't blow up the
-     overlay on a narrow card. */
+  /* Card name shrinks so a long artist name doesn't crowd the body on a
+     narrow card. */
   .cardName {
-    font-size: 1.3rem;
-  }
-
-  .cardGenre {
-    font-size: 0.82rem;
+    font-size: 1.15rem;
   }
 }
 

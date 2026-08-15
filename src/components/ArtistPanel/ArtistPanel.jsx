@@ -1059,6 +1059,9 @@ const ArtistPanel = () => {
                 }
               }}
             >
+              {rank != null && (
+                <span className={styles.cardRank}>#{rank}</span>
+              )}
               <img
                 src={resolveImageUrl(
                   artist.image_url,
@@ -1067,13 +1070,21 @@ const ArtistPanel = () => {
                 alt={artist.artist_name || "Artist"}
                 className={styles.cardImage}
               />
-              <div className={styles.cardOverlay}>
+              <div className={styles.cardBody}>
                 <h1 className={styles.cardName}>
                   {artist.artist_name || "N/A"}
                 </h1>
-                {artist.genre && (
-                  <p className={styles.cardGenre}>{artist.genre}</p>
-                )}
+                <div className={styles.cardMeta}>
+                  <span className={styles.cardFans}>
+                    {(artist.count || 0).toLocaleString()} fans
+                  </span>
+                  {artist.genre && (
+                    <span className={styles.cardChip}>{artist.genre}</span>
+                  )}
+                  {artist.region && (
+                    <span className={styles.cardChip}>{artist.region}</span>
+                  )}
+                </div>
               </div>
             </article>
 
