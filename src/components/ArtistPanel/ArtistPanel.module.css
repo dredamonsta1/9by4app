@@ -287,6 +287,29 @@
   aspect-ratio: 3 / 4;
   border-radius: 18px;
   pointer-events: none;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* The next artists' art, dimmed and pushed back so the stack previews
+   what "next" leads to without competing with the active card. */
+.deckLayerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.55;
+  filter: saturate(0.75) brightness(0.7);
+}
+
+.deckLayer1 .deckLayerImage {
+  opacity: 0.7;
+  filter: saturate(0.85) brightness(0.8);
+}
+
+.deckLayer3 .deckLayerImage {
+  opacity: 0.4;
+  filter: saturate(0.6) brightness(0.55);
 }
 
 .deckLayer1 {

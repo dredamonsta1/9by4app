@@ -790,6 +790,14 @@ const ArtistPanel = () => {
       ? filteredArtists[filteredIndex + 1]
       : null;
 
+  // The cards stacked behind the active one are the artists you'd reach by
+  // hitting next — so the stack previews the deck rather than being three
+  // empty rectangles. Falls back to fewer layers near the end of the list.
+  const deckPreview = filteredArtists.slice(
+    Math.max(0, filteredIndex + 1),
+    Math.max(0, filteredIndex + 1) + 3
+  );
+
   // Passive filter — updates activeFilter, which flows to the
   // Rankings box directly below the pill strip. Rank card rows
   // navigate on click, so users who want to jump to someone in
@@ -1017,9 +1025,29 @@ const ArtistPanel = () => {
         <div className={styles.companionCol}>
         <section className={styles.hero}>
           <div className={styles.deck}>
-            <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
-            <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
-            <div className={`${styles.deckLayer} ${styles.deckLayer1}`} />
+            {[2, 1, 0].map((depth) => {
+              const upcoming = deckPreview[depth];
+              return (
+                <div
+                  key={depth}
+                  className={`${styles.deckLayer} ${
+                    styles[`deckLayer${depth + 1}`]
+                  }`}
+                  aria-hidden="true"
+                >
+                  {upcoming && (
+                    <img
+                      src={resolveImageUrl(
+                        upcoming.image_url,
+                        "https://via.placeholder.com/360?text=?",
+                      )}
+                      alt=""
+                      className={styles.deckLayerImage}
+                    />
+                  )}
+                </div>
+              );
+            })}
 
             {/* The whole featured card is the primary "stan this artist"
                 affordance. No visible chip/button — clicking the image
