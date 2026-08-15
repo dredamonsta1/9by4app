@@ -21,6 +21,7 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdmin
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
+import LandingPreview from "./pages/LandingPreview/LandingPreview.jsx";
 import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
 import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
@@ -83,6 +84,9 @@ const App = () => {
           <Route path="/artist-settings" element={<ArtistSettings />} />
           <Route path="/library" element={<Library />} />
           <Route path="/checkout/return" element={<CheckoutReturn />} />
+          {/* Story 5 mockup harness — unlinked on purpose, delete once a
+              card treatment is picked and folded into ArtistPanel. */}
+          <Route path="/landing-preview" element={<LandingPreview />} />
           {/* Story 6 mockup harness — unlinked on purpose. Delete with the
               losing directions once a shrine direction is picked. */}
           <Route path="/shrine-preview" element={<ShrinePreview />} />

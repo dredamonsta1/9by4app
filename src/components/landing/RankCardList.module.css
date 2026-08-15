@@ -1,0 +1,129 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Deck-card framing applied to a list row: rounded, dark, art-forward,
+   with the rank as a pill rather than a table cell. */
+.card {
+  display: grid;
+  grid-template-columns: 2.1rem 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0.75rem;
+  background: #17171a;
+  border: 1px solid #2a2a30;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: #45454e;
+  background: #1c1c20;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-contrast);
+  outline-offset: 2px;
+}
+
+/* The row whose artist is showing in the companion card. */
+.active {
+  border-color: var(--color-contrast);
+  background: linear-gradient(
+    100deg,
+    rgba(214, 255, 61, 0.08) 0%,
+    rgba(23, 23, 26, 1) 55%
+  );
+}
+
+.rank {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #7a7a82;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.first {
+  color: var(--color-contrast);
+}
+
+.art {
+  width: 56px;
+  height: 56px;
+  border-radius: 9px;
+  object-fit: cover;
+  background: #222;
+  display: block;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ededed;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: #8a8a92;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.add {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #3a3a42;
+  background: transparent;
+  color: #b3b3b3;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.add:hover:not(:disabled) {
+  background: var(--color-contrast);
+  border-color: var(--color-contrast);
+  color: var(--color-contrast-ink);
+}
+
+.addedBtn {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.4);
+  cursor: default;
+}
+
+@media (max-width: 560px) {
+  .card {
+    grid-template-columns: 1.8rem 46px minmax(0, 1fr) auto;
+    gap: 0.6rem;
+  }
+  .art {
+    width: 46px;
+    height: 46px;
+  }
+}
