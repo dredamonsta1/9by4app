@@ -15,7 +15,7 @@ import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
 import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import FiltersBar from "../FiltersBar/FiltersBar";
-import RankView from "../RankView/RankView";
+import RankCardList from "../landing/RankCardList";
 import NewMusicSection from "../NewMusicSection/NewMusicSection";
 import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
@@ -641,11 +641,6 @@ const ArtistPanel = () => {
     (a) => a.artist_id === artist.artist_id,
   );
   const rank = rankIndex >= 0 ? rankIndex + 1 : null;
-  const prevArtist = rankIndex > 0 ? allArtists[rankIndex - 1] : null;
-  const nextArtist =
-    rankIndex >= 0 && rankIndex < allArtists.length - 1
-      ? allArtists[rankIndex + 1]
-      : null;
 
   // Re-pull favorites after add/remove. Cheap (rows are small) and
   // avoids needing optimistic state in two places. Also refreshes the
@@ -676,6 +671,17 @@ const ArtistPanel = () => {
   }, {});
 
   const inList = profileList.some((a) => a.artist_id === artist.artist_id);
+
+  // Rankings rows carry their own add button. Guests get the auth wall
+  // rather than a silent no-op, per the browse-free / commit-gated rule.
+  const rankInList = new Set(profileList.map((a) => a.artist_id));
+  const handleRankAdd = (a) => {
+    if (!isLoggedIn) {
+      setShowGuestPrompt(true);
+      return;
+    }
+    dispatch(addArtistToProfileList(a));
+  };
   const myEntry = profileList.find((a) => a.artist_id === artist.artist_id);
   const listFull = profileList.length >= 20;
 
@@ -742,7 +748,7 @@ const ArtistPanel = () => {
     );
   };
 
-  // FiltersBar choice → RankView's data (and hero on filter change).
+  // FiltersBar choice → the rankings list's data (and hero on filter change).
   // "my list" scopes to the user's Top 20; genre / region apply substring
   // filters against the relevant columns; "all" passes through.
   const profileListIds = new Set(profileList.map((a) => a.artist_id));
@@ -768,8 +774,32 @@ const ArtistPanel = () => {
   };
   const filteredArtists = applyFilter(allArtists, activeFilter);
 
+  // Prev/next on the featured card. These existed before as the ▲/▼ flip
+  // arrows and were dropped with the rankings-first pivot on the reasoning
+  // that the visible list replaced them. In use it turned out the list
+  // answers "who else is there", not "show me the next one" — so they're
+  // back, but stepping through the filtered order rather than the global
+  // one, so they agree with whatever the pills are showing.
+  const filteredIndex = filteredArtists.findIndex(
+    (a) => a.artist_id === artist?.artist_id
+  );
+  const prevArtist =
+    filteredIndex > 0 ? filteredArtists[filteredIndex - 1] : null;
+  const nextArtist =
+    filteredIndex >= 0 && filteredIndex < filteredArtists.length - 1
+      ? filteredArtists[filteredIndex + 1]
+      : null;
+
+  // The cards stacked behind the active one are the artists you'd reach by
+  // hitting next — so the stack previews the deck rather than being three
+  // empty rectangles. Falls back to fewer layers near the end of the list.
+  const deckPreview = filteredArtists.slice(
+    Math.max(0, filteredIndex + 1),
+    Math.max(0, filteredIndex + 1) + 3
+  );
+
   // Passive filter — updates activeFilter, which flows to the
-  // Rankings box directly below the pill strip. RankView rows
+  // Rankings box directly below the pill strip. Rank card rows
   // navigate on click, so users who want to jump to someone in
   // the filter still can. The previous auto-navigate on filter
   // change caused an unwanted whole-panel re-mount.
@@ -877,7 +907,7 @@ const ArtistPanel = () => {
           />
         </div>
 
-        <div className={styles.threeCol}>
+        <div className={styles.twoCol}>
           {/* ---- LEFT: Rankings (top, so filter-pill effect is in
                 the same eye-line) → Feed → Top Albums on stanbox ---- */}
           <aside className={styles.feedCol}>
@@ -887,7 +917,14 @@ const ArtistPanel = () => {
             <div className={`${styles.box} ${styles.rankingsBox}`}>
               <header className={styles.boxHeader}>Rankings</header>
               <div className={styles.boxScroll}>
-                <RankView artists={filteredArtists} isLoggedIn={isLoggedIn} />
+                <RankCardList
+                  artists={filteredArtists}
+                  selectedId={artist?.artist_id}
+                  onSelect={(a) => navigate(`/artist/${a.artist_id}`)}
+                  onAdd={handleRankAdd}
+                  inList={rankInList}
+                  resetKey={activeFilter}
+                />
               </div>
             </div>
 
@@ -982,23 +1019,35 @@ const ArtistPanel = () => {
         </aside>
 
         {/* ---- CENTER: Card hero ---- */}
+        {/* Companion column — the featured artist and everything about
+            them. Was the centre protagonist; under the rankings-first
+            hierarchy it's the detail view for whichever artist is open. */}
+        <div className={styles.companionCol}>
         <section className={styles.hero}>
           <div className={styles.deck}>
-            <div className={`${styles.deckLayer} ${styles.deckLayer3}`} />
-            <div className={`${styles.deckLayer} ${styles.deckLayer2}`} />
-            <div className={`${styles.deckLayer} ${styles.deckLayer1}`} />
-
-            <button
-              type="button"
-              className={`${styles.flipBtn} ${styles.flipLeft}`}
-              onClick={() =>
-                prevArtist && navigate(`/artist/${prevArtist.artist_id}`)
-              }
-              disabled={!prevArtist}
-              aria-label="Previous ranked artist"
-            >
-              ⌃
-            </button>
+            {[2, 1, 0].map((depth) => {
+              const upcoming = deckPreview[depth];
+              return (
+                <div
+                  key={depth}
+                  className={`${styles.deckLayer} ${
+                    styles[`deckLayer${depth + 1}`]
+                  }`}
+                  aria-hidden="true"
+                >
+                  {upcoming && (
+                    <img
+                      src={resolveImageUrl(
+                        upcoming.image_url,
+                        "https://via.placeholder.com/360?text=?",
+                      )}
+                      alt=""
+                      className={styles.deckLayerImage}
+                    />
+                  )}
+                </div>
+              );
+            })}
 
             {/* The whole featured card is the primary "stan this artist"
                 affordance. No visible chip/button — clicking the image
@@ -1038,6 +1087,9 @@ const ArtistPanel = () => {
                 }
               }}
             >
+              {rank != null && (
+                <span className={styles.cardRank}>#{rank}</span>
+              )}
               <img
                 src={resolveImageUrl(
                   artist.image_url,
@@ -1046,27 +1098,55 @@ const ArtistPanel = () => {
                 alt={artist.artist_name || "Artist"}
                 className={styles.cardImage}
               />
-              <div className={styles.cardOverlay}>
+              <div className={styles.cardBody}>
                 <h1 className={styles.cardName}>
                   {artist.artist_name || "N/A"}
                 </h1>
-                {artist.genre && (
-                  <p className={styles.cardGenre}>{artist.genre}</p>
-                )}
+                <div className={styles.cardMeta}>
+                  <span className={styles.cardFans}>
+                    {(artist.count || 0).toLocaleString()} fans
+                  </span>
+                  {artist.genre && (
+                    <span className={styles.cardChip}>{artist.genre}</span>
+                  )}
+                  {artist.region && (
+                    <span className={styles.cardChip}>{artist.region}</span>
+                  )}
+                </div>
               </div>
             </article>
 
-            <button
-              type="button"
-              className={`${styles.flipBtn} ${styles.flipRight}`}
-              onClick={() =>
-                nextArtist && navigate(`/artist/${nextArtist.artist_id}`)
-              }
-              disabled={!nextArtist}
-              aria-label="Next ranked artist"
-            >
-              ⌄
-            </button>
+            {(prevArtist || nextArtist) && (
+              <nav className={styles.cardNav} aria-label="Move through rankings">
+                <button
+                  type="button"
+                  className={styles.cardNavBtn}
+                  onClick={() =>
+                    prevArtist && navigate(`/artist/${prevArtist.artist_id}`)
+                  }
+                  disabled={!prevArtist}
+                  aria-label="Previous ranked artist"
+                >
+                  ‹
+                </button>
+                <span className={styles.cardNavLabel}>
+                  {filteredIndex >= 0
+                    ? `#${filteredIndex + 1} of ${filteredArtists.length}`
+                    : ""}
+                </span>
+                <button
+                  type="button"
+                  className={styles.cardNavBtn}
+                  onClick={() =>
+                    nextArtist && navigate(`/artist/${nextArtist.artist_id}`)
+                  }
+                  disabled={!nextArtist}
+                  aria-label="Next ranked artist"
+                >
+                  ›
+                </button>
+              </nav>
+            )}
           </div>
 
           {rank && <div className={`${styles.rankBig} ${rank === 1 ? styles.rankBigFirst : ""}`}>{ordinal(rank)}</div>}
@@ -1227,7 +1307,7 @@ const ArtistPanel = () => {
         </section>
 
         {/* ---- RIGHT: Music (top, compact 2x2) + News/Events (below) ---- */}
-        <aside className={styles.rightCol}>
+        <div className={styles.rightCol}>
           <div className={styles.box}>
             <header className={styles.boxHeader}>
               <span>Music</span>
@@ -1546,7 +1626,8 @@ const ArtistPanel = () => {
               </div>
             </div>
           </div>
-        </aside>
+        </div>
+        </div>
       </div>
 
       {/* Bottom row: just NewMusicSection now that Rankings moved
