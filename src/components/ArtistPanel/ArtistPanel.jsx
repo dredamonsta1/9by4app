@@ -774,6 +774,22 @@ const ArtistPanel = () => {
   };
   const filteredArtists = applyFilter(allArtists, activeFilter);
 
+  // Prev/next on the featured card. These existed before as the ▲/▼ flip
+  // arrows and were dropped with the rankings-first pivot on the reasoning
+  // that the visible list replaced them. In use it turned out the list
+  // answers "who else is there", not "show me the next one" — so they're
+  // back, but stepping through the filtered order rather than the global
+  // one, so they agree with whatever the pills are showing.
+  const filteredIndex = filteredArtists.findIndex(
+    (a) => a.artist_id === artist?.artist_id
+  );
+  const prevArtist =
+    filteredIndex > 0 ? filteredArtists[filteredIndex - 1] : null;
+  const nextArtist =
+    filteredIndex >= 0 && filteredIndex < filteredArtists.length - 1
+      ? filteredArtists[filteredIndex + 1]
+      : null;
+
   // Passive filter — updates activeFilter, which flows to the
   // Rankings box directly below the pill strip. Rank card rows
   // navigate on click, so users who want to jump to someone in
@@ -1060,6 +1076,38 @@ const ArtistPanel = () => {
                 )}
               </div>
             </article>
+
+            {(prevArtist || nextArtist) && (
+              <nav className={styles.cardNav} aria-label="Move through rankings">
+                <button
+                  type="button"
+                  className={styles.cardNavBtn}
+                  onClick={() =>
+                    prevArtist && navigate(`/artist/${prevArtist.artist_id}`)
+                  }
+                  disabled={!prevArtist}
+                  aria-label="Previous ranked artist"
+                >
+                  ‹
+                </button>
+                <span className={styles.cardNavLabel}>
+                  {filteredIndex >= 0
+                    ? `#${filteredIndex + 1} of ${filteredArtists.length}`
+                    : ""}
+                </span>
+                <button
+                  type="button"
+                  className={styles.cardNavBtn}
+                  onClick={() =>
+                    nextArtist && navigate(`/artist/${nextArtist.artist_id}`)
+                  }
+                  disabled={!nextArtist}
+                  aria-label="Next ranked artist"
+                >
+                  ›
+                </button>
+              </nav>
+            )}
           </div>
 
           {rank && <div className={`${styles.rankBig} ${rank === 1 ? styles.rankBigFirst : ""}`}>{ordinal(rank)}</div>}

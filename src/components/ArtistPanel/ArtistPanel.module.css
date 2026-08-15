@@ -83,7 +83,12 @@
    plus everything about them as the companion on the right. */
 .twoCol {
   display: grid;
-  grid-template-columns: minmax(0, 1.85fr) minmax(320px, 1fr);
+  /* Was 1.85fr / 1fr, chosen when the rankings list ran to 25 rows. Capped
+     at five it only needs enough width for art + name + the add button;
+     the rest was dead space, and the companion card was the thing being
+     squeezed. Emphasis comes from position and the filter feedback loop,
+     not from width. */
+  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 1fr);
   gap: 2rem;
   align-items: start;
   margin-top: 0.5rem;
@@ -1716,7 +1721,7 @@
     padding: 1rem 1.25rem 6rem;
   }
   .twoCol {
-    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(300px, 1fr);
     gap: 1.25rem;
   }
 }
@@ -1801,4 +1806,54 @@
   .cardGenre {
     font-size: 0.82rem;
   }
+}
+
+/* ---- Featured card: step through the ranked order ----
+   Sits under the card rather than as arrows floating either side of it —
+   the companion column has no room for side arrows, and grouping the
+   controls with the position label reads as one navigation unit. */
+
+.cardNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.cardNavLabel {
+  font-size: 0.75rem;
+  color: #8899aa;
+  font-variant-numeric: tabular-nums;
+  min-width: 5.5rem;
+  text-align: center;
+}
+
+.cardNavBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(20, 32, 48, 0.78);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  backdrop-filter: blur(8px) saturate(1.2);
+  color: #cfd8e3;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.cardNavBtn:hover:not(:disabled) {
+  background: var(--color-contrast);
+  border-color: var(--color-contrast);
+  color: var(--color-contrast-ink);
+}
+
+.cardNavBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
