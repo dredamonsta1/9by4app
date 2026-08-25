@@ -1,0 +1,196 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  color: #fff;
+}
+
+.head {
+  margin-bottom: 1.5rem;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-contrast);
+}
+
+.title {
+  margin: 0.2rem 0 0;
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.months {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* An open quarter is a moving target, and the page shouldn't read as a
+   final result while it can still change. */
+.provisional {
+  margin: 0.9rem 0 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 2px solid var(--color-contrast);
+  background: rgba(214, 255, 61, 0.06);
+  font-size: 0.82rem;
+  color: #ccc;
+}
+
+.basis {
+  margin: 0 0 0.9rem;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.chart {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+}
+
+/* Rank 1 gets the accent; the rest stay quiet so the top of the chart
+   reads first. */
+.row:first-child .rank {
+  color: var(--color-contrast);
+  font-size: 2rem;
+}
+
+.rank {
+  min-width: 2rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #666;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.art {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #222;
+  flex-shrink: 0;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.album {
+  font-size: 0.95rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist {
+  font-size: 0.82rem;
+  color: #999;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist:hover {
+  color: var(--color-contrast);
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.points {
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.votes {
+  font-size: 0.7rem;
+  color: #777;
+  white-space: nowrap;
+}
+
+.notYet {
+  padding: 2rem 1.25rem;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.notYetTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: var(--color-contrast);
+  color: #0a1420;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.muted {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #999;
+  line-height: 1.5;
+}
+
+.error {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #ff6b6b;
+}
+
+@media (max-width: 520px) {
+  .title {
+    font-size: 1.7rem;
+  }
+
+  .art {
+    width: 42px;
+    height: 42px;
+  }
+
+  .votes {
+    display: none;
+  }
+}

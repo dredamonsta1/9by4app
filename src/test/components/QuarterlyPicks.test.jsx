@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render as rtlRender, screen, waitFor, within } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import QuarterlyPicks from "../../components/QuarterlyPicks/QuarterlyPicks";
 import { quarterLabel, quarterMonths, lockLabel } from "../../hooks/useQuarterlyPicks";
@@ -15,11 +16,9 @@ vi.mock("react-toastify", () => ({
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 
-// The editing tests drive six clicks each through a full fetch cycle, which
-// is the heaviest interaction work in this suite. They pass comfortably on
-// their own but brush the 5s default when 29 files run in parallel, so the
-// ceiling is raised here rather than cutting the coverage back.
-vi.setConfig({ testTimeout: 20000 });
+
+// The component links to the chart page, so it needs a router in scope.
+const render = (ui) => rtlRender(<MemoryRouter>{ui}</MemoryRouter>);
 
 const album = (id, name, artist = "ChuckXL") => ({
   album_id: id,
@@ -221,8 +220,15 @@ describe("QuarterlyPicks — editing", () => {
     render(<QuarterlyPicks editable />);
     await openPicker(user);
 
-    for (const n of [1, 2, 3, 4, 5, 6]) {
-      await user.click(await screen.findByRole("button", { name: new RegExp(`Album ${n}`) }));
+    // Query the tree once and click by index. Six separate findByRole
+    // lookups each recompute accessible names for every button in a growing
+    // DOM, which is cheap alone and pathological when 30 files run at once —
+    // this test was the suite's only reliable flake because of it.
+    const list = await screen.findByRole("list", { name: /released this quarter/i });
+    const rows = within(list).getAllByRole("button");
+    expect(rows).toHaveLength(6);
+    for (const row of rows) {
+      await user.click(row);
     }
     await user.click(screen.getByRole("button", { name: /save picks/i }));
 

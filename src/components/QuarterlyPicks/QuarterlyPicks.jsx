@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import {
@@ -138,11 +139,21 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
               : `${displayName}'s five best releases, by quarter.`}
           </p>
         </div>
-        {canEdit && !editing && (
-          <button type="button" className={styles.editBtn} onClick={() => setEditing(true)}>
-            {picks.length ? "Edit picks" : "Make your picks"}
-          </button>
-        )}
+        <div className={styles.headActions}>
+          {data && (
+            <Link
+              to={`/picks/${data.year}/${data.quarter}`}
+              className={styles.chartLink}
+            >
+              See the chart
+            </Link>
+          )}
+          {canEdit && !editing && (
+            <button type="button" className={styles.editBtn} onClick={() => setEditing(true)}>
+              {picks.length ? "Edit picks" : "Make your picks"}
+            </button>
+          )}
+        </div>
       </header>
 
       {quarters.length > 0 && (
@@ -226,7 +237,7 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
               {draftAlbums.length === 0 && (
                 <p className={styles.muted}>Pick from the releases below.</p>
               )}
-              <ol className={styles.pickList}>
+              <ol className={styles.pickList} aria-label="Your ranking">
                 {draftAlbums.map((a, i) => (
                   <li key={a.album_id} className={styles.pickRow}>
                     <span className={styles.rank}>{i + 1}</span>
@@ -281,7 +292,7 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
                   they land.
                 </p>
               )}
-              <ul className={styles.ballotList}>
+              <ul className={styles.ballotList} aria-label="Released this quarter">
                 {(ballot?.albums ?? []).map((a) => {
                   const picked = draft.includes(a.album_id);
                   return (
