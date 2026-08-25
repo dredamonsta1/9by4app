@@ -72,6 +72,7 @@ const YourMusic = () => {
   const [createForm, setCreateForm] = useState({
     album_name: "",
     year: String(CURRENT_YEAR),
+    release_date: "",
     album_image_url: "",
     release_type: "album",
   });
@@ -253,6 +254,7 @@ const YourMusic = () => {
     setCreateForm({
       album_name: "",
       year: String(CURRENT_YEAR),
+      release_date: "",
       album_image_url: "",
       release_type: "album",
     });
@@ -273,6 +275,16 @@ const YourMusic = () => {
       toast.error(`Year must be between ${YEAR_MIN} and ${YEAR_MAX}.`);
       return;
     }
+    // The server rejects a date whose year contradicts the year field. The
+    // date input keeps them in sync automatically, so this only fires if
+    // someone edits the year afterwards — catch it here rather than as a 400.
+    if (
+      createForm.release_date &&
+      Number(createForm.release_date.slice(0, 4)) !== yearInt
+    ) {
+      toast.error("Release date must fall in the year you entered.");
+      return;
+    }
     if (imageRaw && !/^https?:\/\//i.test(imageRaw)) {
       toast.error("Album image URL must start with http(s)://, or leave it blank.");
       return;
@@ -283,6 +295,7 @@ const YourMusic = () => {
       const res = await axiosInstance.post("/artists/me/albums", {
         album_name: name,
         year: yearInt,
+        release_date: createForm.release_date || null,
         album_image_url: imageRaw || null,
         release_type: createForm.release_type,
       });
@@ -415,6 +428,30 @@ const YourMusic = () => {
                   }
                   disabled={creating}
                 />
+              </label>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>Release date</span>
+                <input
+                  type="date"
+                  className={styles.input}
+                  min={`${YEAR_MIN}-01-01`}
+                  max={`${YEAR_MAX}-12-31`}
+                  value={createForm.release_date}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({
+                      ...f,
+                      release_date: e.target.value,
+                      // Year follows the date so the two can't disagree. Left
+                      // editable on its own for back-catalogue releases where
+                      // the exact day is genuinely unknown.
+                      year: e.target.value ? e.target.value.slice(0, 4) : f.year,
+                    }))
+                  }
+                  disabled={creating}
+                />
+                <span className={styles.fieldHint}>
+                  Needed to appear in quarterly picks and new-release lists.
+                </span>
               </label>
               <label className={`${styles.field} ${styles.fieldWide}`}>
                 <span className={styles.fieldLabel}>Cover image URL (optional)</span>
