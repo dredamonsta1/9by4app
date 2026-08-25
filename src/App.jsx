@@ -22,6 +22,7 @@ import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
+import QuarterlyChart from "./pages/QuarterlyChart/QuarterlyChart";
 import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
 import ArtistSettings from "./pages/ArtistSettings/ArtistSettings.jsx";
@@ -85,6 +86,10 @@ const App = () => {
           <Route path="/checkout/return" element={<CheckoutReturn />} />
           {/* Story 6 mockup harness — unlinked on purpose. Delete with the
               losing directions once a shrine direction is picked. */}
+          {/* Public and shareable — the chart is the artifact with
+              outside-world value, unlike an individual's picks. */}
+          <Route path="/picks" element={<QuarterlyChart />} />
+          <Route path="/picks/:year/:quarter" element={<QuarterlyChart />} />
           <Route path="/shrine-preview" element={<ShrinePreview />} />
 
           <Route

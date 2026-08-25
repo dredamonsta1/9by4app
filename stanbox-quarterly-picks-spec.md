@@ -23,7 +23,7 @@ It also produces something the platform can publish. "StanBox's Q3 2026" is an a
 | Picks | **5** | A five-minute task. This gets asked four times a year, so the bar has to stay low. |
 | Ranked | **Yes** | Matches the Top 20's grammar, and gives the aggregate weighted signal instead of raw counts. |
 | Quarter end | **Locks, 14 days after it ends** | A frozen quarter is an artifact you can look back on and publish. An editable one is just a Top 20 with a date on it. 14 days so a late-September record heard in early October isn't stranded. |
-| Aggregate chart | **Deferred** | With ~20 users a "StanBox Q3" built from one or two ballots is worse than no chart. Revisit after launch. |
+| Aggregate chart | **Built with a floor** (2026-08-25) | Withheld below 5 ballots rather than deferred entirely — the machinery ships now, but never publishes a thin claim. `QUARTERLY_MIN_BALLOTS` raises the floor as the user base grows. |
 | Indie artists | **Must be able to appear on the ballot** | Non-negotiable. See §4a — the current code makes this impossible, and fixing it is a prerequisite. |
 
 ---
@@ -125,8 +125,8 @@ Locking means:
 
 ## 6. Open questions
 
-1. ~~**Where does it live?**~~ **Locked 2026-08-25: the profile, beneath the Top 20 shrine.** Same kind of identity artifact, same ranked-list grammar, and it gets seen without new navigation. A dedicated page stays on the table for when there's real history to browse.
-2. **Ranked scoring weights** for the aggregate — 5/4/3/2/1, or something steeper that rewards a #1. Still open; the aggregate itself is deferred.
+1. ~~**Where does it live?**~~ **Locked 2026-08-25: individual picks on the profile beneath the Top 20 shrine; the aggregate chart on its own public page at `/picks/:year/:quarter`.** The chart is the piece with outside-world value — a shareable claim about a quarter that isn't tied to one person — so it gets a URL. Individual picks stay personal. Same kind of identity artifact, same ranked-list grammar, and it gets seen without new navigation. A dedicated page stays on the table for when there's real history to browse.
+2. ~~**Ranked scoring weights**~~ **Locked 2026-08-25: linear 5/4/3/2/1.** A steeper curve lets a single #1 vote outrun several mid-table ones, which reads as noise rather than consensus at small ballot counts. Revisit when there are enough ballots for the shape to matter.
 3. ~~**Does a pick imply anything else?**~~ **Locked 2026-08-25: no buy button at v1.** The ballot is a taste artifact first — "StanBox's Q3" should read as editorial, not as a storefront. Commerce can be layered on once the mechanic proves it gets used; unwinding a storefront nobody wanted is the harder direction.
 
 ---
