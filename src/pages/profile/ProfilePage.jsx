@@ -21,6 +21,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
 import Top20Shrine from "../../components/Top20Shrine/Top20Shrine";
+import QuarterlyPicks from "../../components/QuarterlyPicks/QuarterlyPicks";
 import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
@@ -587,6 +588,15 @@ const ProfilePage = () => {
             }
           />
         )}
+
+        {/* Same kind of identity artifact as the shrine above it, but with a
+            clock on it — which is the point: a Top 20 is permanent, so there
+            is never an occasion to revisit it. */}
+        <QuarterlyPicks
+          userId={isOwnProfile ? null : Number(userId)}
+          editable={isOwnProfile}
+          displayName={displayedUser?.username || "This user"}
+        />
 
         {/* Add Artist Panel */}
         {showAddArtistModal && isOwnProfile && (

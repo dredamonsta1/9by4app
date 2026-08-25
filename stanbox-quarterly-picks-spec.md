@@ -1,6 +1,6 @@
 # StanBox Quarterly Picks — Spec v1.0
 
-**Status:** Draft, 2026-08-25
+**Status:** v1 built, 2026-08-25 — backend nineByFourApi #104, frontend 9by4app #157
 **Origin:** Andre, 2026-08-25 — "users pick their favourite releases per quarter of the calendar year"
 
 ---
@@ -113,6 +113,8 @@ Two uniqueness constraints, both load-bearing: one slot per position, and the sa
 
 **Confirmed: quarters lock 14 days after the quarter ends.** Q3 (Jul–Sep) seals on 14 October.
 
+*Implementation note (nineByFourApi #104):* "seals on 14 October" was ambiguous about whether the 14th itself is pickable. Resolved toward the generous reading — 14 full days of grace, so 1–14 October all work and the quarter shuts the instant the 15th starts. Pinned in a test rather than left implicit.
+
 Locking means:
 - No writes to a sealed `(year, quarter)` — enforced server-side, not just hidden in the UI
 - The aggregate can be computed once and cached forever rather than recomputed against a moving target
@@ -123,9 +125,9 @@ Locking means:
 
 ## 6. Open questions
 
-1. **Where does it live?** Profile, alongside the Top 20 shrine, is the obvious home — it's the same kind of identity artifact. A dedicated page becomes justified once there's history to browse.
-2. **Ranked scoring weights** for the aggregate — 5/4/3/2/1, or something steeper that rewards a #1.
-3. **Does a pick imply anything else?** E.g. does picking a release you can buy surface a buy button. Probably yes, but it's a separate decision from the mechanic.
+1. ~~**Where does it live?**~~ **Locked 2026-08-25: the profile, beneath the Top 20 shrine.** Same kind of identity artifact, same ranked-list grammar, and it gets seen without new navigation. A dedicated page stays on the table for when there's real history to browse.
+2. **Ranked scoring weights** for the aggregate — 5/4/3/2/1, or something steeper that rewards a #1. Still open; the aggregate itself is deferred.
+3. ~~**Does a pick imply anything else?**~~ **Locked 2026-08-25: no buy button at v1.** The ballot is a taste artifact first — "StanBox's Q3" should read as editorial, not as a storefront. Commerce can be layered on once the mechanic proves it gets used; unwinding a storefront nobody wanted is the harder direction.
 
 ---
 
