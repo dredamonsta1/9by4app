@@ -52,18 +52,21 @@ Andre, 2026-08-25: *"when stanbox has indie artists on the platform we want them
 | Path | Writes `release_date`? |
 |---|---|
 | `jobs/new-releases.js` | ✅ yes |
-| `routes/artists.js:619` (artist/admin adds an album) | ❌ no — `year` only |
-| `routes/artists.js:1632` (album creation) | ❌ no — `year` only |
-| `seed.js`, `seed-production.js` | ❌ no |
+| `POST /artists/me/albums` (artist self-serve) | ✅ **fixed** — nineByFourApi #100 |
+| `POST /artists/:artist_id/albums` (bulk import) | ✅ **fixed** — nineByFourApi #100 |
+| Your Music create form | ✅ **fixed** — 9by4app #155 |
+| `seed.js`, `seed-production.js` | ❌ no — catalogue backfill, see item 2 |
 
 Only the Spotify pipeline sets a real date. Everything a human adds gets a bare `year`, and a year-only album cannot be bucketed to a quarter.
 
 So quarterly picks built on today's code would be **structurally limited to Spotify-surfaced, major-label releases** — precisely the artists who least need the exposure, and precisely the opposite of the intent.
 
 **Prerequisite work, before or alongside the ballot:**
-1. Add `release_date` to the artist/admin album-creation paths, and to the UI that feeds them (ArtistSettings + the admin album form).
+1. ~~Add `release_date` to the artist/admin album-creation paths, and to the UI that feeds them.~~ **Done 2026-08-25** — nineByFourApi #100 + 9by4app #155. The self-serve route validates the date is a real calendar day and that its year agrees with `year`; the Your Music form derives the year from the date so they can't drift. Left **optional** rather than required, see item 3.
 2. Decide the rule for existing year-only albums — most likely: excluded from ballots, since inventing a date would put records in arbitrary quarters.
-3. Consider making `release_date` required for any album an artist creates going forward. `year` alone is not enough for anything time-boxed, and this won't be the last such feature.
+3. Consider making `release_date` required for any album an artist creates going forward. `year` alone is not enough for anything time-boxed, and this won't be the last such feature. **Deliberately left optional in #100** so a client without the field keeps working; the tightening is a one-line change once no caller omits it. Revisit when the ballot ships — an artist who skips the date silently opts out of it.
+
+**Fixed, but only forward-looking:** albums created before 2026-08-25 still carry a bare year. Item 2 is still open.
 
 This is the difference between "indie artists can participate" and "indie artists are invisible to the mechanic". It is not a nice-to-have.
 
