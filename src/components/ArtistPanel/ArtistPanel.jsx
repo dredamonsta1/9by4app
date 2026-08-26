@@ -433,6 +433,19 @@ const PositionSelector = ({ profileList, onSelect, onClose }) => {
   );
 };
 
+/**
+ * A filter pill as query params for /artists.
+ *
+ * One place, used by both the filter change and the load-more, because the
+ * failure mode when they disagree is silent: page two returns a different
+ * set and gets appended to the list you're looking at.
+ */
+export const filterParams = (filter) => {
+  if (filter?.type === "genre") return { genre: filter.value };
+  if (filter?.type === "region") return { region: filter.value };
+  return {};
+};
+
 const ArtistPanel = () => {
   const { artistId } = useParams();
   const navigate = useNavigate();
@@ -637,15 +650,18 @@ const ArtistPanel = () => {
   // unused since the list was written — nothing ever called it, which is
   // why browsing dead-ended at the first page regardless of its size.
   //
-  // No filter params: filtering is applied client-side over the loaded set
-  // (see applyFilter), so the fetch stays the plain global ordering.
+  // It has to carry the same filter as the request that opened the list.
+  // Without that, page two comes back unfiltered and gets appended to a
+  // filtered list, so scrolling a genre quietly fills it with everyone.
   //
   // Declared above the early returns below: a hook after them runs
   // conditionally, and React needs the same hook order on every render.
   const handleNeedMore = useCallback(() => {
     if (artistsLoadingMore || !artistsHasMore) return;
-    dispatch(fetchMoreArtists({ page: artistsPage + 1 }));
-  }, [dispatch, artistsPage, artistsHasMore, artistsLoadingMore]);
+    dispatch(
+      fetchMoreArtists({ page: artistsPage + 1, ...filterParams(activeFilter) })
+    );
+  }, [dispatch, artistsPage, artistsHasMore, artistsLoadingMore, activeFilter]);
 
   if (loading) {
     return (
@@ -771,23 +787,18 @@ const ArtistPanel = () => {
   // "my list" scopes to the user's Top 20; genre / region apply substring
   // filters against the relevant columns; "all" passes through.
   const profileListIds = new Set(profileList.map((a) => a.artist_id));
+  // Genre and region are filtered by the server now, so the rows arriving
+  // here are already the right ones — filtering again locally would be a
+  // second, narrower pass over a set that has been correctly narrowed.
+  //
+  // "My list" stays local, and is correct that way rather than merely
+  // convenient: adding an artist to a list increments their clout, the list
+  // is sorted by clout, and only ~57 artists have any. Every artist in
+  // anyone's list is therefore inside the first page. Verified against
+  // production — all 73 list rows across all users fall in the first 200.
   const applyFilter = (artists, filter) => {
     if (filter.type === "mylist") {
       return artists.filter((a) => profileListIds.has(a.artist_id));
-    }
-    if (filter.type === "genre") {
-      const v = filter.value.toLowerCase();
-      return artists.filter(
-        (a) => a.genre && a.genre.toLowerCase().includes(v),
-      );
-    }
-    if (filter.type === "region") {
-      const v = filter.value.toLowerCase();
-      return artists.filter(
-        (a) =>
-          (a.region && a.region.toLowerCase() === v) ||
-          (a.state && a.state.toLowerCase() === v),
-      );
     }
     return artists;
   };
@@ -822,8 +833,17 @@ const ArtistPanel = () => {
   // navigate on click, so users who want to jump to someone in
   // the filter still can. The previous auto-navigate on filter
   // change caused an unwanted whole-panel re-mount.
+  // Genre and region now filter server-side, across all 112k artists rather
+  // than whatever page happened to be loaded. "My list" stays client-side on
+  // purpose — see applyFilter.
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
+    // Always refetch, including for "my list" and "all", where filterParams
+    // is empty and this restores the unfiltered set. Skipping the fetch
+    // there would leave whatever the previous pill loaded still in state —
+    // pick a genre, then "my list", and you'd see only the artists in your
+    // list who also matched that genre.
+    dispatch(fetchArtists(filterParams(filter)));
   };
 
   const albums = artist.albums || [];
