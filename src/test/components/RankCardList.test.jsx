@@ -144,3 +144,87 @@ describe("RankCardList", () => {
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
 });
+
+describe("RankCardList — loading more", () => {
+  const many = (n) =>
+    Array.from({ length: n }, (_, i) => ({
+      artist_id: i + 1,
+      artist_name: `Artist ${i + 1}`,
+      image_url: null,
+      count: 0,
+    }));
+
+  it("asks for more before reaching the last page", async () => {
+    // Fetching only at the final row makes every boundary a visible wait.
+    const onNeedMore = vi.fn();
+    render(
+      <RankCardList artists={many(25)} hasMore onNeedMore={onNeedMore} />
+    );
+
+    // 25 artists = 5 pages. Prefetch window is 2, so page 3 (index 2) trips it.
+    const next = screen.getByRole("button", { name: /next ranks/i });
+    await userEvent.click(next);
+    expect(onNeedMore).not.toHaveBeenCalled();
+
+    await userEvent.click(next);
+    expect(onNeedMore).toHaveBeenCalled();
+  });
+
+  it("does not ask when there is nothing more to load", async () => {
+    const onNeedMore = vi.fn();
+    render(
+      <RankCardList artists={many(25)} hasMore={false} onNeedMore={onNeedMore} />
+    );
+
+    const next = screen.getByRole("button", { name: /next ranks/i });
+    await userEvent.click(next);
+    await userEvent.click(next);
+    await userEvent.click(next);
+    expect(onNeedMore).not.toHaveBeenCalled();
+  });
+
+  it("does not stack requests while one is in flight", async () => {
+    const onNeedMore = vi.fn();
+    render(
+      <RankCardList artists={many(25)} hasMore loadingMore onNeedMore={onNeedMore} />
+    );
+
+    const next = screen.getByRole("button", { name: /next ranks/i });
+    await userEvent.click(next);
+    await userEvent.click(next);
+    expect(onNeedMore).not.toHaveBeenCalled();
+  });
+
+  it("offers paging even when one fetch fits on a single page", () => {
+    // Otherwise a 5-artist first page hides the only way to reach the rest.
+    render(<RankCardList artists={many(5)} hasMore onNeedMore={vi.fn()} />);
+
+    expect(screen.getByRole("button", { name: /next ranks/i })).toBeEnabled();
+  });
+
+  it("hides paging entirely at the true end of a short catalogue", () => {
+    render(<RankCardList artists={many(5)} hasMore={false} />);
+
+    expect(screen.queryByRole("button", { name: /next ranks/i })).not.toBeInTheDocument();
+  });
+
+  it("disables next on the final page once everything is loaded", async () => {
+    render(<RankCardList artists={many(10)} hasMore={false} />);
+
+    await userEvent.click(screen.getByRole("button", { name: /next ranks/i }));
+    expect(screen.getByRole("button", { name: /next ranks/i })).toBeDisabled();
+  });
+
+  it("marks the total as partial while more exists", () => {
+    // The count is what's loaded, not the catalogue. Labelled rather than a
+    // bare "+", which says nothing to a screen reader.
+    render(<RankCardList artists={many(25)} hasMore onNeedMore={vi.fn()} />);
+
+    expect(screen.getByLabelText(/more artists available/i)).toBeInTheDocument();
+  });
+
+  it("works with no handler at all", () => {
+    // The component is used outside the paginated list too.
+    expect(() => render(<RankCardList artists={many(10)} />)).not.toThrow();
+  });
+});
