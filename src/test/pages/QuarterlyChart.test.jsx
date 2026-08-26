@@ -166,12 +166,16 @@ describe("QuarterlyChart", () => {
       );
     });
 
-    it("titles it as the year and says where it comes from", async () => {
+    it("presents itself as standings, not Album of the Year", async () => {
+      // A derived chart never compares a Q1 album against a Q4 one — no
+      // user ever made that comparison. It shouldn't hold a title a
+      // year-end vote is meant to own.
       axiosInstance.get.mockResolvedValue({ data: yearData() });
       renderAt("/picks/2026");
 
-      expect(await screen.findByText("Album of the Year 2026")).toBeInTheDocument();
-      expect(screen.getByText(/not a separate ballot/i)).toBeInTheDocument();
+      expect(await screen.findByText("2026 Standings")).toBeInTheDocument();
+      expect(screen.getByText(/not a year-end vote/i)).toBeInTheDocument();
+      expect(screen.queryByText(/album of the year/i)).not.toBeInTheDocument();
     });
 
     it("shows turnout per quarter, including quarters nobody voted in", async () => {
@@ -187,13 +191,13 @@ describe("QuarterlyChart", () => {
       expect(screen.getAllByText("0")).toHaveLength(2);
     });
 
-    it("explains that a year settles when Q4 locks", async () => {
+    it("explains that standings settle when Q4 locks", async () => {
       axiosInstance.get.mockResolvedValue({
         data: yearData({ locked: false, provisional: true }),
       });
       renderAt("/picks/2026");
 
-      expect(await screen.findByText(/settles once Q4 locks/i)).toBeInTheDocument();
+      expect(await screen.findByText(/settle once Q4 locks/i)).toBeInTheDocument();
     });
 
     it("withholds a thin year chart like a thin quarterly one", async () => {
@@ -203,7 +207,7 @@ describe("QuarterlyChart", () => {
       renderAt("/picks/2026");
 
       expect(await screen.findByText(/not enough picks yet/i)).toBeInTheDocument();
-      expect(screen.getByText(/about the year rather than about one person/i)).toBeInTheDocument();
+      expect(screen.getByText(/rather than about one person/i)).toBeInTheDocument();
       expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
     });
 

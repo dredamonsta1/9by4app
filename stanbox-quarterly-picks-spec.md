@@ -131,15 +131,25 @@ Locking means:
 
 ---
 
-## 6a. Album of the Year (added 2026-08-26)
+## 6a. Year standings, and why they are not Album of the Year (2026-08-26)
 
-**Derived from the four quarterly charts, not a separate ballot.** Same picks, same 5/4/3/2/1 weighting, quarter filter dropped. Lives at `/picks/:year`.
+`/picks/:year` shows **running standings derived from the four quarterly charts** — same picks, same 5/4/3/2/1 weighting, quarter filter dropped. Titled "2026 Standings", explicitly *not* "Album of the Year".
 
-Chosen over a dedicated January ballot because it needs no fifth voting round from users and is live the moment Q4 seals. A year locks when its Q4 locks — mid-January of the following year, since a derived chart cannot settle before the last quarter feeding it does.
+**Album of the Year needs a separate year-end vote.** Decided 2026-08-26, after the derived version was built. Two reasons, the second decisive:
 
-**Known bias, deliberately surfaced:** a quarter with more voters carries more weight, so the chart measures the year *as it was voted* rather than as it's remembered. The year page renders a ballots-per-quarter bar chart so that skew is visible to the reader instead of buried in a total. If turnout ever becomes wildly uneven, that's the argument for revisiting a dedicated year-end ballot.
+1. **Turnout weights it.** A quarter with more voters carries more weight, so the standings measure the year as it was *voted*, not as it's remembered. The page renders a ballots-per-quarter bar chart so this is visible rather than buried in a total.
+2. **Nobody ever compares across quarters.** Each album is only ever ranked against the ~26 records from its own quarter. Summing produces a cross-quarter ranking **no user ever expressed** — a synthetic comparison. Even with perfectly even turnout, it cannot answer "having lived with both all year, which holds up?", which is the entire question a year-end list exists to answer.
 
-Same publish floor as the quarterly chart. A user who picks in all four quarters counts as **one** ballot for the year.
+Standings remain useful as a live view during the year, and settle when Q4 locks in mid-January. They just don't hold the title.
+
+Same publish floor as the quarterly chart. A user who picks in all four quarters counts as **one** ballot.
+
+### Year-end ballot — scoped, not built
+
+Open design questions, deliberately deferred to closer to January 2027 so participation can inform them:
+- **Eligibility:** every release from that year (~100+ dated albums, versus ~26 for a quarter) — needs search, unlike the quarterly picker's simple scroll
+- **Picks:** 5 like a quarter, or 10 as year-end lists conventionally run
+- **Window:** presumably opens 1 Jan and locks after the same 14-day grace
 
 ## 6b. Landing-page spotlight (added 2026-08-26)
 

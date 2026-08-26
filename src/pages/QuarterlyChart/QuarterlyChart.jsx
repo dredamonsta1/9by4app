@@ -68,7 +68,7 @@ const QuarterlyChart = () => {
           {!data
             ? "Chart"
             : isYear
-            ? `Album of the Year ${data.year}`
+            ? `${data.year} Standings`
             : quarterLabel(data.year, data.quarter)}
         </h1>
         {data && !isYear && (
@@ -76,14 +76,14 @@ const QuarterlyChart = () => {
         )}
         {data && isYear && (
           <p className={styles.months}>
-            Derived from the quarterly charts — not a separate ballot.
+            Running totals from the quarterly charts — not a year-end vote.
           </p>
         )}
 
         {data?.provisional && (
           <p className={styles.provisional}>
             {isYear
-              ? "Provisional — the year settles once Q4 locks in January."
+              ? "Standings move as each quarter's picks land, and settle once Q4 locks in January."
               : "Provisional — this quarter is still open and picks can still change."}
           </p>
         )}
@@ -101,8 +101,9 @@ const QuarterlyChart = () => {
               : `${data.ballot_count} ${
                   data.ballot_count === 1 ? "person has" : "people have"
                 } picked so far.`}{" "}
-            A chart needs {data.minimum_ballots} before it says anything about
-            the {isYear ? "year" : "quarter"} rather than about one person.
+            {isYear ? "Standings need" : "A chart needs"} {data.minimum_ballots}{" "}
+            before {isYear ? "they say" : "it says"} anything about the{" "}
+            {isYear ? "year" : "quarter"} rather than about one person.
           </p>
           <Link to="/profile" className={styles.cta}>
             Make your picks
