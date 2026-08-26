@@ -19,6 +19,7 @@ import styles from "./QuarterlyChart.module.css";
  */
 const QuarterlyChart = () => {
   const { year, quarter } = useParams();
+  const isYear = Boolean(year) && !quarter;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,9 +29,14 @@ const QuarterlyChart = () => {
     setLoading(true);
     setError(null);
 
-    const query = year && quarter ? `?year=${year}&quarter=${quarter}` : "";
+    // One page, two scopes: /picks/2026 is the year, /picks/2026/3 a
+    // quarter. Same chart shape either way, so duplicating the page to
+    // render the same list twice would only guarantee they drift.
+    const path = isYear
+      ? `/quarterly-picks/aggregate/year?year=${year}`
+      : `/quarterly-picks/aggregate${year && quarter ? `?year=${year}&quarter=${quarter}` : ""}`;
     axiosInstance
-      .get(`/quarterly-picks/aggregate${query}`)
+      .get(path)
       .then((res) => {
         if (!cancelled) setData(res.data);
       })
@@ -46,7 +52,7 @@ const QuarterlyChart = () => {
     return () => {
       cancelled = true;
     };
-  }, [year, quarter]);
+  }, [year, quarter, isYear]);
 
   const artFor = (e) =>
     resolveImageUrl(
@@ -59,13 +65,26 @@ const QuarterlyChart = () => {
       <header className={styles.head}>
         <p className={styles.kicker}>StanBox</p>
         <h1 className={styles.title}>
-          {data ? quarterLabel(data.year, data.quarter) : "Quarterly Chart"}
+          {!data
+            ? "Chart"
+            : isYear
+            ? `${data.year} Standings`
+            : quarterLabel(data.year, data.quarter)}
         </h1>
-        {data && <p className={styles.months}>{quarterMonths(data.year, data.quarter)}</p>}
+        {data && !isYear && (
+          <p className={styles.months}>{quarterMonths(data.year, data.quarter)}</p>
+        )}
+        {data && isYear && (
+          <p className={styles.months}>
+            Running totals from the quarterly charts — not a year-end vote.
+          </p>
+        )}
 
         {data?.provisional && (
           <p className={styles.provisional}>
-            Provisional — this quarter is still open and picks can still change.
+            {isYear
+              ? "Standings move as each quarter's picks land, and settle once Q4 locks in January."
+              : "Provisional — this quarter is still open and picks can still change."}
           </p>
         )}
       </header>
@@ -78,12 +97,13 @@ const QuarterlyChart = () => {
           <h2 className={styles.notYetTitle}>Not enough picks yet</h2>
           <p className={styles.muted}>
             {data.ballot_count === 0
-              ? "Nobody has picked for this quarter."
+              ? `Nobody has picked for this ${isYear ? "year" : "quarter"}.`
               : `${data.ballot_count} ${
                   data.ballot_count === 1 ? "person has" : "people have"
                 } picked so far.`}{" "}
-            A chart needs {data.minimum_ballots} before it says anything about
-            the quarter rather than about one person.
+            {isYear ? "Standings need" : "A chart needs"} {data.minimum_ballots}{" "}
+            before {isYear ? "they say" : "it says"} anything about the{" "}
+            {isYear ? "year" : "quarter"} rather than about one person.
           </p>
           <Link to="/profile" className={styles.cta}>
             Make your picks
@@ -96,6 +116,37 @@ const QuarterlyChart = () => {
           <p className={styles.basis}>
             From {data.ballot_count} ballots · {data.pick_count} picks
           </p>
+
+          {isYear && data.quarter_breakdown?.length > 0 && (
+            <div className={styles.turnout}>
+              {/* Deriving the year from the quarters means uneven turnout
+                  silently weights it. Showing the split makes that a fact
+                  the reader can see rather than a bias hidden in a total. */}
+              <span className={styles.turnoutLabel}>Ballots per quarter</span>
+              <span className={styles.turnoutBars}>
+                {[1, 2, 3, 4].map((q) => {
+                  const row = data.quarter_breakdown.find((b) => b.quarter === q);
+                  const max = Math.max(
+                    ...data.quarter_breakdown.map((b) => b.ballot_count),
+                    1
+                  );
+                  const pct = row ? Math.round((row.ballot_count / max) * 100) : 0;
+                  return (
+                    <span key={q} className={styles.turnoutCol}>
+                      <span className={styles.turnoutTrack}>
+                        <span
+                          className={styles.turnoutFill}
+                          style={{ height: `${pct}%` }}
+                        />
+                      </span>
+                      <span className={styles.turnoutQ}>Q{q}</span>
+                      <span className={styles.turnoutN}>{row?.ballot_count ?? 0}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
+          )}
           <ol className={styles.chart}>
             {data.entries.map((e) => (
               <li key={e.album_id} className={styles.row}>

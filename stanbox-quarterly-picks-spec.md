@@ -131,6 +131,34 @@ Locking means:
 
 ---
 
+## 6a. Year standings, and why they are not Album of the Year (2026-08-26)
+
+`/picks/:year` shows **running standings derived from the four quarterly charts** — same picks, same 5/4/3/2/1 weighting, quarter filter dropped. Titled "2026 Standings", explicitly *not* "Album of the Year".
+
+**Album of the Year needs a separate year-end vote.** Decided 2026-08-26, after the derived version was built. Two reasons, the second decisive:
+
+1. **Turnout weights it.** A quarter with more voters carries more weight, so the standings measure the year as it was *voted*, not as it's remembered. The page renders a ballots-per-quarter bar chart so this is visible rather than buried in a total.
+2. **Nobody ever compares across quarters.** Each album is only ever ranked against the ~26 records from its own quarter. Summing produces a cross-quarter ranking **no user ever expressed** — a synthetic comparison. Even with perfectly even turnout, it cannot answer "having lived with both all year, which holds up?", which is the entire question a year-end list exists to answer.
+
+Standings remain useful as a live view during the year, and settle when Q4 locks in mid-January. They just don't hold the title.
+
+Same publish floor as the quarterly chart. A user who picks in all four quarters counts as **one** ballot.
+
+### Year-end ballot — scoped, not built
+
+Open design questions, deliberately deferred to closer to January 2027 so participation can inform them:
+- **Eligibility:** every release from that year (~100+ dated albums, versus ~26 for a quarter) — needs search, unlike the quarterly picker's simple scroll
+- **Picks:** 5 like a quarter, or 10 as year-end lists conventionally run
+- **Window:** presumably opens 1 Jan and locks after the same 14-day grace
+
+## 6b. Landing-page spotlight (added 2026-08-26)
+
+A small card at the top of the landing page's right column showing **Album of the Quarter**, backed by `GET /quarterly-picks/spotlight`.
+
+It shows the most recent quarter that **clears the ballot floor**, not the currently open one. Reporting the active quarter would blank the box at every rollover — Q3's winner would vanish on 15 October in favour of an empty Q4, defeating the point. Below the floor it shows "Coming soon" with progress pips toward the threshold, which gives a user something to act on where a bare "coming soon" doesn't.
+
+While a quarter is still open its #1 is labelled **"leading"** rather than presented as a winner.
+
 ## 7. Not in scope
 
 - **Backfilling past quarters.** The whole point of locking.

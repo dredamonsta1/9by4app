@@ -43,6 +43,7 @@ const renderAt = (path = "/picks/2026/3") =>
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/picks/:year/:quarter" element={<QuarterlyChart />} />
+        <Route path="/picks/:year" element={<QuarterlyChart />} />
         <Route path="/picks" element={<QuarterlyChart />} />
       </Routes>
     </MemoryRouter>
@@ -136,6 +137,87 @@ describe("QuarterlyChart", () => {
 
     await screen.findByText("Alpha");
     expect(screen.queryByText(/still open/i)).not.toBeInTheDocument();
+  });
+
+  describe("year scope", () => {
+    const yearData = (over = {}) => ({
+      year: 2026,
+      locked: true,
+      provisional: false,
+      ballot_count: 9,
+      pick_count: 120,
+      minimum_ballots: 5,
+      published: true,
+      quarter_breakdown: [
+        { quarter: 1, ballot_count: 2, pick_count: 10 },
+        { quarter: 3, ballot_count: 9, pick_count: 45 },
+      ],
+      entries: [entry(1, "Alpha"), entry(2, "Beta")],
+      ...over,
+    });
+
+    it("hits the year endpoint, not the quarter one", async () => {
+      axiosInstance.get.mockResolvedValue({ data: yearData() });
+      renderAt("/picks/2026");
+
+      await screen.findByText("Alpha");
+      expect(axiosInstance.get).toHaveBeenCalledWith(
+        "/quarterly-picks/aggregate/year?year=2026"
+      );
+    });
+
+    it("presents itself as standings, not Album of the Year", async () => {
+      // A derived chart never compares a Q1 album against a Q4 one — no
+      // user ever made that comparison. It shouldn't hold a title a
+      // year-end vote is meant to own.
+      axiosInstance.get.mockResolvedValue({ data: yearData() });
+      renderAt("/picks/2026");
+
+      expect(await screen.findByText("2026 Standings")).toBeInTheDocument();
+      expect(screen.getByText(/not a year-end vote/i)).toBeInTheDocument();
+      expect(screen.queryByText(/album of the year/i)).not.toBeInTheDocument();
+    });
+
+    it("shows turnout per quarter, including quarters nobody voted in", async () => {
+      // The year is a sum, so uneven turnout weights it. Q2 and Q4 are
+      // absent from the payload and must still appear, at zero.
+      axiosInstance.get.mockResolvedValue({ data: yearData() });
+      renderAt("/picks/2026");
+
+      await screen.findByText(/ballots per quarter/i);
+      for (const q of ["Q1", "Q2", "Q3", "Q4"]) {
+        expect(screen.getByText(q)).toBeInTheDocument();
+      }
+      expect(screen.getAllByText("0")).toHaveLength(2);
+    });
+
+    it("explains that standings settle when Q4 locks", async () => {
+      axiosInstance.get.mockResolvedValue({
+        data: yearData({ locked: false, provisional: true }),
+      });
+      renderAt("/picks/2026");
+
+      expect(await screen.findByText(/settle once Q4 locks/i)).toBeInTheDocument();
+    });
+
+    it("withholds a thin year chart like a thin quarterly one", async () => {
+      axiosInstance.get.mockResolvedValue({
+        data: yearData({ published: false, ballot_count: 1, entries: [] }),
+      });
+      renderAt("/picks/2026");
+
+      expect(await screen.findByText(/not enough picks yet/i)).toBeInTheDocument();
+      expect(screen.getByText(/rather than about one person/i)).toBeInTheDocument();
+      expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+    });
+
+    it("hides the turnout breakdown on a quarterly chart", async () => {
+      respond();
+      renderAt("/picks/2026/3");
+
+      await screen.findByText("Alpha");
+      expect(screen.queryByText(/ballots per quarter/i)).not.toBeInTheDocument();
+    });
   });
 
   it("surfaces a load failure", async () => {

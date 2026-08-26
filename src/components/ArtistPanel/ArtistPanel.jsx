@@ -16,6 +16,7 @@ import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import FiltersBar from "../FiltersBar/FiltersBar";
 import RankCardList from "../landing/RankCardList";
+import PicksSpotlight from "../PicksSpotlight/PicksSpotlight";
 import NewMusicSection from "../NewMusicSection/NewMusicSection";
 import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
@@ -1308,6 +1309,11 @@ const ArtistPanel = () => {
 
         {/* ---- RIGHT: Music (top, compact 2x2) + News/Events (below) ---- */}
         <div className={styles.rightCol}>
+          {/* Album of the Quarter, top-right. Renders nothing until the
+              server has something to say, so it never reserves space for a
+              skeleton in a slot this small. */}
+          <PicksSpotlight />
+
           <div className={styles.box}>
             <header className={styles.boxHeader}>
               <span>Music</span>

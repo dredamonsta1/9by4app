@@ -89,6 +89,7 @@ const App = () => {
           {/* Public and shareable — the chart is the artifact with
               outside-world value, unlike an individual's picks. */}
           <Route path="/picks" element={<QuarterlyChart />} />
+          <Route path="/picks/:year" element={<QuarterlyChart />} />
           <Route path="/picks/:year/:quarter" element={<QuarterlyChart />} />
           <Route path="/shrine-preview" element={<ShrinePreview />} />
 
