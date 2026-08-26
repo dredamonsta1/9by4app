@@ -131,6 +131,24 @@ Locking means:
 
 ---
 
+## 6a. Album of the Year (added 2026-08-26)
+
+**Derived from the four quarterly charts, not a separate ballot.** Same picks, same 5/4/3/2/1 weighting, quarter filter dropped. Lives at `/picks/:year`.
+
+Chosen over a dedicated January ballot because it needs no fifth voting round from users and is live the moment Q4 seals. A year locks when its Q4 locks — mid-January of the following year, since a derived chart cannot settle before the last quarter feeding it does.
+
+**Known bias, deliberately surfaced:** a quarter with more voters carries more weight, so the chart measures the year *as it was voted* rather than as it's remembered. The year page renders a ballots-per-quarter bar chart so that skew is visible to the reader instead of buried in a total. If turnout ever becomes wildly uneven, that's the argument for revisiting a dedicated year-end ballot.
+
+Same publish floor as the quarterly chart. A user who picks in all four quarters counts as **one** ballot for the year.
+
+## 6b. Landing-page spotlight (added 2026-08-26)
+
+A small card at the top of the landing page's right column showing **Album of the Quarter**, backed by `GET /quarterly-picks/spotlight`.
+
+It shows the most recent quarter that **clears the ballot floor**, not the currently open one. Reporting the active quarter would blank the box at every rollover — Q3's winner would vanish on 15 October in favour of an empty Q4, defeating the point. Below the floor it shows "Coming soon" with progress pips toward the threshold, which gives a user something to act on where a bare "coming soon" doesn't.
+
+While a quarter is still open its #1 is labelled **"leading"** rather than presented as a winner.
+
 ## 7. Not in scope
 
 - **Backfilling past quarters.** The whole point of locking.

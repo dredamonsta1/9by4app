@@ -212,7 +212,11 @@
 /* Right column: Music up top (scrollable list), News/Events below it.
    Both boxes get fixed heights so neither stretches indefinitely. */
 
-.rightCol > .box:first-child {
+/* Was .box:first-child. The picks spotlight is now the first child and is
+   an <a>, not a .box — so that compound selector stopped matching anything
+   and this height silently stopped applying to the Music box. :first-of-type
+   keys off the element type instead, so it still finds the first div. */
+.rightCol > .box:first-of-type {
   height: 340px;
 }
 

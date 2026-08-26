@@ -1,0 +1,117 @@
+/* Deliberately smaller than the boxes below it. It's a pointer to
+   something, not a section — if it competes with the artist card it's
+   taking space from the thing people actually came for. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.7rem 0.85rem;
+  background: linear-gradient(
+    135deg,
+    rgba(214, 255, 61, 0.1) 0%,
+    rgba(20, 20, 20, 0.9) 55%
+  );
+  border: 1px solid rgba(214, 255, 61, 0.28);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--color-contrast);
+  transform: translateY(-1px);
+}
+
+.kicker {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-contrast);
+}
+
+.quarter {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* An open quarter's #1 can still change; saying "leading" avoids claiming
+   a winner that isn't final. */
+.leading {
+  font-style: normal;
+  font-weight: 500;
+  color: #999;
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.15rem;
+}
+
+.art {
+  width: 38px;
+  height: 38px;
+  border-radius: 5px;
+  object-fit: cover;
+  background: #222;
+  flex-shrink: 0;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.album {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist {
+  font-size: 0.7rem;
+  color: #aaa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.soon {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+
+/* Progress toward the ballot floor. A bare "coming soon" says nothing a
+   user can act on; five pips make the gap concrete. */
+.progress {
+  display: flex;
+  gap: 4px;
+  margin-top: 0.15rem;
+}
+
+.pip,
+.pipOn {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pipOn {
+  background: var(--color-contrast);
+}
+
+.foot {
+  font-size: 0.65rem;
+  color: #888;
+}
