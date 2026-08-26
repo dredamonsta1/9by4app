@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
@@ -8,7 +8,7 @@ import {
   reorderProfileList,
   fetchProfileList,
 } from "../../redux/actions/profileListActions";
-import { fetchArtists } from "../../redux/actions/artistActions";
+import { fetchArtists, fetchMoreArtists } from "../../redux/actions/artistActions";
 import { setQueue } from "../../redux/playerSlice";
 import AlbumPreviewButton from "../AlbumPreviewButton/AlbumPreviewButton";
 import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
@@ -442,6 +442,9 @@ const ArtistPanel = () => {
   const claimRequests = useSelector((state) => state.auth.claimRequests);
   const profileList = useSelector((state) => state.profileList.list);
   const allArtists = useSelector((state) => state.artists.artists);
+  const artistsPage = useSelector((state) => state.artists.page);
+  const artistsHasMore = useSelector((state) => state.artists.hasMore);
+  const artistsLoadingMore = useSelector((state) => state.artists.loadingMore);
 
   const [liveRecordings, setLiveRecordings] = useState([]);
   const [featuredVideoId, setFeaturedVideoId] = useState(null);
@@ -773,6 +776,18 @@ const ArtistPanel = () => {
     }
     return artists;
   };
+  // Pulls the next batch when the rankings list nears the end of what's
+  // loaded. fetchMoreArtists appends rather than replacing, and existed
+  // unused since the list was written — nothing ever called it, which is
+  // why browsing dead-ended at the first page regardless of its size.
+  //
+  // No filter params: filtering is applied client-side over the loaded set
+  // (see applyFilter below), so the fetch stays the plain global ordering.
+  const handleNeedMore = useCallback(() => {
+    if (artistsLoadingMore || !artistsHasMore) return;
+    dispatch(fetchMoreArtists({ page: artistsPage + 1 }));
+  }, [dispatch, artistsPage, artistsHasMore, artistsLoadingMore]);
+
   const filteredArtists = applyFilter(allArtists, activeFilter);
 
   // Prev/next on the featured card. These existed before as the ▲/▼ flip
@@ -925,6 +940,9 @@ const ArtistPanel = () => {
                   onAdd={handleRankAdd}
                   inList={rankInList}
                   resetKey={activeFilter}
+                  onNeedMore={handleNeedMore}
+                  hasMore={artistsHasMore}
+                  loadingMore={artistsLoadingMore}
                 />
               </div>
             </div>

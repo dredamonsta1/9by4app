@@ -147,6 +147,18 @@
   padding-top: 0.1rem;
 }
 
+/* "of 200+" rather than "of 200" — the total is the loaded count, not the
+   catalogue, and without this the list looks finished at every boundary. */
+.more {
+  color: var(--color-contrast);
+  font-weight: 700;
+}
+
+.loadingMore {
+  margin-left: 0.25rem;
+  color: var(--color-contrast);
+}
+
 .pageLabel {
   font-size: 0.75rem;
   color: #8a8a92;

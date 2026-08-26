@@ -31,6 +31,14 @@ const art = (a) =>
  */
 const PAGE_SIZE = 5;
 
+/**
+ * Pages ahead of the reader rather than at the last row. Fetching only when
+ * they hit the end means every boundary is a visible wait; two pages of lead
+ * time is enough for a request to land while they're still reading, so the
+ * catalogue just keeps going.
+ */
+const PREFETCH_PAGES = 2;
+
 const RankCardList = ({
   artists = [],
   selectedId,
@@ -38,6 +46,9 @@ const RankCardList = ({
   onAdd,
   inList,
   resetKey,
+  onNeedMore,
+  hasMore = false,
+  loadingMore = false,
 }) => {
   const [page, setPage] = useState(0);
 
@@ -49,6 +60,14 @@ const RankCardList = ({
   const safePage = Math.min(page, pageCount - 1);
   const start = safePage * PAGE_SIZE;
   const shown = artists.slice(start, start + PAGE_SIZE);
+
+  // Ask for the next batch as the reader approaches the end of what's
+  // loaded. Guarded on loadingMore so paging quickly through the tail
+  // doesn't fire a request per keypress.
+  useEffect(() => {
+    if (!onNeedMore || !hasMore || loadingMore) return;
+    if (safePage >= pageCount - 1 - PREFETCH_PAGES) onNeedMore();
+  }, [safePage, pageCount, hasMore, loadingMore, onNeedMore]);
 
   if (artists.length === 0) return null;
 
@@ -103,7 +122,7 @@ const RankCardList = ({
     })}
       </ol>
 
-      {pageCount > 1 && (
+      {(pageCount > 1 || hasMore) && (
         <nav className={styles.pager} aria-label="Rankings pages">
           <button
             type="button"
@@ -117,12 +136,24 @@ const RankCardList = ({
           <span className={styles.pageLabel}>
             {start + 1}–{Math.min(start + PAGE_SIZE, artists.length)} of{" "}
             {artists.length}
+            {hasMore && (
+              <span className={styles.more} aria-label="more artists available">
+                +
+              </span>
+            )}
+            {loadingMore && (
+              <span className={styles.loadingMore} aria-label="Loading more artists">
+                …
+              </span>
+            )}
           </span>
           <button
             type="button"
             className={styles.pageBtn}
             onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-            disabled={safePage >= pageCount - 1}
+            // Stays live while more is coming, so the list doesn't look
+            // finished at a boundary that's only the edge of one fetch.
+            disabled={safePage >= pageCount - 1 && !hasMore}
             aria-label="Next ranks"
           >
             ›
