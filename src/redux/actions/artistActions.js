@@ -32,9 +32,19 @@ const mapArtistData = (artistData) =>
       count: artist.count || 0,
     }));
 
+// Page size is 200, the server's ceiling. 50 dates from a Heroku dyno that
+// fell over serving large lists — the database was never the limit (all
+// 112k artists sort in ~730ms), the crash was Node buffering a 61MB payload.
+// 200 rows is nowhere near that, and the ceiling stays in place so nobody
+// can ask for the whole catalogue in one request.
+//
+// Note the ranking itself only has ~57 artists with any clout; past that
+// the list is alphabetical. 200 is about browsing the catalogue, not about
+// a longer ranking.
+
 // Fetch first page of artists (replaces list)
 export const fetchArtists =
-  ({ page = 1, limit = 50, search = "", genre = "", state = "", region = "", sort = "clout" } = {}) =>
+  ({ page = 1, limit = 200, search = "", genre = "", state = "", region = "", sort = "clout" } = {}) =>
   async (dispatch) => {
     dispatch({ type: FETCH_ARTISTS_REQUEST });
     try {
@@ -57,7 +67,7 @@ export const fetchArtists =
 
 // Fetch next page (appends to list)
 export const fetchMoreArtists =
-  ({ page, limit = 50, search = "", genre = "", state = "", region = "", sort = "clout" } = {}) =>
+  ({ page, limit = 200, search = "", genre = "", state = "", region = "", sort = "clout" } = {}) =>
   async (dispatch) => {
     dispatch({ type: FETCH_MORE_ARTISTS_REQUEST });
     try {
