@@ -632,6 +632,21 @@ const ArtistPanel = () => {
       .catch(() => setFeaturedVideoId(null));
   }, [targetId, artistId, navigate, isLoggedIn]);
 
+  // Pulls the next batch when the rankings list nears the end of what's
+  // loaded. fetchMoreArtists appends rather than replacing, and existed
+  // unused since the list was written — nothing ever called it, which is
+  // why browsing dead-ended at the first page regardless of its size.
+  //
+  // No filter params: filtering is applied client-side over the loaded set
+  // (see applyFilter), so the fetch stays the plain global ordering.
+  //
+  // Declared above the early returns below: a hook after them runs
+  // conditionally, and React needs the same hook order on every render.
+  const handleNeedMore = useCallback(() => {
+    if (artistsLoadingMore || !artistsHasMore) return;
+    dispatch(fetchMoreArtists({ page: artistsPage + 1 }));
+  }, [dispatch, artistsPage, artistsHasMore, artistsLoadingMore]);
+
   if (loading) {
     return (
       <div className={styles.loadingState}>
@@ -776,18 +791,6 @@ const ArtistPanel = () => {
     }
     return artists;
   };
-  // Pulls the next batch when the rankings list nears the end of what's
-  // loaded. fetchMoreArtists appends rather than replacing, and existed
-  // unused since the list was written — nothing ever called it, which is
-  // why browsing dead-ended at the first page regardless of its size.
-  //
-  // No filter params: filtering is applied client-side over the loaded set
-  // (see applyFilter below), so the fetch stays the plain global ordering.
-  const handleNeedMore = useCallback(() => {
-    if (artistsLoadingMore || !artistsHasMore) return;
-    dispatch(fetchMoreArtists({ page: artistsPage + 1 }));
-  }, [dispatch, artistsPage, artistsHasMore, artistsLoadingMore]);
-
   const filteredArtists = applyFilter(allArtists, activeFilter);
 
   // Prev/next on the featured card. These existed before as the ▲/▼ flip
