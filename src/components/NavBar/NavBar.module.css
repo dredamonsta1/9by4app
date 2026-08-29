@@ -354,3 +354,10 @@
     max-width: none;
   }
 }
+
+/* The nudge unmounts itself once onboarding is done, so this list item can
+   be empty — no padding or marker, or finished users get a phantom gap in
+   the nav. */
+.nudgeItem:empty {
+  display: none;
+}

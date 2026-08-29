@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
+import OnboardingNudge from "./OnboardingNudge";
 import { useNavigate, Link } from "react-router-dom";
 import {
   searchArtists,
@@ -167,6 +168,12 @@ const NavBar = () => {
             </>
           ) : (
             <>
+              {/* First thing in the logged-in nav, because it's the one
+                  item that stops mattering once it's done. Renders nothing
+                  for users past three artists or who dismissed it. */}
+              <li className={styles.nudgeItem}>
+                <OnboardingNudge onNavigate={closeMenu} />
+              </li>
               {user.role === "admin" && (
                 <li>
                   <Link

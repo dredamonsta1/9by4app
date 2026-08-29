@@ -1,0 +1,50 @@
+/* Reads as progress, not as an alert. A red badge would say "something is
+   wrong"; this is an unfinished task, so it borrows the brand contrast
+   colour the rest of the CTAs use. */
+.nudge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(214, 255, 61, 0.35);
+  border-radius: 999px;
+  background: rgba(214, 255, 61, 0.08);
+  color: var(--color-contrast);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.nudge:hover {
+  background: rgba(214, 255, 61, 0.16);
+  border-color: var(--color-contrast);
+}
+
+.dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.dot,
+.dotOn {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(214, 255, 61, 0.28);
+}
+
+.dotOn {
+  background: var(--color-contrast);
+}
+
+/* On narrow screens the navbar collapses into a menu where horizontal room
+   is no longer scarce, so the label stays. It's only hidden in the tight
+   inline row on small-but-not-collapsed widths. */
+@media (max-width: 900px) and (min-width: 769px) {
+  .label {
+    display: none;
+  }
+}
