@@ -6,6 +6,11 @@ const initialState = {
   list: [],
   loading: false,
   error: null,
+  // Distinguishes "not fetched yet" from "fetched and genuinely empty".
+  // Without it an empty list means both, and anything reading the count
+  // outside ProfilePage/ArtistPanel — which are the only two places that
+  // fetch — would tell a user with 20 artists that they have none.
+  loaded: false,
 };
 
 const profileListSlice = createSlice({
@@ -18,6 +23,7 @@ const profileListSlice = createSlice({
     },
     setProfileListSuccess(state, action) {
       state.loading = false;
+      state.loaded = true;
       state.list = action.payload;
     },
     setProfileListFailure(state, action) {
