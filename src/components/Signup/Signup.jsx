@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { validateUsername } from "../../utils/username";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../store/authSlice";
@@ -25,6 +26,22 @@ function Signup() {
   const [verifying, setVerifying] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    axiosInstance
+      .get("/auth/username-suggestions?count=4")
+      .then((res) => {
+        if (!cancelled) setSuggestions(res.data?.suggestions ?? []);
+      })
+      // Silent: suggestions are a nicety, and a broken one must never stop
+      // somebody signing up. The field works fine empty.
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -66,6 +83,15 @@ function Signup() {
     e.preventDefault();
     if (!email.trim() || !username.trim() || !inviteCode.trim()) {
       setMessage({ text: "All fields are required.", type: "error" });
+      return;
+    }
+    // Checked here rather than left to the server, which only sees the
+    // username after the code is verified. Without this the user types
+    // `admin`, waits for an email, enters a six-digit code, and only then
+    // learns it was rejected — then starts over.
+    const problem = validateUsername(username);
+    if (problem) {
+      setMessage({ text: problem, type: "error" });
       return;
     }
     await sendCode(false);
@@ -180,6 +206,27 @@ function Signup() {
                 required
                 disabled={sending}
               />
+              {suggestions.length > 0 && (
+                <div className={styles.suggestions}>
+                  <span className={styles.suggestionsLabel}>Need one?</span>
+                  {suggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      className={styles.suggestionChip}
+                      onClick={() => {
+                        setUsername(s);
+                        // Clear a stale rejection so the field doesn't still
+                        // show an error about the name they just replaced.
+                        setMessage({ text: "", type: "" });
+                      }}
+                      disabled={sending}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <button

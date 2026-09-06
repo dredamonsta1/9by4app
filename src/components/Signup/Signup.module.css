@@ -80,3 +80,41 @@
     box-shadow: var(--shadow-glow);
     transform: translateY(-2px);
 }
+
+/* Offered, not imposed — the same shape as Reddit's pre-filled name, except
+   these sit beside an empty field rather than in it, so the default stays
+   the user's own choice. */
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.suggestionsLabel {
+  font-size: 0.72rem;
+  color: #888;
+}
+
+.suggestionChip {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(214, 255, 61, 0.35);
+  border-radius: 999px;
+  background: rgba(214, 255, 61, 0.08);
+  color: var(--color-contrast);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.suggestionChip:hover:not(:disabled) {
+  background: rgba(214, 255, 61, 0.18);
+  border-color: var(--color-contrast);
+}
+
+.suggestionChip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
