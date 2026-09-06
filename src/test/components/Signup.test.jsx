@@ -10,7 +10,12 @@ import { buildMockStore } from "../utils";
 import Signup from "../../components/Signup/Signup";
 
 vi.mock("../../utils/axiosInstance", () => ({
-  default: { post: vi.fn() },
+  default: {
+    post: vi.fn(),
+    // Signup fetches username suggestions on mount. Resolved empty so these
+    // tests see the form exactly as they did before the chips existed.
+    get: vi.fn(() => Promise.resolve({ data: { suggestions: [] } })),
+  },
 }));
 
 vi.mock("../../AuthLayout.module.css", () => ({
