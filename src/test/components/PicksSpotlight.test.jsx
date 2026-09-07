@@ -114,6 +114,18 @@ describe("PicksSpotlight", () => {
     });
   });
 
+  it("never calls a quarter winner the Album of the Year", async () => {
+    // /spotlight returns one quarter's winner. Labelling it as the year's
+    // would be untrue, and would take a title reserved for the separate
+    // year-end vote.
+    axiosInstance.get.mockResolvedValue({ data: published() });
+    renderIt();
+
+    await screen.findByText("Roll the Dice");
+    expect(screen.getByText(/album of the quarter/i)).toBeInTheDocument();
+    expect(screen.queryByText(/album of the year/i)).not.toBeInTheDocument();
+  });
+
   it("renders nothing at all if the request fails", async () => {
     // It's a landing-page ornament — it must never take the page with it,
     // and an error box in a slot this small is worse than absence.
