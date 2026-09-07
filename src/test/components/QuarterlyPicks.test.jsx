@@ -141,6 +141,41 @@ describe("QuarterlyPicks — viewing", () => {
   });
 });
 
+describe("QuarterlyPicks — the link to the year", () => {
+  it("says quarterly picks feed the year-end standings", async () => {
+    mockApi({ picks: [] });
+    render(<QuarterlyPicks editable />);
+
+    expect(await screen.findByText(/feeds your year-end standings/i)).toBeInTheDocument();
+  });
+
+  it("links to both the quarter chart and the year standings", async () => {
+    // The subtitle claims the connection; these make it clickable.
+    mockApi({ picks: [pick(1, 10, "Roll the Dice")] });
+    render(<QuarterlyPicks editable />);
+
+    expect(await screen.findByRole("link", { name: /Q3 chart/i })).toHaveAttribute(
+      "href",
+      "/picks/2026/3"
+    );
+    expect(screen.getByRole("link", { name: /2026 standings/i })).toHaveAttribute(
+      "href",
+      "/picks/2026"
+    );
+  });
+
+  it("never calls a quarter the Album of the Year", async () => {
+    // That title is reserved for the separate year-end vote — the standings
+    // page is deliberately named "Standings" for the same reason. A quarter
+    // winner claiming it would be a factual error, not just a wording one.
+    mockApi({ picks: [pick(1, 10, "Roll the Dice")] });
+    render(<QuarterlyPicks editable />);
+
+    await screen.findByText("Roll the Dice");
+    expect(screen.queryByText(/album of the year/i)).not.toBeInTheDocument();
+  });
+});
+
 describe("QuarterlyPicks — editing", () => {
   const openPicker = async (user) => {
     await user.click(await screen.findByRole("button", { name: /make your picks|edit picks/i }));

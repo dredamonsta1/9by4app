@@ -19,8 +19,8 @@ const artFor = (album) =>
   resolveImageUrl(
     album?.album_image_url,
     `https://via.placeholder.com/96?text=${encodeURIComponent(
-      (album?.album_name || "?")[0]
-    )}`
+      (album?.album_name || "?")[0],
+    )}`,
   );
 
 /**
@@ -36,7 +36,11 @@ const artFor = (album) =>
  * first. Commerce can be layered on once the mechanic proves it gets used;
  * unwinding a storefront that nobody wanted is harder.
  */
-const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This user" }) => {
+const QuarterlyPicks = ({
+  userId = null,
+  editable = false,
+  displayName = "This user",
+}) => {
   const isOwn = userId == null;
 
   const { quarters, reload: reloadQuarters } = useQuarterList({ userId });
@@ -59,7 +63,11 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
   const locked = data?.locked ?? false;
   const canEdit = editable && isOwn && !locked;
 
-  const { ballot, loading: ballotLoading, error: ballotError } = useQuarterlyBallot({
+  const {
+    ballot,
+    loading: ballotLoading,
+    error: ballotError,
+  } = useQuarterlyBallot({
     year: data?.year ?? null,
     quarter: data?.quarter ?? null,
     enabled: editing,
@@ -76,7 +84,8 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
     for (const a of ballot?.albums ?? []) byId.set(a.album_id, a);
     // Fall back to the saved pick's own row so an already-picked album still
     // renders while the ballot is still in flight.
-    for (const p of data?.picks ?? []) if (!byId.has(p.album_id)) byId.set(p.album_id, p);
+    for (const p of data?.picks ?? [])
+      if (!byId.has(p.album_id)) byId.set(p.album_id, p);
     return draft.map((id) => byId.get(id)).filter(Boolean);
   }, [draft, ballot, data]);
 
@@ -123,7 +132,9 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
   };
 
   const picks = data?.picks ?? [];
-  const heading = data ? quarterLabel(data.year, data.quarter) : "Quarterly Picks";
+  const heading = data
+    ? quarterLabel(data.year, data.quarter)
+    : "Quarterly Picks";
   const lockText = lockLabel(data?.locks_at, locked);
 
   return (
@@ -135,21 +146,30 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
           </h3>
           <p className={styles.subtitle}>
             {isOwn
-              ? "Your five best releases, one quarter at a time."
+              ? "Your five best releases, one quarter at a time. Every quarter feeds your year-end standings."
               : `${displayName}'s five best releases, by quarter.`}
           </p>
         </div>
         <div className={styles.headActions}>
           {data && (
-            <Link
-              to={`/picks/${data.year}/${data.quarter}`}
-              className={styles.chartLink}
-            >
-              See the chart
-            </Link>
+            <>
+              <Link
+                to={`/picks/${data.year}/${data.quarter}`}
+                className={styles.chartLink}
+              >
+                Q{data.quarter} chart
+              </Link>
+              <Link to={`/picks/${data.year}`} className={styles.chartLink}>
+                {data.year} standings
+              </Link>
+            </>
           )}
           {canEdit && !editing && (
-            <button type="button" className={styles.editBtn} onClick={() => setEditing(true)}>
+            <button
+              type="button"
+              className={styles.editBtn}
+              onClick={() => setEditing(true)}
+            >
               {picks.length ? "Edit picks" : "Make your picks"}
             </button>
           )}
@@ -183,7 +203,9 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
               }}
             >
               {quarterLabel(q.year, q.quarter)}
-              {q.locked && <span className={styles.lockDot} aria-hidden="true" />}
+              {q.locked && (
+                <span className={styles.lockDot} aria-hidden="true" />
+              )}
             </button>
           ))}
         </nav>
@@ -192,9 +214,15 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
       <div className={styles.card}>
         <div className={styles.cardHead}>
           <span className={styles.cardTitle}>{heading}</span>
-          {data && <span className={styles.cardMonths}>{quarterMonths(data.year, data.quarter)}</span>}
+          {data && (
+            <span className={styles.cardMonths}>
+              {quarterMonths(data.year, data.quarter)}
+            </span>
+          )}
           {lockText && (
-            <span className={`${styles.lockPill} ${locked ? styles.lockPillClosed : ""}`}>
+            <span
+              className={`${styles.lockPill} ${locked ? styles.lockPillClosed : ""}`}
+            >
               {lockText}
             </span>
           )}
@@ -218,7 +246,12 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
             {picks.map((p) => (
               <li key={p.album_id} className={styles.pickRow}>
                 <span className={styles.rank}>{p.position}</span>
-                <img className={styles.art} src={artFor(p)} alt="" loading="lazy" />
+                <img
+                  className={styles.art}
+                  src={artFor(p)}
+                  alt=""
+                  loading="lazy"
+                />
                 <span className={styles.meta}>
                   <span className={styles.albumName}>{p.album_name}</span>
                   <span className={styles.artistName}>{p.artist_name}</span>
@@ -241,7 +274,12 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
                 {draftAlbums.map((a, i) => (
                   <li key={a.album_id} className={styles.pickRow}>
                     <span className={styles.rank}>{i + 1}</span>
-                    <img className={styles.art} src={artFor(a)} alt="" loading="lazy" />
+                    <img
+                      className={styles.art}
+                      src={artFor(a)}
+                      alt=""
+                      loading="lazy"
+                    />
                     <span className={styles.meta}>
                       <span className={styles.albumName}>{a.album_name}</span>
                       <span className={styles.artistName}>{a.artist_name}</span>
@@ -284,15 +322,22 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
                 Released this quarter
                 {ballot?.albums?.length ? ` (${ballot.albums.length})` : ""}
               </p>
-              {ballotLoading && <p className={styles.muted}>Loading releases…</p>}
-              {ballotError && <p className={styles.error}>{ballotError}</p>}
-              {!ballotLoading && !ballotError && (ballot?.albums?.length ?? 0) === 0 && (
-                <p className={styles.muted}>
-                  Nothing is listed for this quarter yet. Releases appear here as
-                  they land.
-                </p>
+              {ballotLoading && (
+                <p className={styles.muted}>Loading releases…</p>
               )}
-              <ul className={styles.ballotList} aria-label="Released this quarter">
+              {ballotError && <p className={styles.error}>{ballotError}</p>}
+              {!ballotLoading &&
+                !ballotError &&
+                (ballot?.albums?.length ?? 0) === 0 && (
+                  <p className={styles.muted}>
+                    Nothing is listed for this quarter yet. Releases appear here
+                    as they land.
+                  </p>
+                )}
+              <ul
+                className={styles.ballotList}
+                aria-label="Released this quarter"
+              >
                 {(ballot?.albums ?? []).map((a) => {
                   const picked = draft.includes(a.album_id);
                   return (
@@ -303,10 +348,19 @@ const QuarterlyPicks = ({ userId = null, editable = false, displayName = "This u
                         onClick={() => toggle(a.album_id)}
                         aria-pressed={picked}
                       >
-                        <img className={styles.art} src={artFor(a)} alt="" loading="lazy" />
+                        <img
+                          className={styles.art}
+                          src={artFor(a)}
+                          alt=""
+                          loading="lazy"
+                        />
                         <span className={styles.meta}>
-                          <span className={styles.albumName}>{a.album_name}</span>
-                          <span className={styles.artistName}>{a.artist_name}</span>
+                          <span className={styles.albumName}>
+                            {a.album_name}
+                          </span>
+                          <span className={styles.artistName}>
+                            {a.artist_name}
+                          </span>
                         </span>
                         <span className={styles.pickMark} aria-hidden="true">
                           {picked ? `#${draft.indexOf(a.album_id) + 1}` : "+"}

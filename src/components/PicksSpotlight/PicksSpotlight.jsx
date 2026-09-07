@@ -71,8 +71,8 @@ const PicksSpotlight = () => {
               src={resolveImageUrl(
                 data.winner.album_image_url,
                 `https://via.placeholder.com/72?text=${encodeURIComponent(
-                  data.winner.album_name[0]
-                )}`
+                  data.winner.album_name[0],
+                )}`,
               )}
               alt=""
               loading="lazy"
@@ -83,7 +83,8 @@ const PicksSpotlight = () => {
             </span>
           </span>
           <span className={styles.foot}>
-            From {data.ballot_count} {data.ballot_count === 1 ? "ballot" : "ballots"}
+            From {data.ballot_count}{" "}
+            {data.ballot_count === 1 ? "ballot" : "ballots"}
           </span>
         </>
       ) : (
