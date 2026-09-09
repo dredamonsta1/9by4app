@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import WaitlistManager from "../../components/Admin/WaitlistManager";
+import { toast } from "react-toastify";
+
+vi.mock("react-toastify", () => ({
+  toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
+}));
 
 // Mock axiosInstance
 vi.mock("../../utils/axiosInstance", () => ({
@@ -164,8 +169,11 @@ describe("WaitlistManager Component", () => {
       render(<WaitlistManager />);
 
       await waitFor(() => {
-        expect(screen.getByText("—")).toBeInTheDocument();
+        expect(screen.getAllByText("—").length).toBeGreaterThan(0);
       });
+      // Invite Code is the 4th column; a pending row has no code.
+      const pendingRow = screen.getByText("pending").closest("tr");
+      expect(pendingRow.querySelectorAll("td")[3]).toHaveTextContent("—");
     });
 
     it("shows approve button only for pending entries", async () => {
@@ -218,13 +226,6 @@ describe("WaitlistManager Component", () => {
       axiosInstance.get.mockResolvedValue({ data: mockEntries });
       axiosInstance.patch.mockResolvedValue({ data: { message: "Approved!" } });
 
-      // We need to mock toast since WaitlistManager uses it
-      vi.mock("react-toastify", () => ({
-        toast: {
-          success: vi.fn(),
-        },
-      }));
-
       render(<WaitlistManager />);
 
       await waitFor(() => {
@@ -251,5 +252,97 @@ describe("WaitlistManager Component", () => {
         expect(axiosInstance.get).toHaveBeenCalledWith("/admin/waitlist-entries");
       });
     });
+  });
+});
+
+describe("WaitlistManager — reissue and expiry", () => {
+  const approved = (over = {}) => ({
+    waitlist_id: 90,
+    email: "old@example.com",
+    full_name: "Old Approval",
+    status: "approved",
+    invite_code: "RNYYSJUG",
+    created_at: "2026-07-01T00:00:00Z",
+    approved_at: null,
+    ...over,
+  });
+
+  const daysAgo = (d) => new Date(Date.now() - d * 86400000).toISOString();
+
+  beforeEach(() => vi.clearAllMocks());
+
+  it("offers Reissue on an approved entry", async () => {
+    // Previously the only action was Approve, and it rendered for pending
+    // rows only — so an approved invite had no action at all.
+    axiosInstance.get.mockResolvedValue({ data: [approved()] });
+    render(<WaitlistManager />);
+
+    expect(await screen.findByRole("button", { name: /reissue/i })).toBeInTheDocument();
+  });
+
+  it("confirms before invalidating a live code", async () => {
+    const user = userEvent.setup({ delay: null });
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
+    axiosInstance.get.mockResolvedValue({ data: [approved()] });
+    render(<WaitlistManager />);
+
+    await user.click(await screen.findByRole("button", { name: /reissue/i }));
+
+    expect(confirmSpy).toHaveBeenCalled();
+    expect(axiosInstance.patch).not.toHaveBeenCalled();
+    confirmSpy.mockRestore();
+  });
+
+  it("reissues through the same endpoint as approve", async () => {
+    const user = userEvent.setup({ delay: null });
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    axiosInstance.get.mockResolvedValue({ data: [approved()] });
+    axiosInstance.patch.mockResolvedValue({ data: { message: "sent" } });
+    render(<WaitlistManager />);
+
+    await user.click(await screen.findByRole("button", { name: /reissue/i }));
+
+    await waitFor(() =>
+      expect(axiosInstance.patch).toHaveBeenCalledWith("/admin/approve-creator", {
+        email: "old@example.com",
+      })
+    );
+  });
+
+  it("says 'no expiry' for approvals made before expiry existed", async () => {
+    // approved_at is NULL on every row approved before 2026-09-09, and the
+    // API treats NULL as never-expiring. Saying so beats a blank cell.
+    axiosInstance.get.mockResolvedValue({ data: [approved({ approved_at: null })] });
+    render(<WaitlistManager />);
+
+    expect(await screen.findByText(/no expiry/i)).toBeInTheDocument();
+  });
+
+  it("counts down a live invite", async () => {
+    axiosInstance.get.mockResolvedValue({ data: [approved({ approved_at: daysAgo(2) })] });
+    render(<WaitlistManager />);
+
+    expect(await screen.findByText(/28 days left/i)).toBeInTheDocument();
+  });
+
+  it("marks a lapsed invite expired", async () => {
+    axiosInstance.get.mockResolvedValue({ data: [approved({ approved_at: daysAgo(31) })] });
+    render(<WaitlistManager />);
+
+    expect(await screen.findByText(/expired/i)).toBeInTheDocument();
+  });
+
+  it("surfaces a failed approval instead of only logging it", async () => {
+    // The old handler swallowed errors into console.error, so a failed
+    // invite looked identical to a sent one.
+    const user = userEvent.setup({ delay: null });
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    axiosInstance.get.mockResolvedValue({ data: [approved()] });
+    axiosInstance.patch.mockRejectedValue({ response: { data: { message: "Resend down." } } });
+    render(<WaitlistManager />);
+
+    await user.click(await screen.findByRole("button", { name: /reissue/i }));
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith("Resend down."));
   });
 });
