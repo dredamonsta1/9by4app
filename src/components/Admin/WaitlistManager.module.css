@@ -81,3 +81,48 @@
 .copyBtn:hover {
   filter: grayscale(0);
 }
+
+/* Reissue is deliberately quieter than Approve: approving is the routine
+   action, reissuing invalidates a code someone may already be holding. */
+.reissueBtn {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  background: transparent;
+  color: #bbb;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reissueBtn:hover:not(:disabled) {
+  border-color: var(--color-contrast);
+  color: var(--color-contrast);
+}
+
+.reissueBtn:disabled,
+.approveBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.expiry {
+  font-size: 0.78rem;
+  color: #999;
+  white-space: nowrap;
+}
+
+.expirySoon {
+  color: #e9b949;
+}
+
+.expiryExpired {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+/* Approved before expiry tracking existed — valid forever until reissued. */
+.expiryStale {
+  color: #777;
+  font-style: italic;
+}
