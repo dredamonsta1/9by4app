@@ -24,6 +24,7 @@ import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
 import QuarterlyChart from "./pages/QuarterlyChart/QuarterlyChart";
 import Welcome from "./pages/Welcome/Welcome";
+import FirstRunGate from "./components/FirstRunGate/FirstRunGate";
 import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
 import ArtistSettings from "./pages/ArtistSettings/ArtistSettings.jsx";
@@ -64,6 +65,9 @@ const App = () => {
   return (
     <div className="app-container">
       <ToastContainer theme="dark" position="bottom-right" />
+      {/* Routes zero-artist users into the welcome flow from wherever they
+          land, rather than trusting the auth handler that happened to run. */}
+      <FirstRunGate />
       <NavBar />
       <main className="content">
         <Routes>

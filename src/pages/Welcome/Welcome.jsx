@@ -9,6 +9,7 @@ import {
   MAX_FAVORITE_ARTISTS,
 } from "../../redux/actions/profileListActions";
 import { ONBOARDING_TARGET } from "../../components/OnboardingChecklist/OnboardingChecklist";
+import { WELCOME_SKIPPED_KEY } from "../../components/FirstRunGate/FirstRunGate";
 import styles from "./Welcome.module.css";
 
 // Same vocabulary as FiltersBar. Duplicated rather than imported because that
@@ -138,9 +139,15 @@ const Welcome = () => {
   };
 
   // Skipping deliberately does NOT set ONBOARDING_DISMISSED_KEY. Skip is
-  // "not now"; dismiss is "stop asking". Setting it here would silence the
+  // "not now"; dismiss is "stop asking". Setting that would silence the
   // navbar nudge, which is the only thing left to bring them back.
-  const skip = () => navigate("/");
+  //
+  // It does set WELCOME_SKIPPED_KEY, which stops FirstRunGate returning them
+  // here on the next load — without it, skipping would bounce straight back.
+  const skip = () => {
+    localStorage.setItem(WELCOME_SKIPPED_KEY, "1");
+    navigate("/");
+  };
 
   if (personality) {
     return (
