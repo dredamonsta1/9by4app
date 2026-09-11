@@ -126,7 +126,10 @@ function Signup() {
       // Credit the artist this user was trying to stan before the auth wall
       // stopped them, if any. Never blocks or fails the login.
       await dispatch(redeemPendingStan());
-      navigate("/");
+      // A new account has no artists by definition, so it always starts
+      // on the welcome flow. 13 of 24 existing users never added one, and
+      // landing on "/" is why.
+      navigate("/welcome");
     } catch (err) {
       setMessage({
         text:
