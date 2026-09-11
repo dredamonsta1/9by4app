@@ -1,6 +1,6 @@
 # StanBox First-Run Flow — Spec v1.0
 
-**Status:** Draft, 2026-09-11
+**Status:** Decided 2026-09-11 — ready to build
 **Origin:** Andre — "when someone finally registers and then signs in they shouldn't be taken to the platform immediately, they should be taken to a page that allows them to pick their first 3 artists and then move to the profile to see the personality type"
 
 ---
@@ -69,16 +69,11 @@ Three surfaces, in this order:
 
 **3. Search.** Always visible, not behind a tab. Accent-insensitive since 2026-09-02, so `calu` finds `Calú Carlos`.
 
-### Open question — what fills the grid before a genre is picked
+### Resolved 2026-09-11 — a genre tap comes first
 
-The default ordering is `count DESC, artist_name ASC`, and **only ~57 artists have any clout**. Past that it is alphabetical, which means an ungated grid opens on `:wumpscut:` and `!!!`.
+**No grid until a genre is tapped or something is searched.** The pills are the hero element of the page, not a filter sitting above an empty shelf.
 
-Options, unresolved:
-- **Nothing** until a genre or search term is chosen — honest, but an empty first screen on the page whose entire job is to prevent hesitation
-- **The ~57 ranked artists** — real, but a short and repetitive list every user would see identically
-- **Artists with images and albums**, shuffled — looks like a catalogue, at the cost of being arbitrary
-
-Leaning toward requiring a genre tap first, with the pills as the hero element rather than a filter above an empty grid.
+The alternative was showing a default grid, and the default ordering is `count DESC, artist_name ASC` with **only ~57 artists holding any clout** — so an ungated grid opens on `:wumpscut:` and `!!!`. A page whose job is to prevent hesitation should not open on punctuation.
 
 ### Known bias to accept
 
@@ -110,12 +105,11 @@ What exists today:
 
 **The problem:** both honour `ONBOARDING_DISMISSED_KEY` in localStorage. Dismiss the checklist once and both go silent permanently. That was the right call when the nudge was an extra; it is the wrong call when skipping the welcome page is the expected path for anyone who wants to look around first.
 
-**Proposed, needs a decision:**
+**Resolved 2026-09-11:**
 - Skipping `/welcome` does **not** set the dismissal key — skipping is "not now", dismissing is "stop asking"
-- The navbar nudge links to `/welcome` rather than `/profile`, so the nudge returns them to the purpose-built page rather than a checklist on a busy profile
-- `/welcome` stays reachable at its URL indefinitely
-
-**Open:** should the welcome page re-show on a later login, or only be reachable via the nudge? Re-showing every login for someone who deliberately skipped is nagging. Never re-showing wastes the one surface that works.
+- The navbar nudge links to `/welcome` rather than `/profile`, so it returns them to the purpose-built page rather than a checklist on a busy profile
+- **The auto-redirect fires once.** After a skip, `/welcome` is reachable only via the nudge — re-routing someone who deliberately opted out on every login is nagging, and the nudge is already persistent and visible on every page
+- **Nudge wording is unchanged.** It does not know or care whether someone skipped; one message is one thing to maintain, and "Add 3 artists" is accurate either way
 
 ---
 
@@ -148,11 +142,11 @@ Suggested framing: progress shown as `3 of 20`, with the third slot marked as th
 
 ---
 
-## 10. Open questions to close before building
+## 10. Open questions
 
-1. **What fills the grid before a genre is tapped** (§4) — leaning toward requiring a genre first
-2. **Does `/welcome` re-show on later logins after a skip, or only via the nudge** (§6)
-3. **Does skipping change the navbar nudge's wording** — "Add 3 artists" reads differently to someone who has actively skipped once
+**All closed 2026-09-11.** Genre tap first (§4), redirect fires once and thereafter only the nudge returns them (§6), nudge wording unchanged (§6).
+
+Worth revisiting after it ships: whether the once-only redirect is too shy. If skip rates are high and the nudge alone doesn't recover them, re-showing on the second login is the obvious next lever.
 
 ---
 

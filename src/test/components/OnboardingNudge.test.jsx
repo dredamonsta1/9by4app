@@ -52,10 +52,12 @@ describe("OnboardingNudge", () => {
     expect(screen.getByText("1 more artist")).toBeInTheDocument();
   });
 
-  it("points at the profile, where the real checklist lives", () => {
+  it("points at the welcome flow, not the profile", () => {
+    // The auto-redirect fires once, so after a skip this is the only route
+    // back to the picking page.
     renderNudge({ list: [] });
 
-    expect(screen.getByRole("link")).toHaveAttribute("href", "/profile");
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/welcome");
   });
 
   it("disappears once the target is met", () => {

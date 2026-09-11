@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
-import { redeemPendingStan } from "../../redux/actions/profileListActions";
+import { redeemPendingStan, userHasArtists } from "../../redux/actions/profileListActions";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "../../AuthLayout.module.css";
 import stanboxLogo from "../../assets/stanbox-logo.svg";
@@ -80,7 +80,12 @@ function Login() {
       // Credit the artist this user was trying to stan before the auth wall
       // stopped them, if any. Never blocks or fails the login.
       await dispatch(redeemPendingStan());
-      navigate("/");
+      // Only users with nothing at all are routed to the welcome flow.
+      // Someone with 1-2 artists already understands the mechanic; someone
+      // with 0 never started. Artist count is the truth here, so there is
+      // no "has seen onboarding" flag to keep in sync.
+      const hasArtists = await userHasArtists();
+      navigate(hasArtists ? "/" : "/welcome");
     } catch (err) {
       if (err.response?.data?.reason === "signup_required") {
         setError("No account for that email. Sign up first.");

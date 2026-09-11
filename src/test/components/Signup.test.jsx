@@ -140,7 +140,7 @@ describe("Signup (passwordless)", () => {
           },
         );
         expect(localStorage.getItem("token")).toBe("jwt-xyz");
-        expect(mockNavigate).toHaveBeenCalledWith("/");
+        expect(mockNavigate).toHaveBeenCalledWith("/welcome");
       });
     });
 

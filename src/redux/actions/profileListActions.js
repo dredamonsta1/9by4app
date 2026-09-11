@@ -26,6 +26,25 @@ export const fetchProfileList = () => async (dispatch) => {
 // Action to add an artist to the user's curated list
 export const MAX_FAVORITE_ARTISTS = 20;
 
+/**
+ * Does this user already have artists?
+ *
+ * Used by login to decide whether to route into the welcome flow. Not a thunk
+ * and not stored in redux — it answers one question at one moment, and the
+ * list is fetched properly by whichever page the user lands on.
+ *
+ * Returns true on failure. A network error should drop someone on the home
+ * page, not push an established user through first-run onboarding.
+ */
+export const userHasArtists = async () => {
+  try {
+    const res = await axiosInstance.get("/profile/list");
+    return (res.data?.list?.length ?? 0) > 0;
+  } catch {
+    return true;
+  }
+};
+
 export const addArtistToProfileList = (artist) => async (dispatch, getState) => {
   const { list } = getState().profileList;
   if (list.some((a) => a.artist_id === artist.artist_id)) {

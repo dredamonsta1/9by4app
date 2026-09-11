@@ -16,8 +16,8 @@ import styles from "./OnboardingNudge.module.css";
  * the goal is stated is the one place they may never visit. This carries
  * the same goal everywhere without repeating the card.
  *
- * Deliberately a pointer, not a second checklist: it links to the profile
- * where the real thing lives. Two components explaining the same task in
+ * Deliberately a pointer, not a second checklist: it links to /welcome,
+ * the purpose-built picking page. Two components explaining the same task in
  * different words is how copy drifts apart.
  *
  * Shares ONBOARDING_TARGET and ONBOARDING_DISMISSED_KEY with the checklist,
@@ -57,7 +57,7 @@ const OnboardingNudge = ({ onNavigate }) => {
 
   return (
     <Link
-      to="/profile"
+      to="/welcome"
       className={styles.nudge}
       onClick={onNavigate}
       aria-label={`Onboarding: ${count} of ${ONBOARDING_TARGET} artists added. ${remaining} more to finish setting up.`}

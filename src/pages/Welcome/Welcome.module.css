@@ -1,0 +1,289 @@
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 4rem;
+  color: #fff;
+}
+
+.head {
+  margin-bottom: 1.5rem;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-contrast);
+}
+
+.title {
+  margin: 0.3rem 0 0;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.sub {
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+  color: #aab4bf;
+  line-height: 1.5;
+}
+
+.sub strong {
+  color: #fff;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1rem;
+}
+
+.pip,
+.pipOn {
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pipOn {
+  background: var(--color-contrast);
+}
+
+.progressText {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+}
+
+.searchRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.6rem 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-contrast);
+}
+
+.searchBtn {
+  padding: 0.6rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: transparent;
+  color: #ddd;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.searchBtn:hover {
+  border-color: var(--color-contrast);
+  color: var(--color-contrast);
+}
+
+/* The pills are the hero of this page, not a filter above a grid — nothing
+   renders until one is tapped, so they carry the first action. */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.4rem;
+}
+
+.genrePill {
+  padding: 0.45rem 0.95rem;
+  border: 1px solid #2f2f2f;
+  border-radius: 999px;
+  background: #141414;
+  color: #ccc;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.genrePill:hover {
+  border-color: #4a4a4a;
+  color: #fff;
+}
+
+.genrePillOn {
+  background: var(--color-contrast);
+  border-color: var(--color-contrast);
+  color: #0a1420;
+}
+
+.grid {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.7rem;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: #141414;
+  border: 1px solid #262626;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.card:hover {
+  border-color: #3d3d3d;
+}
+
+.cardAdded {
+  border-color: var(--color-contrast);
+  background: rgba(214, 255, 61, 0.07);
+}
+
+.art {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #222;
+}
+
+.name {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mark {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(10, 20, 32, 0.85);
+  color: var(--color-contrast);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Sticks to the bottom so the primary action stays reachable while the user
+   scrolls a grid — the whole point is that finishing is never out of reach. */
+.actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  background: linear-gradient(to top, #0a1420 70%, transparent);
+}
+
+.primaryBtn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-contrast);
+  color: #0a1420;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Deliberately quiet. Skipping is allowed, not encouraged. */
+.skipBtn {
+  border: none;
+  background: none;
+  color: #7f8a95;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.skipBtn:hover {
+  color: #c9d3dd;
+}
+
+.muted {
+  margin: 0 0 1.2rem;
+  font-size: 0.88rem;
+  color: #8b97a3;
+  line-height: 1.5;
+}
+
+.error {
+  margin: 0 0 1.2rem;
+  font-size: 0.88rem;
+  color: #ff6b6b;
+}
+
+/* The reveal gets the page to itself — it's the payoff, and anything else
+   on screen competes with it. */
+.reveal {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.revealTitle {
+  margin: 0.4rem 0 0.8rem;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--color-contrast);
+  line-height: 1.1;
+}
+
+.revealBody {
+  margin: 0 auto 2rem;
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #c9d3dd;
+}
+
+@media (max-width: 520px) {
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .revealTitle {
+    font-size: 1.8rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+}
