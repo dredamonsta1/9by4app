@@ -21,6 +21,15 @@ describe("FiltersBar genres", () => {
     expect(screen.getByRole("button", { name: "Country" })).toBeInTheDocument();
   });
 
+  it("offers Dancehall after Reggae", async () => {
+    // Adjacent genres, and Reggae is the broader term — 44 of the 155
+    // dancehall artists already match it, so this surfaces the other 111.
+    renderBar();
+    const labels = screen.getAllByRole("button").map((b) => b.textContent.trim());
+    expect(labels).toContain("Dancehall");
+    expect(labels.indexOf("Reggae")).toBeLessThan(labels.indexOf("Dancehall"));
+  });
+
   it("sends the pill's label as the genre filter", async () => {
     // The server matches with ILIKE '%value%', so the label is the query —
     // renaming a pill silently changes what it filters.
