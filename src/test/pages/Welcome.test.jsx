@@ -176,6 +176,17 @@ describe("Welcome — skipping", () => {
     expect(navigateSpy).toHaveBeenCalledWith("/");
   });
 
+  it("records the skip so the gate stops redirecting", async () => {
+    // Without this, skipping lands on "/" and FirstRunGate returns them
+    // here immediately — an unescapable loop.
+    const user = userEvent.setup({ delay: null });
+    renderWelcome();
+
+    await user.click(screen.getByRole("button", { name: /i'll do this later/i }));
+
+    expect(localStorage.getItem("stanbox_welcome_skipped")).toBe("1");
+  });
+
   it("does not silence the navbar nudge", async () => {
     // Skip is "not now"; dismiss is "stop asking". Setting the dismissal key
     // here would kill the only thing left to bring them back, since the
