@@ -11,6 +11,7 @@ const GENRES = [
   "Drill",
   "Trap",
   "Reggae",
+  "Dancehall",
 ];
 const REGIONS = ["NY", "Georgia", "LA", "Chicago", "Houston", "Detroit", "South", "East", "UK"];
 
