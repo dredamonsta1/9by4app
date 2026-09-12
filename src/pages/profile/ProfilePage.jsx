@@ -22,6 +22,7 @@ import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
 import Top20Shrine from "../../components/Top20Shrine/Top20Shrine";
 import QuarterlyPicks from "../../components/QuarterlyPicks/QuarterlyPicks";
+import CrateShare from "../../components/CrateShare/CrateShare";
 import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
@@ -588,6 +589,10 @@ const ProfilePage = () => {
             }
           />
         )}
+
+        {/* Under the shrine because that is what a crate is cut from.
+            Own profile only — sharing someone else's list is not a thing. */}
+        {isOwnProfile && <CrateShare artists={displayedList} />}
 
         {/* Same kind of identity artifact as the shrine above it, but with a
             clock on it — which is the point: a Top 20 is permanent, so there

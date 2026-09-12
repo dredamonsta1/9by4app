@@ -24,6 +24,7 @@ import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
 import QuarterlyChart from "./pages/QuarterlyChart/QuarterlyChart";
 import Welcome from "./pages/Welcome/Welcome";
+import Crate from "./pages/Crate/Crate";
 import FirstRunGate from "./components/FirstRunGate/FirstRunGate";
 import ContentCreators from "./pages/ContentCreators/ContentCreators.jsx";
 import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard.jsx";
@@ -94,6 +95,8 @@ const App = () => {
           {/* Public and shareable — the chart is the artifact with
               outside-world value, unlike an individual's picks. */}
           <Route path="/welcome" element={<Welcome />} />
+          {/* Public: a crate that 404s logged out cannot travel. */}
+          <Route path="/crate/:slug" element={<Crate />} />
           <Route path="/picks" element={<QuarterlyChart />} />
           <Route path="/picks/:year" element={<QuarterlyChart />} />
           <Route path="/picks/:year/:quarter" element={<QuarterlyChart />} />

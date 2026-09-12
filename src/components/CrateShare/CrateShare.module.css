@@ -1,0 +1,156 @@
+.wrap {
+  margin-top: 1rem;
+}
+
+.openBtn {
+  padding: 0.45rem 0.95rem;
+  border: 1px solid #2f2f2f;
+  border-radius: 999px;
+  background: transparent;
+  color: #bbb;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.openBtn:hover {
+  border-color: var(--color-contrast);
+  color: var(--color-contrast);
+}
+
+.panel {
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+.head {
+  margin-bottom: 0.8rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: #888;
+  line-height: 1.45;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.88rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-contrast);
+}
+
+.list {
+  list-style: none;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.chip {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #2f2f2f;
+  border-radius: 999px;
+  background: transparent;
+  color: #bbb;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: #4a4a4a;
+  color: #fff;
+}
+
+.chipOn {
+  background: var(--color-contrast);
+  border-color: var(--color-contrast);
+  color: #0a1420;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.primaryBtn {
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-contrast);
+  color: #0a1420;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.linkBtn:hover {
+  color: #fff;
+}
+
+.done {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.doneLabel {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #888;
+}
+
+/* Wraps rather than scrolls — the link is the deliverable and half of it is
+   no use to anyone. */
+.url {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  background: rgba(214, 255, 61, 0.08);
+  border: 1px solid rgba(214, 255, 61, 0.3);
+  border-radius: 8px;
+  color: var(--color-contrast);
+  font-size: 0.8rem;
+  word-break: break-all;
+}
