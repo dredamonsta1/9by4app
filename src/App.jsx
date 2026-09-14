@@ -9,7 +9,6 @@ import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
-import ArtVideoFeed from "./components/ArtVideoFeed/ArtVideoFeed.jsx";
 import Signup from "./components/Signup/Signup.jsx";
 import Login from "./components/login/Login.jsx";
 import Waitlist from "./components/Waitlist/Waitlist.jsx";
@@ -76,7 +75,6 @@ const App = () => {
           <Route path="/artist/:artistId" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
-          <Route path="/art-video" element={<ArtVideoFeed />} />
           <Route path="/signup" element={<Waitlist />} />
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<Login />} />
