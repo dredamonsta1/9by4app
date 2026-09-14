@@ -26,9 +26,6 @@ vi.mock("../../components/Dashboard/Dashboard", () => ({
   default: () => <div>Dashboard</div>,
 }));
 
-vi.mock("../../components/ArtVideoFeed/ArtVideoFeed", () => ({
-  default: () => <div>ArtVideoFeed</div>,
-}));
 
 vi.mock("../../components/ImageFeed/ImageFeed", () => ({
   default: () => <div>ImageFeed</div>,

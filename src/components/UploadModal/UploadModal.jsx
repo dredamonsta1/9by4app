@@ -34,13 +34,6 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function extractYouTubeId(url) {
-  const match = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-  );
-  return match ? match[1] : null;
-}
-
 export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState(null);
@@ -57,7 +50,6 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
 
   // Video
   const [videoInputMode, setVideoInputMode] = useState("file");
-  const [videoUrl, setVideoUrl] = useState("");
   const [isMusicVideoRecord, setIsMusicVideoRecord] = useState(false);
 
   // Music
@@ -83,7 +75,7 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   useEffect(() => {
     if (!isOpen) {
       setStep(1); setCategory(null); setContent(""); setFile(null); setPreview(null);
-      setIsDragging(false); setVideoInputMode("file"); setVideoUrl("");
+      setIsDragging(false); setVideoInputMode("file");
       setIsMusicVideoRecord(false);
       setMusicInputMode("file"); setMusicStreamUrl("");
       setTitle(""); setDescription(""); setContentType("");
@@ -131,10 +123,8 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   const canProceed = () => {
     if (category === "text")  return content.trim().length > 0 && !isOverLimit;
     if (category === "photo") return !!file;
-    if (category === "video") {
-      if (videoInputMode === "url") return videoUrl.trim().length > 0;
-      return !!file; // covers both "file" and "record" modes
-    }
+    // Upload or record only. Pasting a URL was how YouTube got in.
+    if (category === "video") return !!file;
     if (category === "music") return musicInputMode === "file" ? !!file : musicStreamUrl.trim().length > 0;
     return false;
   };
@@ -159,21 +149,12 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
         await axiosInstance.post("/feed/image", fd, { headers: { "Content-Type": "multipart/form-data" } });
 
       } else if (category === "video") {
-        if (videoInputMode === "url") {
-          await axiosInstance.post("/feed/video-url", {
-            videoUrl: videoUrl.trim(),
-            caption:      description.trim() || undefined,
-            title:        title.trim() || undefined,
-            content_type: contentType || undefined,
-          });
-        } else {
-          const fd = new FormData();
-          fd.append("video", file);
-          if (description.trim()) fd.append("caption", description.trim());
-          if (title.trim())       fd.append("title", title.trim());
-          if (contentType)        fd.append("content_type", contentType);
-          await axiosInstance.post("/feed/video", fd, { headers: { "Content-Type": "multipart/form-data" } });
-        }
+        const fd = new FormData();
+        fd.append("video", file);
+        if (description.trim()) fd.append("caption", description.trim());
+        if (title.trim())       fd.append("title", title.trim());
+        if (contentType)        fd.append("content_type", contentType);
+        await axiosInstance.post("/feed/video", fd, { headers: { "Content-Type": "multipart/form-data" } });
 
       } else if (category === "music") {
         if (musicInputMode === "file") {
@@ -205,7 +186,6 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
 
   if (!isOpen) return null;
 
-  const ytId = videoUrl ? extractYouTubeId(videoUrl) : null;
   const dropZoneIcon = { photo: "⬜", video: "▶", music: "♪" }[category];
   const recordTimeLimit = isMusicVideoRecord ? RECORD_LIMIT_MUSIC_VIDEO : RECORD_LIMIT_DEFAULT;
 
@@ -308,9 +288,8 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
             {category === "video" && (
               <>
                 <div className={styles.subToggleRow}>
-                  <button className={`${styles.subToggle} ${videoInputMode === "file"   ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("file");   clearFile(); setVideoUrl(""); }}>Upload File</button>
-                  <button className={`${styles.subToggle} ${videoInputMode === "record" ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("record"); clearFile(); setVideoUrl(""); }}>Record</button>
-                  <button className={`${styles.subToggle} ${videoInputMode === "url"    ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("url");    clearFile(); }}>Paste URL</button>
+                  <button className={`${styles.subToggle} ${videoInputMode === "file"   ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("file");   clearFile(); }}>Upload File</button>
+                  <button className={`${styles.subToggle} ${videoInputMode === "record" ? styles.subToggleActive : ""}`} onClick={() => { setVideoInputMode("record"); clearFile(); }}>Record</button>
                 </div>
 
                 {videoInputMode === "file" && (
@@ -359,16 +338,6 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
                   )
                 )}
 
-                {videoInputMode === "url" && (
-                  <>
-                    <input type="text" className={styles.urlInput} placeholder="Paste YouTube or video URL..." value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} autoFocus />
-                    {ytId && (
-                      <div className={styles.ytPreview}>
-                        <iframe src={`https://www.youtube.com/embed/${ytId}`} title="YouTube preview" allowFullScreen />
-                      </div>
-                    )}
-                  </>
-                )}
               </>
             )}
 

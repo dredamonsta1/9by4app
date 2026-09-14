@@ -85,6 +85,9 @@ const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
   const isAgent = post.is_agent_post;
   const isMusic = postType === "music" && post.audio_url;
   const isImage = postType === "image" && post.image_url;
+  // Only platform uploads play. video_type 'youtube' rows are legacy and
+  // no longer creatable; they render as a caption rather than an embed.
+  const isVideo = postType === "video" && post.video_url && post.video_type !== "youtube";
   const badgeLabel = isAgent && (AGENT_BADGE[post.category] || "News");
   const verifiedCount = post.verified_count || 0;
   const disputedCount = post.disputed_count || 0;
@@ -200,6 +203,20 @@ const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
           src={resolveImageUrl(post.image_url)}
           alt=""
           className={styles.feedImage}
+        />
+      )}
+
+      {isVideo && (
+        /* Never autoplays. The audio player owns the bottom bar, and a feed
+           that starts making noise beside it is a bad surprise.
+           preload="metadata" gets a poster frame without pulling the file. */
+        <video
+          className={styles.feedVideo}
+          src={post.video_url}
+          poster={post.thumbnail_url || undefined}
+          controls
+          preload="metadata"
+          playsInline
         />
       )}
 
@@ -471,6 +488,7 @@ const ArtistPanel = () => {
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [globalFeed, setGlobalFeed] = useState([]);
+  const [feedFilter, setFeedFilter] = useState("all");
   const [artistNews, setArtistNews] = useState([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [showPositionSelector, setShowPositionSelector] = useState(false);
@@ -656,6 +674,14 @@ const ArtistPanel = () => {
   //
   // Declared above the early returns below: a hook after them runs
   // conditionally, and React needs the same hook order on every render.
+  // Video lives as a filter on the feed rather than its own page. A page
+  // with no uploads is dead; an empty filter on a working feed is just an
+  // empty filter, with the composer still right there.
+  const feedFiltered =
+    feedFilter === "video"
+      ? globalFeed.filter((p) => p.post_type === "video")
+      : globalFeed;
+
   const handleNeedMore = useCallback(() => {
     if (artistsLoadingMore || !artistsHasMore) return;
     dispatch(
@@ -973,6 +999,24 @@ const ArtistPanel = () => {
             <div className={styles.box}>
               <header className={styles.boxHeader}>
                 <span>Feed</span>
+                <span className={styles.feedFilters} role="group" aria-label="Filter the feed">
+                  {[
+                    ["all", "All"],
+                    ["video", "Video"],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`${styles.feedFilterPill} ${
+                        feedFilter === value ? styles.feedFilterPillOn : ""
+                      }`}
+                      onClick={() => setFeedFilter(value)}
+                      aria-pressed={feedFilter === value}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </span>
                 <Link
                   to="/rooms"
                   className={styles.feedHeaderIcon}
@@ -998,13 +1042,17 @@ const ArtistPanel = () => {
                 <div className={styles.emptyState}>
                   <p>Log in to see the feed.</p>
                 </div>
-              ) : globalFeed.length === 0 ? (
+              ) : feedFiltered.length === 0 ? (
                 <div className={styles.emptyState}>
-                  <p>No posts in the feed yet.</p>
+                  <p>
+                    {feedFilter === "video"
+                      ? "No videos yet — post the first one."
+                      : "No posts in the feed yet."}
+                  </p>
                 </div>
               ) : (
                 <ul className={styles.feedList}>
-                  {globalFeed.map((post, idx) => (
+                  {feedFiltered.map((post, idx) => (
                     <FeedPost
                       key={post.id || post.post_id || idx}
                       post={post}

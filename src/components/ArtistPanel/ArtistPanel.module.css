@@ -1908,3 +1908,46 @@
   opacity: 0.35;
   cursor: not-allowed;
 }
+
+/* Capped so a portrait video can't take over the feed column. Black rather
+   than transparent, since letterboxing on a dark panel otherwise looks like
+   a rendering fault. */
+.feedVideo {
+  width: 100%;
+  max-height: 420px;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  background: #000;
+  display: block;
+}
+
+/* Sits in the box header, so filtering is visible without scrolling the
+   feed — the same reasoning as the genre pills above the rankings. */
+.feedFilters {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.feedFilterPill {
+  padding: 0.15rem 0.55rem;
+  border: 1px solid #2f2f2f;
+  border-radius: 999px;
+  background: transparent;
+  color: #999;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.feedFilterPill:hover {
+  color: #fff;
+  border-color: #4a4a4a;
+}
+
+.feedFilterPillOn {
+  background: var(--color-contrast);
+  border-color: var(--color-contrast);
+  color: #0a1420;
+}
