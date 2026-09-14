@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./CrateShare.module.css";
@@ -9,22 +9,45 @@ export const CRATE_MIN = 3;
 // to be themselves.
 export const CRATE_MAX = 10;
 
+const crateUrl = (slug) => `${window.location.origin}/crate/${slug}`;
+
 /**
- * Turn part of your Top 20 into a shareable crate.
+ * Your crates: make one, find the links again, fix a name.
  *
- * Deliberately a *subset*, not the whole list. The #1 slot on a shrine is the
- * most personal thing on the platform, and sharing the list wholesale reads as
- * "be me" rather than "here's a start". Choosing is what makes it a
- * recommendation.
+ * Creation used to show the link exactly once, which meant a crate URL was
+ * unrecoverable the moment you closed the panel — the owner had to query the
+ * database to find their own share links. This lists them.
  *
- * Presentational except for the create call — ProfilePage owns the list.
+ * Crates are cut from a *subset* of the Top 20, never the whole thing. The #1
+ * slot is the most personal thing on the platform, and sharing the list
+ * wholesale reads as "be me" rather than "here's a start". Choosing is what
+ * makes it a recommendation.
  */
 const CrateShare = ({ artists = [] }) => {
   const [open, setOpen] = useState(false);
+  const [crates, setCrates] = useState([]);
+  const [creating, setCreating] = useState(false);
+
   const [name, setName] = useState("");
   const [picked, setPicked] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [shareUrl, setShareUrl] = useState(null);
+
+  const [renamingSlug, setRenamingSlug] = useState(null);
+  const [renameValue, setRenameValue] = useState("");
+
+  const load = useCallback(async () => {
+    try {
+      const res = await axiosInstance.get("/crates/mine");
+      setCrates(res.data?.crates ?? []);
+    } catch {
+      // A failed list must not block creating a new one.
+      setCrates([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (open) load();
+  }, [open, load]);
 
   const toggle = (artistId) => {
     setPicked((prev) => {
@@ -37,6 +60,15 @@ const CrateShare = ({ artists = [] }) => {
     });
   };
 
+  const copy = (slug) => {
+    navigator.clipboard
+      ?.writeText(crateUrl(slug))
+      .then(() => toast.success("Link copied."))
+      // The URL is on screen either way, so a blocked clipboard is a
+      // nuisance rather than a dead end.
+      .catch(() => toast.info("Copy the link below."));
+  };
+
   const create = async () => {
     setSaving(true);
     try {
@@ -44,16 +76,31 @@ const CrateShare = ({ artists = [] }) => {
         name: name.trim(),
         artist_ids: picked,
       });
-      const url = `${window.location.origin}/crate/${res.data.crate.slug}`;
-      setShareUrl(url);
-      // Copying is the point of the feature, so it happens without a second
-      // step. The link stays on screen for anyone whose clipboard is blocked.
-      navigator.clipboard?.writeText(url).catch(() => {});
+      navigator.clipboard?.writeText(crateUrl(res.data.crate.slug)).catch(() => {});
       toast.success("Crate created — link copied.");
+      setName("");
+      setPicked([]);
+      setCreating(false);
+      load();
     } catch (err) {
       toast.error(err?.response?.data?.message ?? "Couldn't create the crate.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const rename = async (slug) => {
+    const next = renameValue.trim();
+    if (!next) return;
+    try {
+      await axiosInstance.patch(`/crates/${slug}`, { name: next });
+      setCrates((prev) =>
+        prev.map((c) => (c.slug === slug ? { ...c, name: next } : c))
+      );
+      setRenamingSlug(null);
+      toast.success("Renamed.");
+    } catch (err) {
+      toast.error(err?.response?.data?.message ?? "Couldn't rename that crate.");
     }
   };
 
@@ -63,36 +110,105 @@ const CrateShare = ({ artists = [] }) => {
     <section className={styles.wrap}>
       {!open ? (
         <button type="button" className={styles.openBtn} onClick={() => setOpen(true)}>
-          Share a crate
+          Your crates
         </button>
       ) : (
         <div className={styles.panel}>
           <header className={styles.head}>
-            <h3 className={styles.title}>Share a crate</h3>
+            <h3 className={styles.title}>Your crates</h3>
             <p className={styles.sub}>
-              Pick {CRATE_MIN}–{CRATE_MAX} artists from your Top 20. Anyone with
-              the link can add them in one tap.
+              A crate is {CRATE_MIN}–{CRATE_MAX} artists from your Top 20. Anyone
+              with the link can add them in one tap.
             </p>
           </header>
 
-          {shareUrl ? (
-            <div className={styles.done}>
-              <p className={styles.doneLabel}>Your crate is live:</p>
-              <code className={styles.url}>{shareUrl}</code>
+          {crates.length > 0 && (
+            <ul className={styles.crateList}>
+              {crates.map((c) => (
+                <li key={c.slug} className={styles.crateRow}>
+                  {renamingSlug === c.slug ? (
+                    <form
+                      className={styles.renameForm}
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        rename(c.slug);
+                      }}
+                    >
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={renameValue}
+                        onChange={(e) => setRenameValue(e.target.value)}
+                        maxLength={60}
+                        aria-label={`Rename ${c.name}`}
+                        autoFocus
+                      />
+                      <button type="submit" className={styles.smallBtn}>
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.linkBtn}
+                        onClick={() => setRenamingSlug(null)}
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  ) : (
+                    <>
+                      <span className={styles.crateMeta}>
+                        <span className={styles.crateName}>{c.name}</span>
+                        <span className={styles.crateStats}>
+                          {c.artist_count} artists ·{" "}
+                          {c.adoptions === 1 ? "1 adoption" : `${c.adoptions} adoptions`}
+                        </span>
+                        <code className={styles.url}>{crateUrl(c.slug)}</code>
+                      </span>
+                      <span className={styles.crateActions}>
+                        <button
+                          type="button"
+                          className={styles.smallBtn}
+                          onClick={() => copy(c.slug)}
+                        >
+                          Copy link
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.linkBtn}
+                          onClick={() => {
+                            setRenamingSlug(c.slug);
+                            setRenameValue(c.name);
+                          }}
+                        >
+                          Rename
+                        </button>
+                      </span>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {!creating ? (
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.primaryBtn}
+                onClick={() => setCreating(true)}
+              >
+                {crates.length ? "New crate" : "Make your first crate"}
+              </button>
               <button
                 type="button"
                 className={styles.linkBtn}
-                onClick={() => {
-                  setShareUrl(null);
-                  setPicked([]);
-                  setName("");
-                }}
+                onClick={() => setOpen(false)}
               >
-                Make another
+                Close
               </button>
             </div>
           ) : (
-            <>
+            <div className={styles.createBlock}>
               <input
                 type="text"
                 className={styles.input}
@@ -138,13 +254,13 @@ const CrateShare = ({ artists = [] }) => {
                 <button
                   type="button"
                   className={styles.linkBtn}
-                  onClick={() => setOpen(false)}
+                  onClick={() => setCreating(false)}
                   disabled={saving}
                 >
                   Cancel
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       )}
