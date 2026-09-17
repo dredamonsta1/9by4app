@@ -23,6 +23,7 @@ import { setCredentials } from "../../store/authSlice";
 import Top20Shrine from "../../components/Top20Shrine/Top20Shrine";
 import QuarterlyPicks from "../../components/QuarterlyPicks/QuarterlyPicks";
 import CrateShare from "../../components/CrateShare/CrateShare";
+import DeleteAccount from "../../components/DeleteAccount/DeleteAccount";
 import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
@@ -869,6 +870,13 @@ const ProfilePage = () => {
             </span>
           </button>
           {createArtistOpen && <CreateArtistForm />}
+        </section>
+      )}
+
+      {/* ── Delete account (own profile, last on the page) ── */}
+      {isOwnProfile && (
+        <section className={styles.section}>
+          <DeleteAccount username={displayedUser?.username} />
         </section>
       )}
 

@@ -1,0 +1,112 @@
+.wrap {
+  margin-top: 2rem;
+}
+
+/* Quiet until opened. Deletion must be findable, not prominent — a
+   destructive action styled like a feature invites accidents. */
+.openBtn {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #3a2626;
+  border-radius: 8px;
+  background: transparent;
+  color: #8a6a6a;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.openBtn:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.panel {
+  padding: 1.1rem 1.2rem;
+  background: #141414;
+  border: 1px solid #3a2626;
+  border-radius: 12px;
+}
+
+.title {
+  margin: 0 0 0.8rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ff6b6b;
+}
+
+.body {
+  margin: 0.7rem 0 0.3rem;
+  font-size: 0.85rem;
+  color: #c9d3dd;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.83rem;
+  color: #999;
+  line-height: 1.6;
+}
+
+.warning {
+  margin: 1rem 0 0.6rem;
+  font-size: 0.85rem;
+  color: #e9b949;
+  line-height: 1.5;
+}
+
+.warning strong {
+  color: #fff;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.88rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dangerBtn {
+  padding: 0.55rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: #ff6b6b;
+  color: #1a0a0a;
+  font-size: 0.87rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dangerBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.linkBtn:hover {
+  color: #fff;
+}
