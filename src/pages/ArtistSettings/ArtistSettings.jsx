@@ -38,6 +38,12 @@ const FIELDS = [
     help: "Shown as \"Listen on Apple Music\"",
     placeholder: "https://music.apple.com/us/artist/...",
   },
+  {
+    key: "soundcloud_url",
+    label: "SoundCloud",
+    help: "For a lot of independent artists this is the only place their music lives",
+    placeholder: "https://soundcloud.com/yourname",
+  },
 ];
 
 const isValidUrl = (v) => v === "" || /^https?:\/\//i.test(v.trim());
