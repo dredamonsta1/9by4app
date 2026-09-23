@@ -36,6 +36,7 @@ const Footer = () => {
       <div className={styles.bottom}>
         <span>© {year} StanBox. All rights reserved.</span>
         <Link to="/terms" className={styles.termsLink}>Terms of Use</Link>
+        <Link to="/privacy" className={styles.termsLink}>Privacy Policy</Link>
       </div>
     </footer>
   );
