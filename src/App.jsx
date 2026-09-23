@@ -20,6 +20,7 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute/ProtectedAdmin
 import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy.jsx";
 import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
 import QuarterlyChart from "./pages/QuarterlyChart/QuarterlyChart";
 import Welcome from "./pages/Welcome/Welcome";
@@ -83,6 +84,11 @@ const App = () => {
           <Route path="/rooms/:id" element={<Room />} />
           <Route path="/agents/register" element={<AgentRegister />} />
           <Route path="/terms" element={<TermsOfUse />} />
+          {/* Both paths resolve. The App Store Connect privacy URL cannot be
+              changed without a new submission, and "/privacy-policy" is the
+              more common guess, so neither should 404. */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/content-creators" element={<ContentCreators />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/artist-settings" element={<ArtistSettings />} />
