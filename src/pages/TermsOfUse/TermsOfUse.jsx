@@ -77,8 +77,9 @@ const TermsOfUse = () => (
         <h1 className={styles.title}>Terms of Use</h1>
         <p className={styles.meta}>Last updated: {LAST_UPDATED}</p>
         <p className={styles.intro}>
-          Welcome to stanbox — a social platform for hip-hop artists and fans.
-          Please read these Terms carefully before using the Platform.
+          Welcome to stanbox — a music platform where fans rank the artists
+          they care about and artists sell their work directly. Please read
+          these Terms carefully before using the Platform.
         </p>
       </header>
 
