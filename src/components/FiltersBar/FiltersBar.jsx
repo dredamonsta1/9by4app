@@ -13,7 +13,29 @@ const GENRES = [
   "Reggae",
   "Dancehall",
 ];
-const REGIONS = ["NY", "Georgia", "LA", "Chicago", "Houston", "Detroit", "South", "East", "UK"];
+// Every value here returns results. The API matches `region OR state`
+// EXACTLY, with no wildcards — deliberately, so "%South%" cannot also catch
+// "South Carolina" (see routes/artists.js). That makes the vocabulary
+// load-bearing in a way a pill list does not look.
+//
+// Removed 2026-09-28 because they returned an empty list on tap:
+//   "Chicago", "Houston", "Detroit" — cities, and there is no city column.
+//     Only one artist in 112k has "Chicago" anywhere, as a substring.
+//   "East" — the stored value is "East Coast", and the match is exact.
+//
+// Counted against production the same day:
+//   East Coast 1783 · NY 1231 · South 553 · West Coast 543
+//   Midwest 459 · Georgia 115 · UK 80 · LA 12
+const REGIONS = [
+  "East Coast",
+  "West Coast",
+  "South",
+  "Midwest",
+  "NY",
+  "Georgia",
+  "LA",
+  "UK",
+];
 
 const FiltersBar = ({ activeFilter, onFilterChange, isLoggedIn, hasListItems }) => {
   const isActive = (type, value = "") =>
