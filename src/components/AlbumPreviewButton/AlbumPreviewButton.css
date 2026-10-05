@@ -63,3 +63,17 @@
   background: var(--color-accent, #6c63ff);
   transition: width 0.25s linear;
 }
+
+/* Attribution for Apple Music clips — opens the full track there. */
+.apb-listen {
+  font-size: 0.625rem;
+  color: var(--color-text-secondary, rgba(255,255,255,0.55));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.apb-listen:hover,
+.apb-listen:focus-visible {
+  color: var(--color-text-bright, #fff);
+}

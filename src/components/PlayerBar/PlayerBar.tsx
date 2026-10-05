@@ -364,6 +364,16 @@ const PlayerBar = () => {
           <span className={styles.username}>
             {track.artist_name ?? (track.username ? `@${track.username}` : "")}
           </span>
+          {track.listen_url && (
+            <a
+              className={styles.listenLink}
+              href={track.listen_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Listen on Apple Music ↗
+            </a>
+          )}
         </div>
       </div>
 

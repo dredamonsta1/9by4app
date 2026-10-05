@@ -8,15 +8,15 @@ import styles from "./StanboxPreviewButton.module.css";
 // Per-album preview button for verified-artist albums on the artist modal.
 // Clicking fetches /api/albums/:id/preview (public, no auth) and queues the
 // 30-second clip into PlayerBar. Distinct from the legacy AlbumPreviewButton
-// which serves Deezer-cached previews for the broader catalog — this one is
-// strictly for stanbox-uploaded audio.
+// which serves store previews (Apple Music, else Deezer) for the broader
+// catalog — this one is strictly for stanbox-uploaded audio.
 const StanboxPreviewButton = ({ album, artist }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   // Try stanbox-uploaded audio first; if the artist hasn't uploaded a
-  // preview for this release (404), fall back to the Deezer cache so
-  // older catalog entries still play even without a self-serve upload.
+  // preview for this release (404), fall back to a store clip (Apple Music,
+  // else Deezer) so older catalog entries still play without an upload.
   const queueStanbox = (data) =>
     dispatch(
       setQueue({
@@ -35,7 +35,7 @@ const StanboxPreviewButton = ({ album, artist }) => {
       }),
     );
 
-  const queueDeezer = (data) =>
+  const queueStoreClip = (data) =>
     dispatch(
       setQueue({
         tracks: [
@@ -48,6 +48,7 @@ const StanboxPreviewButton = ({ album, artist }) => {
             artist_name: artist?.artist_name ?? null,
             album_image_url:
               data.album_art_url ?? album.album_image_url ?? null,
+            listen_url: data.listen_url ?? null,
           },
         ],
         startIndex: 0,
@@ -64,18 +65,18 @@ const StanboxPreviewButton = ({ album, artist }) => {
     } catch (err) {
       const status = err?.response?.status;
       if (status === 404 && artist?.artist_id && album?.album_name) {
-        // Stanbox upload missing — try Deezer for this album.
+        // Stanbox upload missing — try a store clip for this album.
         try {
           const fallback = await axiosInstance.get(
             `/artists/${artist.artist_id}/preview`,
             { params: { album: album.album_name } },
           );
           if (fallback.data?.preview_url) {
-            queueDeezer(fallback.data);
+            queueStoreClip(fallback.data);
             return;
           }
         } catch {
-          // Deezer also has nothing — fall through to the 404 toast.
+          // No store clip either — fall through to the 404 toast.
         }
         toast.info("No preview is available for this release yet.");
       } else {
