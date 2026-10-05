@@ -19,6 +19,8 @@ function stopActivePreview() {
 export default function AlbumPreviewButton({ artistId, albumName }) {
   const [status, setStatus] = useState("idle"); // idle | loading | playing | error
   const [progress, setProgress] = useState(0);
+  // Apple Music clips come with a link to the full track (attribution).
+  const [listenUrl, setListenUrl] = useState(null);
   const audioRef = useRef(null);
 
   const startAudio = (url) => {
@@ -71,6 +73,7 @@ export default function AlbumPreviewButton({ artistId, albumName }) {
         `/artists/${artistId}/preview`,
         { params: { album: albumName } }
       );
+      setListenUrl(res.data.listen_url ?? null);
       startAudio(res.data.preview_url);
     } catch {
       setStatus("error");
@@ -114,6 +117,17 @@ export default function AlbumPreviewButton({ artistId, albumName }) {
         <div className="apb-progress">
           <div className="apb-progress-fill" style={{ width: `${progress}%` }} />
         </div>
+      )}
+      {status === "playing" && listenUrl && (
+        <a
+          className="apb-listen"
+          href={listenUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Apple Music ↗
+        </a>
       )}
     </div>
   );

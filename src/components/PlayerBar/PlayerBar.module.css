@@ -71,6 +71,21 @@
   text-overflow: ellipsis;
 }
 
+/* Attribution for Apple Music preview clips. Opens the full track there;
+   the clip itself keeps playing here. */
+.listenLink {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.listenLink:hover,
+.listenLink:focus-visible {
+  color: var(--color-text-bright);
+}
+
 /* ── Visualizer ── */
 .visualizer {
   display: block;

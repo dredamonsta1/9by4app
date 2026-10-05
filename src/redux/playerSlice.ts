@@ -20,6 +20,9 @@ export interface Track {
   username?: string;           // music post author (optional now)
   artist_name?: string | null; // album/track artist
   album_image_url?: string | null;
+  // Preview clips licensed from Apple Music link back to the track there.
+  // Shown in PlayerBar as attribution; null for every other source.
+  listen_url?: string | null;
 }
 
 interface PlayerState {
