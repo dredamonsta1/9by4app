@@ -10,9 +10,9 @@ This is the React frontend for **9by4** — a music artist social platform. Buil
 
 ```bash
 # Start dev server
-npm run dev
+npm start
 
-# Build for production
+# Build for production (runs the typecheck first; Netlify deploys are gated on it)
 npm run build
 
 # Preview production build
@@ -22,7 +22,13 @@ npm run preview
 npm test
 
 # Run tests with coverage
-npm run coverage
+npm run test:coverage
+
+# Typecheck only
+npm run typecheck
+
+# Lint (run before pushing; build and tests both pass on React hook-order bugs)
+npx eslint src --quiet
 ```
 
 ## Architecture
