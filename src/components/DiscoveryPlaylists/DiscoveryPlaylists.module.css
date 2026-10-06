@@ -1,0 +1,265 @@
+/* Matches QuarterlyPicks, the section above it. */
+.wrap {
+  margin-top: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-bright);
+}
+
+.subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.refresh {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.refresh:hover:not(:disabled),
+.refresh:focus-visible {
+  color: var(--color-text-bright);
+  border-color: var(--color-text-secondary);
+}
+
+.refresh:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.notice,
+.note {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.card {
+  background: rgba(10, 20, 32, 0.5);
+  border: 1px solid var(--color-border-default);
+  border-radius: 10px;
+  padding: 0.85rem;
+  min-width: 0;
+}
+
+.cardTop {
+  display: flex;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+/* 2×2 mosaic of the playlist's artists. */
+.cover {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0a1420;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--color-text-bright);
+}
+
+.blurb {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #c3ccd6;
+}
+
+.counts {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+/* Primary action: chartreuse, per the brand's CTA role. */
+.playBtn {
+  padding: 0.35rem 0.95rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.playBtn:hover,
+.playBtn:focus-visible {
+  background: var(--color-contrast-hover);
+}
+
+.toggle {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toggle:hover,
+.toggle:focus-visible {
+  color: var(--color-text-bright);
+}
+
+.tracks {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track,
+.trackPlaying {
+  border-radius: 6px;
+}
+
+.trackPlaying {
+  background: var(--color-contrast-subtle);
+}
+
+.trackBtn {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: 0.5rem;
+  align-items: start;
+  width: 100%;
+  padding: 0.4rem 0.4rem;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #e0e6ed;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trackBtn:hover,
+.trackBtn:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.num {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding-top: 0.1rem;
+}
+
+.trackPlaying .num {
+  color: var(--color-contrast);
+}
+
+.trackText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.trackLine {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.artist {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Small artists: the reason these playlists exist. */
+.badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-contrast);
+  border: 1px solid var(--color-contrast-glow);
+  background: var(--color-contrast-subtle);
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
+}
+
+.song {
+  font-size: 0.78rem;
+  color: #c3ccd6;
+}
+
+.reason {
+  font-size: 0.74rem;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 480px) {
+  .cover {
+    width: 64px;
+    height: 64px;
+  }
+}
