@@ -22,6 +22,7 @@ import { resolveImageUrl } from "../../utils/imageUrl";
 import { setCredentials } from "../../store/authSlice";
 import Top20Shrine from "../../components/Top20Shrine/Top20Shrine";
 import QuarterlyPicks from "../../components/QuarterlyPicks/QuarterlyPicks";
+import DiscoveryPlaylists from "../../components/DiscoveryPlaylists/DiscoveryPlaylists";
 import CrateShare from "../../components/CrateShare/CrateShare";
 import DeleteAccount from "../../components/DeleteAccount/DeleteAccount";
 import OnboardingChecklist, {
@@ -603,6 +604,10 @@ const ProfilePage = () => {
           editable={isOwnProfile}
           displayName={displayedUser?.username || "This user"}
         />
+
+        {/* Discovery playlists are built from the fan's own taste, so only
+            on their own profile. */}
+        {isOwnProfile && <DiscoveryPlaylists />}
 
         {/* Add Artist Panel */}
         {showAddArtistModal && isOwnProfile && (
