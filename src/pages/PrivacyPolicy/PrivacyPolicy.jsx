@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./PrivacyPolicy.module.css";
 
-const LAST_UPDATED = "September 22, 2026";
+const LAST_UPDATED = "October 6, 2026";
 
 // This page is a required App Store Connect field, and Apple rejects
 // submissions where the policy disagrees with the app's privacy manifest.
@@ -21,11 +21,11 @@ const sections = [
   },
   {
     title: "2. What We Collect",
-    body: `Account information. Your email address and username. We use passwordless sign-in, so we send a six-digit code to your email instead of storing a password. Sign-in codes are deleted once used or expired.\n\nProfile information. Anything you choose to add: a profile picture, and links to your Instagram, TikTok, YouTube, or X accounts. All of this is optional and you can remove it at any time.\n\nContent you create. Posts, comments, direct messages, crates, your Top 20, your quarterly picks, and — if you are an artist — the music, artwork, and release information you upload.\n\nPurchase records. What you bought, the amount, and the date. We never receive or store your card number; payments are handled entirely by Stripe.\n\nApproximate location. Country and region only. This is derived on our servers from the network address your request arrives from when you sign in, or from the billing address you type during checkout. We do not ask for device location permission, and the app does not use location services. We do not store your network address — it is used to look up a country and then discarded.\n\nWe do not collect: precise location, contacts, health data, browsing activity on other sites, or advertising identifiers.`,
+    body: `Account information. Your email address and username. We use passwordless sign-in, so we send a six-digit code to your email instead of storing a password. Sign-in codes are deleted once used or expired.\n\nProfile information. Anything you choose to add: a profile picture, and links to your Instagram, TikTok, YouTube, or X accounts. All of this is optional and you can remove it at any time.\n\nContent you create. Posts, comments, direct messages, crates, your Top 20, your quarterly picks, and — if you are an artist — the music, artwork, and release information you upload.\n\nPurchase records. What you bought, the amount, and the date. We never receive or store your card number; payments are handled entirely by Stripe.\n\nListening activity. When you are signed in and play a 30-second preview for at least ten seconds, we record which artist and release it was and when. Previews you skip, and anything you play while signed out, are not recorded.\n\nApproximate location. Country and region only. This is derived on our servers from the network address your request arrives from when you sign in, or from the billing address you type during checkout. We do not ask for device location permission, and the app does not use location services. We do not store your network address — it is used to look up a country and then discarded.\n\nWe do not collect: precise location, contacts, health data, browsing activity on other sites, or advertising identifiers.`,
   },
   {
     title: "3. Why We Collect It",
-    body: `To run your account — signing you in, showing you your library, and letting you post, message, and rank.\n\nTo complete purchases and to give artists the sales records they are owed.\n\nTo moderate content, so the Platform stays usable.\n\nTo understand, in aggregate, which countries and regions an artist's audience is in. This is the only thing we use for analytics, and artists see it only as counts by region — never as individual users.`,
+    body: `To run your account — signing you in, showing you your library, and letting you post, message, and rank.\n\nTo complete purchases and to give artists the sales records they are owed.\n\nTo moderate content, so the Platform stays usable.\n\nTo understand, in aggregate, which countries and regions an artist's audience is in. Artists see this only as counts by region — never as individual users.\n\nTo recommend artists. Listening activity is used to work out which artists are often listened to by the same people, so we can suggest similar artists. It is used only in aggregate, never shown to artists or other users, and never used for advertising.`,
   },
   {
     title: "4. We Do Not Track You",
@@ -41,15 +41,15 @@ const sections = [
   },
   {
     title: "7. What Is Public",
-    body: `Your username, profile picture, Top 20, crates, quarterly picks, posts, and comments are visible to others, including people who are not signed in. Browsing stanbox does not require an account, so assume anything you post can be seen publicly.\n\nYour email address, sign-in codes, and direct messages are not public. Your approximate location is never shown as yours — only as part of an aggregate regional count.`,
+    body: `Your username, profile picture, Top 20, crates, quarterly picks, posts, and comments are visible to others, including people who are not signed in. Browsing stanbox does not require an account, so assume anything you post can be seen publicly.\n\nYour email address, sign-in codes, direct messages, and listening activity are not public. Your approximate location is never shown as yours — only as part of an aggregate regional count.`,
   },
   {
     title: "8. Deleting Your Account",
-    body: `You can delete your account at any time from your profile on the web, or from Settings in the iOS app. No email to us is required, and there is no waiting period.\n\nWhat is permanently removed: your email address, username, profile picture, social links, your Top 20, and your music personality.\n\nWhat remains on the Platform: posts, comments, and messages you wrote, shown as coming from a deleted account, so that conversations and replies stay readable for the people you were talking to. Crates you shared stay live so links other people hold keep working. Quarterly picks and purchase records are kept, because charts are sealed historical records and purchase records are needed for refunds and for artists' accounting.\n\nWe are telling you this plainly because "delete my account" does not mean every trace is erased, and you should know that before you do it. Deletion cannot be undone.`,
+    body: `You can delete your account at any time from your profile on the web, or from Settings in the iOS app. No email to us is required, and there is no waiting period.\n\nWhat is permanently removed: your email address, username, profile picture, social links, your Top 20, your listening activity, and your music personality.\n\nWhat remains on the Platform: posts, comments, and messages you wrote, shown as coming from a deleted account, so that conversations and replies stay readable for the people you were talking to. Crates you shared stay live so links other people hold keep working. Quarterly picks and purchase records are kept, because charts are sealed historical records and purchase records are needed for refunds and for artists' accounting.\n\nWe are telling you this plainly because "delete my account" does not mean every trace is erased, and you should know that before you do it. Deletion cannot be undone.`,
   },
   {
     title: "9. Keeping Data",
-    body: `We keep your account information for as long as your account exists. Sign-in codes are deleted as soon as they are used or expire. Purchase records are kept after account deletion, as described above, for refunds and for artists' financial records.\n\nBecause account deletion anonymises your account rather than removing the record entirely, content you posted may remain indefinitely, attributed to a deleted account.`,
+    body: `We keep your account information, including listening activity, for as long as your account exists; listening activity is deleted with your account. Sign-in codes are deleted as soon as they are used or expire. Purchase records are kept after account deletion, as described above, for refunds and for artists' financial records.\n\nBecause account deletion anonymises your account rather than removing the record entirely, content you posted may remain indefinitely, attributed to a deleted account.`,
   },
   {
     title: "10. Your Rights",

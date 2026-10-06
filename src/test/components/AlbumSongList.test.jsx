@@ -70,6 +70,8 @@ describe("AlbumSongList", () => {
       artist_name: "Frank Ocean",
       album_image_url: "https://cdn/co.jpg",
       listen_url: "https://music.apple.com/2",
+      artist_id: 1,
+      source: "apple",
     });
   });
 

@@ -29,6 +29,8 @@ const StanboxPreviewButton = ({ album, artist }) => {
             artist_name: artist?.artist_name ?? null,
             album_image_url:
               data.album_image_url ?? album.album_image_url ?? null,
+            artist_id: artist?.artist_id ?? null,
+            source: "stanbox",
           },
         ],
         startIndex: 0,
@@ -49,6 +51,8 @@ const StanboxPreviewButton = ({ album, artist }) => {
             album_image_url:
               data.album_art_url ?? album.album_image_url ?? null,
             listen_url: data.listen_url ?? null,
+            artist_id: artist?.artist_id ?? null,
+            source: data.provider ?? null,
           },
         ],
         startIndex: 0,

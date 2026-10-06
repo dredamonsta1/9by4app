@@ -6,6 +6,7 @@ import { RootState } from "../../redux/store";
 import { nextTrack, prevTrack, togglePlay, setPlaying, clearPlayer } from "../../redux/playerSlice";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
+import { reportPlay, PLAY_THRESHOLD_SECONDS } from "../../utils/reportPlay";
 import styles from "./PlayerBar.module.css";
 
 const fmt = (s: number) => {
@@ -24,7 +25,12 @@ const VIS_FFT_SIZE = 128;
 const PlayerBar = () => {
   const dispatch = useDispatch();
   const { queue, currentIndex, isPlaying } = useSelector((s: RootState) => s.player);
+  const isLoggedIn = useSelector((s: RootState) => s.auth.isLoggedIn);
   const track = queue[currentIndex] ?? null;
+  // The track object a play was last reported for. A new object (track
+  // change, or the same album queued again) can report again; seeking
+  // around inside one track can't.
+  const reportedFor = useRef<typeof track>(null);
 
   const audioRef  = useRef<HTMLAudioElement>(null);
   const [current, setCurrent] = useState(0);
@@ -313,7 +319,17 @@ const PlayerBar = () => {
   }, []);
 
   const handleTimeUpdate = () => {
-    if (!seeking) setCurrent(audioRef.current?.currentTime ?? 0);
+    const t = audioRef.current?.currentTime ?? 0;
+    if (!seeking) setCurrent(t);
+    if (
+      isLoggedIn &&
+      track?.artist_id &&
+      t >= PLAY_THRESHOLD_SECONDS &&
+      reportedFor.current !== track
+    ) {
+      reportedFor.current = track;
+      reportPlay({ artist_id: track.artist_id, album_id: track.album_id, source: track.source });
+    }
   };
 
   const handleLoadedMetadata = () => {

@@ -54,6 +54,8 @@ const AlbumSongList = ({ album, artist }) => {
           artist_name: artist?.artist_name ?? null,
           album_image_url: album.album_image_url ?? null,
           listen_url: t.listen_url ?? null,
+          artist_id: artist?.artist_id ?? null,
+          source: samples?.provider ?? null,
         })),
         startIndex,
       }),

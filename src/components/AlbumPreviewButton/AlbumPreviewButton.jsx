@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 import axiosInstance from "../../utils/axiosInstance";
+import { reportPlay, PLAY_THRESHOLD_SECONDS } from "../../utils/reportPlay";
 import "./AlbumPreviewButton.css";
 
 // Singleton — only one album preview plays at a time across the whole app
@@ -21,10 +23,12 @@ export default function AlbumPreviewButton({ artistId, albumName }) {
   const [progress, setProgress] = useState(0);
   // Apple Music clips come with a link to the full track (attribution).
   const [listenUrl, setListenUrl] = useState(null);
+  const isLoggedIn = useSelector((s) => s.auth.isLoggedIn);
   const audioRef = useRef(null);
 
-  const startAudio = (url) => {
+  const startAudio = (url, source) => {
     const audio = new Audio(url);
+    let reported = false;
     audioRef.current = audio;
     activeAudio = audio;
     activeStop = () => {
@@ -35,6 +39,11 @@ export default function AlbumPreviewButton({ artistId, albumName }) {
     audio.ontimeupdate = () => {
       const duration = audio.duration || 30;
       setProgress((audio.currentTime / duration) * 100);
+      // Story 29: one play per start, once it's been heard for real.
+      if (!reported && isLoggedIn && audio.currentTime >= PLAY_THRESHOLD_SECONDS) {
+        reported = true;
+        reportPlay({ artist_id: artistId, source });
+      }
     };
     audio.onended = () => {
       setStatus("idle");
@@ -74,7 +83,7 @@ export default function AlbumPreviewButton({ artistId, albumName }) {
         { params: { album: albumName } }
       );
       setListenUrl(res.data.listen_url ?? null);
-      startAudio(res.data.preview_url);
+      startAudio(res.data.preview_url, res.data.provider ?? null);
     } catch {
       setStatus("error");
     }
