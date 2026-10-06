@@ -13,6 +13,7 @@ import { setQueue } from "../../redux/playerSlice";
 import AlbumPreviewButton from "../AlbumPreviewButton/AlbumPreviewButton";
 import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
 import AlbumSongList from "../AlbumSongList/AlbumSongList";
+import { useSimilarArtists } from "../../hooks/useSimilarArtists";
 import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import FiltersBar from "../FiltersBar/FiltersBar";
@@ -483,7 +484,6 @@ const ArtistPanel = () => {
   const [awards, setAwards] = useState([]);
   const [stanRank, setStanRank] = useState(null);
   const [artistMusicPosts, setArtistMusicPosts] = useState([]);
-  const [relatedArtists, setRelatedArtists] = useState([]);
   const [artistEvents, setArtistEvents] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [artist, setArtist] = useState(null);
@@ -543,6 +543,9 @@ const ArtistPanel = () => {
 
   // When no artistId is in the URL, default to the top-ranked artist.
   const targetId = artistId || allArtists[0]?.artist_id;
+  // "Fans Also Love", falling back to similar-sound artists when Top 20
+  // co-listing is too sparse. See useSimilarArtists.
+  const { artists: relatedArtists, title: relatedTitle } = useSimilarArtists(targetId);
 
   useEffect(() => {
     if (!targetId) return;
@@ -553,7 +556,6 @@ const ArtistPanel = () => {
     setAwards([]);
     setStanRank(null);
     setArtistMusicPosts([]);
-    setRelatedArtists([]);
     setFeaturedVideoId(null);
     setArtistEvents([]);
     setVerifications([]);
@@ -615,14 +617,6 @@ const ArtistPanel = () => {
         .then((res) => setStanRank(res.data || null))
         .catch(() => setStanRank(null));
     }
-
-    // "Fans of X also love Y" — co-list overlap from user_profile_artists.
-    // Sparse at low scale; the empty-state guard in the render hides
-    // the section entirely when there's nothing to show.
-    axiosInstance
-      .get(`/artists/${targetId}/related?limit=8`)
-      .then((res) => setRelatedArtists(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setRelatedArtists([]));
 
     // Fact-checker verdict counts rolled up at the artist level.
     // Returns [{ verdict, count }] — dormant for most artists right
@@ -1619,11 +1613,12 @@ const ArtistPanel = () => {
             </div>
           )}
 
-          {/* Related Artists — "Fans of X also love Y" co-list chips.
-              Hidden when empty (sparse signal at current Top-20 scale). */}
+          {/* Related Artists — "Fans Also Love" co-list picks, topped up with
+              similar-sound artists when co-listing is sparse. Hidden when
+              there's nothing at all. */}
           {relatedArtists.length > 0 && (
             <div className={styles.box}>
-              <header className={styles.boxHeader}>Fans Also Love</header>
+              <header className={styles.boxHeader}>{relatedTitle}</header>
               <div className={styles.boxScroll}>
                 <ul className={styles.relatedList}>
                   {relatedArtists.map((rel) => (
@@ -1645,9 +1640,9 @@ const ArtistPanel = () => {
                           <span className={styles.relatedName}>
                             {rel.artist_name}
                           </span>
-                          {rel.genre && (
+                          {(rel.reason || rel.genre) && (
                             <span className={styles.relatedGenre}>
-                              {rel.genre}
+                              {rel.reason || rel.genre}
                             </span>
                           )}
                         </div>
