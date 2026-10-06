@@ -23,6 +23,10 @@ export interface Track {
   // Preview clips licensed from Apple Music link back to the track there.
   // Shown in PlayerBar as attribution; null for every other source.
   listen_url?: string | null;
+  // Set on preview clips so PlayerBar can report a play (Story 29). Tracks
+  // without artist_id are never reported.
+  artist_id?: number | null;
+  source?: "apple" | "deezer" | "stanbox" | null;
 }
 
 interface PlayerState {
