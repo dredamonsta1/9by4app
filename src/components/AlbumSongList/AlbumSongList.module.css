@@ -1,0 +1,156 @@
+.wrap {
+  margin-top: 0.3rem;
+  min-width: 0;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  padding: 0.15rem 0;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toggle:hover,
+.toggle:focus-visible {
+  color: var(--color-text-bright);
+}
+
+.chevron {
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.panel {
+  margin-top: 0.35rem;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+/* Primary action in the list: chartreuse per the brand's CTA role. */
+.playAll {
+  background: var(--color-contrast);
+  color: var(--color-contrast-ink);
+  border: none;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.playAll:hover,
+.playAll:focus-visible {
+  background: var(--color-contrast-hover);
+}
+
+.listen {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.listen:hover,
+.listen:focus-visible {
+  color: var(--color-text-bright);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.row,
+.rowPlaying {
+  border-radius: 6px;
+}
+
+.rowPlaying {
+  background: var(--color-contrast-subtle);
+}
+
+.song {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 2rem; /* comfortable tap target in a small box */
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0.2rem 0.35rem;
+  color: #e0e6ed;
+  font: inherit;
+  font-size: 0.76rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.song:hover,
+.song:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.num {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.rowPlaying .num {
+  color: var(--color-contrast);
+}
+
+.title {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.duration {
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  margin: 0.2rem 0;
+  color: var(--color-text-secondary);
+  font-size: 0.74rem;
+}
+
+.retry {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-text-bright);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
