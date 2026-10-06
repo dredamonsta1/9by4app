@@ -12,6 +12,7 @@ import { fetchArtists, fetchMoreArtists } from "../../redux/actions/artistAction
 import { setQueue } from "../../redux/playerSlice";
 import AlbumPreviewButton from "../AlbumPreviewButton/AlbumPreviewButton";
 import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
+import AlbumSongList from "../AlbumSongList/AlbumSongList";
 import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import FiltersBar from "../FiltersBar/FiltersBar";
@@ -1459,6 +1460,7 @@ const ArtistPanel = () => {
                               />
                             )}
                           </div>
+                          <AlbumSongList album={album} artist={artist} />
                           {isLoggedIn && isFav && (
                             <AlbumSongPicker
                               artistId={artist.artist_id}
