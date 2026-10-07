@@ -3,7 +3,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useLiveCompose } from "../../hooks/useLiveCompose";
 import styles from "./UploadModal.module.css";
 import VideoRecorder from "./VideoRecorder";
-import { recordingFileName } from "../../utils/recordingFormat";
+import { recordingFileName, uploadType } from "../../utils/recordingFormat";
 
 const VIDEO_TYPES = ["Podcast", "Music Video", "Tutorial", "Other"];
 const MUSIC_TYPES = ["Single", "Audio Podcast", "EP", "Mixtape", "Album", "Other"];
@@ -98,9 +98,10 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   };
 
   const handleRecorded = (blob) => {
-    const type = blob.type || "video/webm";
-    // Named for what was recorded: Safari records MP4, and the backend checks
-    // the extension as well as the type.
+    // Bare MIME type (codec parameters break the multipart upload), and a
+    // name matching it: Safari records MP4, and the backend checks the
+    // extension as well as the type.
+    const type = uploadType(blob.type);
     const f = new File([blob], recordingFileName(type), { type });
     if (f.size > MAX_FILE_SIZE_BYTES) {
       setError("Recording exceeds 50MB. Please try a shorter recording.");
