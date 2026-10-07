@@ -23,6 +23,20 @@ export function pickRecordingType(isTypeSupported = globalThis.MediaRecorder?.is
   }) ?? "";
 }
 
+/**
+ * The type to upload a recording as: the bare MIME type, codecs dropped.
+ *
+ * Recorders report types like "video/webm;codecs=vp9,opus". In a multipart
+ * upload that unquoted comma makes the header invalid; the server's parser
+ * falls back to text/plain and the video filter rejects the file ("Video
+ * files only"). The backend doesn't need the codecs — Cloudinary detects
+ * them — so send "video/webm" / "video/mp4".
+ */
+export function uploadType(type) {
+  const base = String(type ?? "").split(";")[0].trim().toLowerCase();
+  return base.startsWith("video/") ? base : "video/webm";
+}
+
 /** "recording.mp4" / "recording.webm" — the backend checks the extension too. */
 export function recordingFileName(type) {
   return /mp4/i.test(type ?? "") ? "recording.mp4" : "recording.webm";
