@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useLiveCompose } from "../../hooks/useLiveCompose";
 import styles from "./UploadModal.module.css";
+import VideoRecorder from "./VideoRecorder";
+import { recordingFileName } from "../../utils/recordingFormat";
 
 const VIDEO_TYPES = ["Podcast", "Music Video", "Tutorial", "Other"];
 const MUSIC_TYPES = ["Single", "Audio Podcast", "EP", "Mixtape", "Album", "Other"];
@@ -96,7 +98,10 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
   };
 
   const handleRecorded = (blob) => {
-    const f = new File([blob], "recording.webm", { type: blob.type || "video/webm" });
+    const type = blob.type || "video/webm";
+    // Named for what was recorded: Safari records MP4, and the backend checks
+    // the extension as well as the type.
+    const f = new File([blob], recordingFileName(type), { type });
     if (f.size > MAX_FILE_SIZE_BYTES) {
       setError("Recording exceeds 50MB. Please try a shorter recording.");
       return;
@@ -460,146 +465,6 @@ export default function UploadModal({ isOpen, onClose, onPostCreated }) {
           </div>
         )}
       </div>
-    </div>
-  );
-}
-
-// ── VideoRecorder ──────────────────────────────────────────────────────────
-function VideoRecorder({ timeLimit, onRecorded }) {
-  const [recState, setRecState] = useState("idle"); // idle | requesting | recording | preview
-  const [countdown, setCountdown] = useState(timeLimit);
-  const [recError, setRecError] = useState(null);
-
-  const liveRef    = useRef(null);
-  const previewRef = useRef(null);
-  const streamRef  = useRef(null);
-  const recorderRef = useRef(null);
-  const chunksRef  = useRef([]);
-  const timerRef   = useRef(null);
-  const blobRef    = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      clearInterval(timerRef.current);
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-    };
-  }, []);
-
-  // Reset countdown when timeLimit changes (music video toggle)
-  useEffect(() => {
-    if (recState === "idle") setCountdown(timeLimit);
-  }, [timeLimit, recState]);
-
-  const stopStream = () => {
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
-  };
-
-  const startRecording = async () => {
-    setRecError(null);
-    setRecState("requesting");
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      streamRef.current = stream;
-      if (liveRef.current) {
-        liveRef.current.srcObject = stream;
-      }
-
-      chunksRef.current = [];
-      const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
-        ? "video/webm;codecs=vp9"
-        : "video/webm";
-      const recorder = new MediaRecorder(stream, { mimeType });
-      recorderRef.current = recorder;
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: mimeType });
-        blobRef.current = blob;
-        if (previewRef.current) {
-          previewRef.current.src = URL.createObjectURL(blob);
-        }
-        stopStream();
-        setRecState("preview");
-      };
-
-      recorder.start(250);
-      setRecState("recording");
-
-      let remaining = timeLimit;
-      setCountdown(remaining);
-      timerRef.current = setInterval(() => {
-        remaining -= 1;
-        setCountdown(remaining);
-        if (remaining <= 0) {
-          clearInterval(timerRef.current);
-          recorder.stop();
-        }
-      }, 1000);
-
-    } catch {
-      setRecState("idle");
-      setRecError("Camera access denied. Please allow camera and microphone access.");
-    }
-  };
-
-  const stopRecording = () => {
-    clearInterval(timerRef.current);
-    recorderRef.current?.stop();
-  };
-
-  const reRecord = () => {
-    blobRef.current = null;
-    chunksRef.current = [];
-    setCountdown(timeLimit);
-    setRecState("idle");
-  };
-
-  const useRecording = () => {
-    onRecorded(blobRef.current);
-  };
-
-  const progressPct = Math.min(100, ((timeLimit - countdown) / timeLimit) * 100);
-
-  return (
-    <div className={styles.recorder}>
-      {recError && <p className={styles.errorMsg}>{recError}</p>}
-
-      {recState === "idle" && (
-        <button className={styles.recordStartBtn} onClick={startRecording}>
-          ● Start Recording
-        </button>
-      )}
-
-      {recState === "requesting" && (
-        <p className={styles.recorderStatus}>Requesting camera access...</p>
-      )}
-
-      {recState === "recording" && (
-        <div className={styles.recorderLive}>
-          <video ref={liveRef} className={styles.recorderVideo} muted playsInline autoPlay />
-          <div className={styles.recorderOverlay}>
-            <span className={styles.recorderCountdown}>{countdown}s</span>
-            <div className={styles.recorderProgressBar}>
-              <div className={styles.recorderProgressFill} style={{ width: `${progressPct}%` }} />
-            </div>
-            <button className={styles.recordStopBtn} onClick={stopRecording}>■ Stop</button>
-          </div>
-        </div>
-      )}
-
-      {recState === "preview" && (
-        <div className={styles.recorderPreviewWrap}>
-          <video ref={previewRef} className={styles.recorderVideo} controls />
-          <div className={styles.recorderPreviewActions}>
-            <button className={styles.reRecordBtn} onClick={reRecord}>Re-record</button>
-            <button className={styles.useRecordingBtn} onClick={useRecording}>Use this ✓</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
