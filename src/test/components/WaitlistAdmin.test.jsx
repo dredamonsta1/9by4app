@@ -325,7 +325,9 @@ describe("WaitlistAdmin Component", () => {
         expect(axiosInstance.get).toHaveBeenCalledTimes(1);
       });
 
-      await user.click(screen.getByRole("button", { name: /approve & email/i }));
+      // The row (and its button) only exists once the fetch resolves; await
+      // it rather than racing the re-render (same flake as WaitlistManager).
+      await user.click(await screen.findByRole("button", { name: /approve & email/i }));
 
       await waitFor(() => {
         expect(axiosInstance.get).toHaveBeenCalledTimes(2);
