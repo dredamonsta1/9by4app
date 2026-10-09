@@ -80,8 +80,13 @@ describe("WaitlistManager Component", () => {
     });
 
     it("refreshes data when refresh button clicked", async () => {
+      // Flaky until 2026-10-09: the component shows only "Loading…" (no
+      // Refresh button) until the fetch resolves, and the test looked the
+      // button up as soon as the fetch was *called*. On a busy machine the
+      // re-render hadn't happened yet. The fetch is slowed here so the test
+      // always exercises that window, and the button is awaited.
       const user = userEvent.setup();
-      axiosInstance.get.mockResolvedValue({ data: [] });
+      axiosInstance.get.mockImplementation(() => new Promise((r) => setTimeout(() => r({ data: [] }), 50)));
 
       render(<WaitlistManager />);
 
@@ -89,7 +94,7 @@ describe("WaitlistManager Component", () => {
         expect(axiosInstance.get).toHaveBeenCalledTimes(1);
       });
 
-      await user.click(screen.getByRole("button", { name: /refresh/i }));
+      await user.click(await screen.findByRole("button", { name: /refresh/i }));
 
       await waitFor(() => {
         expect(axiosInstance.get).toHaveBeenCalledTimes(2);
