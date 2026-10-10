@@ -8,6 +8,7 @@ import {
 } from "../../utils/cloudinaryUploadWidget";
 import TrackList from "./TrackList";
 import styles from "./YourMusic.module.css";
+import { RELEASE_TYPE_LABEL } from "../../utils/releaseType";
 
 // Pillar B self-serve: artists set price + upload audio for their own albums
 // without the admin in the loop. Renders inside ArtistSettings for verified
@@ -34,11 +35,6 @@ const PRICE_FLOORS_CENTS = {
   single: 99,
   ep: 499,
   album: 999,
-};
-const RELEASE_TYPE_LABEL = {
-  single: "Single",
-  ep: "EP",
-  album: "Album",
 };
 const floorFor = (type) => PRICE_FLOORS_CENTS[type] ?? PRICE_FLOORS_CENTS.album;
 
