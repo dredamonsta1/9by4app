@@ -14,6 +14,8 @@ import AlbumPreviewButton from "../AlbumPreviewButton/AlbumPreviewButton";
 import StanboxPreviewButton from "../StanboxPreviewButton/StanboxPreviewButton";
 import AlbumSongList from "../AlbumSongList/AlbumSongList";
 import { useSimilarArtists } from "../../hooks/useSimilarArtists";
+import ReleaseTypeBadge from "../ReleaseTypeBadge/ReleaseTypeBadge";
+import { releaseTypeBadge } from "../../utils/releaseType";
 import AlbumBuyButton from "../AlbumBuyButton/AlbumBuyButton";
 import ClaimArtistModal from "../ClaimArtistModal/ClaimArtistModal";
 import FiltersBar from "../FiltersBar/FiltersBar";
@@ -1431,8 +1433,11 @@ const ArtistPanel = () => {
                           <span className={styles.musicName}>
                             {album.album_name}
                           </span>
-                          {album.year && (
-                            <span className={styles.musicYear}>{album.year}</span>
+                          {(album.year || releaseTypeBadge(album.release_type)) && (
+                            <span className={styles.musicYear}>
+                              {album.year}
+                              <ReleaseTypeBadge type={album.release_type} />
+                            </span>
                           )}
                           <div className={styles.musicActions}>
                             {artist.is_verified ? (

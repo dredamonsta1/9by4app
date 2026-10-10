@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./NewMusicSection.module.css";
+import ReleaseTypeBadge from "../ReleaseTypeBadge/ReleaseTypeBadge";
+import { splitReleaseSuffix } from "../../utils/releaseType";
 
 const formatReleaseDate = (dateStr) => {
   if (!dateStr) return null;
@@ -34,12 +36,14 @@ const ArtistReleasesLane = ({ onArtistNavigate, upcomingReleases }) => {
   if (showUpcoming) {
     return (
       <div className={styles.releasesGrid}>
-        {upcomingReleases.map((release) => (
+        {upcomingReleases.map((release) => {
+          const { title, type } = splitReleaseSuffix(release.title);
+          return (
           <div key={release.id} className={styles.albumCard}>
             {release.imageUrl ? (
               <img
                 src={release.imageUrl}
-                alt={release.title}
+                alt={title}
                 className={styles.albumImg}
               />
             ) : (
@@ -48,13 +52,15 @@ const ArtistReleasesLane = ({ onArtistNavigate, upcomingReleases }) => {
               </div>
             )}
             <span className={styles.newBadge}>{release.source}</span>
-            <span className={styles.albumName}>{release.title}</span>
+            <span className={styles.albumName}>{title}</span>
             <span className={styles.albumArtistStatic}>{release.artist}</span>
             <div className={styles.albumMeta}>
               <span>{release.date}</span>
+              <ReleaseTypeBadge type={type} />
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
@@ -84,6 +90,7 @@ const ArtistReleasesLane = ({ onArtistNavigate, upcomingReleases }) => {
           </button>
           <div className={styles.albumMeta}>
             <span>{formatReleaseDate(album.release_date) || album.year}</span>
+            <ReleaseTypeBadge type={album.release_type} />
             {album.certifications && (
               <span className={styles.certBadge}>{album.certifications}</span>
             )}
