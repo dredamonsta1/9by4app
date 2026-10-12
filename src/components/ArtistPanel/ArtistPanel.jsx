@@ -216,7 +216,7 @@ const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
            preload="metadata" gets a poster frame without pulling the file. */
         <video
           className={styles.feedVideo}
-          src={post.video_url}
+          src={post.playback_url || post.video_url}
           poster={post.thumbnail_url || undefined}
           controls
           preload="metadata"

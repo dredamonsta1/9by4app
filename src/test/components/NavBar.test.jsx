@@ -76,6 +76,15 @@ describe("NavBar Component", () => {
       expect(screen.getByText("StanBox")).toBeInTheDocument();
     });
 
+    it("shows the public Videos link to guests and members (Story 31)", () => {
+      const { unmount } = renderWithProviders(<NavBar />);
+      expect(screen.getByRole("link", { name: "Videos" })).toHaveAttribute("href", "/videos");
+      unmount();
+      renderWithProviders(<NavBar />, { preloadedState: loggedInState });
+      expect(screen.getByRole("link", { name: "Videos" })).toHaveAttribute("href", "/videos");
+      expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument(); // really signed in
+    });
+
     it("renders guest navigation links when not logged in", () => {
       renderWithProviders(<NavBar />);
       expect(screen.getByText("Join Waitlist")).toBeInTheDocument();
@@ -124,10 +133,11 @@ describe("NavBar Component", () => {
       expect(link).toHaveAttribute("href", "/profile");
     });
 
-    it("renders 3 links in list items when not logged in", () => {
+    it("renders 4 links in list items when not logged in", () => {
+      // Videos (public, Story 31) + Join Waitlist + Register + Login.
       renderWithProviders(<NavBar />);
       const listItems = screen.getAllByRole("listitem");
-      expect(listItems).toHaveLength(3);
+      expect(listItems).toHaveLength(4);
     });
   });
 

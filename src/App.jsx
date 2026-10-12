@@ -36,6 +36,7 @@ import PlayerBar from "./components/PlayerBar/PlayerBar";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
+import Videos from "./pages/Videos/Videos";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -80,6 +81,7 @@ const App = () => {
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/videos" element={<Videos />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<Room />} />
           <Route path="/agents/register" element={<AgentRegister />} />
