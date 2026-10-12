@@ -144,6 +144,12 @@ const NavBar = () => {
 
       <div className={`${styles.navContent} ${isOpen ? styles.show : ""}`}>
         <ul className={styles.navLinks}>
+          {/* Public: browsing videos doesn't need an account (Story 31). */}
+          <li>
+            <Link to="/videos" onClick={closeMenu}>
+              Videos
+            </Link>
+          </li>
           {!user ? (
             <>
               <li>
