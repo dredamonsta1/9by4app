@@ -13,7 +13,7 @@ import {
 } from "../../hooks/useQuarterlyPicks";
 import styles from "./QuarterlyPicks.module.css";
 
-const MAX_PICKS = 5;
+export const MAX_PICKS = 5;
 
 const artFor = (album) =>
   resolveImageUrl(

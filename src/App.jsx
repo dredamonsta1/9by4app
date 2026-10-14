@@ -21,6 +21,7 @@ import WaitlistAdmin from "./components/WaitlistAdmin/WaitlistAdmin.jsx";
 import AgentRegister from "./components/Agents/AgentRegister.jsx";
 import TermsOfUse from "./pages/TermsOfUse/TermsOfUse.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy.jsx";
+import Support from "./pages/Support/Support";
 import ShrinePreview from "./pages/ShrinePreview/ShrinePreview.jsx";
 import QuarterlyChart from "./pages/QuarterlyChart/QuarterlyChart";
 import Welcome from "./pages/Welcome/Welcome";
@@ -91,6 +92,9 @@ const App = () => {
               more common guess, so neither should 404. */}
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          {/* The App Store Connect Support URL. /help is the common guess. */}
+          <Route path="/support" element={<Support />} />
+          <Route path="/help" element={<Support />} />
           <Route path="/content-creators" element={<ContentCreators />} />
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/artist-settings" element={<ArtistSettings />} />
