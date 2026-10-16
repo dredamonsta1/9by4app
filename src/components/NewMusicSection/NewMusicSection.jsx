@@ -40,9 +40,11 @@ const ArtistReleasesLane = ({ onArtistNavigate, upcomingReleases }) => {
           const { title, type } = splitReleaseSuffix(release.title);
           return (
           <div key={release.id} className={styles.albumCard}>
-            {release.imageUrl ? (
+            {/* /music/upcoming sends image_url. This read imageUrl, which
+                is never set, so every card showed the initials. */}
+            {release.image_url ? (
               <img
-                src={release.imageUrl}
+                src={resolveImageUrl(release.image_url)}
                 alt={title}
                 className={styles.albumImg}
               />
