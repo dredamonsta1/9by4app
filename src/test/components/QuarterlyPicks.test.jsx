@@ -97,7 +97,7 @@ describe("QuarterlyPicks — viewing", () => {
     mockApi({ picks: [] });
     render(<QuarterlyPicks editable />);
 
-    expect(await screen.findByText(/five releases, ranked/i)).toBeInTheDocument();
+    expect(await screen.findByText(/five albums, ranked/i)).toBeInTheDocument();
   });
 
   it("names the other person on a visited profile", async () => {
@@ -187,7 +187,7 @@ describe("QuarterlyPicks — editing", () => {
     mockApi({ picks: [], albums: [album(10, "Roll the Dice")] });
     render(<QuarterlyPicks editable />);
 
-    await screen.findByText(/five releases, ranked/i);
+    await screen.findByText(/five albums, ranked/i);
     expect(
       axiosInstance.get.mock.calls.some(([u]) => u.startsWith("/quarterly-picks/ballot"))
     ).toBe(false);
@@ -325,7 +325,7 @@ describe("QuarterlyPicks — quarter history", () => {
     mockApi({ picks: [], quarters: [] });
     render(<QuarterlyPicks editable />);
 
-    await screen.findByText(/five releases, ranked/i);
+    await screen.findByText(/five albums, ranked/i);
     expect(screen.queryByRole("navigation", { name: /choose a quarter/i })).not.toBeInTheDocument();
   });
 });

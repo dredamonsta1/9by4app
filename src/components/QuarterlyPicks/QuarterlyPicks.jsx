@@ -24,7 +24,7 @@ const artFor = (album) =>
   );
 
 /**
- * Five ranked releases per calendar quarter, on the profile beneath the
+ * Five ranked albums per calendar quarter, on the profile beneath the
  * Top 20 shrine.
  *
  * Sits there because it's the same kind of artifact — a ranked list that
@@ -146,8 +146,8 @@ const QuarterlyPicks = ({
           </h3>
           <p className={styles.subtitle}>
             {isOwn
-              ? "Your five best releases, one quarter at a time. Every quarter feeds your year-end standings."
-              : `${displayName}'s five best releases, by quarter.`}
+              ? "Your five best albums, one quarter at a time. Every quarter feeds your year-end standings."
+              : `${displayName}'s five best albums, by quarter.`}
           </p>
         </div>
         <div className={styles.headActions}>
@@ -236,7 +236,7 @@ const QuarterlyPicks = ({
             {isOwn
               ? locked
                 ? "You didn't pick anything this quarter. It's sealed now."
-                : "No picks yet. Five releases, ranked — that's the whole job."
+                : "No picks yet. Five albums, ranked — that's the whole job."
               : `${displayName} hasn't picked for this quarter.`}
           </p>
         )}
@@ -268,7 +268,7 @@ const QuarterlyPicks = ({
                 Your ranking ({draft.length}/{MAX_PICKS})
               </p>
               {draftAlbums.length === 0 && (
-                <p className={styles.muted}>Pick from the releases below.</p>
+                <p className={styles.muted}>Pick from the albums below.</p>
               )}
               <ol className={styles.pickList} aria-label="Your ranking">
                 {draftAlbums.map((a, i) => (
@@ -319,24 +319,24 @@ const QuarterlyPicks = ({
 
             <div className={styles.ballot}>
               <p className={styles.slotsLabel}>
-                Released this quarter
+                Albums released this quarter
                 {ballot?.albums?.length ? ` (${ballot.albums.length})` : ""}
               </p>
               {ballotLoading && (
-                <p className={styles.muted}>Loading releases…</p>
+                <p className={styles.muted}>Loading albums…</p>
               )}
               {ballotError && <p className={styles.error}>{ballotError}</p>}
               {!ballotLoading &&
                 !ballotError &&
                 (ballot?.albums?.length ?? 0) === 0 && (
                   <p className={styles.muted}>
-                    Nothing is listed for this quarter yet. Releases appear here
+                    Nothing is listed for this quarter yet. Albums appear here
                     as they land.
                   </p>
                 )}
               <ul
                 className={styles.ballotList}
-                aria-label="Released this quarter"
+                aria-label="Albums released this quarter"
               >
                 {(ballot?.albums ?? []).map((a) => {
                   const picked = draft.includes(a.album_id);
