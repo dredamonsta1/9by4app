@@ -44,7 +44,8 @@ describe("Support", () => {
 
     expect(text).toContain(`Add ${ONBOARDING_TARGET} artists to your Top 20`);
     expect(text).toContain(`${CRATE_MIN} to ${CRATE_MAX} artists`);
-    expect(text).toContain(`the ${MAX_PICKS} releases`);
+    expect(text).toContain(`the ${MAX_PICKS} albums`);
+    expect(text).toMatch(/singles and EPs aren't/);
     // GRACE_PERIOD_DAYS in the backend's src/utils/quarters.ts.
     expect(text).toContain("until 14 days after the quarter ends");
   });

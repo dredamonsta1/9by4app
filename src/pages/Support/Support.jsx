@@ -47,7 +47,7 @@ const sections = [
     title: "Your profile at a glance",
     blocks: [
       {
-        p: "Your profile is your music identity on StanBox: the artists you rank, the releases you pick, and what you post. Anyone can see it, including people who aren't signed in.",
+        p: "Your profile is your music identity on StanBox: the artists you rank, the albums you pick, and what you post. Anyone can see it, including people who aren't signed in.",
       },
       {
         platforms: {
@@ -117,11 +117,11 @@ const sections = [
     title: "Quarterly Picks",
     blocks: [
       {
-        p: `Every quarter, choose the ${MAX_PICKS} releases that defined it for you, ranked. Only releases from that quarter are eligible.`,
+        p: `Every quarter, choose the ${MAX_PICKS} albums that defined it for you, ranked. Only albums released that quarter are eligible — singles and EPs aren't.`,
       },
       {
         platforms: {
-          web: `Click Make your picks, add up to ${MAX_PICKS} releases from the list, use the arrows to put them in order, then click Save picks.`,
+          web: `Click Make your picks, add up to ${MAX_PICKS} albums from the list, use the arrows to put them in order, then click Save picks.`,
           ios: "Your picks show on your profile. Making picks is on the web for now.",
         },
       },
