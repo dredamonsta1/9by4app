@@ -37,7 +37,7 @@ describe("PlayerBar — Apple Music attribution", () => {
       preloadedState: { player: { queue: [playerTrack({ listen_url: APPLE_LISTEN })] } },
     });
 
-    const link = screen.getByRole("link", { name: /listen on apple music/i });
+    const link = screen.getByRole("link", { name: /preview from apple music/i });
     expect(link).toHaveAttribute("href", APPLE_LISTEN);
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
