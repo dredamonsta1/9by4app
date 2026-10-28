@@ -1379,17 +1379,6 @@ const ArtistPanel = () => {
               </div>
             )}
 
-            {artist.spotify_url && (
-              <a
-                href={artist.spotify_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.spotifyBtn}
-              >
-                Listen on Spotify
-              </a>
-            )}
-
           </div>
         </section>
 

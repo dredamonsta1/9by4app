@@ -108,7 +108,7 @@ const AlbumSongList = ({ album, artist }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Apple Music ↗
+                    Preview from Apple Music
                   </a>
                 )}
               </div>

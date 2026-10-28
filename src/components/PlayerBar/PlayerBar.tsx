@@ -387,7 +387,7 @@ const PlayerBar = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Listen on Apple Music ↗
+              Preview from Apple Music
             </a>
           )}
         </div>

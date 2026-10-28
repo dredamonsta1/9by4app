@@ -135,7 +135,7 @@ export default function AlbumPreviewButton({ artistId, albumName }) {
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
         >
-          Apple Music ↗
+          Preview from Apple Music
         </a>
       )}
     </div>

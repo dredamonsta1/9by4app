@@ -29,13 +29,13 @@ const FIELDS = [
   {
     key: "spotify_url",
     label: "Spotify (artist)",
-    help: "Shown as \"Listen on Spotify\" on your page",
+    help: "Saved to your profile. Not shown on your page yet",
     placeholder: "https://open.spotify.com/artist/...",
   },
   {
     key: "apple_music_url",
     label: "Apple Music (artist)",
-    help: "Shown as \"Listen on Apple Music\"",
+    help: "Saved to your profile. Not shown on your page yet",
     placeholder: "https://music.apple.com/us/artist/...",
   },
   {
