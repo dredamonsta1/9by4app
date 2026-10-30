@@ -63,14 +63,18 @@ const summaryFor = (rows) => {
   };
 };
 
-// Wire both requests the dashboard fires in parallel.
+const STANDARD_SPLIT = { fee_bps: 1000, artist_keeps_bps: 9000, global_bps: 1000, deal: null };
+
+// Wire the requests the dashboard fires: audience, Stripe status, split.
 const mockApi = (rows, stripe = {
   charges_enabled: true,
   payouts_enabled: true,
   commerce_enabled: true,
-}) => {
+}, split = STANDARD_SPLIT) => {
   axiosInstance.get.mockImplementation((url) => {
     if (url.includes("/stripe/status")) return Promise.resolve({ data: stripe });
+    if (url === "/artists/me/split")
+      return split instanceof Error ? Promise.reject(split) : Promise.resolve({ data: split });
     return Promise.resolve({
       data: { stans: rows, count: rows.filter((r) => r.is_stan).length, summary: summaryFor(rows) },
     });
@@ -104,6 +108,56 @@ describe("ArtistDashboard", () => {
       });
       expect(screen.getByTestId("claim-search")).toBeInTheDocument();
       expect(axiosInstance.get).not.toHaveBeenCalled();
+    });
+  });
+
+  // Story 36: the artist sees what they keep, and a deal's end date.
+  describe("your split", () => {
+    const split = () => screen.findByRole("region", { name: "Your split" });
+
+    it("shows the standard split and who pays card fees", async () => {
+      mockApi([person()]);
+      renderDashboard();
+
+      const section = await split();
+      expect(section).toHaveTextContent("You keep 90% of every album sale.");
+      expect(section).toHaveTextContent("StanBox keeps 10%. Card processing fees come out of our share, not yours.");
+    });
+
+    it("shows a deal and the day it goes back to standard", async () => {
+      mockApi([person()], undefined, {
+        fee_bps: 0,
+        artist_keeps_bps: 10000,
+        global_bps: 1000,
+        deal: { fee_bps: 0, ends_at: "2027-01-31T00:00:00.000Z" },
+      });
+      renderDashboard();
+
+      const section = await split();
+      expect(section).toHaveTextContent("You keep 100% of every album sale.");
+      expect(section).toHaveTextContent("That's your deal rate. The standard is 90%.");
+      expect(section).toHaveTextContent("From Jan 31, 2027 you're back on the standard 90%.");
+    });
+
+    it("says when a deal has no end date", async () => {
+      mockApi([person()], undefined, {
+        fee_bps: 500,
+        artist_keeps_bps: 9500,
+        global_bps: 1000,
+        deal: { fee_bps: 500, ends_at: null },
+      });
+      renderDashboard();
+
+      expect(await split()).toHaveTextContent("Your deal has no end date.");
+    });
+
+    it("leaves the section out if the split can't load, and still shows the audience", async () => {
+      mockApi([person()], undefined, new Error("500"));
+      renderDashboard();
+
+      expect(await screen.findByText("@marcus_b")).toBeInTheDocument();
+      await waitFor(() => expect(axiosInstance.get).toHaveBeenCalledWith("/artists/me/split"));
+      expect(screen.queryByRole("region", { name: "Your split" })).not.toBeInTheDocument();
     });
   });
 
