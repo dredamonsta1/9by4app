@@ -33,6 +33,8 @@ import {
 } from "../FavoritesPicker/FavoritesPicker";
 import { toast } from "react-toastify";
 import styles from "./ArtistPanel.module.css";
+import ModerationMenu from "../Moderation/ModerationMenu";
+import { postTargetType } from "../Moderation/reportReasons";
 
 const formatRelativeTime = (iso) => {
   if (!iso) return "";
@@ -74,7 +76,7 @@ const AGENT_BADGE = {
   news: "News",
 };
 
-const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
+export const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete, onBlocked }) => {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState(0);
@@ -183,6 +185,20 @@ const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete }) => {
           >
             {deleting ? "…" : "🗑"}
           </button>
+        )}
+        {currentUserId && !isOwner && post.user_id && (
+          <ModerationMenu
+            className={styles.feedMenu}
+            reportLabel="Report post"
+            reportTarget={{
+              type: postTargetType(postType),
+              id: postId,
+              preview: post.content || post.caption || post.music_title || post.title || null,
+            }}
+            userId={post.user_id}
+            username={post.username}
+            onBlocked={onBlocked}
+          />
         )}
       </div>
 
@@ -806,6 +822,13 @@ const ArtistPanel = () => {
     );
   };
 
+  // Blocking someone drops their posts now; the server only filters them out
+  // on the next fetch, and a post you just blocked still sitting there reads
+  // as the block having failed.
+  const handleUserBlocked = (blockedUserId) => {
+    setGlobalFeed((prev) => prev.filter((p) => p.user_id !== blockedUserId));
+  };
+
   // FiltersBar choice → the rankings list's data (and hero on filter change).
   // "my list" scopes to the user's Top 20; genre / region apply substring
   // filters against the relevant columns; "all" passes through.
@@ -1056,6 +1079,7 @@ const ArtistPanel = () => {
                       currentUserId={user?.id ?? user?.user_id}
                       onPlayMusic={playFeedPost}
                       onDelete={handlePostDeleted}
+                      onBlocked={handleUserBlocked}
                     />
                   ))}
                 </ul>

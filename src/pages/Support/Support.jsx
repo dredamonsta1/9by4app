@@ -14,7 +14,7 @@ import { MAX_PICKS } from "../../components/QuarterlyPicks/QuarterlyPicks";
 // section added, moved, or made web-only — this page has to change with it.
 //
 // Where the two apps differ, say so. The iOS app shows crates and quarterly
-// picks but can't make them, and only the iOS app has report and block.
+// picks but can't make them.
 
 export const SUPPORT_EMAIL = "support@onstanbox.com";
 
@@ -162,13 +162,13 @@ const sections = [
     title: "Reporting and blocking",
     blocks: [
       {
-        p: "In the iOS app, open the menu on any post or profile to report it or block the person. Reports go to the StanBox team, and the other person isn't told who reported them. Blocking someone hides their posts from you and stops them messaging you.",
+        p: "On the web and in the iOS app, open the ⋯ menu on any post or profile to report it or block the person. Reports go to the StanBox team, and the other person isn't told who reported them. Blocking someone hides their posts from you and stops them messaging you. They aren't told you blocked them.",
       },
       {
-        p: "To unblock someone, go to Profile → Blocked accounts in the app.",
+        p: "To unblock someone, go to your Profile → Blocked accounts. Unblocking doesn't make you follow them again.",
       },
       {
-        p: `Reporting and blocking aren't on the web yet. Until they are, email ${SUPPORT_EMAIL} with a link to the post or profile and we'll look into it.`,
+        p: `If something needs more than a report, email ${SUPPORT_EMAIL} with a link to the post or profile.`,
       },
     ],
   },
