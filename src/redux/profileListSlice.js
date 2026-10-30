@@ -64,10 +64,10 @@ const profileListSlice = createSlice({
       }
     });
     builder.addCase(DECREMENT_CLOUT_SUCCESS, (state, action) => {
-      const { artistId } = action.payload;
+      const { artistId, newCount } = action.payload;
       const artist = state.list.find((a) => a.artist_id === artistId);
       if (artist) {
-        artist.count = Math.max((artist.count || 0) - 1, 0);
+        artist.count = newCount !== undefined ? newCount : Math.max((artist.count || 0) - 1, 0);
       }
     });
   },

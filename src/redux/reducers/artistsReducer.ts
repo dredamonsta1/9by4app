@@ -149,10 +149,10 @@ const artistsReducer = (state: ArtistsState = initialState, action: { type: stri
     case DECREMENT_CLOUT_REQUEST:
       return { ...state };
     case DECREMENT_CLOUT_SUCCESS: {
-      const { artistId: decArtistId } = action.payload;
+      const { artistId: decArtistId, newCount: decNewCount } = action.payload;
       const decrementCount = (artist) =>
         artist.artist_id === decArtistId
-          ? { ...artist, count: Math.max((artist.count || 0) - 1, 0) }
+          ? { ...artist, count: decNewCount !== undefined ? decNewCount : Math.max((artist.count || 0) - 1, 0) }
           : artist;
       return {
         ...state,
