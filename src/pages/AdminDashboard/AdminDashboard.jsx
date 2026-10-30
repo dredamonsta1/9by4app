@@ -9,6 +9,7 @@ import UserAudit from "../../components/Admin/UserAudit.jsx";
 import ArtistLinkages from "../../components/Admin/ArtistLinkages.jsx";
 import AlbumCommerce from "../../components/Admin/AlbumCommerce.jsx";
 import GlobalSettings from "../../components/Admin/GlobalSettings.jsx";
+import RevenueSplit from "../../components/Admin/RevenueSplit.jsx";
 import ModerationQueue from "../../components/Admin/ModerationQueue.jsx";
 
 const AdminDashboard = () => {
@@ -188,6 +189,11 @@ const AdminDashboard = () => {
         <section className={styles.quickActions}>
           <h2>Album Commerce</h2>
           <AlbumCommerce />
+        </section>
+
+        <section className={styles.quickActions}>
+          <h2>Revenue Split</h2>
+          <RevenueSplit />
         </section>
 
         <section className={styles.quickActions}>
