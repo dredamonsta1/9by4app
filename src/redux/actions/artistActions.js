@@ -109,41 +109,6 @@ export const searchArtists =
 
 export const clearSearchResults = () => ({ type: CLEAR_SEARCH_RESULTS });
 
-// Async Action Creator for incrementing clout
-export const incrementClout = (artistId) => async (dispatch) => {
-  dispatch({ type: INCREMENT_CLOUT_REQUEST, payload: artistId });
-  try {
-    const response = await axiosInstance.put(`/artists/${artistId}/clout`);
-    dispatch({
-      type: INCREMENT_CLOUT_SUCCESS,
-      payload: { artistId, newCount: response.data.new_clout_count },
-    });
-  } catch (error) {
-    console.error(
-      `Error incrementing clout for artist ${artistId}:`,
-      error.response?.data || error.message
-    );
-    dispatch({
-      type: INCREMENT_CLOUT_FAILURE,
-      payload: { artistId, error: error.response?.data || error.message },
-    });
-  }
-};
-
-// Async Action Creator for decrementing clout
-export const decrementClout = (artistId) => async (dispatch) => {
-  dispatch({ type: DECREMENT_CLOUT_REQUEST, payload: artistId });
-  try {
-    await axiosInstance.put(`/artists/${artistId}/clout/remove`);
-    dispatch({ type: DECREMENT_CLOUT_SUCCESS, payload: { artistId } });
-  } catch (error) {
-    console.error(
-      `Error decrementing clout for artist ${artistId}:`,
-      error.response?.data || error.message
-    );
-    dispatch({
-      type: DECREMENT_CLOUT_FAILURE,
-      payload: { artistId, error: error.response?.data || error.message },
-    });
-  }
-};
+// Clout is counted by the server from Top 20 entries; the add and remove
+// responses carry the new count (see profileListActions). There are no clout
+// actions to call.

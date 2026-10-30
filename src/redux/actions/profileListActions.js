@@ -8,7 +8,7 @@ import {
   removeArtistFromListSuccess,
   reorderList,
 } from "../profileListSlice";
-import { incrementClout, decrementClout } from "./artistActions";
+import { INCREMENT_CLOUT_SUCCESS, DECREMENT_CLOUT_SUCCESS } from "./artistActions";
 import { takePendingStan } from "../../utils/pendingStan";
 
 // Action to fetch the user's curated list from the backend
@@ -55,10 +55,12 @@ export const addArtistToProfileList = (artist) => async (dispatch, getState) => 
   }
 
   try {
-    await axiosInstance.post(`/profile/list/${artist.artist_id}`);
-    // Optimistically add with incremented count so the UI updates immediately
-    dispatch(addArtistToListSuccess({ ...artist, count: (artist.count || 0) + 1 }));
-    dispatch(incrementClout(artist.artist_id));
+    // The server counts the clout itself and returns the new total. There is
+    // no separate clout call any more; clients can't set clout.
+    const res = await axiosInstance.post(`/profile/list/${artist.artist_id}`);
+    const newCount = Number.isInteger(res.data?.clout) ? res.data.clout : (artist.count || 0) + 1;
+    dispatch(addArtistToListSuccess({ ...artist, count: newCount }));
+    dispatch({ type: INCREMENT_CLOUT_SUCCESS, payload: { artistId: artist.artist_id, newCount } });
   } catch (error) {
     console.error("Error adding artist to profile list:", error);
   }
@@ -109,9 +111,10 @@ export const reorderProfileList = (orderedIds) => async (dispatch) => {
 // Action to remove an artist from the user's curated list
 export const removeArtistFromProfileList = (artistId) => async (dispatch) => {
   try {
-    await axiosInstance.delete(`/profile/list/${artistId}`);
+    const res = await axiosInstance.delete(`/profile/list/${artistId}`);
     dispatch(removeArtistFromListSuccess(artistId));
-    dispatch(decrementClout(artistId));
+    const newCount = Number.isInteger(res.data?.clout) ? res.data.clout : undefined;
+    dispatch({ type: DECREMENT_CLOUT_SUCCESS, payload: { artistId, newCount } });
   } catch (error) {
     console.error("Error removing artist from profile list:", error);
   }
