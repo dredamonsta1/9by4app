@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   searchArtists,
   clearSearchResults,
@@ -25,6 +26,8 @@ import QuarterlyPicks from "../../components/QuarterlyPicks/QuarterlyPicks";
 import DiscoveryPlaylists from "../../components/DiscoveryPlaylists/DiscoveryPlaylists";
 import CrateShare from "../../components/CrateShare/CrateShare";
 import DeleteAccount from "../../components/DeleteAccount/DeleteAccount";
+import ModerationMenu from "../../components/Moderation/ModerationMenu";
+import BlockedAccounts from "../../components/Moderation/BlockedAccounts";
 import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
@@ -40,6 +43,7 @@ const LEGACY_PROFILE_MODE_KEY = "cratesfyi_profile_mode";
 
 const ProfilePage = () => {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { searchResults, searchLoading } = useSelector((state) => state.artists);
@@ -114,6 +118,7 @@ const ProfilePage = () => {
   const [activeCommunityArtistId, setActiveCommunityArtistId] = useState(null);
   const [editModeTop20, setEditModeTop20] = useState(false);
   const [createArtistOpen, setCreateArtistOpen] = useState(false);
+  const [blockedOpen, setBlockedOpen] = useState(false);
   const [shareToast, setShareToast] = useState(false);
 
   const dragIndexRef = useRef(null);
@@ -445,6 +450,20 @@ const ProfilePage = () => {
             <>
               <FollowButton targetUserId={Number(userId)} initialIsFollowing={false} />
               <MessageButton targetUserId={Number(userId)} />
+              {myId != null && (
+                <ModerationMenu
+                  reportLabel="Report user"
+                  reportTarget={{ type: "user", id: Number(userId), preview: displayedUser?.username ? `@${displayedUser.username}` : null }}
+                  userId={Number(userId)}
+                  username={displayedUser?.username}
+                  onBlocked={() => {
+                    // Leaving is the confirmation: staying on the profile of
+                    // someone you just blocked is a strange place to be.
+                    toast.success(`Blocked @${displayedUser?.username ?? "user"}.`);
+                    navigate("/");
+                  }}
+                />
+              )}
             </>
           )}
         </div>
@@ -875,6 +894,23 @@ const ProfilePage = () => {
             </span>
           </button>
           {createArtistOpen && <CreateArtistForm />}
+        </section>
+      )}
+
+      {/* ── Blocked accounts (own profile, collapsible) ── */}
+      {isOwnProfile && (
+        <section className={styles.section}>
+          <button
+            className={styles.collapsibleHeader}
+            onClick={() => setBlockedOpen((o) => !o)}
+            aria-expanded={blockedOpen}
+          >
+            <span>Blocked accounts</span>
+            <span className={styles.collapsibleArrow}>
+              {blockedOpen ? "▲" : "▼"}
+            </span>
+          </button>
+          {blockedOpen && <BlockedAccounts />}
         </section>
       )}
 

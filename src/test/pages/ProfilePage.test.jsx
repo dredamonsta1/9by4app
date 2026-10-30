@@ -7,7 +7,7 @@ import { renderWithProviders, buildMockStore } from "../utils";
 import ProfilePage from "../../pages/profile/ProfilePage";
 
 vi.mock("../../utils/axiosInstance", () => ({
-  default: { get: vi.fn(), post: vi.fn(), patch: vi.fn() },
+  default: { get: vi.fn(), post: vi.fn(), patch: vi.fn(), delete: vi.fn() },
 }));
 
 // Heavy children — this file is about the profile shell, not their internals.
@@ -422,5 +422,86 @@ describe("ProfilePage — first-run onboarding", () => {
         screen.getByRole("heading", { name: /top 20/i })
       ).toBeInTheDocument();
     });
+  });
+});
+
+// Story 33: report and block on the web.
+describe("ProfilePage — report and block", () => {
+  const stubGets = () =>
+    axiosInstance.get.mockImplementation((url) => {
+      if (url === "/users/2/profile") return Promise.resolve({ data: { user_id: 2, username: "troll" } });
+      if (url.startsWith("/profile/user/")) return Promise.resolve({ data: { list: [] } });
+      if (url.startsWith("/profile/list")) return Promise.resolve({ data: { list: [] } });
+      if (url.startsWith("/profile/suggestions")) return Promise.resolve({ data: [] });
+      if (url === "/moderation/report/reasons") return Promise.resolve({ data: { reasons: ["spam", "other"] } });
+      if (url === "/moderation/blocks") return Promise.resolve({ data: { blocks: [] } });
+      if (url.includes("/followers") || url.includes("/following")) return Promise.resolve({ data: [] });
+      if (url.startsWith("/feed/user/")) return Promise.resolve({ data: [] });
+      return Promise.resolve({ data: {} });
+    });
+
+  const renderAt = (path, user = { id: 1, user_id: 1, username: "me" }) =>
+    render(
+      <Provider
+        store={buildMockStore({
+          auth: { user, token: user ? "t" : null },
+          profileList: { list: [], loading: false, error: null },
+        })}
+      >
+        <MemoryRouter initialEntries={[path]}>
+          <Routes>
+            <Route path="/" element={<div>Home page</div>} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    stubGets();
+    axiosInstance.post.mockResolvedValue({ data: {} });
+  });
+
+  it("reports another user as a user", async () => {
+    renderAt("/profile/2");
+    await userEvent.click(await screen.findByRole("button", { name: /more options for @troll/i }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Report user" }));
+    await userEvent.click(await screen.findByLabelText("Spam"));
+    await userEvent.click(screen.getByRole("button", { name: /submit report/i }));
+
+    await waitFor(() =>
+      expect(axiosInstance.post).toHaveBeenCalledWith("/moderation/report", {
+        target_type: "user",
+        target_id: 2,
+        reason: "spam",
+        detail: null,
+        reported_user_id: 2,
+      })
+    );
+  });
+
+  it("blocks another user and leaves their profile", async () => {
+    renderAt("/profile/2");
+    await userEvent.click(await screen.findByRole("button", { name: /more options for @troll/i }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Block @troll" }));
+    await userEvent.click(screen.getByRole("button", { name: "Block" }));
+
+    await waitFor(() => expect(axiosInstance.post).toHaveBeenCalledWith("/moderation/block/2"));
+    expect(await screen.findByText("Home page")).toBeInTheDocument();
+  });
+
+  it("offers no report or block menu when signed out", async () => {
+    renderAt("/profile/2", null);
+    await screen.findByText("@troll", { exact: false });
+    expect(screen.queryByRole("button", { name: /more options/i })).not.toBeInTheDocument();
+  });
+
+  it("puts Blocked accounts on your own profile", async () => {
+    renderAt("/profile");
+    await userEvent.click(await screen.findByRole("button", { name: /blocked accounts/i }));
+    expect(await screen.findByText("You haven't blocked anyone.")).toBeInTheDocument();
   });
 });

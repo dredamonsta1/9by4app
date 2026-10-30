@@ -59,12 +59,13 @@ describe("Support", () => {
     expect(container.textContent).toMatch(/up to 5 codes every 15 minutes/);
   });
 
-  it("says report and block are iOS-only, with an email route on the web", () => {
+  it("says report and block work on the web and iOS, with unblocking on the profile", () => {
     const { container } = renderSupport();
     const text = container.textContent;
 
-    expect(text).toMatch(/In the iOS app, open the menu on any post or profile to report it or block/);
-    expect(text).toMatch(/Reporting and blocking aren't on the web yet/);
+    expect(text).toMatch(/On the web and in the iOS app, open the ⋯ menu on any post or profile/);
+    expect(text).toMatch(/Profile → Blocked accounts/);
+    expect(text).not.toMatch(/aren't on the web yet/);
   });
 
   it("shows web and iOS steps side by side where they differ", () => {
