@@ -44,6 +44,31 @@
   margin-bottom: 2.5rem;
 }
 
+.splitNote {
+  margin: -1.5rem 0 2.5rem;
+  padding: 0.9rem 1.1rem;
+  background: #161616;
+  border: 1px solid #262626;
+  border-radius: 12px;
+}
+
+.splitMain {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #f2f2f2;
+}
+
+.splitPct {
+  color: var(--color-contrast);
+}
+
+.splitSub {
+  margin: 0.3rem 0 0;
+  font-size: 0.82rem;
+  color: #9a9a9a;
+  line-height: 1.45;
+}
+
 .statCard {
   background: #161616;
   border: 1px solid #262626;

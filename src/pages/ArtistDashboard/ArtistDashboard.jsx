@@ -96,6 +96,36 @@ const matchesBuy = (row, filter) => {
   return filter === "bought" ? bought : !bought;
 };
 
+const pct = (bps) => `${bps / 100}%`;
+
+// The date a deal ends is the first day back on the standard rate, so say
+// it that way rather than "until", which reads as inclusive.
+const formatDealEnd = (iso) =>
+  new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+const SplitNote = ({ split }) => {
+  const standardKeeps = 10000 - split.global_bps;
+  return (
+    <section className={styles.splitNote} aria-label="Your split">
+      <p className={styles.splitMain}>
+        You keep <strong className={styles.splitPct}>{pct(split.artist_keeps_bps)}</strong> of every album sale.
+      </p>
+      {split.deal ? (
+        <p className={styles.splitSub}>
+          That's your deal rate. The standard is {pct(standardKeeps)}.{" "}
+          {split.deal.ends_at
+            ? `From ${formatDealEnd(split.deal.ends_at)} you're back on the standard ${pct(standardKeeps)}.`
+            : "Your deal has no end date."}
+        </p>
+      ) : (
+        <p className={styles.splitSub}>
+          StanBox keeps {pct(split.fee_bps)}. Card processing fees come out of our share, not yours.
+        </p>
+      )}
+    </section>
+  );
+};
+
 const ArtistDashboard = () => {
   const { user, token, claimRequests } = useSelector((state) => state.auth);
   const artistId = user?.artist_id ?? null;
@@ -106,6 +136,7 @@ const ArtistDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [commerce, setCommerce] = useState(null);
+  const [split, setSplit] = useState(null);
   const [rankFilter, setRankFilter] = useState("all");
   const [buyFilter, setBuyFilter] = useState("all");
   const [copiedId, setCopiedId] = useState(null);
@@ -132,6 +163,16 @@ const ArtistDashboard = () => {
         setError(err.response?.data?.message || "Failed to load your audience.");
       })
       .finally(() => setLoading(false));
+  }, [artistId]);
+
+  // Your share of album sales (Story 36). Supplementary like commerce: if it
+  // fails, the section just doesn't show.
+  useEffect(() => {
+    if (!artistId) return;
+    axiosInstance
+      .get("/artists/me/split")
+      .then((res) => setSplit(Number.isInteger(res.data?.artist_keeps_bps) ? res.data : null))
+      .catch(() => setSplit(null));
   }, [artistId]);
 
   const visibleRows = useMemo(
@@ -272,6 +313,8 @@ const ArtistDashboard = () => {
           )}
         </div>
       </section>
+
+      {split && <SplitNote split={split} />}
 
       <section className={styles.listSection}>
         <div className={styles.listHead}>
