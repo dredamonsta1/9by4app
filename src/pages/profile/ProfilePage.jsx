@@ -35,7 +35,6 @@ import OnboardingChecklist, {
 import TasteComps from "../../components/TasteComps/TasteComps";
 import MusicPersonalityCard from "../../components/MusicPersonalityCard/MusicPersonalityCard";
 import ArtistCommunity from "../../components/ArtistCommunity/ArtistCommunity";
-import BeefAllianceMap from "../../components/BeefAllianceMap/BeefAllianceMap";
 
 // Retired with the Fan/Artist toggle. Kept only to clear the value out of
 // users' browsers on next visit — see the cleanup effect below.
@@ -877,7 +876,11 @@ const ProfilePage = () => {
               tenure per artist now, so a second card describing the same
               relationships was the duplication we just undid for the
               personality. */}
-          <BeefAllianceMap />
+
+          {/* The Beef & Alliance Map (components/BeefAllianceMap) is hidden,
+              not deleted: artist_relationships is empty, so it only ever
+              flashed "Building alliance map..." and vanished, and it showed
+              the same global list to everyone. Story 38 revisits it. */}
         </section>
       )}
 
