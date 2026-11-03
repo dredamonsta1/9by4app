@@ -23,9 +23,6 @@ vi.mock("../../components/StanCard/StanCard", () => ({
 vi.mock("../../components/ArtistCommunity/ArtistCommunity", () => ({
   default: () => <div data-testid="artist-community" />,
 }));
-vi.mock("../../components/BeefAllianceMap/BeefAllianceMap", () => ({
-  default: () => <div data-testid="beef-alliance-map" />,
-}));
 vi.mock("../../components/FollowButton", () => ({
   default: () => <button type="button">Follow</button>,
 }));
@@ -503,5 +500,26 @@ describe("ProfilePage — report and block", () => {
     renderAt("/profile");
     await userEvent.click(await screen.findByRole("button", { name: /blocked accounts/i }));
     expect(await screen.findByText("You haven't blocked anyone.")).toBeInTheDocument();
+  });
+});
+
+describe("ProfilePage — Beef & Alliance Map", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    axiosInstance.get.mockImplementation((url) => {
+      if (url.startsWith("/profile/list")) return Promise.resolve({ data: { list: [] } });
+      if (url.includes("/followers") || url.includes("/following")) return Promise.resolve({ data: [] });
+      return Promise.resolve({ data: [] });
+    });
+  });
+
+  it("is hidden until it's a real feature (Story 38)", async () => {
+    // It read an empty table and showed the same global list to everyone.
+    renderOwnProfile();
+
+    await screen.findByText("Community");
+    expect(screen.queryByText(/alliance map/i)).not.toBeInTheDocument();
+    expect(axiosInstance.get).not.toHaveBeenCalledWith("/communities/relationships");
   });
 });
