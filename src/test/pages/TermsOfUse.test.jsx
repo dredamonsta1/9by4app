@@ -54,7 +54,16 @@ describe("TermsOfUse", () => {
     expect(text).not.toMatch(/responsible for any taxes arising from their sales/i);
   });
 
-  it("tells buyers their email goes to the artist", () => {
+  it("credits MusicBrainz and ListenBrainz and states the tag license", () => {
+    const { container } = render(<TermsOfUse />);
+    const text = container.textContent;
+
+    expect(text).toMatch(/MusicBrainz \(musicbrainz\.org\) and ListenBrainz/);
+    expect(text).toMatch(/MetaBrainz Foundation/);
+    expect(text).toMatch(/Attribution-NonCommercial-ShareAlike 3\.0/);
+  });
+
+    it("tells buyers their email goes to the artist", () => {
     const { container } = render(<TermsOfUse />);
     const text = container.textContent;
 
