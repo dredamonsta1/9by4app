@@ -32,9 +32,26 @@ describe("TermsOfUse", () => {
 
   it("states the platform fee that the checkout actually applies", () => {
     const { container } = render(<TermsOfUse />);
+    const text = container.textContent;
 
-    // PLATFORM_FEE_BPS = 1000 in the backend. If that changes, this fails.
-    expect(container.textContent).toMatch(/10% platform fee/i);
+    // The default rate is app_settings.platform_fee_bps = 1000. Since Story 36
+    // an artist can have a deal rate, so the Terms must not promise a flat
+    // 10%/90% to every artist.
+    expect(text).toMatch(/10% unless we have agreed a different rate with that artist/i);
+    expect(text).not.toMatch(/remaining 90% goes to the artist/i);
+  });
+
+  it("doesn't put sales tax on artists, since buyers pay stanbox", () => {
+    // Stripe's Connect setup is "buyers purchase from you" (destination
+    // charges), so stanbox is the seller. Artists owe income tax on payouts,
+    // not the sales tax on the sale.
+    const { container } = render(<TermsOfUse />);
+    const text = container.textContent;
+
+    expect(text).toMatch(/you pay stanbox, and stanbox pays the artist/i);
+    expect(text).toMatch(/shown at checkout before you pay/i);
+    expect(text).toMatch(/income taxes on the payouts they receive/i);
+    expect(text).not.toMatch(/responsible for any taxes arising from their sales/i);
   });
 
   it("tells buyers their email goes to the artist", () => {
