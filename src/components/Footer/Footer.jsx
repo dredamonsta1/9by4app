@@ -39,6 +39,18 @@ const Footer = () => {
         <Link to="/privacy" className={styles.termsLink}>Privacy Policy</Link>
         <Link to="/support" className={styles.termsLink}>Support</Link>
       </div>
+
+      {/* Required credit: MusicBrainz genre tags are CC BY-NC-SA, which
+          requires attribution, and MetaBrainz asks to be credited for
+          ListenBrainz data. See Terms §7. */}
+      <p className={styles.credits}>
+        Music data from{" "}
+        <a href="https://musicbrainz.org" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>MusicBrainz</a>
+        {" "}and{" "}
+        <a href="https://listenbrainz.org" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>ListenBrainz</a>
+        , projects of the{" "}
+        <a href="https://metabrainz.org" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>MetaBrainz Foundation</a>.
+      </p>
     </footer>
   );
 };

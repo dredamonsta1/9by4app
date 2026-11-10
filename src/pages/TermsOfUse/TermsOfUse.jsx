@@ -30,7 +30,7 @@ const sections = [
   },
   {
     title: "7. Artist Profiles and Music Data",
-    body: `Artist profile data on stanbox — including names, discographies, certifications, and biographical information — is aggregated from public sources for informational purposes. We do not claim ownership of this data and make no guarantees as to its accuracy or completeness.\n\nIf you are an artist or represent an artist and believe information is incorrect or wish to claim a profile, please contact us.`,
+    body: `Artist profile data on stanbox — including names, discographies, certifications, and biographical information — is aggregated from public sources for informational purposes. We do not claim ownership of this data and make no guarantees as to its accuracy or completeness.\n\nMuch of this music data comes from MusicBrainz (musicbrainz.org) and ListenBrainz (listenbrainz.org), projects of the MetaBrainz Foundation. MusicBrainz core data is in the public domain (CC0). MusicBrainz genre tags are licensed by the MetaBrainz Foundation under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 license.\n\nIf you are an artist or represent an artist and believe information is incorrect or wish to claim a profile, please contact us.`,
   },
   {
     title: "8. Intellectual Property",
