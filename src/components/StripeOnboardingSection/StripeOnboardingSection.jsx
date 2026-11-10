@@ -125,7 +125,7 @@ const StripeOnboardingSection = () => {
           <p className={styles.help}>
             {hasAccount
               ? "Stripe still needs a few details from you. Continue setup to finish — once you're verified, you can enable downloads on your albums."
-              : "Connect a Stripe account to start accepting payments. We use Stripe Connect so payouts go directly to you (we take 10%)."}
+              : "Connect a Stripe account to start accepting payments. We use Stripe Connect so payouts go directly to you. stanbox keeps a 10% platform fee unless we've agreed a different rate with you."}
           </p>
           <button
             type="button"

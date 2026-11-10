@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./TermsOfUse.module.css";
 
-const LAST_UPDATED = "August 11, 2026";
+const LAST_UPDATED = "November 10, 2026";
 
 const sections = [
   {
@@ -38,7 +38,7 @@ const sections = [
   },
   {
     title: "9. Buying Music and Payments",
-    body: `stanbox does not sell subscriptions and does not bill you on a recurring basis. Every payment on the Platform is a one-time purchase of a specific release from a specific artist. Creating an account, browsing, ranking artists, and posting are free.\n\nArtists set their own prices. The price is shown before you pay, and that is the amount you are charged. Payments are processed by our payment provider, Stripe — we never receive or store your card details.\n\nOn each sale, stanbox retains a 10% platform fee and the remaining 90% goes to the artist. Payouts are made to the artist through Stripe, and artists are responsible for any taxes arising from their sales.\n\nWhen a purchase completes, the release stays available for download in your library. We will make reasonable efforts to keep it available, but we cannot guarantee indefinite access — an artist may remove a release, or an artist's account may close. We recommend downloading and keeping your own copy of anything you buy.\n\nAll sales are final. We do not offer refunds except where required by law. If a purchase fails, is charged twice, or a file will not download, contact us and we will put it right.\n\nWe may change the platform fee or introduce new paid features with reasonable advance notice. Any change applies only to purchases made after it takes effect and never to purchases you have already completed.`,
+    body: `stanbox does not sell subscriptions and does not bill you on a recurring basis. Every payment on the Platform is a one-time purchase of a specific release from a specific artist. Creating an account, browsing, ranking artists, and posting are free.\n\nArtists set their own prices. The price is shown before you pay, and that is the amount you are charged. If sales tax or a similar tax applies to your purchase, it will be shown at checkout before you pay. Payments are processed by our payment provider, Stripe — we never receive or store your card details.\n\nWhen you buy a release, you pay stanbox, and stanbox pays the artist their share through Stripe. On each sale, stanbox retains a platform fee — 10% unless we have agreed a different rate with that artist — and the rest goes to the artist. Stripe's card processing fees come out of stanbox's share, not the artist's. Artists are responsible for any income taxes on the payouts they receive.\n\nWhen a purchase completes, the release stays available for download in your library. We will make reasonable efforts to keep it available, but we cannot guarantee indefinite access — an artist may remove a release, or an artist's account may close. We recommend downloading and keeping your own copy of anything you buy.\n\nAll sales are final. We do not offer refunds except where required by law. If a purchase fails, is charged twice, or a file will not download, contact us and we will put it right.\n\nWe may change the standard platform fee, agree different rates with individual artists, or introduce new paid features. We will give reasonable advance notice of any change to the standard fee. Any change applies only to purchases made after it takes effect and never to purchases you have already completed.`,
   },
   {
     title: "10. Purchases and Artist Data Sharing",
