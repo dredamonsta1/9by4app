@@ -5,6 +5,7 @@ import React from "react";
 import styles from "./ArtistCard.module.css";
 import { resolveImageUrl } from "../utils/imageUrl";
 import type { Artist } from "../types/api";
+import { showPublicCount } from "../utils/publicCounts";
 
 interface Props {
   artist: Artist;
@@ -31,10 +32,12 @@ const ArtistCard = ({ artist }: Props) => {
           src={fullImageUrl}
           alt={artist.name || "Artist Image"}
         />
-        {/* The 'clout item' - the count */}
-        <p className={styles.cloutItem}>
-          Clout: <span style={{ color: "#333" }}>{artist.count}</span>
-        </p>
+        {/* The 'clout item' - the count, once it's big enough to show. */}
+        {showPublicCount(artist.count) && (
+          <p className={styles.cloutItem}>
+            Clout: <span style={{ color: "#333" }}>{artist.count}</span>
+          </p>
+        )}
       </div>
 
       {/* Add more artist details here if you want to display them */}

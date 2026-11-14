@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import type { ArtistCommunityInfo, CommunityMember, CommunityPost, StanTier } from "../../types/api";
 import styles from "./ArtistCommunity.module.css";
+import { showPublicCount } from "../../utils/publicCounts";
 
 const TIER_LABELS: Record<StanTier, string> = {
   "casual":  "Casual",
@@ -86,11 +87,13 @@ export default function ArtistCommunity({ artistId, onClose }: ArtistCommunityPr
                 {info.artist.genre && (
                   <p className={styles.artistMeta}>{info.artist.genre}</p>
                 )}
-                <p className={styles.memberCount}>
-                  <span className={styles.memberNum}>{info.member_count}</span>
-                  {" "}
-                  {info.member_count === 1 ? "member" : "members"}
-                </p>
+                {showPublicCount(info.member_count) && (
+                  <p className={styles.memberCount}>
+                    <span className={styles.memberNum}>{info.member_count}</span>
+                    {" "}
+                    {info.member_count === 1 ? "member" : "members"}
+                  </p>
+                )}
               </div>
             </div>
 

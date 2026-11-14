@@ -82,11 +82,13 @@ describe("ArtistCard Component", () => {
       expect(image).toHaveAttribute("alt", "Artist Image");
     });
 
-    it("renders with zero clout count", () => {
-      const artistWithZeroClout = { ...mockArtist, count: 0 };
-      render(<ArtistCard artist={artistWithZeroClout} />);
-
-      expect(screen.getByText("0")).toBeInTheDocument();
+    it("hides a clout count below 100", () => {
+      // A small number reads as "nobody is here" (utils/publicCounts).
+      for (const count of [0, 99]) {
+        const { unmount } = render(<ArtistCard artist={{ ...mockArtist, count }} />);
+        expect(screen.queryByText(/clout:/i)).not.toBeInTheDocument();
+        unmount();
+      }
     });
   });
 

@@ -89,12 +89,13 @@ describe("PicksSpotlight", () => {
   });
 
   describe("before the ballot floor is met", () => {
-    it("shows coming soon with progress toward the floor", async () => {
+    it("shows coming soon without saying how few have voted", async () => {
       axiosInstance.get.mockResolvedValue({ data: pending() });
       renderIt();
 
       expect(await screen.findByText(/coming soon/i)).toBeInTheDocument();
-      expect(screen.getByText(/1\/5 ballots/i)).toBeInTheDocument();
+      expect(screen.getByText(/add your picks/i)).toBeInTheDocument();
+      expect(screen.queryByText(/\d+\/\d+ ballots/i)).not.toBeInTheDocument();
     });
 
     it("points at the profile, where picks are actually made", async () => {
