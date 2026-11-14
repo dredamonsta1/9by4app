@@ -8,6 +8,7 @@ import React from "react";
 import styles from "./ContentCreatorCard.module.css";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import type { Streamer } from "../../types/api";
+import { showPublicCount } from "../../utils/publicCounts";
 
 const PLATFORM_LABELS: Record<string, string> = {
   twitch:  "Twitch",
@@ -91,7 +92,9 @@ const ContentCreatorCard = ({
 
       {/* Footer */}
       <div className={styles.footer}>
-        <span className={styles.voteCount}>{creator.count} votes</span>
+        {showPublicCount(creator.count) && (
+          <span className={styles.voteCount}>{creator.count} votes</span>
+        )}
 
         <div className={styles.actions}>
           <button

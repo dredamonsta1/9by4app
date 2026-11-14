@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import styles from "./HeroSection.module.css";
 import vediozLogo from "../../assets/vedioz-logo-full.png";
+import { showPublicCount } from "../../utils/publicCounts";
 
 const HeroSection = () => {
   const [stats, setStats] = useState(null);
@@ -28,8 +29,12 @@ const HeroSection = () => {
       {stats && (
         <div className={styles.statRow}>
           <span>{stats.artist_count.toLocaleString()} artists</span>
-          <span className={styles.dot}>·</span>
-          <span>{stats.fan_count.toLocaleString()} fans voting</span>
+          {showPublicCount(stats.fan_count) && (
+            <>
+              <span className={styles.dot}>·</span>
+              <span>{stats.fan_count.toLocaleString()} fans voting</span>
+            </>
+          )}
           {stats.last_updated && (
             <>
               <span className={styles.dot}>·</span>

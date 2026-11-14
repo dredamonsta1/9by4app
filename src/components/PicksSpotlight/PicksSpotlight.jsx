@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./PicksSpotlight.module.css";
+import { showPublicCount } from "../../utils/publicCounts";
 
 /**
  * Album of the Quarter, as a small card at the top of the landing page's
@@ -82,26 +83,19 @@ const PicksSpotlight = () => {
               <span className={styles.artist}>{data.winner.artist_name}</span>
             </span>
           </span>
-          <span className={styles.foot}>
-            From {data.ballot_count}{" "}
-            {data.ballot_count === 1 ? "ballot" : "ballots"}
-          </span>
+          {showPublicCount(data.ballot_count) && (
+            <span className={styles.foot}>
+              From {data.ballot_count}{" "}
+              {data.ballot_count === 1 ? "ballot" : "ballots"}
+            </span>
+          )}
         </>
       ) : (
         <>
           <span className={styles.quarter}>{quarterName}</span>
           <span className={styles.soon}>Coming soon</span>
-          <span className={styles.progress} aria-hidden="true">
-            {Array.from({ length: data.minimum_ballots }, (_, i) => (
-              <span
-                key={i}
-                className={i < data.ballot_count ? styles.pipOn : styles.pip}
-              />
-            ))}
-          </span>
-          <span className={styles.foot}>
-            {data.ballot_count}/{data.minimum_ballots} ballots · add yours
-          </span>
+          {/* No "2/5 ballots" progress: it advertises how few people vote. */}
+          <span className={styles.foot}>Add your picks</span>
         </>
       )}
     </Link>

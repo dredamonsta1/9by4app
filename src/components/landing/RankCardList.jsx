@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import styles from "./RankCardList.module.css";
+import { showPublicCount } from "../../utils/publicCounts";
 
 const art = (a) =>
   resolveImageUrl(
@@ -100,8 +101,12 @@ const RankCardList = ({
             <div className={styles.body}>
               <span className={styles.name}>{a.artist_name || a.name}</span>
               <span className={styles.meta}>
-                {(a.count || 0).toLocaleString()} fans
-                {a.genre ? ` · ${a.genre}` : ""}
+                {[
+                  showPublicCount(a.count) ? `${a.count.toLocaleString()} fans` : null,
+                  a.genre || null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
               </span>
             </div>
             <button

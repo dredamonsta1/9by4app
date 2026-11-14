@@ -34,6 +34,7 @@ import {
 import { toast } from "react-toastify";
 import styles from "./ArtistPanel.module.css";
 import ModerationMenu from "../Moderation/ModerationMenu";
+import { showPublicCount } from "../../utils/publicCounts";
 import { postTargetType } from "../Moderation/reportReasons";
 
 const formatRelativeTime = (iso) => {
@@ -1214,9 +1215,11 @@ const ArtistPanel = () => {
                   {artist.artist_name || "N/A"}
                 </h1>
                 <div className={styles.cardMeta}>
-                  <span className={styles.cardFans}>
-                    {(artist.count || 0).toLocaleString()} fans
-                  </span>
+                  {showPublicCount(artist.count) && (
+                    <span className={styles.cardFans}>
+                      {artist.count.toLocaleString()} fans
+                    </span>
+                  )}
                   {artist.genre && (
                     <span className={styles.cardChip}>{artist.genre}</span>
                   )}
@@ -1332,9 +1335,11 @@ const ArtistPanel = () => {
           )}
 
           <div className={styles.cardMeta}>
-            <span className={styles.cloutLine}>
-              {(artist.count || 0).toLocaleString()} fans claim them
-            </span>
+            {showPublicCount(artist.count) && (
+              <span className={styles.cloutLine}>
+                {artist.count.toLocaleString()} fans claim them
+              </span>
+            )}
 
             {/* My Stan Rank — only when the user has actually been
                 ranked for this artist's community. */}

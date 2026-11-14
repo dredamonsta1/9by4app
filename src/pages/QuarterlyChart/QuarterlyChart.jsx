@@ -4,6 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { quarterLabel, quarterMonths } from "../../hooks/useQuarterlyPicks";
 import styles from "./QuarterlyChart.module.css";
+import { showPublicCount } from "../../utils/publicCounts";
 
 /**
  * "StanBox's Q3 2026" — the aggregate of everyone's picks.
@@ -23,6 +24,10 @@ const QuarterlyChart = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Ballot, pick and point totals stay hidden until the chart has enough
+  // ballots to make them flattering (see utils/publicCounts). The order is
+  // the chart; the numbers are supporting detail.
+  const showCounts = showPublicCount(data?.ballot_count);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,14 +101,10 @@ const QuarterlyChart = () => {
         <section className={styles.notYet}>
           <h2 className={styles.notYetTitle}>Not enough picks yet</h2>
           <p className={styles.muted}>
-            {data.ballot_count === 0
-              ? `Nobody has picked for this ${isYear ? "year" : "quarter"}.`
-              : `${data.ballot_count} ${
-                  data.ballot_count === 1 ? "person has" : "people have"
-                } picked so far.`}{" "}
-            {isYear ? "Standings need" : "A chart needs"} {data.minimum_ballots}{" "}
-            before {isYear ? "they say" : "it says"} anything about the{" "}
-            {isYear ? "year" : "quarter"} rather than about one person.
+            {isYear ? "The standings appear" : "The chart appears"} once enough
+            fans have made their picks, so {isYear ? "they say" : "it says"}{" "}
+            something about the {isYear ? "year" : "quarter"} rather than about
+            one person.
           </p>
           <Link to="/profile" className={styles.cta}>
             Make your picks
@@ -113,11 +114,13 @@ const QuarterlyChart = () => {
 
       {!loading && !error && data?.published && (
         <>
-          <p className={styles.basis}>
-            From {data.ballot_count} ballots · {data.pick_count} picks
-          </p>
+          {showCounts && (
+            <p className={styles.basis}>
+              From {data.ballot_count} ballots · {data.pick_count} picks
+            </p>
+          )}
 
-          {isYear && data.quarter_breakdown?.length > 0 && (
+          {isYear && showCounts && data.quarter_breakdown?.length > 0 && (
             <div className={styles.turnout}>
               {/* Deriving the year from the quarters means uneven turnout
                   silently weights it. Showing the split makes that a fact
@@ -158,13 +161,15 @@ const QuarterlyChart = () => {
                     {e.artist_name}
                   </Link>
                 </span>
-                <span className={styles.score}>
-                  <span className={styles.points}>{e.points}</span>
-                  <span className={styles.votes}>
-                    {e.votes} {e.votes === 1 ? "pick" : "picks"}
-                    {e.first_place_votes > 0 && ` · ${e.first_place_votes} at #1`}
+                {showCounts && (
+                  <span className={styles.score}>
+                    <span className={styles.points}>{e.points}</span>
+                    <span className={styles.votes}>
+                      {e.votes} {e.votes === 1 ? "pick" : "picks"}
+                      {e.first_place_votes > 0 && ` · ${e.first_place_votes} at #1`}
+                    </span>
                   </span>
-                </span>
+                )}
               </li>
             ))}
           </ol>

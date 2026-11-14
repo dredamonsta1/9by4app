@@ -62,11 +62,22 @@ describe("QuarterlyChart", () => {
     expect(rows[1]).toHaveTextContent("Beta");
   });
 
-  it("shows what the chart is built from", async () => {
+  // Counts are hidden below PUBLIC_COUNT_THRESHOLD (100): "From 12 ballots"
+  // tells a visitor how few people vote. The order is the chart.
+  it("hides ballot, pick and point counts while they're small", async () => {
     respond();
     renderAt();
 
-    expect(await screen.findByText(/12 ballots · 55 picks/i)).toBeInTheDocument();
+    await screen.findByText("Alpha");
+    expect(screen.queryByText(/12 ballots/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\bpicks?\b.*at #1|\d+ picks?$/i)).not.toBeInTheDocument();
+  });
+
+  it("shows what the chart is built from once there are 100+ ballots", async () => {
+    respond({ ballot_count: 150, pick_count: 700 });
+    renderAt();
+
+    expect(await screen.findByText(/150 ballots · 700 picks/i)).toBeInTheDocument();
   });
 
   it("requests the quarter in the URL", async () => {
@@ -95,23 +106,20 @@ describe("QuarterlyChart", () => {
       renderAt();
 
       expect(await screen.findByText(/not enough picks yet/i)).toBeInTheDocument();
-      expect(screen.getByText(/1 person has picked/i)).toBeInTheDocument();
-      expect(screen.getByText(/needs 5/i)).toBeInTheDocument();
+      expect(screen.getByText(/once enough fans have made their picks/i)).toBeInTheDocument();
+      // No "1 person has picked", "needs 5": both say how few vote.
+      expect(screen.queryByText(/person has picked|needs 5/i)).not.toBeInTheDocument();
       expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
     });
 
-    it("handles a quarter nobody picked in", async () => {
-      respond({ published: false, ballot_count: 0, entries: [] });
-      renderAt();
-
-      expect(await screen.findByText(/nobody has picked/i)).toBeInTheDocument();
-    });
-
-    it("pluralises the ballot count", async () => {
-      respond({ published: false, ballot_count: 3, entries: [] });
-      renderAt();
-
-      expect(await screen.findByText(/3 people have picked/i)).toBeInTheDocument();
+    it("says the same thing whether nobody or a few people have picked", async () => {
+      for (const ballot_count of [0, 3]) {
+        respond({ published: false, ballot_count, entries: [] });
+        const { unmount } = renderAt();
+        expect(await screen.findByText(/once enough fans have made their picks/i)).toBeInTheDocument();
+        expect(screen.queryByText(/nobody has picked|people have picked/i)).not.toBeInTheDocument();
+        unmount();
+      }
     });
 
     it("points at the place you'd go to fix it", async () => {
@@ -178,10 +186,18 @@ describe("QuarterlyChart", () => {
       expect(screen.queryByText(/album of the year/i)).not.toBeInTheDocument();
     });
 
-    it("shows turnout per quarter, including quarters nobody voted in", async () => {
+    it("hides per-quarter turnout while ballots are few", async () => {
+      axiosInstance.get.mockResolvedValue({ data: yearData() });
+      renderAt("/picks/2026");
+
+      await screen.findByText(/standings/i);
+      expect(screen.queryByText(/ballots per quarter/i)).not.toBeInTheDocument();
+    });
+
+    it("shows turnout per quarter, including quarters nobody voted in, at 100+ ballots", async () => {
       // The year is a sum, so uneven turnout weights it. Q2 and Q4 are
       // absent from the payload and must still appear, at zero.
-      axiosInstance.get.mockResolvedValue({ data: yearData() });
+      axiosInstance.get.mockResolvedValue({ data: yearData({ ballot_count: 120 }) });
       renderAt("/picks/2026");
 
       await screen.findByText(/ballots per quarter/i);

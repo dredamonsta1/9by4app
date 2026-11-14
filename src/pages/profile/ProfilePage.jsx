@@ -28,6 +28,7 @@ import CrateShare from "../../components/CrateShare/CrateShare";
 import DeleteAccount from "../../components/DeleteAccount/DeleteAccount";
 import ModerationMenu from "../../components/Moderation/ModerationMenu";
 import BlockedAccounts from "../../components/Moderation/BlockedAccounts";
+import { showPublicCount } from "../../utils/publicCounts";
 import OnboardingChecklist, {
   ONBOARDING_TARGET,
   ONBOARDING_DISMISSED_KEY,
@@ -422,14 +423,18 @@ const ProfilePage = () => {
               className={styles.socialCount}
               onClick={() => setShowFollowersModal(true)}
             >
-              <span className={styles.socialNumber}>{followersList.length}</span>
+              {(isOwnProfile || showPublicCount(followersList.length)) && (
+                <span className={styles.socialNumber}>{followersList.length}</span>
+              )}
               <span className={styles.socialLabel}>Followers</span>
             </button>
             <button
               className={styles.socialCount}
               onClick={() => setShowFollowingModal(true)}
             >
-              <span className={styles.socialNumber}>{followingList.length}</span>
+              {(isOwnProfile || showPublicCount(followingList.length)) && (
+                <span className={styles.socialNumber}>{followingList.length}</span>
+              )}
               <span className={styles.socialLabel}>Following</span>
             </button>
           </div>
@@ -490,7 +495,9 @@ const ProfilePage = () => {
         </div>
         <div className={styles.statDivider} />
         <div className={styles.statCell}>
-          <span className={styles.statNumber}>{followersList.length}</span>
+          <span className={styles.statNumber}>
+            {isOwnProfile || showPublicCount(followersList.length) ? followersList.length : "—"}
+          </span>
           <span className={styles.statLabel}>Followers</span>
         </div>
       </section>
