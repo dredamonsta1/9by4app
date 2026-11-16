@@ -170,7 +170,15 @@ export const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete, onBlocked
         {isAgent ? (
           <span className={styles.feedBadge}>{badgeLabel}</span>
         ) : (
-          <span className={styles.feedUser}>@{post.username || "user"}</span>
+          <>
+            <span className={styles.feedUser}>@{post.username || "user"}</span>
+            {/* Hidden below the public threshold like every other count. */}
+            {showPublicCount(post.follower_count) && (
+              <span className={styles.feedFollowers}>
+                {post.follower_count.toLocaleString()} followers
+              </span>
+            )}
+          </>
         )}
         <span className={styles.feedTime}>
           {formatRelativeTime(post.created_at)}
