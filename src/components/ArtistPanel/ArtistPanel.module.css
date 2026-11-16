@@ -652,6 +652,11 @@
   font-size: 0.82rem;
 }
 
+.feedFollowers {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
 .feedBadge {
   background: rgba(0, 180, 216, 0.18);
   color: #00b4d8;
