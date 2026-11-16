@@ -25,6 +25,7 @@ import NewMusicSection from "../NewMusicSection/NewMusicSection";
 import StickyCtaBar from "../StickyCtaBar/StickyCtaBar";
 import TrendingShelf from "../TrendingShelf/TrendingShelf";
 import UploadModal from "../UploadModal/UploadModal";
+import FeedComposerBar from "../FeedComposerBar/FeedComposerBar";
 import EventCreator from "../EventCreator/EventCreator";
 import GuestAddPrompt from "../GuestAddPrompt/GuestAddPrompt";
 import {
@@ -1057,13 +1058,7 @@ const ArtistPanel = () => {
               </header>
 
             {isLoggedIn && (
-              <button
-                type="button"
-                className={styles.composerTrigger}
-                onClick={() => setUploadOpen(true)}
-              >
-                Post something…
-              </button>
+              <FeedComposerBar user={user} onCompose={() => setUploadOpen(true)} />
             )}
 
             <div className={styles.boxScroll}>
