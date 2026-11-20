@@ -365,14 +365,18 @@ export const FeedPost = ({ post, currentUserId, onPlayMusic, onDelete, onBlocked
         </div>
       )}
 
-      <button
-        type="button"
-        className={styles.commentToggle}
-        onClick={handleToggleComments}
-      >
-        💬 {commentCount > 0 ? commentCount : ""}{" "}
-        {commentCount === 1 ? "Comment" : "Comments"}
-      </button>
+      {/* Comments need an account to read or write (the endpoint is
+          signed-in only), so guests on the public feed don't get the toggle. */}
+      {currentUserId && (
+        <button
+          type="button"
+          className={styles.commentToggle}
+          onClick={handleToggleComments}
+        >
+          💬 {commentCount > 0 ? commentCount : ""}{" "}
+          {commentCount === 1 ? "Comment" : "Comments"}
+        </button>
+      )}
 
       {showComments && (
         <div className={styles.commentsSection}>
@@ -558,13 +562,11 @@ const ArtistPanel = () => {
   // Global feed is decoupled from the active artist — it's the social /
   // news layer of the platform that stays put as you flip artists. Only
   // refetch on login state change.
+  // Guests get the bot accounts' public feed (news, sports, entertainment)
+  // so the box isn't empty; fans' posts stay behind sign-in.
   useEffect(() => {
-    if (!isLoggedIn) {
-      setGlobalFeed([]);
-      return;
-    }
     axiosInstance
-      .get("/feed")
+      .get(isLoggedIn ? "/feed" : "/feed/public")
       .then((res) => setGlobalFeed(Array.isArray(res.data) ? res.data : []))
       .catch(() => setGlobalFeed([]));
   }, [isLoggedIn]);
@@ -1062,7 +1064,7 @@ const ArtistPanel = () => {
             )}
 
             <div className={styles.boxScroll}>
-              {!isLoggedIn ? (
+              {!isLoggedIn && feedFiltered.length === 0 ? (
                 <div className={styles.emptyState}>
                   <p>Log in to see the feed.</p>
                 </div>
@@ -1075,7 +1077,15 @@ const ArtistPanel = () => {
                   </p>
                 </div>
               ) : (
-                <ul className={styles.feedList}>
+                <>
+                  {!isLoggedIn && (
+                    <p className={styles.guestFeedNote}>
+                      StanBox news, sports and entertainment.{" "}
+                      <Link to="/signup">Sign up</Link> to see what fans are
+                      posting.
+                    </p>
+                  )}
+                  <ul className={styles.feedList}>
                   {feedFiltered.map((post, idx) => (
                     <FeedPost
                       key={post.id || post.post_id || idx}
@@ -1087,6 +1097,7 @@ const ArtistPanel = () => {
                     />
                   ))}
                 </ul>
+                </>
               )}
             </div>
           </div>

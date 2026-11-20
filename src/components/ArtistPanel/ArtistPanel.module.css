@@ -1923,3 +1923,15 @@
   border-color: var(--color-contrast);
   color: #0a1420;
 }
+
+/* Above the public bot feed for signed-out visitors. */
+.guestFeedNote {
+  margin: 0.7rem 0.85rem 0;
+  font-size: 0.8rem;
+  color: #8899aa;
+}
+
+.guestFeedNote a {
+  color: #d6ff3d;
+  font-weight: 600;
+}
