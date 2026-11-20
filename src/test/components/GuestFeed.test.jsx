@@ -30,6 +30,9 @@ const mj = { artist_id: 85, artist_name: "Michael Jackson", genre: "Pop", count:
 const respond = (publicFeed) => (url) => {
   if (url === "/feed/public") return Promise.resolve({ data: publicFeed });
   if (url === "/artists/85") return Promise.resolve({ data: { artist: mj } });
+  // The real endpoint wraps the list. A bare [] leaves state.profileList.list
+  // undefined, and the panel crashes on .some() once the signed-in fetch lands.
+  if (url === "/profile/list") return Promise.resolve({ data: { list: [] } });
   if (url.startsWith("/artists?") || url === "/artists") {
     return Promise.resolve({ data: { artists: [mj], hasMore: false } });
   }
@@ -66,6 +69,12 @@ describe("the landing feed for guests", () => {
 
     await waitFor(() => expect(feedCalls()).toContain("/feed"));
     expect(feedCalls()).not.toContain("/feed/public");
+    // Let the signed-in Top 20 fetch land before the test ends, so a bad
+    // response shape fails here instead of as a stray error in CI.
+    await waitFor(() =>
+      expect(axiosInstance.get.mock.calls.map(([u]) => u)).toContain("/profile/list")
+    );
+    expect(await screen.findByText(/What.s on your mind/)).toBeInTheDocument();
   });
 });
 
